@@ -1,0 +1,25 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block body %}
+<!-- Main content -->
+<section class="content">
+<div class="error-page">
+  <h2 class="headline text-danger" style="margin: 0;"> {{ status_code }}</h2>
+
+  <div class="error-content">
+    <h4><i class="fa fa-warning text-danger"></i> Oops! An Error Occurred: {{ status_text }}</h4>
+
+    <p>
+      Something is broken. Please let us know what you were doing when this error occurred.<br />
+      We will fix it as soon as possible. Sorry for any inconvenience caused.
+    </p>
+    <p>
+      Meanwhile, you may <a href="{{ path('backendIndex') }}">return to dashboard</a>
+    </p>
+  </div>
+  <!-- /.error-content -->
+</div>
+<!-- /.error-page -->
+</section>
+<!-- /.content -->
+{% endblock %}

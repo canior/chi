@@ -1,0 +1,96 @@
+{% block dropzone_widget %}
+    {% spaceless %}
+        {%- set type = type|default('text') -%}
+        {%- if type == 'range' or type == 'color' -%}
+            {# Attribute "required" is not supported #}
+            {%- set required = false -%}
+        {%- endif -%}
+        {#<div class="fallback">#}
+            {#<input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>#}
+        {#</div>#}
+        <div id="dropzone-{{ id }}" class="dropzone"></div>
+        <script type="text/javascript">
+            var everythingLoaded = setInterval(function() {
+                if (/loaded|complete/.test(document.readyState)) {
+                    clearInterval(everythingLoaded);
+                    init(); // this is the function that gets called when everything is loaded
+                }
+            }, 10);
+            function init() {
+                var myDropzone{{ id }} = new Dropzone("div#dropzone-{{ id }}", {
+                    url: "{{ path(route) }}",
+                    paramName: "{{ name }}", // The name that will be used to transfer the file
+                    maxFiles: 1,
+                    maxFilesize: {{ maxFilesize }}, // MB
+                    maxThumbnailFilesize: {{ maxFilesize }}, // MB
+                    acceptedFiles: '{{ acceptedFiles }}',
+                    // previewTemplate: $('#previewTemplate').html(),
+                    // previewsContainer: "#images",
+                    uploadMultiple: {{ uploadMultiple }},
+                    addRemoveLinks: true,
+                    dictRemoveFile: '删除',
+                    dictFileTooBig: "上传文件过大 (\{\{filesize\}\}MB). 最大允许上传: \{\{maxFilesize\}\}MB.",
+                    init: function () {
+                        this.on("maxfilesexceeded", function (file) {
+                            this.removeAllFiles();
+                            this.addFile(file);
+                        });
+                        this.on("addedfile", function(file) {
+                            if (this.files.length) {
+                                var _i, _len;
+                                for (_i = 0, _len = this.files.length; _i < _len - 1; _i++) // -1 to exclude current file
+                                {
+                                    if(this.files[_i].name === file.name && this.files[_i].size === file.size && this.files[_i].lastModifiedDate.toString() === file.lastModifiedDate.toString())
+                                    {
+                                        this.removeFile(file);
+                                    }
+                                }
+                            }
+                        });
+                        this.on("success", function (file, response) {
+                            if ($('div#dropzone-{{ id }}').find('div.dz-preview').length > 1) {
+                                $('div#dropzone-{{ id }}').find('div.dz-preview')[0].remove();
+                            }
+                            var json = $.parseJSON(response)
+                            if (json.status) {
+                                $(file.previewElement).find('.dz-error-message').text('').hide();
+                                file.previewElement.classList.add("dz-success");
+
+                                file._fileId = Dropzone.createElement('<input name="{{ full_name }}" type="hidden" value="' + json.fileId + '"/>');
+                                file.previewElement.appendChild(file._fileId);
+                            } else {
+                                this.removeFile(file);
+                                $(file.previewElement).find('.dz-error-message').text(json.error).show();
+                                file.previewElement.classList.add("dz-error");
+                            }
+                        });
+                        this.on('error', function (file, response) {
+                            $(file.previewElement).find('.dz-error-message').text(response).show();
+                            file.previewElement.classList.add("dz-error");
+                        });
+                        // preview file
+                        this.on("thumbnail", function (file, dataUrl) {
+                            if (file && !$(file.previewElement).find('input[type="hidden"]').length) {
+                                $(file.previewElement).find('.dz-error-message').text('').hide();
+                                $(file.previewElement).find('img').width(120).height(120);
+                                file.previewElement.classList.add("dz-success");
+                                file.previewElement.classList.add("dz-complete");
+
+                                file._fileId = Dropzone.createElement('<input name="{{ full_name }}" type="hidden" value="' + file.id + '"/>');
+                                file.previewElement.appendChild(file._fileId);
+                            }
+                        });
+                    }
+                });
+                // preview file
+                {% if data %}
+                var file = { id: {{ data.id }}, name: "{{ data.name }}", size: {{ data.size }} };
+                // Call the default addedfile event handler
+                myDropzone{{ id }}.emit("addedfile", file);
+                // And optionally show the thumbnail of the file:
+                myDropzone{{ id }}.emit("thumbnail", file, "{{ path('imagePreview', {fileId: data.id}) }}");
+                {% endif %}
+            }
+        </script>
+    {% endspaceless %}
+{% endblock %}

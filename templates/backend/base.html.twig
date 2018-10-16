@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    {% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+    {{ include('backend/css.html.twig') }}
+    {% endblock %}
+    {#<link rel="icon" type="image/x-icon" href="{{ asset('bundles/backend/img/favicon.ico') }}"/>#}
+</head>
+<body class="hold-transition skin-black-light sidebar-mini">
+<div class="wrapper">
+    {% include 'backend/header.html.twig' %}
+
+    {{ render(controller('App\\Controller\\Backend\\BackendController:sidebar', { 'request': app.request })) }}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>{{ title is defined ? title : '' }} <small>{{ intro is defined ? intro : '' }}</small></h1>
+            {{ render(controller('App\\Controller\\Backend\\BackendController:breadcrumb', { 'request': app.request })) }}
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+        {% block body %}{% endblock %}
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    {% include 'backend/footer.html.twig' %}
+
+    {#{% include 'backend/control-sidebar.html.twig' %}#}
+</div>
+<!-- ./wrapper -->
+
+{% block javascripts %}
+<script src="{{ asset('build/app.js') }}"></script>
+{{ include('backend/js.html.twig') }}
+{% endblock %}
+</body>
+</html>

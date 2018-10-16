@@ -1,0 +1,9 @@
+{{ form_start(form) }}
+    <div class="form-group">
+        <label class="control-label required" for="project_meta_metaKey">Meta key</label>
+        <input type="text" id="project_meta_metaKey" disabled="disabled" class="form-control" value="{{ project_metum.metaKey }}">
+    </div>
+    {{ form_widget(form, { 'attr': {'class': 'form-group'} }) }}
+    <a class="btn btn-danger" href="{{ path('project_meta_index') }}">{{ 'Back to list'|trans }}</a>
+    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

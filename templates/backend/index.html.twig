@@ -1,0 +1,72 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="console-btns">
+                    {#
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="console-btn">
+                                <a href="{{ path('backendIndex') }}">
+                                    <div class="console-icon divider-right"> <span class="glyphicons glyphicons-old_man"></span> </div>
+                                    <div class="console-text">
+                                        <div class="console-title">企业()</div>
+                                        <div class="console-subtitle">查看更多 <i class="fa fa-caret-right"></i> </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="console-btn">
+                                <a href="{{ path('backendIndex') }}">
+                                    <div class="console-icon divider-right"> <span class="glyphicons glyphicons-wallet"></span> </div>
+                                    <div class="console-text">
+                                        <div class="console-title">项目()</div>
+                                        <div class="console-subtitle">查看更多 <i class="fa fa-caret-right"></i> </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="console-btn">
+                                <a href="{{ path('backendIndex') }}">
+                                    <div class="console-icon divider-right"> <span class="glyphicons glyphicons-coins"></span> </div>
+                                    <div class="console-text">
+                                        <div class="console-title">产品()</div>
+                                        <div class="console-subtitle">查看更多 <i class="fa fa-caret-right"></i> </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="console-btn">
+                                <a href="{{ path('backendIndex') }}">
+                                    <div class="console-icon divider-right"> <span class="glyphicons glyphicons-certificate"></span> </div>
+                                    <div class="console-text">
+                                        <div class="console-title">案例()</div>
+                                        <div class="console-subtitle">查看更多 <i class="fa fa-caret-right"></i> </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                    #}
+                </div>
+            </div>
+        </div>
+        <hr class="short margin-top-none">
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}

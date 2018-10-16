@@ -10,5 +10,12 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production"
+    },
+    "dependencies": {
+        "admin-lte": "^2.4.8",
+        "bootstrap-chosen": "^1.4.2",
+        "chosen-js": "^1.8.7",
+        "dropzone": "^5.5.1",
+        "jquery": "^3.3.1"
     }
 }

@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: 'en'
+    locale: 'cn'
 
 services:
     # default configuration for services in *this* file
@@ -19,7 +19,7 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php,Library}'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -29,3 +29,24 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\:
+        resource: '../src/Service'
+        public: true
+
+    # maker
+    app.maker.make_crud_backend:
+        class: App\Maker\MakeCrudBackend
+        arguments: ['@maker.doctrine_helper']
+        calls:
+            - [configureCommand, ['@security.command.user_password_encoder', '@?']]
+            - [interact, ['@?', '@?', '@security.command.user_password_encoder']]
+        tags:
+            - { name: maker.command }
+
+    # commands
+    UploadFileCommandHandler:
+        class: App\Command\File\UploadFileCommandHandler
+        public: true
+        tags:
+            - { name: tactician.handler, command: App\Command\File\UploadFileCommand }

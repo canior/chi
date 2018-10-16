@@ -1,0 +1,8 @@
+<ol class="breadcrumb">
+    <li><a href="{{ path('backendIndex') }}"><i class="glyphicon glyphicon-home"></i> Home</a></li>
+    {% for breadcrumb in breadcrumbs %}
+    <li>
+        <a href="{{ path(breadcrumb.path, breadcrumb.params|default({})) }}">{{ breadcrumb.name }}</a>
+    </li>
+    {% endfor %}
+</ol>

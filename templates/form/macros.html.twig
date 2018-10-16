@@ -1,0 +1,8 @@
+{% macro cut(str, len, suffix, raw) %}
+    {% set suffix = suffix ? suffix : '...' %}
+    {% if raw is defined and raw %}{{ str[:len]|raw }}{% else %}{{ str[:len] }}{% endif %}{% if str|length > len and suffix %}{{ suffix }}{% endif %}
+{% endmacro %}
+
+{% macro isCurrentRoute(route, trueClass, falseClass) %}
+    {% if app.request.attributes.get('_route') == route %}{{ trueClass|default('active') }}{% else %}{{ falseClass|default(null) }}{% endif %}
+{% endmacro %}

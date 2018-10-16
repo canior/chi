@@ -1,0 +1,11 @@
+<script type="text/javascript">
+    $(function () {
+        $('.delete').on('click', function (e) {
+            e.preventDefault();
+            var item = ($(this).data('item'));
+            $('#modal-delete .well').html('{{ title }}：' + item.name);
+            $('#modal-delete form').attr("action", $(this).data('url'));
+            $('#modal-delete form input[name="_token"]').val($(this).data('token'));
+        });
+    });
+</script>

@@ -1,0 +1,82 @@
+<!-- Left side column. contains the logo and sidebar -->
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar user panel -->
+        {#<div class="user-panel">#}
+            {#<div class="pull-left image">#}
+                {#<img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">#}
+            {#</div>#}
+            {#<div class="pull-left info">#}
+                {#<p>Alexander Pierce</p>#}
+                {#<a href="#"><i class="fa fa-circle text-success"></i> Online</a>#}
+            {#</div>#}
+        {#</div>#}
+        <!-- search form -->
+        {#<form action="#" method="get" class="sidebar-form">#}
+            {#<div class="input-group">#}
+                {#<input type="text" name="q" class="form-control" placeholder="Search...">#}
+                {#<span class="input-group-btn">#}
+                {#<button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>#}
+                {#</button>#}
+              {#</span>#}
+            {#</div>#}
+        {#</form>#}
+        <!-- /.search form -->
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu" data-widget="tree">
+            <li class="header">MAIN NAVIGATION</li>
+            {% for menu in menus %}
+                {% if is_granted(menu.role) %}
+                    <li class="{% if menu.active %}active menu-open{% endif %}{% if menu.subMenus is defined %} treeview{% endif %}">
+                        {% if menu.subMenus is defined %}
+                            <a href="#">
+                                <i class="{{ menu.icon }}"></i>
+                                <span>{{ menu.name }}</span>
+                                <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                            </a>
+                            <ul class="treeview-menu">
+                                {% for subMenu in menu.subMenus %}
+                                    {% if is_granted(subMenu.role) %}
+                                        <li class="{% if subMenu.active %}active menu-open{% endif %}{% if subMenu.subMenus is defined %} treeview{% endif %}" style="padding-left: 10px;">
+                                        {% if subMenu.subMenus is defined %}
+                                            <a href="#">
+                                                <i class="{{ subMenu.icon }}"></i>
+                                                <span>{{ subMenu.name }}</span>
+                                                <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                                            </a>
+                                            <ul class="treeview-menu">
+                                            {% for sMenu in subMenu.subMenus %}
+                                                {% if is_granted(sMenu.role) %}
+                                                    <li{% if sMenu.active %} class="active"{% endif %}>
+                                                        <a href="{{ path(sMenu.path, sMenu.params|default({})) }}">
+                                                            <i class="{{ sMenu.icon }}"></i> {{ sMenu.name }}
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <a href="{{ path(subMenu.path, subMenu.params|default({})) }}">
+                                                <i class="{{ subMenu.icon }}"></i> {{ subMenu.name }}
+                                            </a>
+                                        {% endif %}
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <a href="{{ path(menu.path) }}">
+                                <i class="{{ menu.icon }}"></i>
+                                <span class="sidebar-title">{{ menu.name }}</span>
+                            </a>
+                        {% endif %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+            <li class="header">LABELS</li>
+            <li><a href="{{ path('fos_user_security_logout') }}"><i class="fa fa-circle-o text-red"></i> <span>Sign out</span></a></li>
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>

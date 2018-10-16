@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>
+        {% block title %}{% endblock %}
+    </title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    {% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+    {{ include('backend/css.html.twig') }}
+    {% endblock %}
+    {#<link rel="icon" type="image/x-icon" href="{{ asset('bundles/backend/img/favicon.ico') }}"/>#}
+</head>
+<body class="hold-transition login-page">
+<!-- Content Start -->
+{% block fos_user_content %}
+{% endblock fos_user_content %}
+{% block body %}
+{% endblock %}
+<!-- Content End -->
+{% block javascripts %}
+<script src="{{ asset('build/app.js') }}"></script>
+{% endblock %}
+</body>
+</html>
