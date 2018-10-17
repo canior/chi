@@ -20,7 +20,7 @@ class GroupOrderRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return GroupOrder[] Returns an array of GroupOrder objects
+//     * @return Group[] Returns an array of Group objects
 //     */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class GroupOrderRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?GroupOrder
+    public function findOneBySomeField($value): ?Group
     {
         return $this->createQueryBuilder('g')
             ->andWhere('g.exampleField = :val')

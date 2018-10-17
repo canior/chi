@@ -70,24 +70,24 @@ class User extends BaseUser implements Dao
     private $parentUser;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserShare", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\UserShare", mappedBy="user", fetch="EXTRA_LAZY")
      */
     private $userShares;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserActivity", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\UserActivity", mappedBy="user", fetch="EXTRA_LAZY")
      */
     private $userActivities;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserAddress", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\UserAddress", mappedBy="user", fetch="EXTRA_LAZY")
      */
     private $userAddresses;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Group", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="GroupOrder", mappedBy="user", fetch="EXTRA_LAZY")
      */
-    private $groupBuying;
+    private $groupOrders;
 
     public function __construct()
     {
@@ -98,7 +98,7 @@ class User extends BaseUser implements Dao
         $this->userShares = new ArrayCollection();
         $this->userActivities = new ArrayCollection();
         $this->userAddresses = new ArrayCollection();
-        $this->groupBuying = new ArrayCollection();
+        $this->groupOrders = new ArrayCollection();
     }
 
     public function getId()
@@ -308,27 +308,27 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @return Collection|Group[]
+     * @return Collection|GroupOrder[]
      */
-    public function getGroupBuying(): Collection
+    public function getGroupOrders(): Collection
     {
-        return $this->groupBuying;
+        return $this->groupOrders;
     }
 
-    public function addGroupBuying(Group $groupBuying): self
+    public function addGroupOrder(GroupOrder $groupBuying): self
     {
-        if (!$this->groupBuying->contains($groupBuying)) {
-            $this->groupBuying[] = $groupBuying;
+        if (!$this->groupOrders->contains($groupBuying)) {
+            $this->groupOrders[] = $groupBuying;
             $groupBuying->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeGroupBuying(Group $groupBuying): self
+    public function removeGroupOrder(GroupOrder $groupBuying): self
     {
-        if ($this->groupBuying->contains($groupBuying)) {
-            $this->groupBuying->removeElement($groupBuying);
+        if ($this->groupOrders->contains($groupBuying)) {
+            $this->groupOrders->removeElement($groupBuying);
             // set the owning side to null (unless already changed)
             if ($groupBuying->getUser() === $this) {
                 $groupBuying->setUser(null);

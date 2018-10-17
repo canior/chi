@@ -7,18 +7,18 @@ use App\Entity\Traits\IdTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\GroupOrderRewardsRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\GroupUserOrderRewardsRepository")
  */
-class GroupOrderRewards implements Dao
+class GroupUserOrderRewards implements Dao
 {
     use IdTrait,
         CreatedAtTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\GroupOrder", inversedBy="groupOrderRewards")
+     * @ORM\ManyToOne(targetEntity="GroupUserOrder", inversedBy="groupUserOrderRewards")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $groupOrder;
+    private $groupUserOrder;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
@@ -31,21 +31,21 @@ class GroupOrderRewards implements Dao
     private $userRewards;
 
     /**
-     * GroupOrderRewards constructor.
+     * GroupUserOrderRewards constructor.
      */
     public function __construct()
     {
         $this->setCreatedAt(time());
     }
 
-    public function getGroupOrder(): ?GroupOrder
+    public function getGroupUserOrder(): ?GroupUserOrder
     {
-        return $this->groupOrder;
+        return $this->groupUserOrder;
     }
 
-    public function setGroupOrder(?GroupOrder $groupOrder): self
+    public function setGroupUserOrder(?GroupUserOrder $groupUserOrder): self
     {
-        $this->groupOrder = $groupOrder;
+        $this->groupUserOrder = $groupUserOrder;
 
         return $this;
     }

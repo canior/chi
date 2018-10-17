@@ -3,8 +3,9 @@
 namespace App\Entity;
 
 use App\Entity\Traits\CreatedAtTrait;
+use App\Entity\Traits\ExpiredAtTrait;
 use App\Entity\Traits\IdTrait;
-use App\Entity\Traits\UpdatedAtTrait;
+use App\Entity\Traits\StatusTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,207 +15,106 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class GroupOrder implements Dao
 {
+    public static $statuses = [
+        self::PENDING => 'pending',
+        self::COMPLETED => '已完成'
+    ];
+
     use IdTrait,
-        CreatedAtTrait,
-        UpdatedAtTrait;
+        StatusTrait,
+        ExpiredAtTrait,
+        CreatedAtTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Group", inversedBy="groupOrders")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="groupOrders")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $group;
+    private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\UserAddress")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $userAddress;
+    private $product;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @ORM\OneToMany(targetEntity="GroupUserOrder", mappedBy="groupOrder", fetch="EXTRA_LAZY")
      */
-    private $total;
+    private $groupUserOrders;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2)
-     */
-    private $orderRewards;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $carrierName;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $trackingNo;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $isDelivered;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GroupOrderRewards", mappedBy="groupOrder")
-     */
-    private $groupOrderRewards;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ProductReview", mappedBy="groupOrder")
-     */
-    private $productReviews;
-
-    /**
-     * GroupOrder constructor.
+     * Group constructor.
      */
     public function __construct()
     {
         $this->setCreatedAt(time());
-        $this->groupOrderRewards = new ArrayCollection();
-        $this->productReviews = new ArrayCollection();
+        $this->setPending();
+        $this->groupUserOrders = new ArrayCollection();
     }
 
-    public function getGroup(): ?Group
+    public function getUser(): ?User
     {
-        return $this->group;
+        return $this->user;
     }
 
-    public function setGroup(?Group $group): self
+    public function setUser(?User $user): self
     {
-        $this->group = $group;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getUserAddress(): ?UserAddress
+    public function getProduct(): ?Product
     {
-        return $this->userAddress;
+        return $this->product;
     }
 
-    public function setUserAddress(?UserAddress $userAddress): self
+    public function setProduct(?Product $product): self
     {
-        $this->userAddress = $userAddress;
+        $this->product = $product;
 
         return $this;
     }
 
-    public function getTotal()
+    public function setPending(): self
     {
-        return $this->total;
-    }
-
-    public function setTotal($total): self
-    {
-        $this->total = $total;
+        $this->status = self::PENDING;
 
         return $this;
     }
 
-    public function getOrderRewards()
+    public function setCompleted(): self
     {
-        return $this->orderRewards;
-    }
-
-    public function setOrderRewards($orderRewards): self
-    {
-        $this->orderRewards = $orderRewards;
-
-        return $this;
-    }
-
-    public function getCarrierName(): ?string
-    {
-        return $this->carrierName;
-    }
-
-    public function setCarrierName(string $carrierName): self
-    {
-        $this->carrierName = $carrierName;
-
-        return $this;
-    }
-
-    public function getTrackingNo(): ?string
-    {
-        return $this->trackingNo;
-    }
-
-    public function setTrackingNo(?string $trackingNo): self
-    {
-        $this->trackingNo = $trackingNo;
-
-        return $this;
-    }
-
-    public function getIsDelivered(): ?bool
-    {
-        return $this->isDelivered;
-    }
-
-    public function setIsDelivered(bool $isDelivered): self
-    {
-        $this->isDelivered = $isDelivered;
+        $this->status = self::COMPLETED;
 
         return $this;
     }
 
     /**
-     * @return Collection|GroupOrderRewards[]
+     * @return Collection|GroupUserOrder[]
      */
-    public function getGroupOrderRewards(): Collection
+    public function getGroupUserOrders(): Collection
     {
-        return $this->groupOrderRewards;
+        return $this->groupUserOrders;
     }
 
-    public function addGroupOrderReward(GroupOrderRewards $groupOrderReward): self
+    public function addGroupUserOrder(GroupUserOrder $groupOrder): self
     {
-        if (!$this->groupOrderRewards->contains($groupOrderReward)) {
-            $this->groupOrderRewards[] = $groupOrderReward;
-            $groupOrderReward->setGroupOrder($this);
+        if (!$this->groupUserOrders->contains($groupOrder)) {
+            $this->groupUserOrders[] = $groupOrder;
+            $groupOrder->setGroupOrder($this);
         }
 
         return $this;
     }
 
-    public function removeGroupOrderReward(GroupOrderRewards $groupOrderReward): self
+    public function removeGroupUserOrder(GroupUserOrder $groupOrder): self
     {
-        if ($this->groupOrderRewards->contains($groupOrderReward)) {
-            $this->groupOrderRewards->removeElement($groupOrderReward);
+        if ($this->groupUserOrders->contains($groupOrder)) {
+            $this->groupUserOrders->removeElement($groupOrder);
             // set the owning side to null (unless already changed)
-            if ($groupOrderReward->getGroupOrder() === $this) {
-                $groupOrderReward->setGroupOrder(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|ProductReview[]
-     */
-    public function getProductReviews(): Collection
-    {
-        return $this->productReviews;
-    }
-
-    public function addProductReview(ProductReview $productReview): self
-    {
-        if (!$this->productReviews->contains($productReview)) {
-            $this->productReviews[] = $productReview;
-            $productReview->setGroupOrder($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProductReview(ProductReview $productReview): self
-    {
-        if ($this->productReviews->contains($productReview)) {
-            $this->productReviews->removeElement($productReview);
-            // set the owning side to null (unless already changed)
-            if ($productReview->getGroupOrder() === $this) {
-                $productReview->setGroupOrder(null);
+            if ($groupOrder->getGroupOrder() === $this) {
+                $groupOrder->setGroupOrder(null);
             }
         }
 

@@ -76,7 +76,7 @@ class Product implements Dao
     private $productSpecImages;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ProductReview", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductReview", mappedBy="product", fetch="EXTRA_LAZY")
      */
     private $productReviews;
 

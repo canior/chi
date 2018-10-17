@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Group;
+use App\Entity\GroupUserOrder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method Group|null find($id, $lockMode = null, $lockVersion = null)
- * @method Group|null findOneBy(array $criteria, array $orderBy = null)
- * @method Group[]    findAll()
- * @method Group[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method GroupUserOrder|null find($id, $lockMode = null, $lockVersion = null)
+ * @method GroupUserOrder|null findOneBy(array $criteria, array $orderBy = null)
+ * @method GroupUserOrder[]    findAll()
+ * @method GroupUserOrder[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class GroupRepository extends ServiceEntityRepository
+class GroupUserOrderRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Group::class);
+        parent::__construct($registry, GroupUserOrder::class);
     }
 
 //    /**
-//     * @return Group[] Returns an array of Group objects
+//     * @return GroupUserOrder[] Returns an array of GroupUserOrder objects
 //     */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class GroupRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Group
+    public function findOneBySomeField($value): ?GroupUserOrder
     {
         return $this->createQueryBuilder('g')
             ->andWhere('g.exampleField = :val')

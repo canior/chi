@@ -24,8 +24,153 @@ class BackendController extends DefaultController
             'role' => 'ROLE_USER'
         ],
         [
+            'path' => 'user_index',
+            'name' => '用户管理',
+            'icon' => 'fa fa-users',
+            'active' => false,
+            'role' => 'ROLE_ADMIN',
+            'subMenus' => [
+                [
+                    'path' => [
+                        'user_index',
+                    ],
+                    'name' => '注册用户',
+                    'icon' => 'fa fa-user',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:用户分享',
+                    'icon' => 'fa fa-share-alt',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:用户收益',
+                    'icon' => 'fa fa-rmb',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+            ]
+        ],
+        [
+            'path' => 'backendIndex',
+            'name' => '产品管理',
+            'icon' => 'fa fa-product-hunt',
+            'active' => false,
+            'role' => 'ROLE_ADMIN',
+            'subMenus' => [
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:产品数据',
+                    'icon' => 'fa fa-database',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:产品销售',
+                    'icon' => 'fa fa-dollar',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:产品评价',
+                    'icon' => 'fa fa-comments',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+            ]
+        ],
+        [
+            'path' => 'backendIndex',
+            'name' => '拼团管理',
+            'icon' => 'fa fa-shopping-bag',
+            'active' => false,
+            'role' => 'ROLE_ADMIN',
+            'subMenus' => [
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:拼团订单',
+                    'icon' => 'fa fa-list-ol',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:用户订单',
+                    'icon' => 'fa fa-list-ul',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+            ]
+        ],
+        [
+            'path' => 'backendIndex',
+            'name' => '运营分析',
+            'icon' => 'fa fa-line-chart',
+            'active' => false,
+            'role' => 'ROLE_ADMIN',
+            'subMenus' => [
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:用户行为',
+                    'icon' => 'fa fa-area-chart',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:用户画像',
+                    'icon' => 'fa fa-image',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:用户分享',
+                    'icon' => 'fa fa-share-alt-square',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+            ]
+        ],
+        [
             'path' => 'project_meta_index',
-            'name' => '系统管理',
+            'name' => '项目配置',
             'icon' => 'fa fa-cogs',
             'active' => false,
             'role' => 'ROLE_ADMIN',
@@ -36,49 +181,21 @@ class BackendController extends DefaultController
                         'project_meta_new',
                         'project_meta_edit'
                     ],
-                    'name' => '系统设置',
+                    'name' => '小程序配置',
                     'icon' => 'fa fa-cog',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
-//                [
-//                    'path' => [
-//                        '_twig_error_test',
-//                    ],
-//                    'params' => ['code' => 404],
-//                    'name' => 'TODO:拼团设置',
-//                    'icon' => 'fa fa-object-group',
-//                    'active' => false,
-//                    'role' => 'ROLE_ADMIN',
-//                ],
-            ]
-        ],
-        [
-            'path' => 'backendIndex',
-            'name' => '客户管理',
-            'icon' => 'glyphicons glyphicons-user',
-            'active' => false,
-            'role' => ['ROLE_CUSTOMER_SERVICE', 'ROLE_AGENT'],
-            'subMenus' => [
                 [
                     'path' => [
-                        'backendUserList',
-                        'backendUserAdd',
-                        'backendUserEdit',
-                        'backendUserDetail'
+                        '_twig_error_test',
                     ],
-                    'name' => '客户列表',
-                    'icon' => 'glyphicons glyphicons-pencil',
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:分享设置',
+                    'icon' => 'fa fa-object-group',
                     'active' => false,
-                    'role' => 'ROLE_CUSTOMER_SERVICE',
+                    'role' => 'ROLE_ADMIN',
                 ],
-                [
-                    'path' => 'backendUserLoginList',
-                    'name' => '登陆日志',
-                    'icon' => 'glyphicons glyphicons-log_book',
-                    'active' => false,
-                    'role' => 'ROLE_CUSTOMER_SERVICE',
-                ]
             ]
         ],
     ];

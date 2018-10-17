@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
+                    <a href="{{ path('user_new') }}" type="button" class="btn btn-info pull-right">添加</a>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <form class="cmxform" id="myForm">
+                            <div class="col-md-3 form-group">
+                                <label>关键词</label>
+                                <input type="text" name="keyword" class="form-control" value="{{ form.keyword }}"
+                                       placeholder="按 name 查询">
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label>&nbsp;</label>
+                                <input class="form-control btn btn-primary" type="submit" value="搜索"/>
+                            </div>
+                        </form>
+                    </div>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                                                    <th width="10%">Username</th>
+                                                    <th width="10%">UsernameCanonical</th>
+                                                    <th width="10%">Email</th>
+                                                    <th width="10%">EmailCanonical</th>
+                                                    <th width="10%">Enabled</th>
+                                                    <th width="10%">Salt</th>
+                                                    <th width="10%">Password</th>
+                                                    <th width="10%">LastLogin</th>
+                                                    <th width="10%">ConfirmationToken</th>
+                                                    <th width="10%">PasswordRequestedAt</th>
+                                                    <th width="10%">Roles</th>
+                                                    <th width="10%">Id</th>
+                                                    <th width="10%">Nickname</th>
+                                                    <th width="10%">TotalRewards</th>
+                                                    <th width="10%">WxOpenId</th>
+                                                    <th width="10%">WxUnionId</th>
+                                                    <th width="10%">AvatarUrl</th>
+                                                    <th width="10%">Gender</th>
+                                                    <th width="10%">Location</th>
+                                                    <th width="10%">CreatedAt</th>
+                                                    <th width="10%">UpdatedAt</th>
+                                                    <th width="10%" class="text-center hidden-xs">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if pagination.getTotalItemCount %}
+                        {% for item in pagination %}
+                        <tr>
+                                                    <td>{{ item.username }}</td>
+                                                    <td>{{ item.usernameCanonical }}</td>
+                                                    <td>{{ item.email }}</td>
+                                                    <td>{{ item.emailCanonical }}</td>
+                                                    <td>{{ item.enabled }}</td>
+                                                    <td>{{ item.salt }}</td>
+                                                    <td>{{ item.password }}</td>
+                                                    <td>{{ item.lastLogin }}</td>
+                                                    <td>{{ item.confirmationToken }}</td>
+                                                    <td>{{ item.passwordRequestedAt }}</td>
+                                                    <td>{{ item.roles }}</td>
+                                                    <td>{{ item.id }}</td>
+                                                    <td>{{ item.nickname }}</td>
+                                                    <td>{{ item.totalRewards }}</td>
+                                                    <td>{{ item.wxOpenId }}</td>
+                                                    <td>{{ item.wxUnionId }}</td>
+                                                    <td>{{ item.avatarUrl }}</td>
+                                                    <td>{{ item.gender }}</td>
+                                                    <td>{{ item.location }}</td>
+                                                    <td>{{ item.createdAt }}</td>
+                                                    <td>{{ item.updatedAt }}</td>
+                                                    <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="{{ path('user_edit', {'id': item.id}) }}" title="修改">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                    </a>&nbsp;
+                                    <a class="delete" data-toggle="modal" data-target="#modal-delete"
+                                       data-url="{{ path('user_delete', {'id': item.id}) }}"
+                                       data-item='{"name": "{{ macros.cut(item.name, 30) }}"}'
+                                       data-token="{{ csrf_token('delete' ~ item.id) }}"
+                                       title="删除">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="22" class="alert alert-warning">no records found</td>
+                        </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <div class="no-margin pull-right">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: 'User'} %}
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+{% include '/backend/includes/delete.js.html.twig' with {title: 'User'} %}
+{% endblock %}

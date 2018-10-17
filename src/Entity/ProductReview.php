@@ -25,9 +25,9 @@ class ProductReview implements Dao
     private $product;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\GroupOrder", inversedBy="productReviews")
+     * @ORM\ManyToOne(targetEntity="GroupUserOrder", inversedBy="productReviews")
      */
-    private $groupOrder;
+    private $groupUserOrder;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -65,14 +65,14 @@ class ProductReview implements Dao
         return $this;
     }
 
-    public function getGroupOrder(): ?GroupOrder
+    public function getGroupUserOrder(): ?GroupUserOrder
     {
-        return $this->groupOrder;
+        return $this->groupUserOrder;
     }
 
-    public function setGroupOrder(?GroupOrder $groupOrder): self
+    public function setGroupUserOrder(?GroupUserOrder $groupUserOrder): self
     {
-        $this->groupOrder = $groupOrder;
+        $this->groupUserOrder = $groupUserOrder;
 
         return $this;
     }
