@@ -102,7 +102,7 @@ class Group implements Dao
     {
         if (!$this->groupOrders->contains($groupOrder)) {
             $this->groupOrders[] = $groupOrder;
-            $groupOrder->setParentGroup($this);
+            $groupOrder->setGroup($this);
         }
 
         return $this;
@@ -113,8 +113,8 @@ class Group implements Dao
         if ($this->groupOrders->contains($groupOrder)) {
             $this->groupOrders->removeElement($groupOrder);
             // set the owning side to null (unless already changed)
-            if ($groupOrder->getParentGroup() === $this) {
-                $groupOrder->setParentGroup(null);
+            if ($groupOrder->getGroup() === $this) {
+                $groupOrder->setGroup(null);
             }
         }
 
