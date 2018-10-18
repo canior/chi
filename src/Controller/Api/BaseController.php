@@ -8,8 +8,10 @@
 
 namespace App\Controller\Api;
 
+use App\Controller\DefaultController;
+use Symfony\Component\HttpFoundation\Response;
 
-class BaseController
+class BaseController extends DefaultController
 {
     protected function response403($msg = 'no_auth', $data = [])
     {
