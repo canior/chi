@@ -112,8 +112,13 @@ class GroupUserOrder implements Dao
         $this->groupUserOrderLogs = new ArrayCollection();
     }
 
-    public function setCreated() : self {
+    public function setCreated(User $operator = null) : self {
+        $log = new GroupUserOrderLog();
+        $log->setUser($operator == null ? $this->getUser() : $operator);
+        $log->setFromStatus($this->getStatus());
         $this->status = self::CREATED;
+        $log->setToStatus($this->getStatus());
+        $this->addGroupUserOrderLog($log);
         return $this;
     }
 

@@ -25,9 +25,11 @@ class ProductRepository extends ServiceEntityRepository
      * @param int $pageLimit
      * @return Product[] Returns an array of Product objects
      */
-    public function findProducts($page = 0, $pageLimit = DataAccess::PAGE_LIMIT)
+    public function findActiveProducts($page = 1, $pageLimit = DataAccess::PAGE_LIMIT)
     {
-        $query = $this->createQueryBuilder('p');
+        $query = $this->createQueryBuilder('p')
+            ->where('p.status = :status')
+            ->setParameter('status', Product::ACTIVE);
 
         if ($page) {
             $query->setFirstResult(($page - 1) * $pageLimit);
