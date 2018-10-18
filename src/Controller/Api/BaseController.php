@@ -10,6 +10,7 @@ namespace App\Controller\Api;
 
 use App\Controller\DefaultController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class BaseController extends DefaultController
 {
@@ -42,5 +43,10 @@ class BaseController extends DefaultController
     {
         $msg = $msg ? $msg : 'need_login';
         return $this->responseJson($msg, 403, []);
+    }
+
+    protected function getImgUrlPrefix()
+    {
+        return $this->generateUrl('imagePreview', ['fileId' => null], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

@@ -73,10 +73,11 @@ class ProductImage implements Dao
         return $this;
     }
 
-    public function getArray() : array {
+    public function getArray(String $imgUrlPrefix) : array {
         return [
             'id' => $this->getId(),
-            'fileId' => $this->getFile()->getId()
+            'fileId' => $this->getFile()->getId(),
+            'imgUrl' => $imgUrlPrefix . '/' . $this->getFile()->getId()
         ];
     }
 }

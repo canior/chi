@@ -47,4 +47,12 @@ class ProductReviewImage implements Dao
 
         return $this;
     }
+
+    public function getArray(String $imgUrlPrefix) : array {
+        return [
+            'id' => $this->getId(),
+            'fileId' => $this->getImageFile()->getId(),
+            'imgUrl' => $imgUrlPrefix . '/' . $this->getImageFile()->getId()
+        ];
+    }
 }
