@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\DataAccess\DataAccess;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -19,33 +20,22 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-
-//    /**
-//     * @return Product[] Returns an array of Product objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param int $page
+     * @param int $pageLimit
+     * @return Product[] Returns an array of Product objects
+     */
+    public function findProducts($page = 0, $pageLimit = DataAccess::PAGE_LIMIT)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $query = $this->createQueryBuilder('p');
 
-    /*
-    public function findOneBySomeField($value): ?Product
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
+        if ($page) {
+            $query->setFirstResult(($page - 1) * $pageLimit);
+            $query->setMaxResults($pageLimit);
+        }
+
+        return $query->orderBy('p.id', 'DESC')
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
 }
