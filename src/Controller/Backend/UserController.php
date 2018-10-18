@@ -22,11 +22,16 @@ class UserController extends BackendController
         $data = [
             'title' => 'User 列表',
             'form' => [
-                'keyword' => $request->query->get('keyword', null),
+                'userId' => $request->query->getInt('userId', null),
+                'username' => $request->query->get('username', null),
+                'loginTimeStart' => $request->query->get('loginTimeStart', date('Y-m-d') . ' 00:00:00'),
+                'loginTimeEnd' => $request->query->get('loginTimeEnd', date('Y-m-d') . ' 23:59:59'),
+                'createdAtStart' => $request->query->get('createdAtStart', null),
+                'createdAtEnd' => $request->query->get('createdAtEnd', null),
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
-        $data['data'] = $userRepository->findByKeyword($data['form']['keyword'], $data['form']['keyword']);
+        $data['data'] = $userRepository->findUsers($data['form']['userId'], $data['form']['username'], $data['form']['loginTimeStart'], $data['form']['loginTimeEnd'], $data['form']['createdAtStart'], $data['form']['createdAtEnd']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/user/index.html.twig', $data);
     }

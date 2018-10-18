@@ -14,6 +14,15 @@ use FOS\UserBundle\Model\User as BaseUser;
  */
 class User extends BaseUser implements Dao
 {
+    const ROLE_CUSTOMER_SERVICE = 'ROLE_CUSTOMER_SERVICE';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+
+    public static $roleTexts = [
+        self::ROLE_CUSTOMER_SERVICE => '客服',
+        self::ROLE_ADMIN => '管理员',
+        self::ROLE_SUPER_ADMIN => '超级管理员'
+    ];
+
     use CreatedAtTrait,
         UpdatedAtTrait;
 
@@ -65,9 +74,15 @@ class User extends BaseUser implements Dao
     private $region;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="subUsers")
+     * @ORM\JoinColumn(name="parent_user_id", referencedColumnName="id")
      */
     private $parentUser;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="parentUser", fetch="EXTRA_LAZY")
+     */
+    private $subUsers;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\UserShare", mappedBy="user", fetch="EXTRA_LAZY")
@@ -89,16 +104,23 @@ class User extends BaseUser implements Dao
      */
     private $groupOrders;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderLog", mappedBy="user", fetch="EXTRA_LAZY")
+     */
+    private $groupUserOrderLogs;
+
     public function __construct()
     {
         parent::__construct();
 
         $this->setCreatedAt(time());
         $this->setTotalRewards(0);
+        $this->subUsers = new ArrayCollection();
         $this->userShares = new ArrayCollection();
         $this->userActivities = new ArrayCollection();
         $this->userAddresses = new ArrayCollection();
         $this->groupOrders = new ArrayCollection();
+        $this->groupUserOrderLogs = new ArrayCollection();
     }
 
     public function getId()
@@ -210,6 +232,39 @@ class User extends BaseUser implements Dao
     public function setParentUser(?self $parentUser): self
     {
         $this->parentUser = $parentUser;
+
+        return $this;
+    }
+
+    /**
+     * Get subUsers
+     *
+     * @return Collection|User[]
+     */
+    public function getSubUsers(): Collection
+    {
+        return $this->subUsers;
+    }
+
+    public function addSubUser(User $subUser): self
+    {
+        if (!$this->subUsers->contains($subUser)) {
+            $this->subUsers[] = $subUser;
+            $subUser->setParentUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubUser(User $subUser): self
+    {
+        if ($this->subUsers->contains($subUser)) {
+            $this->subUsers->removeElement($subUser);
+            // set the owning side to null (unless already changed)
+            if ($subUser->getParentUser() === $this) {
+                $subUser->setParentUser(null);
+            }
+        }
 
         return $this;
     }
@@ -332,6 +387,37 @@ class User extends BaseUser implements Dao
             // set the owning side to null (unless already changed)
             if ($groupBuying->getUser() === $this) {
                 $groupBuying->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GroupUserOrderLog[]
+     */
+    public function getGroupUserOrderLogs(): Collection
+    {
+        return $this->groupUserOrderLogs;
+    }
+
+    public function addGroupUserOrderLog(GroupUserOrderLog $groupUserOrderLog): self
+    {
+        if (!$this->groupUserOrderLogs->contains($groupUserOrderLog)) {
+            $this->groupUserOrderLogs[] = $groupUserOrderLog;
+            $groupUserOrderLog->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupUserOrderLog(GroupUserOrderLog $groupUserOrderLog): self
+    {
+        if ($this->groupUserOrderLogs->contains($groupUserOrderLog)) {
+            $this->groupUserOrderLogs->removeElement($groupUserOrderLog);
+            // set the owning side to null (unless already changed)
+            if ($groupUserOrderLog->getUser() === $this) {
+                $groupUserOrderLog->setUser(null);
             }
         }
 

@@ -26,45 +26,47 @@
                             </div>
                         </form>
                     </div>
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                        <tr>
-                        <?php foreach ($entity_fields as $field): ?>
-                            <th width="10%"><?= ucfirst($field['fieldName']) ?></th>
-                        <?php endforeach; ?>
-                            <th width="10%" class="text-center hidden-xs">操作</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% if pagination.getTotalItemCount %}
-                        {% for item in pagination %}
-                        <tr>
-                        <?php foreach ($entity_fields as $field): ?>
-                            <td>{{ item.<?= $field['fieldName'] ?> }}</td>
-                        <?php endforeach; ?>
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <a href="{{ path('<?= $route_name ?>_edit', {'id': item.id}) }}" title="修改">
-                                    <span class="glyphicon glyphicon-edit"></span>
-                                    </a>&nbsp;
-                                    <a class="delete" data-toggle="modal" data-target="#modal-delete"
-                                       data-url="{{ path('<?= $route_name ?>_delete', {'id': item.id}) }}"
-                                       data-item='{"name": "{{ macros.cut(item.name, 30) }}"}'
-                                       data-token="{{ csrf_token('delete' ~ item.id) }}"
-                                       title="删除">
-                                        <span class="glyphicon glyphicon-trash"></span>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        {% else %}
-                        <tr>
-                            <td colspan="<?= (count($entity_fields) + 1) ?>" class="alert alert-warning">no records found</td>
-                        </tr>
-                        {% endif %}
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                            <?php foreach ($entity_fields as $field): ?>
+                                <th width="10%"><?= ucfirst($field['fieldName']) ?></th>
+                            <?php endforeach; ?>
+                                <th width="10%" class="text-center hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if pagination.getTotalItemCount %}
+                            {% for item in pagination %}
+                            <tr>
+                            <?php foreach ($entity_fields as $field): ?>
+                                <td>{{ item.<?= $field['fieldName'] ?> }}</td>
+                            <?php endforeach; ?>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a href="{{ path('<?= $route_name ?>_edit', {'id': item.id}) }}" title="修改">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                        </a>&nbsp;
+                                        <a class="delete" data-toggle="modal" data-target="#modal-delete"
+                                           data-url="{{ path('<?= $route_name ?>_delete', {'id': item.id}) }}"
+                                           data-item='{"name": "{{ macros.cut(item.name, 30) }}"}'
+                                           data-token="{{ csrf_token('delete' ~ item.id) }}"
+                                           title="删除">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="<?= (count($entity_fields) + 1) ?>" class="alert alert-warning">no records found</td>
+                            </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer clearfix">
@@ -83,6 +85,6 @@
 {% endblock %}
 
 {% block javascripts %}
-{{ parent() }}
-{% include '/backend/includes/delete.js.html.twig' with {title: '<?= $entity_class_name ?>'} %}
+    {{ parent() }}
+    {% include '/backend/includes/delete.js.html.twig' with {title: '<?= $entity_class_name ?>'} %}
 {% endblock %}

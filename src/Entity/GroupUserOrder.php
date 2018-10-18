@@ -93,6 +93,11 @@ class GroupUserOrder implements Dao
     private $productReviews;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderLog", mappedBy="groupUserOrder", fetch="EXTRA_LAZY")
+     */
+    private $groupUserOrderLogs;
+
+    /**
      * GroupUserOrder constructor.
      */
     public function __construct()
@@ -104,6 +109,7 @@ class GroupUserOrder implements Dao
         $this->setUpdatedAt(time());
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
+        $this->groupUserOrderLogs = new ArrayCollection();
     }
 
     public function setCreated() : self {
@@ -327,5 +333,36 @@ class GroupUserOrder implements Dao
      */
     public function getUser() : User {
         return $this->getUserAddress()->getUser();
+    }
+
+    /**
+     * @return Collection|GroupUserOrderLog[]
+     */
+    public function getGroupUserOrderLogs(): Collection
+    {
+        return $this->groupUserOrderLogs;
+    }
+
+    public function addGroupUserOrderLog(GroupUserOrderLog $groupUserOrderLog): self
+    {
+        if (!$this->groupUserOrderLogs->contains($groupUserOrderLog)) {
+            $this->groupUserOrderLogs[] = $groupUserOrderLog;
+            $groupUserOrderLog->setGroupUserOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupUserOrderLog(GroupUserOrderLog $groupUserOrderLog): self
+    {
+        if ($this->groupUserOrderLogs->contains($groupUserOrderLog)) {
+            $this->groupUserOrderLogs->removeElement($groupUserOrderLog);
+            // set the owning side to null (unless already changed)
+            if ($groupUserOrderLog->getGroupUserOrder() === $this) {
+                $groupUserOrderLog->setGroupUserOrder(null);
+            }
+        }
+
+        return $this;
     }
 }

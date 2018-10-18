@@ -2,3 +2,18 @@ twig:
     default_path: '%kernel.project_dir%/templates'
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+
+    ## custom settings start
+#    form_themes:
+#        - "bootstrap_3_layout.html.twig"
+#        - "form/fields.html.twig"
+
+    # The following were added in Symfony 2.7.
+    date:
+        format: 'Y-m-d H:i:s'
+        interval_format: '%%d days'
+        timezone: 'Asia/Shanghai'
+    number_format:
+        decimals: 2
+        decimal_point: ','
+        thousands_separator: '.'
