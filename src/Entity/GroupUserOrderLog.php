@@ -125,4 +125,23 @@ class GroupUserOrderLog
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getDescription() : string {
+        $username = $this->getUser()->getUsername();
+
+        $description = '用户:' . $username . '更新';
+
+        if ($this->toStatus() != null) {
+            $description .= '订单状态：' . $this->fromStatus . '=>' . $this->toStatus;
+        }
+
+        if ($this->toPaymentStatus != null) {
+            $description .= '支付状态：' . $this->fromPaymentStatus . '=>' . $this->toPaymentStatus;
+        }
+
+        return $description;
+    }
 }
