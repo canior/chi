@@ -3,6 +3,7 @@
 namespace App\Controller\Backend;
 
 use App\Command\Product\Image\CreateOrUpdateProductImagesCommand;
+use App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommand;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
@@ -61,6 +62,20 @@ class ProductController extends BackendController
                 return new Response('页面错误', 500);
             }
 
+            try {
+                $specImages = isset($request->request->get('product')['specImages']) ? $request->request->get('product')['specImages'] : [];
+                $specImagesCommand = new CreateOrUpdateProductSpecImagesCommand($product->getId(), $specImages);
+                $this->getCommandBus()->handle($specImagesCommand);
+            } catch (\Exception $e) {
+                $this->getLog()->error('can not run CreateOrUpdateProductSpecImagesCommand because of' . $e->getMessage());
+                if ($this->isDev()) {
+                    dump($e->getFile());
+                    dump($e->getMessage());
+                    die;
+                }
+                return new Response('页面错误', 500);
+            }
+
             $this->addFlash('notice', '添加成功');
             return $this->redirectToRoute('product_index');
         }
@@ -94,6 +109,21 @@ class ProductController extends BackendController
             $form->get('images')->setData($images);
         }
 
+        // init specImages
+        if (!$product->getProductSpecImages()->isEmpty()) {
+            $specImages = [];
+            foreach ($product->getProductSpecImages() as $image) {
+                $specImages[$image->getFile()->getId()] = [
+                    'id' => $image->getId(),
+                    'fileId' => $image->getFile()->getId(),
+                    'priority' => $image->getPriority(),
+                    'name' => $image->getFile()->getName(),
+                    'size' => $image->getFile()->getSize()
+                ];
+            }
+            $form->get('specImages')->setData($specImages);
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -103,6 +133,20 @@ class ProductController extends BackendController
                 $this->getCommandBus()->handle($imagesCommand);
             } catch (\Exception $e) {
                 $this->getLog()->error('can not run CreateOrUpdateProductImagesCommand because of' . $e->getMessage());
+                if ($this->isDev()) {
+                    dump($e->getFile());
+                    dump($e->getMessage());
+                    die;
+                }
+                return new Response('页面错误', 500);
+            }
+
+            try {
+                $specImages = isset($request->request->get('product')['specImages']) ? $request->request->get('product')['specImages'] : [];
+                $specImagesCommand = new CreateOrUpdateProductSpecImagesCommand($product->getId(), $specImages);
+                $this->getCommandBus()->handle($specImagesCommand);
+            } catch (\Exception $e) {
+                $this->getLog()->error('can not run CreateOrUpdateProductSpecImagesCommand because of' . $e->getMessage());
                 if ($this->isDev()) {
                     dump($e->getFile());
                     dump($e->getMessage());

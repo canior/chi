@@ -56,3 +56,9 @@ services:
         public: true
         tags:
             - { name: tactician.handler, command: App\Command\Product\Image\CreateOrUpdateProductImagesCommand }
+
+    CreateOrUpdateProductSpecImagesCommandHandler:
+        class: App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommandHandler
+        public: true
+        tags:
+            - { name: tactician.handler, command: App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommand }

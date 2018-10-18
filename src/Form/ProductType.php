@@ -27,6 +27,12 @@ class ProductType extends AbstractType
                 'data_class' => null,
                 'mapped' => false,
             ])
+            ->add('specImages', DropzoneType::class, [
+                'label' => '描述图片',
+                'maxFiles' => 5,
+                'data_class' => null,
+                'mapped' => false,
+            ])
 //            ->add('status', CheckboxType::class, ['label' => '状态', 'required' => true])
         ;
     }

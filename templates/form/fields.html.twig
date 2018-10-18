@@ -10,14 +10,14 @@
         {#</div>#}
         <div id="dropzone-{{ id }}" class="dropzone"></div>
         <script type="text/javascript">
-            var everythingLoaded = setInterval(function() {
+            var everythingLoaded_{{ id }} = setInterval(function() {
                 if (/loaded|complete/.test(document.readyState)) {
-                    clearInterval(everythingLoaded);
-                    init(); // this is the function that gets called when everything is loaded
+                    clearInterval(everythingLoaded_{{ id }});
+                    init_{{ id }}(); // this is the function that gets called when everything is loaded
                 }
             }, 10);
-            function init() {
-                var myDropzone{{ id }} = new Dropzone("div#dropzone-{{ id }}", {
+            function init_{{ id }}() {
+                var myDropzone_{{ id }} = new Dropzone("div#dropzone-{{ id }}", {
                     url: "{{ path(route) }}",
                     paramName: "{{ name }}", // The name that will be used to transfer the file
                     maxFiles: {{ maxFiles }},
@@ -59,7 +59,7 @@
                                 {% if maxFiles > 1 %}
                                 file._fileId = Dropzone.createElement('<input name="{{ full_name }}[' + json.fileId + '][fileId]" type="hidden" value="' + json.fileId + '"/>');
                                 file.previewElement.appendChild(file._fileId);
-                                file._priority = Dropzone.createElement('<div><label>优先级</label><input name="{{ full_name }}[' + json.fileId + '][priority]" type="number" value="0"/></div>');
+                                file._priority = Dropzone.createElement('<div><label>优先级</label><br/><input class="input-sm" style="width:120px;" name="{{ full_name }}[' + json.fileId + '][priority]" type="number" value="0"/></div>');
                                 file.previewElement.appendChild(file._priority);
                                 {% else %}
                                 file._fileId = Dropzone.createElement('<input name="{{ full_name }}" type="hidden" value="' + json.fileId + '"/>');
@@ -89,7 +89,7 @@
                                     file.previewElement.appendChild(file._id);
                                     file._fileId = Dropzone.createElement('<input name="{{ full_name }}[' + file.fileId + '][fileId]" type="hidden" value="' + file.fileId + '"/>');
                                     file.previewElement.appendChild(file._fileId);
-                                    file._priority = Dropzone.createElement('<div><label>优先级</label><input name="{{ full_name }}[' + file.fileId + '][priority]" type="number" value="' + file.priority + '"/></div>');
+                                    file._priority = Dropzone.createElement('<div><label>优先级</label><br/><input class="input-sm" style="width:120px;" name="{{ full_name }}[' + file.fileId + '][priority]" type="number" value="' + file.priority + '"/></div>');
                                     file.previewElement.appendChild(file._priority);
                                     {% else %}
                                     file._fileId = Dropzone.createElement('<input name="{{ full_name }}" type="hidden" value="' + file.id + '"/>');
@@ -106,16 +106,16 @@
                 {% for d in data %}
                 var previewFile{{ loop.index }} = { id: {{ d.id }}, fileId: {{ d.fileId }}, priority: {{ d.priority|default(0) }}, name: "{{ d.name }}", size: {{ d.size }} };
                 // Call the default addedfile event handler
-                myDropzone{{ id }}.emit("addedfile", previewFile{{ loop.index }});
+                myDropzone_{{ id }}.emit("addedfile", previewFile{{ loop.index }});
                 // And optionally show the thumbnail of the file:
-                myDropzone{{ id }}.emit("thumbnail", previewFile{{ loop.index }}, "{{ path('imagePreview', {fileId: d.fileId}) }}");
+                myDropzone_{{ id }}.emit("thumbnail", previewFile{{ loop.index }}, "{{ path('imagePreview', {fileId: d.fileId}) }}");
                 {% endfor %}
                 {% else %}
                 var previewFile = { id: {{ data.id }}, name: "{{ data.name }}", size: {{ data.size }} };
                 // Call the default addedfile event handler
-                myDropzone{{ id }}.emit("addedfile", previewFile);
+                myDropzone_{{ id }}.emit("addedfile", previewFile);
                 // And optionally show the thumbnail of the file:
-                myDropzone{{ id }}.emit("thumbnail", previewFile, "{{ path('imagePreview', {fileId: data.id}) }}");
+                myDropzone_{{ id }}.emit("thumbnail", previewFile, "{{ path('imagePreview', {fileId: data.id}) }}");
                 {% endif %}
                 {% endif %}
             }
