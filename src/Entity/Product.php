@@ -304,4 +304,31 @@ class Product implements Dao
 
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function getArray() : array {
+        $productImageArray = [];
+        foreach ($this->getProductImages() as $productImage) {
+            $productImageArray[] = $productImage->getArray();
+        }
+
+        $productSpecImagesArray = [];
+        foreach ($this->getProductSpecImages() as $productSpecImage) {
+            $productSpecImagesArray[] = $productSpecImage->getArray();
+        }
+
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'price' => $this->getPrice(),
+            'original' => $this->getOriginalPrice(),
+            'freight' => $this->getFreight(),
+            'shortDescription' => $this->getShortDescription(),
+            'rewards' => $this->getRewards(),
+            'productImages' => $productImageArray,
+            'productSpecImages' => $productSpecImagesArray,
+        ];
+    }
 }

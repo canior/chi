@@ -26,7 +26,17 @@ class ProductController extends BaseController
      * @return Response
      */
     public function indexAction(Request $request, ProductRepository $productRepository) : Response {
-        $data['data'] = $productRepository->findProducts($request->query->getInt('page', 1), self::PAGE_LIMIT);
+        $bannersArray = [];
+        $productsArray = [];
+        $products = $productRepository->findActiveProducts($request->query->getInt('page', 1), self::PAGE_LIMIT);
+        foreach($products as $product) {
+            $productsArray[] = $product->getArray();
+        }
+        $data = [
+            'banners' => $bannersArray,
+            'products' => $productsArray,
+            'baseUrl' => $request->getUri(),
+        ];
         return $this->responseJson('success', 200, $data);
     }
 
