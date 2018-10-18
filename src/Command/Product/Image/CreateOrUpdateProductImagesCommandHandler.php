@@ -14,7 +14,7 @@ use App\Entity\File;
 use App\Entity\Product;
 use App\Entity\ProductImage;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ObjectManager;
 use League\Tactician\CommandBus;
 use Psr\Log\LoggerInterface;
 
@@ -26,9 +26,9 @@ class CreateOrUpdateProductImagesCommandHandler extends AbstractCommandHandler
     private $commandBus;
 
     /**
-     * @var ManagerRegistry
+     * @var ObjectManager
      */
-    private $doctrine;
+    private $em;
 
     /**
      * @var LoggerInterface
@@ -38,13 +38,13 @@ class CreateOrUpdateProductImagesCommandHandler extends AbstractCommandHandler
     /**
      * CreateOrUpdateProductImagesCommandHandler constructor.
      * @param CommandBus $commandBus
-     * @param ManagerRegistry $doctrine
+     * @param ObjectManager $em
      * @param LoggerInterface $log
      */
-    public function __construct(CommandBus $commandBus, ManagerRegistry $doctrine, LoggerInterface $log)
+    public function __construct(CommandBus $commandBus, ObjectManager $em, LoggerInterface $log)
     {
         $this->commandBus = $commandBus;
-        $this->doctrine = $doctrine;
+        $this->em = $em;
         $this->log = $log;
     }
 
@@ -56,12 +56,10 @@ class CreateOrUpdateProductImagesCommandHandler extends AbstractCommandHandler
     {
         $this->log->info('start processing product images');
 
-        $em = $this->doctrine->getManager();
-
         /**
          * @var Product $product
          */
-        $product = $em->getRepository(Product::class)->find($command->getProductId());
+        $product = $this->em->getRepository(Product::class)->find($command->getProductId());
 
         if (empty($command->getImages())) {
             $product->getProductImages()->clear();
@@ -72,7 +70,7 @@ class CreateOrUpdateProductImagesCommandHandler extends AbstractCommandHandler
                     /**
                      * @var ProductImage $image
                      */
-                    $image = $em->getRepository(ProductImage::class)->find($formImage['id']);
+                    $image = $this->em->getRepository(ProductImage::class)->find($formImage['id']);
                 } else {
                     $image = new ProductImage();
                 }
@@ -83,7 +81,7 @@ class CreateOrUpdateProductImagesCommandHandler extends AbstractCommandHandler
                 /**
                  * @var File $file
                  */
-                $file = $em->getRepository(File::class)->find($formImage['fileId']);
+                $file = $this->em->getRepository(File::class)->find($formImage['fileId']);
                 $image->setFile($file);
 
                 if (!$product->getProductImages()->contains($image)) {
@@ -100,8 +98,8 @@ class CreateOrUpdateProductImagesCommandHandler extends AbstractCommandHandler
             }
         }
 
-        $em->persist($product);
-        $em->flush();
+        $this->em->persist($product);
+        $this->em->flush();
 
         $this->log->info('end processing product images');
     }

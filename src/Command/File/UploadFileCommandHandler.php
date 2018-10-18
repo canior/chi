@@ -10,9 +10,9 @@ namespace App\Command\File;
 
 use App\Command\AbstractCommandHandler;
 use App\Command\CommandInterface;
-use App\DataAccess\DataAccess;
 use App\Entity\File as FileDao;
 use App\Entity\User;
+use Doctrine\Common\Persistence\ObjectManager;
 use League\Tactician\CommandBus;
 use Psr\Log\LoggerInterface;
 
@@ -24,9 +24,9 @@ class UploadFileCommandHandler extends AbstractCommandHandler
     private $commandBus;
 
     /**
-     * @var DataAccess
+     * @var ObjectManager
      */
-    private $dataAccess;
+    private $em;
 
     /**
      * @var LoggerInterface
@@ -41,13 +41,13 @@ class UploadFileCommandHandler extends AbstractCommandHandler
     /**
      * UploadFileCommandHandler constructor.
      * @param CommandBus $commandBus
-     * @param DataAccess $dataAccess
+     * @param ObjectManager $em
      * @param LoggerInterface $log
      */
-    public function __construct(CommandBus $commandBus, DataAccess $dataAccess, LoggerInterface $log)
+    public function __construct(CommandBus $commandBus, ObjectManager $em, LoggerInterface $log)
     {
         $this->commandBus = $commandBus;
-        $this->dataAccess = $dataAccess;
+        $this->em = $em;
         $this->fileUploadPath = getenv('FILE_UPLOAD_PATH');
         $this->log = $log;
     }
@@ -71,7 +71,7 @@ class UploadFileCommandHandler extends AbstractCommandHandler
         /**
          * @var FileDao $fileDao
          */
-        $fileDao = $this->dataAccess->getDaoBy(FileDao::class, ['md5' => $fileMD5]);
+        $fileDao = $this->em->getRepository(FileDao::class)->findOneBy(['md5' => $fileMD5]);
         if ($fileDao == null) {
             $fileDao = new FileDao();
         }
@@ -79,7 +79,7 @@ class UploadFileCommandHandler extends AbstractCommandHandler
         /**
          * @var User $uploadUser
          */
-        $uploadUser = $this->dataAccess->getDao(User::class, $uploadUserId);
+        $uploadUser = $this->em->getRepository(User::class)->find($uploadUserId);
 
         $fileDao->setUploadUser($uploadUser)
             ->setName($file->getClientOriginalName())
@@ -89,8 +89,8 @@ class UploadFileCommandHandler extends AbstractCommandHandler
             ->setMd5($fileMD5)
             ->setUploadAt(time());
 
-        $this->dataAccess->persist($fileDao);
-        $this->dataAccess->flush();
+        $this->em->persist($fileDao);
+        $this->em->flush();
 
         $this->log->info('end processing file with id ' . $fileDao->getId());
 
