@@ -69,7 +69,8 @@ class Product implements Dao
     private $freight;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ProductImage", mappedBy="product", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductImage", mappedBy="product", orphanRemoval=true, cascade={"persist","remove"})
+     * @ORM\OrderBy({"priority" = "DESC"})
      */
     private $productImages;
 

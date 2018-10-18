@@ -38,4 +38,23 @@ class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param null $keyword
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findProductsQueryBuilder($keyword = null)
+    {
+        $query = $this->createQueryBuilder('p');
+
+        if ($keyword) {
+            $orX = $query->expr()->orX();
+            $literal = $query->expr()->literal("%$keyword%");
+            $orX->add($query->expr()->like('p.title', $literal));
+            $orX->add($query->expr()->like('p.shortDescription', $literal));
+            $query->andWhere($orX);
+        }
+
+        return $query->orderBy('p.id', 'DESC');
+    }
 }

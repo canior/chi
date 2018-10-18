@@ -50,3 +50,9 @@ services:
         public: true
         tags:
             - { name: tactician.handler, command: App\Command\File\UploadFileCommand }
+
+    CreateOrUpdateProductImagesCommandHandler:
+        class: App\Command\Product\Image\CreateOrUpdateProductImagesCommandHandler
+        public: true
+        tags:
+            - { name: tactician.handler, command: App\Command\Product\Image\CreateOrUpdateProductImagesCommand }

@@ -131,6 +131,8 @@ class File implements Dao
     public function setUploadAt(int $uploadAt): self
     {
         $this->uploadAt = $uploadAt;
+
+        return $this;
     }
 
     public function getUploadUser(): ?User

@@ -20,7 +20,7 @@
                 var myDropzone{{ id }} = new Dropzone("div#dropzone-{{ id }}", {
                     url: "{{ path(route) }}",
                     paramName: "{{ name }}", // The name that will be used to transfer the file
-                    maxFiles: 1,
+                    maxFiles: {{ maxFiles }},
                     maxFilesize: {{ maxFilesize }}, // MB
                     maxThumbnailFilesize: {{ maxFilesize }}, // MB
                     acceptedFiles: '{{ acceptedFiles }}',
@@ -48,7 +48,7 @@
                             }
                         });
                         this.on("success", function (file, response) {
-                            if ($('div#dropzone-{{ id }}').find('div.dz-preview').length > 1) {
+                            if ($('div#dropzone-{{ id }}').find('div.dz-preview').length > {{ maxFiles }}) {
                                 $('div#dropzone-{{ id }}').find('div.dz-preview')[0].remove();
                             }
                             var json = $.parseJSON(response)
@@ -56,8 +56,15 @@
                                 $(file.previewElement).find('.dz-error-message').text('').hide();
                                 file.previewElement.classList.add("dz-success");
 
+                                {% if maxFiles > 1 %}
+                                file._fileId = Dropzone.createElement('<input name="{{ full_name }}[' + json.fileId + '][fileId]" type="hidden" value="' + json.fileId + '"/>');
+                                file.previewElement.appendChild(file._fileId);
+                                file._priority = Dropzone.createElement('<div><label>优先级</label><input name="{{ full_name }}[' + json.fileId + '][priority]" type="number" value="0"/></div>');
+                                file.previewElement.appendChild(file._priority);
+                                {% else %}
                                 file._fileId = Dropzone.createElement('<input name="{{ full_name }}" type="hidden" value="' + json.fileId + '"/>');
                                 file.previewElement.appendChild(file._fileId);
+                                {% endif %}
                             } else {
                                 this.removeFile(file);
                                 $(file.previewElement).find('.dz-error-message').text(json.error).show();
@@ -76,19 +83,40 @@
                                 file.previewElement.classList.add("dz-success");
                                 file.previewElement.classList.add("dz-complete");
 
-                                file._fileId = Dropzone.createElement('<input name="{{ full_name }}" type="hidden" value="' + file.id + '"/>');
-                                file.previewElement.appendChild(file._fileId);
+                                if (file.id) {
+                                    {% if maxFiles > 1 %}
+                                    file._id = Dropzone.createElement('<input name="{{ full_name }}[' + file.fileId + '][id]" type="hidden" value="' + file.id + '"/>');
+                                    file.previewElement.appendChild(file._id);
+                                    file._fileId = Dropzone.createElement('<input name="{{ full_name }}[' + file.fileId + '][fileId]" type="hidden" value="' + file.fileId + '"/>');
+                                    file.previewElement.appendChild(file._fileId);
+                                    file._priority = Dropzone.createElement('<div><label>优先级</label><input name="{{ full_name }}[' + file.fileId + '][priority]" type="number" value="' + file.priority + '"/></div>');
+                                    file.previewElement.appendChild(file._priority);
+                                    {% else %}
+                                    file._fileId = Dropzone.createElement('<input name="{{ full_name }}" type="hidden" value="' + file.id + '"/>');
+                                    file.previewElement.appendChild(file._fileId);
+                                    {% endif %}
+                                }
                             }
                         });
                     }
                 });
                 // preview file
                 {% if data %}
-                var file = { id: {{ data.id }}, name: "{{ data.name }}", size: {{ data.size }} };
+                {% if data is iterable %}
+                {% for d in data %}
+                var previewFile{{ loop.index }} = { id: {{ d.id }}, fileId: {{ d.fileId }}, priority: {{ d.priority|default(0) }}, name: "{{ d.name }}", size: {{ d.size }} };
                 // Call the default addedfile event handler
-                myDropzone{{ id }}.emit("addedfile", file);
+                myDropzone{{ id }}.emit("addedfile", previewFile{{ loop.index }});
                 // And optionally show the thumbnail of the file:
-                myDropzone{{ id }}.emit("thumbnail", file, "{{ path('imagePreview', {fileId: data.id}) }}");
+                myDropzone{{ id }}.emit("thumbnail", previewFile{{ loop.index }}, "{{ path('imagePreview', {fileId: d.fileId}) }}");
+                {% endfor %}
+                {% else %}
+                var previewFile = { id: {{ data.id }}, name: "{{ data.name }}", size: {{ data.size }} };
+                // Call the default addedfile event handler
+                myDropzone{{ id }}.emit("addedfile", previewFile);
+                // And optionally show the thumbnail of the file:
+                myDropzone{{ id }}.emit("thumbnail", previewFile, "{{ path('imagePreview', {fileId: data.id}) }}");
+                {% endif %}
                 {% endif %}
             }
         </script>

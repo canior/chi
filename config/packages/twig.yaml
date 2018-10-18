@@ -4,9 +4,9 @@ twig:
     strict_variables: '%kernel.debug%'
 
     ## custom settings start
-#    form_themes:
-#        - "bootstrap_3_layout.html.twig"
-#        - "form/fields.html.twig"
+    form_themes:
+        - "bootstrap_3_layout.html.twig"
+        - "form/fields.html.twig"
 
     # The following were added in Symfony 2.7.
     date:

@@ -62,7 +62,7 @@ class BackendController extends DefaultController
             ]
         ],
         [
-            'path' => 'backendIndex',
+            'path' => 'product_index',
             'name' => '产品管理',
             'icon' => 'fa fa-product-hunt',
             'active' => false,
@@ -70,10 +70,11 @@ class BackendController extends DefaultController
             'subMenus' => [
                 [
                     'path' => [
-                        '_twig_error_test',
+                        'product_index',
+                        'product_new',
+                        'product_edit',
                     ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:产品数据',
+                    'name' => '产品数据',
                     'icon' => 'fa fa-database',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
