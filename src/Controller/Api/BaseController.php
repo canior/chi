@@ -9,6 +9,7 @@
 namespace App\Controller\Api;
 
 use App\Controller\DefaultController;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
 
 class BaseController extends DefaultController
@@ -42,5 +43,18 @@ class BaseController extends DefaultController
     {
         $msg = $msg ? $msg : 'need_login';
         return $this->responseJson($msg, 403, []);
+    }
+
+    /**
+     * @param $thirdSession
+     * @return User|null
+     */
+    protected function getWxUser($thirdSession):?User {
+        /**
+         * @var User $user
+         */
+        $user = $this->getEntityManager()->getRepository(User::class)->find(1);
+        return $user;
+
     }
 }
