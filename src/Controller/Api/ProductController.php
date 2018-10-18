@@ -9,6 +9,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Product;
+use App\Entity\ProductReview;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +32,7 @@ class ProductController extends BaseController
         $productsArray = [];
         $products = $productRepository->findActiveProducts($request->query->getInt('page', 1), self::PAGE_LIMIT);
         foreach($products as $product) {
-            $productsArray[] = $product->getArray();
+            $productsArray[] = $product->getArray($this->getImgUrlPrefix());
         }
         $data = [
             'banners' => $bannersArray,
@@ -49,16 +50,23 @@ class ProductController extends BaseController
      * @return Response
      */
     public function detailAction(Request $request, Product $product): Response {
-        return $this->responseJson('success', 200, $product);
+        return $this->responseJson('success', 200, $product->getArray($this->getImgUrlPrefix()));
     }
-
 
     /**
-     * @Route("/product/review/{productId}", name="review", methods="GET")
+     * @Route("/product/review/{id}", name="productReview", methods="GET")
+     * @param Request $request
+     * @param Product $product
+     * @param ProductReviewRepository $productReviewRepository
+     * @return Response
      */
-    public function productReviewAction(Request $request, $productId, ProductReviewRepository $productReviewRepository) {
-        echo $productId;
-        $productReviews = $productReviewRepository->findBy(['product' => $productId]);
-        return $this->responseJson('success', 200, $productReviews);
+    public function productReviewAction(Request $request, Product $product, ProductReviewRepository $productReviewRepository): Response {
+        $productPreviews = $productReviewRepository->findBy(['product' => $product, 'status' => ProductReview::ACTIVE], ['id' => 'DESC'], 10);
+        $data = [];
+        foreach($productPreviews as $productReview) {
+            $data[] = $productReview->getArray($this->getImgUrlPrefix());
+        }
+        return $this->responseJson('success', 200, $data);
     }
+
 }

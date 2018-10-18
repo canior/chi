@@ -11,6 +11,7 @@ namespace App\Controller\Api;
 use App\Controller\DefaultController;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class BaseController extends DefaultController
 {
@@ -49,12 +50,17 @@ class BaseController extends DefaultController
      * @param $thirdSession
      * @return User|null
      */
-    protected function getWxUser($thirdSession):?User {
+    protected function getWxUser($thirdSession):?User
+    {
         /**
          * @var User $user
          */
         $user = $this->getEntityManager()->getRepository(User::class)->find(1);
         return $user;
+    }
 
+    protected function getImgUrlPrefix()
+    {
+        return $this->generateUrl('imagePreview', ['fileId' => null], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }
