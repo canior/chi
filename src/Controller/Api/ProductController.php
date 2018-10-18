@@ -10,6 +10,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
+use App\Repository\ProductReviewRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,6 +38,7 @@ class ProductController extends BaseController
             'products' => $productsArray,
             'baseUrl' => $request->getUri(),
         ];
+        
         return $this->responseJson('success', 200, $data);
     }
 
@@ -48,5 +50,15 @@ class ProductController extends BaseController
      */
     public function detailAction(Request $request, Product $product): Response {
         return $this->responseJson('success', 200, $product);
+    }
+
+
+    /**
+     * @Route("/product/review/{productId}", name="review", methods="GET")
+     */
+    public function productReviewAction(Request $request, $productId, ProductReviewRepository $productReviewRepository) {
+        echo $productId;
+        $productReviews = $productReviewRepository->findBy(['product' => $productId]);
+        return $this->responseJson('success', 200, $productReviews);
     }
 }

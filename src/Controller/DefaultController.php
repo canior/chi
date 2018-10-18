@@ -10,6 +10,7 @@ namespace App\Controller;
 
 use App\Command\CommandInterface;
 use App\DataAccess\DataAccess;
+use Doctrine\Common\Persistence\ObjectManagerDecorator;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Knp\Component\Pager\Paginator;
 use League\Tactician\CommandBus;
@@ -81,6 +82,13 @@ class DefaultController extends Controller
     public function getDataAccess()
     {
         return $this->dataAccess;
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager
+     */
+    public function getEntityManager() {
+        return $this->getDoctrine()->getManager();
     }
 
     /**
