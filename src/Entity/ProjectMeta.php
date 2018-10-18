@@ -11,6 +11,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ProjectMeta implements Dao
 {
+    public function __construct(string $metaKey, string $metaValue, ?string $memo)
+    {
+        $this->setMetaKey($metaKey);
+        $this->setMetaValue($metaValue);
+        $this->setMemo($memo);
+    }
+
     use IdTrait;
 
     /**
@@ -53,18 +60,6 @@ class ProjectMeta implements Dao
         return $this;
     }
 
-    /**
-     * Get formatted metaValue
-     *
-     * @return string|array
-     */
-    public function getFormattedMetaValue()
-    {
-        if (is_string($this->metaValue) && is_array(json_decode($this->metaValue, true)) && (json_last_error() == JSON_ERROR_NONE)) {
-            return json_decode($this->metaValue, true);
-        }
-        return $this->metaValue;
-    }
 
     public function getMemo(): ?string
     {

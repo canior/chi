@@ -15,9 +15,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Product implements Dao
 {
+    const ACTIVE = 'active';
+    const INACTIVE = 'inactive';
+
     public static $statuses = [
-        self::ACTIVE => '可用',
-        self::DELETED => '已删除'
+        self::ACTIVE => '已上货',
+        self::INACTIVE => '未上货'
     ];
 
     use IdTrait,
@@ -85,7 +88,9 @@ class Product implements Dao
      */
     public function __construct()
     {
+        $this->setUpdatedAt(time());
         $this->setCreatedAt(time());
+        $this->setActive();
         $this->productImages = new ArrayCollection();
         $this->productSpecImages = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
@@ -190,15 +195,21 @@ class Product implements Dao
     public function setActive(): self
     {
         $this->status = self::ACTIVE;
-
         return $this;
     }
 
-    public function setDeleted(): self
-    {
-        $this->status = self::DELETED;
+    public function isActive() : bool {
+        return self::ACTIVE == $this->getStatus();
+    }
 
+    public function setInActive(): self
+    {
+        $this->status = self::INACTIVE;
         return $this;
+    }
+
+    public function isInActive() : bool {
+        return self::INACTIVE == $this->getStatus();
     }
 
     /**

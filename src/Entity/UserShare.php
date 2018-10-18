@@ -12,7 +12,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class UserShare implements Dao
 {
+    const CREATED = 'created';
+    const VIEWED = 'viewed';
+    const BOUGHT = 'bought';
+
     public static $statuses = [
+        self::CREATED => '已分享',
         self::VIEWED => '已查看',
         self::BOUGHT => '已购买'
     ];
@@ -37,7 +42,35 @@ class UserShare implements Dao
      */
     public function __construct()
     {
+        $this->setCreated();
         $this->setCreatedAt(time());
+    }
+
+    public function setCreated() : self {
+        $this->status = self::CREATED;
+        return $this;
+    }
+
+    public function isCreated() : bool {
+        return self::CREATED == $this->getStatus();
+    }
+
+    public function setViewed() : self {
+        $this->status = self::VIEWED;
+        return $this;
+    }
+
+    public function isViewed() : bool {
+        return self::VIEWED == $this->getStatus();
+    }
+
+    public function setBought() : self {
+        $this->status = self::BOUGHT;
+        return $this;
+    }
+
+    public function isBought() : bool {
+        return self::BOUGHT == $this->getStatus();
     }
 
     public function getUser(): ?User

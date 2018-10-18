@@ -15,12 +15,12 @@ trait PaymentStatusTrait
      */
     private $paymentStatus;
 
-    public function getPaymentStatus(): ?string
+    private function getPaymentStatus(): ?string
     {
         return $this->paymentStatus;
     }
 
-    public function setPaymentStatus(string $paymentStatus): self
+    private function setPaymentStatus(string $paymentStatus): self
     {
         $this->paymentStatus = $paymentStatus;
 

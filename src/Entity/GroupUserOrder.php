@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\PaymentStatusTrait;
+use App\Entity\Traits\StatusTrait;
 use App\Entity\Traits\UpdatedAtTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,8 +17,38 @@ use Doctrine\ORM\Mapping as ORM;
 class GroupUserOrder implements Dao
 {
     use IdTrait,
+        StatusTrait,
+        PaymentStatusTrait,
         CreatedAtTrait,
         UpdatedAtTrait;
+
+
+    const CREATED = 'created';
+    const PENDING = 'pending';
+    const SHIPPING = 'shipping';
+    const DELIVERED = 'delivered';
+    const RETURNING = 'returning';
+    const RMA_RECEIVED = 'rma_received';
+
+    public static $statuses = [
+        self::CREATED => '已创建',
+        self::PENDING => '待发货',
+        self::SHIPPING => '发货中',
+        self::DELIVERED => '已收货',
+        self::RETURNING => '退货中',
+        self::RMA_RECEIVED => '收到退货'
+    ];
+
+    const PAID = 'paid';
+    const UNPAID = 'unpaid';
+    const REFUND = 'refund';
+
+    public static $paymentStatuses = [
+        self::PAID => '已支付',
+        self::UNPAID => '未支付',
+        self::REFUND => '已退款',
+    ];
+
 
     /**
      * @ORM\ManyToOne(targetEntity="GroupOrder", inversedBy="groupUserOrders")
@@ -41,7 +73,7 @@ class GroupUserOrder implements Dao
     private $orderRewards;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $carrierName;
 
@@ -49,11 +81,6 @@ class GroupUserOrder implements Dao
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $trackingNo;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $isDelivered;
 
     /**
      * @ORM\OneToMany(targetEntity="GroupUserOrderRewards", mappedBy="groupUserOrder", fetch="EXTRA_LAZY")
@@ -70,9 +97,95 @@ class GroupUserOrder implements Dao
      */
     public function __construct()
     {
+        $this->setCreated();
+        $this->setUnPaid();
+        $this->setTotal(0);
         $this->setCreatedAt(time());
+        $this->setUpdatedAt(time());
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
+    }
+
+    public function setCreated() : self {
+        $this->status = self::CREATED;
+        return $this;
+    }
+
+    public function isCreated() : bool {
+        return self::CREATED == $this->getStatus();
+    }
+
+    public function setPending() : self {
+        $this->status = self::PENDING;
+        return $this;
+    }
+
+    public function isPending() : bool {
+        return self::PENDING == $this->getStatus();
+    }
+
+    public function setShipping() : self {
+        $this->status = self::SHIPPING;
+        return $this;
+    }
+
+    public function isShipping() : bool {
+        return self::SHIPPING == $this->getStatus();
+    }
+
+    public function setDelivered() : self {
+        $this->status = self::DELIVERED;
+        return $this;
+    }
+
+    public function isDelivered() : bool {
+        return self::DELIVERED == $this->getStatus();
+    }
+
+    public function setReturning() : self {
+        $this->status = self::RETURNING;
+        return $this;
+    }
+
+    public function isReturning() : bool {
+        return self::RETURNING == $this->getStatus();
+    }
+
+    public function setRmaReceived() : self {
+        $this->status = self::RMA_RECEIVED;
+        return $this;
+    }
+
+    public function isRmaReceived() : bool {
+        return self::RMA_RECEIVED == $this->getStatus();
+    }
+
+    public function setPaid() : self {
+        $this->paymentStatus = self::PAID;
+        return $this;
+    }
+
+    public function isPaid() : bool {
+        return self::PAID == $this->getPaymentStatus();
+    }
+
+
+    public function setUnPaid() : self {
+        $this->paymentStatus = self::UNPAID;
+        return $this;
+    }
+
+    public function isUnPaid() : bool {
+        return self::UNPAID == $this->getPaymentStatus();
+    }
+
+    public function setRefund() : self {
+        $this->paymentStatus = self::UNPAID;
+        return $this;
+    }
+
+    public function isRefund() : bool {
+        return self::REFUND == $this->getPaymentStatus();
     }
 
     public function getGroupOrder(): ?GroupOrder
@@ -99,7 +212,7 @@ class GroupUserOrder implements Dao
         return $this;
     }
 
-    public function getTotal()
+    public function getTotal() : float
     {
         return $this->total;
     }
@@ -128,7 +241,7 @@ class GroupUserOrder implements Dao
         return $this->carrierName;
     }
 
-    public function setCarrierName(string $carrierName): self
+    public function setCarrierName(?string $carrierName): self
     {
         $this->carrierName = $carrierName;
 
@@ -143,18 +256,6 @@ class GroupUserOrder implements Dao
     public function setTrackingNo(?string $trackingNo): self
     {
         $this->trackingNo = $trackingNo;
-
-        return $this;
-    }
-
-    public function getIsDelivered(): ?bool
-    {
-        return $this->isDelivered;
-    }
-
-    public function setIsDelivered(bool $isDelivered): self
-    {
-        $this->isDelivered = $isDelivered;
 
         return $this;
     }
@@ -219,5 +320,12 @@ class GroupUserOrder implements Dao
         }
 
         return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser() : User {
+        return $this->getUserAddress()->getUser();
     }
 }

@@ -15,15 +15,57 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class GroupOrder implements Dao
 {
-    public static $statuses = [
-        self::PENDING => 'pending',
-        self::COMPLETED => '已完成'
-    ];
-
     use IdTrait,
         StatusTrait,
         ExpiredAtTrait,
         CreatedAtTrait;
+
+    const PENDING = 'pending';
+    const COMPLETED = 'completed';
+    const EXPIRED = 'expired';
+
+    public static $statuses = [
+        self::PENDING => '拼团中',
+        self::COMPLETED => '拼团成功',
+        self::EXPIRED => '拼团过期',
+    ];
+
+    public function setPending() : self {
+        $this->status = self::PENDING;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPending() : bool {
+        return self::PENDING == $this->getStatus();
+    }
+
+
+    public function setCompleted() : self  {
+        $this->status = self::COMPLETED;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCompleted() : bool {
+        return self::COMPLETED == $this->getStatus();
+    }
+
+    public function setExpired() : self {
+        $this->status = self::EXPIRED;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExpired() : bool {
+        return self::EXPIRED == $this->getStatus();
+    }
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="groupOrders")
@@ -72,20 +114,6 @@ class GroupOrder implements Dao
     public function setProduct(?Product $product): self
     {
         $this->product = $product;
-
-        return $this;
-    }
-
-    public function setPending(): self
-    {
-        $this->status = self::PENDING;
-
-        return $this;
-    }
-
-    public function setCompleted(): self
-    {
-        $this->status = self::COMPLETED;
 
         return $this;
     }

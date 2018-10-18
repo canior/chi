@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\StatusTrait;
 use App\Entity\Traits\UpdatedAtTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,7 +15,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ProductReview implements Dao
 {
+    const ACTIVE = 'active';
+    const INACTIVE = 'inactive';
+
+    public static $statuses = [
+        self::ACTIVE => '已发布',
+        self::INACTIVE => '未发布'
+    ];
+
     use IdTrait,
+        StatusTrait,
         CreatedAtTrait,
         UpdatedAtTrait;
 
@@ -50,6 +60,8 @@ class ProductReview implements Dao
     public function __construct()
     {
         $this->setCreatedAt(time());
+        $this->setUpdatedAt(time());
+        $this->setInActive();
         $this->productReviewImages = new ArrayCollection();
     }
 
@@ -99,6 +111,26 @@ class ProductReview implements Dao
         $this->review = $review;
 
         return $this;
+    }
+
+    public function setActive(): self
+    {
+        $this->status = self::ACTIVE;
+        return $this;
+    }
+
+    public function isActive() : bool {
+        return self::ACTIVE == $this->getStatus();
+    }
+
+    public function setInActive(): self
+    {
+        $this->status = self::INACTIVE;
+        return $this;
+    }
+
+    public function isInActive() : bool {
+        return self::INACTIVE == $this->getStatus();
     }
 
     /**

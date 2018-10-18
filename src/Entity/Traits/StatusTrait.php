@@ -21,7 +21,7 @@ trait StatusTrait
      *
      * @return string
      */
-    public function getStatus()
+    private function getStatus() : string
     {
         return $this->status;
     }
@@ -33,7 +33,7 @@ trait StatusTrait
      *
      * @return $this
      */
-    public function setStatus($status)
+    private function setStatus($status) : self
     {
         $this->status = $status;
         return $this;
@@ -42,7 +42,7 @@ trait StatusTrait
     /**
      * @return string
      */
-    public function getStatusText()
+    public function getStatusText() : string
     {
         return isset(self::$statuses) && isset(self::$statuses[$this->status]) ? self::$statuses[$this->status] : $this->status;
     }
