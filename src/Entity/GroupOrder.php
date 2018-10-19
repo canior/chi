@@ -6,6 +6,8 @@ use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\ExpiredAtTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\StatusTrait;
+use App\Entity\Traits\UpdatedAtTrait;
+use App\Repository\GroupUserOrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,6 +20,7 @@ class GroupOrder implements Dao
     use IdTrait,
         StatusTrait,
         ExpiredAtTrait,
+        UpdatedAtTrait,
         CreatedAtTrait;
 
     const CREATED = 'created';
@@ -32,62 +35,6 @@ class GroupOrder implements Dao
         self::EXPIRED => '拼团过期',
     ];
 
-    public function setCreated() : self {
-        $this->status = self::CREATED;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCreated() : bool {
-        return self::CREATED == $this->getStatus();
-    }
-
-    public function setPending() : self {
-        $this->status = self::PENDING;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isPending() : bool {
-        return self::PENDING == $this->getStatus();
-    }
-
-
-    public function setCompleted() : self  {
-        $this->status = self::COMPLETED;
-        $this->getProduct()->decreaseStock(2);
-        foreach ($this->getGroupUserOrders() as $groupUserOrder) {
-            $groupUserOrder->setPending();
-        }
-
-
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCompleted() : bool {
-        return self::COMPLETED == $this->getStatus();
-    }
-
-    public function setExpired() : self {
-        $this->status = self::EXPIRED;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isExpired() : bool {
-        return self::EXPIRED == $this->getStatus();
-    }
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="groupOrders")
      * @ORM\JoinColumn(nullable=false)
@@ -95,7 +42,7 @@ class GroupOrder implements Dao
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $product;
@@ -107,20 +54,32 @@ class GroupOrder implements Dao
 
     /**
      * Group constructor.
+     * @param User $user
+     * @param Product $product
      */
-    public function __construct()
+    public function __construct(User $user, Product $product)
     {
-        $this->setCreatedAt(time());
-        $this->setCreated();
         $this->groupUserOrders = new ArrayCollection();
+        $this->setUser($user);
+        $this->setProduct($product);
+        $this->setUpdatedAt();
+        $this->setCreatedAt();
+        $this->setCreated();
     }
 
-    public function getUser(): ?User
+    /**
+     * @return User
+     */
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    /**
+     * @param User $user
+     * @return GroupOrder
+     */
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
@@ -154,6 +113,132 @@ class GroupOrder implements Dao
         return $this->groupUserOrders;
     }
 
+    /**
+     * 创建拼团订单
+     * 1. 创建客户订单
+     * @return GroupOrder
+     */
+    public function setCreated() : self {
+        $this->status = self::CREATED;
+
+        // 如果已经有了开团订单不做任何操作
+        if ($this->getMasterGroupUserOrder() != null)
+            return $this;
+
+        $groupUserOrder = new GroupUserOrder($this->getUser());
+        $groupUserOrder->setOrderRewards($this->getProduct()->getRewards()/2);
+        $groupUserOrder->setTotal($this->getProduct()->getPrice());
+        $groupUserOrder->setGroupOrder($this);
+        $this->addGroupUserOrder($groupUserOrder);
+
+        $this->setUpdatedAt();
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCreated() : bool {
+        return self::CREATED == $this->getStatus();
+    }
+
+    /**
+     * 拼团开始
+     * 1. 创建用户订单
+     * 2. 更新拼团过期时间
+     * 3. 更新产品库存
+     *
+     * @return GroupOrder
+     */
+    public function setPending() : self {
+        $this->status = self::PENDING;
+
+        // 已经开团后，不做任何操作
+        $masterUserOrder = $this->getMasterGroupUserOrder();
+        if ($masterUserOrder->isPaid()) {
+            return $this;
+        }
+
+        $this->setExpiredAt(time()); //TODO 需要再产品加入拼团配置
+        $this->getProduct()->decreaseStock(2);//两人团减少2减库存
+
+        $masterUserOrder = $this->getMasterGroupUserOrder();
+        $masterUserOrder->setPaid();
+
+        $this->setUpdatedAt();
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPending() : bool {
+        return self::PENDING == $this->getStatus();
+    }
+
+
+    /**
+     * 完成拼团以后需要
+     * 1. 更改拼团状态
+     * 2. 创建团员订单
+     * 3. 改变用户订单status, paymentStatus
+     *
+     * @param User $joiner
+     * @return GroupOrder
+     */
+    public function setCompleted(User $joiner) : self  {
+        $this->status = self::COMPLETED;
+
+        //如果已经有了支付过的参团订单则不做任何操作
+        $slaveGroupUserOrder = $this->getSlaveGroupUserOrder();
+        if ($slaveGroupUserOrder != null and $slaveGroupUserOrder->isPaid()) {
+            return $this;
+        }
+
+        $groupUserOrder = new GroupUserOrder($joiner);
+        $groupUserOrder->setOrderRewards($this->getProduct()->getRewards()/2);
+        $groupUserOrder->setTotal($this->getProduct()->getPrice());
+        $groupUserOrder->setGroupOrder($this);
+        $this->addGroupUserOrder($groupUserOrder);
+
+        foreach ($this->getGroupUserOrders() as $groupUserOrder) {
+            $groupUserOrder->setPending();
+            $groupUserOrder->setPaid();
+        }
+
+        $this->setUpdatedAt();
+        return $this;
+    }
+
+    /**
+     * 拼团失败
+     * 1. 更改拼团状态
+     * 2. 所有的用户订单需要退款
+     * 3. 把库存还回去
+     * @return bool
+     */
+    public function isCompleted() : bool {
+        return self::COMPLETED == $this->getStatus();
+    }
+
+    public function setExpired() : self {
+        $this->status = self::EXPIRED;
+        foreach ($this->getGroupUserOrders() as $groupUserOrder) {
+            $groupUserOrder->setCancelled();
+            $groupUserOrder->setRefunding();
+            $this->getProduct()->increaseStock();
+        }
+        $this->setUpdatedAt();
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExpired() : bool {
+        return self::EXPIRED == $this->getStatus();
+    }
+
     public function addGroupUserOrder(GroupUserOrder $groupOrder): self
     {
         if (!$this->groupUserOrders->contains($groupOrder)) {
@@ -175,6 +260,32 @@ class GroupOrder implements Dao
         }
 
         return $this;
+    }
+
+    /**
+     * 返回团长订单
+     * @return GroupUserOrder|null
+     */
+    public function getMasterGroupUserOrder() : ?GroupUserOrder{
+        foreach ($this->getGroupUserOrders() as $groupUserOrder) {
+            if ($groupUserOrder->isMasterOrder()) {
+                return $groupUserOrder;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 返回团员订单
+     * @return GroupUserOrder|null
+     */
+    public function getSlaveGroupUserOrder() : ?GroupUserOrder {
+        foreach ($this->getGroupUserOrders() as $groupUserOrder) {
+            if (!$groupUserOrder->isMasterOrder()) {
+                return $groupUserOrder;
+            }
+        }
+        return null;
     }
 
     /**
