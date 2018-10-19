@@ -167,11 +167,11 @@ class ProductReview implements Dao
     /**
      * @return array
      */
-    public function getArray(String $imgUrlPrefix) : array
+    public function getArray() : array
     {
         $productReviewImageArray = [];
         foreach ($this->getProductReviewImages() as $productReviewImage) {
-            $productReviewImageArray[] = $productReviewImage->getArray($imgUrlPrefix);
+            $productReviewImageArray[] = $productReviewImage->getArray();
         }
 
         return [
