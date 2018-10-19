@@ -8,8 +8,8 @@
 
 namespace App\Command;
 
-use App\DataAccess\DataAccess;
 use App\Entity\CommandMessage;
+use Doctrine\Common\Persistence\ObjectManager;
 use League\Tactician\CommandBus;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -22,6 +22,37 @@ use Symfony\Component\Serializer\Serializer;
 
 class MessageProcessorConsoleCommand extends ContainerAwareCommand
 {
+    /**
+     * @var CommandBus
+     */
+    private $commandBus;
+
+    /**
+     * @var ObjectManager
+     */
+    private $em;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $log;
+
+    /**
+     * MessageProcessorConsoleCommand constructor.
+     * @param string|null $name The name of the command; passing null means it must be set in configure()
+     * @param CommandBus $commandBus
+     * @param ObjectManager $em
+     * @param LoggerInterface $log
+     */
+    public function __construct(string $name = null, CommandBus $commandBus, ObjectManager $em, LoggerInterface $log)
+    {
+        parent::__construct($name);
+
+        $this->commandBus = $commandBus;
+        $this->em = $em;
+        $this->log = $log;
+    }
+
     protected function configure()
     {
         $this
@@ -38,78 +69,65 @@ class MessageProcessorConsoleCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /**
-         * @var DataAccess $access
-         */
-        $access = $this->getContainer()->get('App\DataAccess\DataAccess');
-
-        /**
-         * @var CommandBus $commandBus
-         */
-        $commandBus = $this->getContainer()->get('tactician.commandbus');
-
-        /**
-         * @var LoggerInterface $log
-         */
-        $log = $this->getContainer()->get('logger');
+        $commandMessageRepository = $this->em->getRepository(CommandMessage::class);
 
         $output->writeln("starting message processor ...");
-        $log->info('running a console command message processor ....');
+        $this->log->info('running a console command message processor ....');
 
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
         $serializer = new Serializer($normalizers, $encoders);
 
         while (true) {
-            $commandQueueArray = $access->getNextGroupOfCommandMessages();
+            $commandQueueArray = $commandMessageRepository->getNextGroupOfCommandMessages();
 
             foreach ($commandQueueArray as $commandQueue) {
 
                 try {
                     $commandMessageId = $commandQueue->getId();
 
-                    $log->info("processing message id : " . $commandMessageId);
+                    $this->log->info("processing message id : " . $commandMessageId);
                     $output->writeln("processing message id : " . $commandMessageId);
 
                     /**
                      * @var CommandMessage $q
                      */
-                    $q = $access->getDao(CommandMessage::class, $commandMessageId);
-                    $access->refresh($q);
+                    $q = $commandMessageRepository->find($commandMessageId);
+                    $this->em->refresh($q);
 
                     $commandClass = $q->getCommandClass();
                     $json = $q->getCommandData();
                     $command = $serializer->deserialize($json, $commandClass, 'json');
 
                     $q->setProcessing();
-                    $access->persist($q);
-                    $access->flush();
+                    $this->em->persist($q);
+                    $this->em->flush();
 
-                    $commandBus->handle($command);
+                    $this->commandBus->handle($command);
 
                     $q->setCompleted();
-                    $access->persist($q);
-                    $access->flush();
+                    $this->em->persist($q);
+                    $this->em->flush();
 
-                    $log->info("completed message id : " . $commandMessageId);
+                    $this->log->info("completed message id : " . $commandMessageId);
                     $output->writeln("completed message id : " . $commandMessageId);
 
-                    $log->info("ready to delete myself " . $commandMessageId);
-                    $access->delete($q);
-                    $access->flush();
+                    $this->log->info("ready to delete myself " . $commandMessageId);
+                    $this->em->remove($q);
+                    $this->em->flush();
 
                 } catch (\Exception $e) {
-                    $log->error('Exception: ' . $e->getTraceAsString());
+                    $this->log->error('Exception: ' . $e->getTraceAsString());
 
                     $commandQueue->setError();
-                    $access->persist($commandQueue);
-                    $access->flush();
+                    $this->em->persist($commandQueue);
+                    $this->em->flush();
 
                     continue;
                 }
             }
 
-            $log->info("waiting message processor for 5 sec ...");
+            $this->log->info("waiting message processor for 5 sec ...");
             $output->writeln("waiting message processor for 5 sec ...");
             sleep(5);
         }

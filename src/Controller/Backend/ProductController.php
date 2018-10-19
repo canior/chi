@@ -28,7 +28,6 @@ class ProductController extends BackendController
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
-        $this->getCommandBus();
         $data['data'] = $productRepository->findProductsQueryBuilder($data['form']['keyword']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/product/index.html.twig', $data);

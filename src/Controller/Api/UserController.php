@@ -1,14 +1,15 @@
 <?php
 namespace App\Controller\Api;
 
+use App\Entity\User;
+use App\Entity\UserAddress;
+use App\Repository\UserAddressRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Created by PhpStorm.
- * User: tandy
- * Date: 2018-08-27
- * Time: 6:12 PM
+ * @Route("/wxapi")
  */
 class UserController extends BaseController
 {
@@ -38,5 +39,25 @@ class UserController extends BaseController
     public function getUser() {
 
     }
+
+
+    /**
+     * 获取用户收货地址
+     *
+     * @Route("/user/addresses/{id}", name="userAddresses", methods="GET")
+     * @param Request $request
+     * @param User $user
+     * @param UserAddressRepository $userAddressRepository
+     * @return Response
+     */
+    public function userAddressesAction(Request $request, User $user, UserAddressRepository $userAddressRepository): Response {
+        $userAddresses = $userAddressRepository->findBy(['user' => $user, 'isDeleted' => false], ['id' => 'DESC']);
+        $data = [];
+        foreach($userAddresses as $userAddress) {
+            $data[] = $userAddress->getArray();
+        }
+        return $this->responseJson('success', 200, $data);
+    }
+
 
 }

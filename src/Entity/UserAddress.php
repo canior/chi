@@ -145,4 +145,15 @@ class UserAddress implements Dao
 
         return $this;
     }
+
+    public function getArray() : array {
+        return [
+            'id' => $this->getId(),
+            'region' => $this->getRegion()->getArray(),
+            'address' => $this->getAddress(),
+            'name' => $this->getName(),
+            'phone' => $this->getPhone(),
+            'is_default' => $this->getIsDefault(),
+        ];
+    }
 }

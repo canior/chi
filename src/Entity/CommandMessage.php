@@ -12,6 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CommandMessage implements Dao
 {
+    const PENDING = 'PENDING';
+    const PROCESSING = 'PROCESSING';
+    const COMPLETED = 'COMPLETED';
+    const ERROR = 'ERROR';
+
     use IdTrait,
         StatusTrait,
         CreatedAtTrait;
