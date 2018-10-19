@@ -19,32 +19,40 @@ class CommandMessageRepository extends ServiceEntityRepository
         parent::__construct($registry, CommandMessage::class);
     }
 
-//    /**
-//     * @return CommandMessage[] Returns an array of CommandMessage objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param int $limit
+     * @return CommandMessage[]|null
+     */
+    public function getNextGroupOfCommandMessages($limit = 10)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $query = $this->createQueryBuilder('m');
+        $query->where('m.status = :status')
+            ->andWhere('m.multithread = :multithread')
+            ->setParameter('status', CommandMessage::PENDING)
+            ->setParameter('multithread', 0)
+            ->orderBy('m.id', 'ASC')
+            ->setMaxResults($limit);
 
-    /*
-    public function findOneBySomeField($value): ?CommandMessage
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $query->getQuery()->getResult();
     }
-    */
+
+    /**
+     * @param $roomId
+     * @param $type
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function isCommandMessageExistBy($roomId, $type)
+    {
+        $query = $this->createQueryBuilder('m');
+
+        $literal = $query->expr()->literal("{\"roomId\":$roomId}");
+        $query->where($query->expr()->eq('m.commandData', $literal));
+
+        $commandClass = $type == 'AutoOpen' ? 'AppBundle\Command\Enqueue\AutoOpenRoomCommand' : 'AppBundle\Command\Enqueue\AutoCloseRoomCommand';
+        $query->andWhere('m.commandClass = :commandClass')
+            ->setParameter('commandClass', $commandClass);
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
 }

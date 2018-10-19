@@ -91,10 +91,9 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
-                        '_twig_error_test',
+                        'product_review_index',
                     ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:产品评价',
+                    'name' => '产品评价',
                     'icon' => 'fa fa-comments',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',

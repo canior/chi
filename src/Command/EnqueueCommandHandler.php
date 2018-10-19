@@ -8,13 +8,13 @@
 
 namespace App\Command;
 
-use App\DataAccess\DataAccess;
 use App\Entity\CommandMessage;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\ORMException;
 use League\Tactician\CommandBus;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class EnqueueCommandHandler extends AbstractCommandHandler
+class EnqueueCommandHandler //extends AbstractCommandHandler
 {
     /**
      * @var CommandBus
@@ -22,32 +22,34 @@ class EnqueueCommandHandler extends AbstractCommandHandler
     private $commandBus;
 
     /**
-     * @var DataAccess
+     * @var ObjectManager
      */
-    private $dataAccess;
+    private $em;
 
     /**
      * @var LoggerInterface
      */
     private $log;
 
-
     /**
      * EnqueueCommandHandler constructor.
-     * @param ContainerInterface $container
+     * @param CommandBus $commandBus
+     * @param ObjectManager $em
+     * @param LoggerInterface $log
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(CommandBus $commandBus, ObjectManager $em, LoggerInterface $log)
     {
-        $this->commandBus = $container->get('tactician.commandbus');
-        $this->dataAccess = $container->get(DataAccess::class);
-        $this->log = $container->get('logger');
+        $this->commandBus = $commandBus;
+        $this->em = $em;
+        $this->log = $log;
     }
 
     /**
      * @param CommandInterface|EnqueueCommand $command
      * @return mixed
+     * @throws ORMException
      */
-    public function handle(CommandInterface $command)
+    public function handle(EnqueueCommand $command)
     {
         /**
          * @var EnqueueCommand $qCommand
@@ -60,8 +62,8 @@ class EnqueueCommandHandler extends AbstractCommandHandler
         $commandMessage->setMultithread($command->isMultithread() ? 1 : 0);
         $commandMessage->setCommandClass($qCommand->getCommandClass());
         $commandMessage->setCommandData($qCommand->getJsonData());
-        $this->dataAccess->persist($commandMessage);
-        $this->dataAccess->flush();
+        $this->em->persist($commandMessage);
+        $this->em->flush();
 
         $this->log->info('queued message id : ' . $commandMessage->getId() . ', multithread: ' . $command->isMultithread());
 

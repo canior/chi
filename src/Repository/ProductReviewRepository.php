@@ -19,32 +19,25 @@ class ProductReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductReview::class);
     }
 
-//    /**
-//     * @return ProductReview[] Returns an array of ProductReview objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param null $keyword
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findProductReviewsQueryBuilder($keyword = null)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $query = $this->createQueryBuilder('pr');
+        $query->innerJoin('pr.product', 'p');
+        $query->addSelect('COUNT(pr.id) AS total');
+//        $query->addSelect('COUNT(pr.id) AS total');
 
-    /*
-    public function findOneBySomeField($value): ?ProductReview
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ($keyword) {
+            $orX = $query->expr()->orX();
+            $literal = $query->expr()->literal("%$keyword%");
+            $orX->add($query->expr()->like('p.title', $literal));
+            $orX->add($query->expr()->like('p.shortDescription', $literal));
+            $query->andWhere($orX);
+        }
+
+        return $query->orderBy('p.id', 'DESC');
     }
-    */
 }
