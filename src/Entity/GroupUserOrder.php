@@ -24,6 +24,7 @@ class GroupUserOrder implements Dao
 
 
     const CREATED = 'created';
+    const CANCELLED = 'cancelled';
     const PENDING = 'pending';
     const SHIPPING = 'shipping';
     const DELIVERED = 'delivered';
@@ -32,6 +33,7 @@ class GroupUserOrder implements Dao
 
     public static $statuses = [
         self::CREATED => '已创建',
+        self::CANCELLED => '已取消',
         self::PENDING => '待发货',
         self::SHIPPING => '发货中',
         self::DELIVERED => '已收货',
@@ -41,12 +43,14 @@ class GroupUserOrder implements Dao
 
     const PAID = 'paid';
     const UNPAID = 'unpaid';
-    const REFUND = 'refund';
+    const REFUNDING = 'refunding';
+    const REFUNDED = 'refunded';
 
     public static $paymentStatuses = [
         self::PAID => '已支付',
         self::UNPAID => '未支付',
-        self::REFUND => '已退款',
+        self::REFUNDING => '退款中',
+        self::REFUNDED => '已退款'
     ];
 
 
@@ -99,33 +103,43 @@ class GroupUserOrder implements Dao
     private $productReviews;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderLog", mappedBy="groupUserOrder")
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderLog", mappedBy="groupUserOrder", cascade={"persist"})
      */
     private $groupUserOrderLogs;
 
     /**
      * GroupUserOrder constructor.
+     * @param User $user
      */
-    public function __construct()
+    public function __construct(User $user)
     {
+        $this->groupUserOrderRewards = new ArrayCollection();
+        $this->productReviews = new ArrayCollection();
+        $this->groupUserOrderLogs = new ArrayCollection();
+
+        $this->setUser($user);
+        $this->setCreatedAt();
+        $this->setUpdatedAt();
         $this->setCreated();
         $this->setUnPaid();
         $this->setTotal(0);
         $this->setOrderRewards(0);
-        $this->setCreatedAt(time());
-        $this->setUpdatedAt(time());
-        $this->groupUserOrderRewards = new ArrayCollection();
-        $this->productReviews = new ArrayCollection();
-        $this->groupUserOrderLogs = new ArrayCollection();
+
     }
 
-    public function setCreated(User $operator = null) : self {
-        //$log = new GroupUserOrderLog();
-        //$log->setUser($operator == null ? $this->user : $operator);
-        //$log->setFromStatus($this->status);
-        $this->status = self::CREATED;
-        //$log->setToStatus($this->status);
-        //$this->addGroupUserOrderLog($log);
+    public function setCreated() : self {
+        $oldStatus = $this->status;
+        $newStatus = $this->status = self::CREATED;
+
+        if ($oldStatus == $newStatus) {
+            return $this;
+        }
+
+        $log = new GroupUserOrderLog($this);
+        $log->setFromStatus($oldStatus);
+        $log->setToStatus($newStatus);
+        $this->addGroupUserOrderLog($log);
+
         return $this;
     }
 
@@ -134,7 +148,38 @@ class GroupUserOrder implements Dao
     }
 
     public function setPending() : self {
-        $this->status = self::PENDING;
+        $oldStatus = $this->status;
+        $newStatus = $this->status = self::PENDING;
+
+        if ($oldStatus == $newStatus) {
+            return $this;
+        }
+
+        $log = new GroupUserOrderLog($this);
+        $log->setFromStatus($oldStatus);
+        $log->setToStatus($newStatus);
+        $this->addGroupUserOrderLog($log);
+
+        return $this;
+    }
+
+    public function isCancelled() : bool {
+        return self::CANCELLED == $this->getStatus();
+    }
+
+    public function setCancelled() : self {
+        $oldStatus = $this->status;
+        $newStatus = $this->status = self::CANCELLED;
+
+        if ($oldStatus == $newStatus) {
+            return $this;
+        }
+
+        $log = new GroupUserOrderLog($this);
+        $log->setFromStatus($oldStatus);
+        $log->setToStatus($newStatus);
+        $this->addGroupUserOrderLog($log);
+
         return $this;
     }
 
@@ -143,7 +188,18 @@ class GroupUserOrder implements Dao
     }
 
     public function setShipping() : self {
-        $this->status = self::SHIPPING;
+        $oldStatus = $this->status;
+        $newStatus = $this->status = self::SHIPPING;
+
+        if ($oldStatus == $newStatus) {
+            return $this;
+        }
+
+        $log = new GroupUserOrderLog($this);
+        $log->setFromStatus($oldStatus);
+        $log->setToStatus($newStatus);
+        $this->addGroupUserOrderLog($log);
+
         return $this;
     }
 
@@ -152,7 +208,18 @@ class GroupUserOrder implements Dao
     }
 
     public function setDelivered() : self {
-        $this->status = self::DELIVERED;
+        $oldStatus = $this->status;
+        $newStatus = $this->status = self::DELIVERED;
+
+        if ($oldStatus == $newStatus) {
+            return $this;
+        }
+
+        $log = new GroupUserOrderLog($this);
+        $log->setFromStatus($oldStatus);
+        $log->setToStatus($newStatus);
+        $this->addGroupUserOrderLog($log);
+
         return $this;
     }
 
@@ -166,11 +233,34 @@ class GroupUserOrder implements Dao
     }
 
     public function isReturning() : bool {
-        return self::RETURNING == $this->getStatus();
+        $oldStatus = $this->status;
+        $newStatus = $this->status = self::RETURNING;
+
+        if ($oldStatus == $newStatus) {
+            return $this;
+        }
+
+        $log = new GroupUserOrderLog($this);
+        $log->setFromStatus($oldStatus);
+        $log->setToStatus($newStatus);
+        $this->addGroupUserOrderLog($log);
+
+        return $this;
     }
 
     public function setRmaReceived() : self {
-        $this->status = self::RMA_RECEIVED;
+        $oldStatus = $this->status;
+        $newStatus = $this->status = self::RMA_RECEIVED;
+
+        if ($oldStatus == $newStatus) {
+            return $this;
+        }
+
+        $log = new GroupUserOrderLog($this);
+        $log->setFromStatus($oldStatus);
+        $log->setToStatus($newStatus);
+        $this->addGroupUserOrderLog($log);
+
         return $this;
     }
 
@@ -179,7 +269,18 @@ class GroupUserOrder implements Dao
     }
 
     public function setPaid() : self {
-        $this->paymentStatus = self::PAID;
+        $oldStatus = $this->paymentStatus;
+        $newStatus = $this->paymentStatus = self::PAID;
+
+        if ($oldStatus == $newStatus) {
+            return $this;
+        }
+
+        $log = new GroupUserOrderLog($this);
+        $log->setFromPaymentStatus($oldStatus);
+        $log->setToPaymentStatus($newStatus);
+        $this->addGroupUserOrderLog($log);
+
         return $this;
     }
 
@@ -189,7 +290,18 @@ class GroupUserOrder implements Dao
 
 
     public function setUnPaid() : self {
-        $this->paymentStatus = self::UNPAID;
+        $oldStatus = $this->paymentStatus;
+        $newStatus = $this->paymentStatus = self::UNPAID;
+
+        if ($oldStatus == $newStatus) {
+            return $this;
+        }
+
+        $log = new GroupUserOrderLog($this);
+        $log->setFromPaymentStatus($oldStatus);
+        $log->setToPaymentStatus($newStatus);
+        $this->addGroupUserOrderLog($log);
+
         return $this;
     }
 
@@ -197,13 +309,45 @@ class GroupUserOrder implements Dao
         return self::UNPAID == $this->getPaymentStatus();
     }
 
-    public function setRefund() : self {
-        $this->paymentStatus = self::UNPAID;
+    public function setRefunding() : self {
+        $oldStatus = $this->paymentStatus;
+        $newStatus = $this->paymentStatus = self::REFUNDING;
+
+        if ($oldStatus == $newStatus) {
+            return $this;
+        }
+
+        $log = new GroupUserOrderLog($this);
+        $log->setFromPaymentStatus($oldStatus);
+        $log->setToPaymentStatus($newStatus);
+        $this->addGroupUserOrderLog($log);
+
         return $this;
     }
 
-    public function isRefund() : bool {
-        return self::REFUND == $this->getPaymentStatus();
+    public function isRefunding() : bool {
+        return self::REFUNDING == $this->getPaymentStatus();
+    }
+
+    public function setRefunded() : self {
+        $oldStatus = $this->paymentStatus;
+        $newStatus = $this->paymentStatus = self::REFUNDED;
+
+        if ($oldStatus == $newStatus) {
+            return $this;
+        }
+
+        $log = new GroupUserOrderLog($this);
+        $log->setFromPaymentStatus($oldStatus);
+        $log->setToPaymentStatus($newStatus);
+        $this->addGroupUserOrderLog($log);
+
+
+        return $this;
+    }
+
+    public function isRefunded() : bool {
+        return self::REFUNDED == $this->getPaymentStatus();
     }
 
     public function getGroupOrder(): ?GroupOrder
@@ -405,6 +549,7 @@ class GroupUserOrder implements Dao
             'paymentStatus' => $this->getPaymentStatusText(),
             'product' => $this->getGroupOrder()->getProduct()->getArray(),
             'rewards' => $this->getOrderRewards(),
+            'isMasterOrder'=> $this->isMasterOrder()
         ];
     }
 }

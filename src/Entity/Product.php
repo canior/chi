@@ -341,4 +341,12 @@ class Product implements Dao
     public function decreaseStock(int $num = 1) {
         $this->stock -= $num;
     }
+
+    /**
+     * 增加库存
+     * @param int $num
+     */
+    public function increaseStock(int $num = 1) {
+        $this->stock += $num;
+    }
 }

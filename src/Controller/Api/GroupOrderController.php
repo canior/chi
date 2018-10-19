@@ -11,6 +11,8 @@ namespace App\Controller\Api;
 namespace App\Controller\Api;
 
 use App\Command\EnqueueCommand;
+use App\Command\Notification\NotifyCompletedGroupOrderCommand;
+use App\Command\Notification\NotifyPendingGroupOrderCommand;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
 use App\Entity\Product;
@@ -19,6 +21,7 @@ use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -49,86 +52,79 @@ class GroupOrderController extends BaseController
          */
         $product = $this->getEntityManager()->getRepository(Product::class)->find($productId);
 
-        //TODO expiredAt from projectMeta
-        $expiredAt = time() + 24*3600;
-
-        $groupOrder = new GroupOrder();
-        $groupOrder->setUser($user);
-        $groupOrder->setProduct($product);
-        $groupOrder->setExpiredAt($expiredAt);
-
-        $groupUserOrder = new GroupUserOrder();
-        $groupUserOrder->setUser($user);
-        $groupUserOrder->setOrderRewards(10); //TODO 计算出返现金额
-        $groupUserOrder->setTotal($product->getPrice());
-        $groupUserOrder->setGroupOrder($groupOrder);
-
-
-        $groupOrder->addGroupUserOrder($groupUserOrder);
-
-
+        $groupOrder = new GroupOrder($user, $product);
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
         $data = [
-            'groupUserOrder' => $groupUserOrder->getArray()
+            'groupUserOrder' => $groupOrder->getArray()
         ];
         return $this->responseJson('success', 200, $data);
     }
 
     /**
-     * 支付拼团订单
+     * 创建支付开团订单，参团订单
+     * 向微信发送支付请求,如果失败则返回开团页面
      */
     public function payAction() {
-
+        //TODO
     }
 
     /**
      * 支付开团订单成功
-     * 1. 更新拼团订单状态，过期时间，客户订单状态,支付状态
-     * 2. 更新产品库存
-     * 3. 发送小程序通知
+     * 1. 更新拼团订单状态pending（拼团中）
+     * 2. 微信支付通知
      *
-     * 支付参团订单成功
-     * 1.
+     * 团员支付参团订单成功
+     * 1. 微信支付通知
+     * 2. 拼团的状态改为completed（拼团成功）
+     * 3. 团长小程序通知拼团成功
      *
-     * @Route("/groupOrder/paymentNotification", name="notifyGroupOrderPayment", methods="POST")
+     * 返回拼团详情页
+     *
+     * @Route("/groupOrder/notifyPayment", name="notifyGroupOrderPayment", methods="POST")
      * @param Request $request
-     * @param GroupUserOrderRepository $groupUserOrderRepository
-     * @return void
+     * @param GroupOrderRepository $groupOrderRepository
+     * @param UserRepository $userRepository
+     * @return Response
      */
-    public function notifyPaymentAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository){
+    public function notifyPaymentAction(Request $request, GroupOrderRepository $groupOrderRepository, UserRepository $userRepository) : Response {
         //TODO 检查微信支付状态
         $isPaid = true;
-        $groupUserOrderId = 3;
+        $userId = 2;
+        $groupOrderId = 12;
 
-        $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+        $groupOrder = $groupOrderRepository->find($groupOrderId);
 
         if (!$isPaid) {
             //TODO 未支付不改变任何东西,考虑返回啥
             exit;
         }
 
-        $groupUserOrder->setPaid();
-        $this->getEntityManager()->persist($groupUserOrder);
 
-        $groupOrder = $groupUserOrder->getGroupOrder();
-        $product = $groupOrder->getProduct();
-        $product->decreaseStock();
-        $this->getEntityManager()->persist($product);
-
-        if ($groupUserOrder->isMasterOrder()) {
-            $groupOrder->setExpiredAt(time()+24*3600); //TODO 计算过期时间
+        if ($groupOrder->getUser()->getId() == $userId) {
             $groupOrder->setPending();
         } else {
-            $groupOrder->setCompleted();
+            $user = $userRepository->find($userId);
+            $groupOrder->setCompleted($user);
         }
-        $this->getEntityManager()->persist($groupOrder);
 
+        $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
-        $command = new EnqueueCommand(new SendPaymentSuccessfulNotificationCommand($groupUserOrderId), true);
-        $this->getCommandBus()->handle($command);
+//        if ($groupOrder->isPending()) {
+//            $command = new EnqueueCommand(new NotifyPendingGroupOrderCommand($groupOrder->getId()), true);
+//            $this->getCommandBus()->handle($command);
+//        } else if ($groupOrder->isCompleted()) {
+//            $command = new EnqueueCommand(new NotifyCompletedGroupOrderCommand($groupOrder->getId()), true);
+//            $this->getCommandBus()->handle($command);
+//        }
+
+        $data = [
+            'groupUserOrder' => $groupOrder->getArray()
+        ];
+        return $this->responseJson('success', 200, $data);
+
     }
 
     /**
@@ -152,19 +148,5 @@ class GroupOrderController extends BaseController
         ];
 
         return $this->responseJson('success', 200, $data);
-    }
-
-    /**
-     * 邀请好友拼团,转发小程序
-     */
-    public function shareAction() {
-
-    }
-
-    /**
-     * 团员参团
-     */
-    public function joinAction() {
-
     }
 }

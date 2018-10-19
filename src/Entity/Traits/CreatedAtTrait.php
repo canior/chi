@@ -33,16 +33,18 @@ trait CreatedAtTrait
     /**
      * Set createdAt
      *
-     * @param int $createdAt
+     * @param int $createdAt | null
      *
      * @return $this
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt($createdAt = null)
     {
-        if (is_string($createdAt)) {
-            $createdAt = strtotime($createdAt);
+        if ($createdAt == null) {
+            $this->createdAt = time();
+        } else {
+            $this->createdAt = $createdAt;
         }
-        $this->createdAt = $createdAt;
+
         return $this;
     }
 }

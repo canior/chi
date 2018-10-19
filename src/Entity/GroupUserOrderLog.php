@@ -22,7 +22,7 @@ class GroupUserOrderLog
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="groupUserOrderLogs")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $user;
 
@@ -48,10 +48,12 @@ class GroupUserOrderLog
 
     /**
      * GroupUserOrderLog constructor.
+     * @param GroupUserOrder $groupUserOrder
      */
-    public function __construct()
+    public function __construct(GroupUserOrder $groupUserOrder)
     {
-        $this->setCreatedAt(time());
+        $this->setGroupUserOrder($groupUserOrder);
+        $this->setCreatedAt();
     }
 
     public function getGroupUserOrder(): ?GroupUserOrder
@@ -83,7 +85,7 @@ class GroupUserOrderLog
         return $this->fromStatus;
     }
 
-    public function setFromStatus(?string $fromStatus): self
+    public function setFromStatus($fromStatus): self
     {
         $this->fromStatus = $fromStatus;
 
@@ -95,7 +97,7 @@ class GroupUserOrderLog
         return $this->toStatus;
     }
 
-    public function setToStatus(?string $toStatus): self
+    public function setToStatus($toStatus): self
     {
         $this->toStatus = $toStatus;
 
@@ -107,7 +109,7 @@ class GroupUserOrderLog
         return $this->fromPaymentStatus;
     }
 
-    public function setFromPaymentStatus(?string $fromPaymentStatus): self
+    public function setFromPaymentStatus($fromPaymentStatus): self
     {
         $this->fromPaymentStatus = $fromPaymentStatus;
 
@@ -119,7 +121,7 @@ class GroupUserOrderLog
         return $this->toPaymentStatus;
     }
 
-    public function setToPaymentStatus(?string $toPaymentStatus): self
+    public function setToPaymentStatus($toPaymentStatus): self
     {
         $this->toPaymentStatus = $toPaymentStatus;
 
@@ -134,11 +136,11 @@ class GroupUserOrderLog
 
         $description = '用户:' . $username . '更新';
 
-        if ($this->toStatus() != null) {
+        if ($this->getToStatus() != null) {
             $description .= '订单状态：' . $this->fromStatus . '=>' . $this->toStatus;
         }
 
-        if ($this->toPaymentStatus != null) {
+        if ($this->getToPaymentStatus() != null) {
             $description .= '支付状态：' . $this->fromPaymentStatus . '=>' . $this->toPaymentStatus;
         }
 

@@ -33,16 +33,17 @@ trait UpdatedAtTrait
     /**
      * Set updatedAt
      *
-     * @param int $updatedAt
+     * @param int $updatedAt|null
      *
      * @return $this
      */
-    public function setUpdatedAt($updatedAt)
+    public function setUpdatedAt($updatedAt = null) : self
     {
-        if (is_string($updatedAt)) {
-            $updatedAt = strtotime($updatedAt);
+        if ($updatedAt == null) {
+            $this->updatedAt = time();
+        } else {
+            $this->updatedAt = $updatedAt;
         }
-        $this->updatedAt = $updatedAt;
         return $this;
     }
 }
