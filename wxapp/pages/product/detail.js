@@ -15,9 +15,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const id = options.id ? options.id : 1;
-    this.getProduct(id);
-    this.getProductReview(id);
+    wx.setNavigationBarTitle({ title: app.globalData.appName })    
+    //const id = options.id ? options.id : 1;
+    //this.getProduct(id);
+    //this.getProductReview(id);
   },
 
   getProduct: function (id) {
@@ -62,6 +63,12 @@ Page({
       fail(e) {
       },
       complete(e) { }
+    })
+  },
+
+  toHome: function(e) {
+    wx.switchTab({
+      url: '/pages/product/index',
     })
   },
 

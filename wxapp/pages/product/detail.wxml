@@ -1,5 +1,6 @@
 <!--pages/product/detail.wxml-->
 <view class="container">
+
   <view class="banner">
     <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
       <swiper-item wx:for="123" wx:key="*this">
@@ -8,10 +9,12 @@
     </swiper>
     <view class="tip"><text>两人</text><text>拼团</text></view>    
   </view>
+
   <view class="stock">
     <view>还剩: 1000件</view>
     <view class="count-down">倒计时: 23:00:20后结束</view>
   </view>
+
   <view class="price-container">
     <view class="price">拼团价￥<text>100</text></view>
     <view class="freight">包邮</view>
@@ -19,4 +22,65 @@
     <view class="sold">已售1234份</view>
   </view>
 
+  <view class="name">【麦摄氏度】5瓶装 代餐 330毫升</view>
+
+  <view class="desc">1瓶饮料取代“早餐+咖啡”</view>
+
+  <view class="reward-container">
+    <view class="reward">下单返现￥20</view>
+    <view class="detail" bindtap="toWhere?">每单皆有返回现，查看详情></view>
+  </view>
+
+  <view class="feature">
+    <view class="title">印象墙</view>
+    <view class="tags">
+      <view class="tag" wx:for="1234567" wx:key="index">
+        <text class="name">丰富营养</text>
+        <text class="count">326</text>
+      </view>
+    </view>
+  </view>
+  <view class="split-line"/>
+
+  <view class="specs">
+    <view class="title">商品详情</view>
+    <view class="img" wx:for="12" wx:key="index">
+      <image mode="aspectFit" src="/images/demo/product-spec1.jpg"/>
+    </view>
+    <view class="img" wx:for="12" wx:key="index">
+      <image mode="aspectFit" src="/images/demo/product-spec2.jpg"/>
+    </view>
+  </view>
+
+  <view class="review-container">
+    <view class="title"><view>商品评论（10）</view><view class="more">查看更多></view></view>
+    <view class="review" wx:for="123" wx:key="index">
+      <view class="user">
+        <view class="avatar"><image src="/images/user-avatar.png"/></view>
+        <view class="info">
+          <view class="nickname">张三</view>
+          <view class="date">2018-08-24</view>
+        </view>
+      </view>
+      <view class="review-text">评论内容共显示三行评论内容共显示三行评论内容共显示三行评论内容共显示三行评论内容共显示三行评论内容共显示三行评论内容共显示三行！</view>
+      <view class="imgs">
+        <block wx:for="123" wx:key="index">
+          <image src="/images/demo/product-review.jpg"/>
+        </block>
+      </view>
+      <view class="split-line"/>      
+    </view>
+  </view>
+
+  <view class="bottom">
+    <view class="home" bindtap="toHome">
+      <image src="/images/home2.png"/>
+      <text>首页</text>
+    </view>
+    <button class="service btn-clear" open-type='contact'>
+      <image src="/images/service.png"/>
+      <text>客服</text>
+    </button>
+    <view class="btn">￥100 发起拼团</view>
+  </view>
 </view>

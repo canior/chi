@@ -2,7 +2,7 @@
   "pages":[
     "pages/product/index",
     "pages/product/detail",
-
+    
     "pages/user/address/index",
     
     "pages/index/index",
