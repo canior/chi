@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends BaseController
 {
     /**
-     * 产品列表
+     * 获取产品列表
      *
      * @Route("/products/", name="productIndex", methods="GET")
      * @param Request $request
@@ -46,7 +46,7 @@ class ProductController extends BaseController
     }
 
     /**
-     * 产品详情
+     * 获取产品详情
      *
      * @Route("/product/{id}", name="productDetail", methods="GET")
      * @param Request $request
@@ -58,7 +58,7 @@ class ProductController extends BaseController
     }
 
     /**
-     * 指定产品的评价，评价条数限制limit
+     * 获取指定产品的评价，评价条数限制limit
      *
      * @Route("/product/reviews/{id}", name="productReviews", methods="GET")
      * @param Request $request

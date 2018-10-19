@@ -201,4 +201,14 @@ class Region implements Dao
         }
         return $this->county;
     }
+
+    public function getArray() : array {
+        return [
+            'id' => $this->getId(),
+            'fullname' => $this->getFullName(),
+            'province' => $this->getProvince()->getName(),
+            'city' => $this->getCity()->getName(),
+            'county' => $this->getCounty()->getName(),
+        ];
+    }
 }
