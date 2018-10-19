@@ -58,9 +58,15 @@ class GroupUserOrder implements Dao
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\UserAddress")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $userAddress;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2)
@@ -105,6 +111,7 @@ class GroupUserOrder implements Dao
         $this->setCreated();
         $this->setUnPaid();
         $this->setTotal(0);
+        $this->setOrderRewards(0);
         $this->setCreatedAt(time());
         $this->setUpdatedAt(time());
         $this->groupUserOrderRewards = new ArrayCollection();
@@ -113,12 +120,12 @@ class GroupUserOrder implements Dao
     }
 
     public function setCreated(User $operator = null) : self {
-        $log = new GroupUserOrderLog();
-        $log->setUser($operator == null ? $this->getUser() : $operator);
-        $log->setFromStatus($this->getStatus());
+        //$log = new GroupUserOrderLog();
+        //$log->setUser($operator == null ? $this->user : $operator);
+        //$log->setFromStatus($this->status);
         $this->status = self::CREATED;
-        $log->setToStatus($this->getStatus());
-        $this->addGroupUserOrderLog($log);
+        //$log->setToStatus($this->status);
+        //$this->addGroupUserOrderLog($log);
         return $this;
     }
 
@@ -334,10 +341,19 @@ class GroupUserOrder implements Dao
     }
 
     /**
+     * @param User $user
+     * @return GroupUserOrder
+     */
+    public function setUser(User $user): self {
+        $this->user =  $user;
+        return $this;
+    }
+
+    /**
      * @return User
      */
     public function getUser() : User {
-        return $this->getUserAddress()->getUser();
+        return $this->user;
     }
 
     /**
@@ -369,5 +385,26 @@ class GroupUserOrder implements Dao
         }
 
         return $this;
+    }
+
+    /**
+     * 是否开团订单
+     * @return bool
+     */
+    public function isMasterOrder() : bool {
+        return $this->getUser()->getId() == $this->getGroupOrder()->getUser()->getId();
+    }
+
+    /**
+     * @return array
+     */
+    public function getArray() : array {
+        return [
+            'id' => $this->getId(),
+            'status' => $this->getStatusText(),
+            'paymentStatus' => $this->getPaymentStatusText(),
+            'product' => $this->getGroupOrder()->getProduct()->getArray(),
+            'rewards' => $this->getOrderRewards(),
+        ];
     }
 }

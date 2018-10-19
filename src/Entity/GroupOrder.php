@@ -20,15 +20,29 @@ class GroupOrder implements Dao
         ExpiredAtTrait,
         CreatedAtTrait;
 
+    const CREATED = 'created';
     const PENDING = 'pending';
     const COMPLETED = 'completed';
     const EXPIRED = 'expired';
 
     public static $statuses = [
+        self::CREATED => '创建拼团中',
         self::PENDING => '拼团中',
         self::COMPLETED => '拼团成功',
         self::EXPIRED => '拼团过期',
     ];
+
+    public function setCreated() : self {
+        $this->status = self::CREATED;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCreated() : bool {
+        return self::CREATED == $this->getStatus();
+    }
 
     public function setPending() : self {
         $this->status = self::PENDING;
@@ -45,6 +59,13 @@ class GroupOrder implements Dao
 
     public function setCompleted() : self  {
         $this->status = self::COMPLETED;
+        $this->getProduct()->decreaseStock(2);
+        foreach ($this->getGroupUserOrders() as $groupUserOrder) {
+            $groupUserOrder->setPending();
+        }
+
+
+
         return $this;
     }
 
@@ -80,7 +101,7 @@ class GroupOrder implements Dao
     private $product;
 
     /**
-     * @ORM\OneToMany(targetEntity="GroupUserOrder", mappedBy="groupOrder", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="GroupUserOrder", mappedBy="groupOrder", cascade={"persist"}, fetch="EXTRA_LAZY")
      */
     private $groupUserOrders;
 
@@ -90,7 +111,7 @@ class GroupOrder implements Dao
     public function __construct()
     {
         $this->setCreatedAt(time());
-        $this->setPending();
+        $this->setCreated();
         $this->groupUserOrders = new ArrayCollection();
     }
 
@@ -106,12 +127,19 @@ class GroupOrder implements Dao
         return $this;
     }
 
-    public function getProduct(): ?Product
+    /**
+     * @return Product
+     */
+    public function getProduct(): Product
     {
         return $this->product;
     }
 
-    public function setProduct(?Product $product): self
+    /**
+     * @param Product $product
+     * @return GroupOrder
+     */
+    public function setProduct(Product $product): self
     {
         $this->product = $product;
 
@@ -147,5 +175,22 @@ class GroupOrder implements Dao
         }
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArray() : array {
+
+        $groupUserOrdersArray = [];
+        foreach ($this->getGroupUserOrders() as $groupUserOrder) {
+            $groupUserOrdersArray[] = $groupUserOrder->getArray();
+        }
+
+        return [
+            'id' => $this->getId(),
+            'product' => $this->getProduct()->getArray(),
+            'groupUserOrders' => $groupUserOrdersArray
+        ];
     }
 }

@@ -333,4 +333,12 @@ class Product implements Dao
             'productSpecImages' => $productSpecImagesArray,
         ];
     }
+
+    /**
+     * 减少库存
+     * @param int $num
+     */
+    public function decreaseStock(int $num = 1) {
+        $this->stock -= $num;
+    }
 }
