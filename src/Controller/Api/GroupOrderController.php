@@ -32,7 +32,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class GroupOrderController extends BaseController
 {
     /**
-     * 创建拼团订单
+     * 创建开团订单
      *
      * @Route("/groupOrder/create", name="createGroupOrder", methods="POST")
      * @param Request $request
@@ -56,18 +56,48 @@ class GroupOrderController extends BaseController
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
+
+        //TODO 向微信提交支付信息
+
+
         $data = [
-            'groupUserOrder' => $groupOrder->getArray()
+            'groupOrder' => $groupOrder->getArray()
         ];
         return $this->responseJson('success', 200, $data);
     }
 
     /**
-     * 创建支付开团订单，参团订单
-     * 向微信发送支付请求,如果失败则返回开团页面
+     * 创建参团订单
+     *
+     * @Route("/groupOrder/join", name="joinGroupOrder", methods="POST")
+     * @param Request $request
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return Response
      */
-    public function payAction() {
-        //TODO
+    public function joinAction(Request $request, GroupOrderRepository $groupOrderRepository) {
+
+        $data = json_decode($request->getContent(), true);
+
+        $groupOrderId =  isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+
+        $user = $this->getWxUser($thirdSession);
+
+        $groupOrder = $groupOrderRepository->find($groupOrderId);
+
+        $groupUserOrder = new GroupUserOrder($user);
+        $groupOrder->addGroupUserOrder($groupUserOrder);
+
+        $this->getEntityManager()->persist($groupOrder);
+        $this->getEntityManager()->flush();
+
+
+        //TODO 向微信提交支付信息
+
+        $data = [
+            'groupOrder' => $groupOrder->getArray()
+        ];
+        return $this->responseJson('success', 200, $data);
     }
 
     /**
@@ -121,7 +151,7 @@ class GroupOrderController extends BaseController
 //        }
 
         $data = [
-            'groupUserOrder' => $groupOrder->getArray()
+            'groupOrder' => $groupOrder->getArray()
         ];
         return $this->responseJson('success', 200, $data);
 
