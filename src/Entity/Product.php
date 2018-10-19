@@ -310,15 +310,15 @@ class Product implements Dao
     /**
      * @return array
      */
-    public function getArray(String $imgUrlPrefix) : array {
+    public function getArray() : array {
         $productImageArray = [];
         foreach ($this->getProductImages() as $productImage) {
-            $productImageArray[] = $productImage->getArray($imgUrlPrefix);
+            $productImageArray[] = $productImage->getArray();
         }
 
         $productSpecImagesArray = [];
         foreach ($this->getProductSpecImages() as $productSpecImage) {
-            $productSpecImagesArray[] = $productSpecImage->getArray($imgUrlPrefix);
+            $productSpecImagesArray[] = $productSpecImage->getArray();
         }
 
         return [

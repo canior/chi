@@ -59,6 +59,13 @@ class GroupOrder implements Dao
 
     public function setCompleted() : self  {
         $this->status = self::COMPLETED;
+        $this->getProduct()->decreaseStock(2);
+        foreach ($this->getGroupUserOrders() as $groupUserOrder) {
+            $groupUserOrder->setPending();
+        }
+
+
+
         return $this;
     }
 
@@ -120,12 +127,19 @@ class GroupOrder implements Dao
         return $this;
     }
 
-    public function getProduct(): ?Product
+    /**
+     * @return Product
+     */
+    public function getProduct(): Product
     {
         return $this->product;
     }
 
-    public function setProduct(?Product $product): self
+    /**
+     * @param Product $product
+     * @return GroupOrder
+     */
+    public function setProduct(Product $product): self
     {
         $this->product = $product;
 

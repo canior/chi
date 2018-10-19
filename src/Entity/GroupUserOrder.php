@@ -388,6 +388,14 @@ class GroupUserOrder implements Dao
     }
 
     /**
+     * 是否开团订单
+     * @return bool
+     */
+    public function isMasterOrder() : bool {
+        return $this->getUser()->getId() == $this->getGroupOrder()->getUser()->getId();
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {
