@@ -1,0 +1,37 @@
+/* pages/product/detail.wxss */
+.banner {
+  text-align: center;
+  padding-top: 100rpx;
+}
+.banner swiper {
+  height: 555rpx;
+}
+.banner swiper image {
+  width: 690rpx;
+  height: 555rpx;
+}
+.banner .tip {
+  font-size: 24rpx;
+  color: #353535;
+  background-color: #ffdd00;
+  width: 80rpx;
+  height: 106rpx;
+  border-radius: 0 0 40rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 30rpx;
+  position: absolute;
+  top: 0rpx;
+  left: 30rpx;
+}
+.stock {
+  display: flex;
+}
+.stock .count-down {
+  position: absolute;
+  
+}
+.price-container {
+  display: flex;
+}
