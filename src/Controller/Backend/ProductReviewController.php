@@ -2,8 +2,10 @@
 
 namespace App\Controller\Backend;
 
+use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Form\ProductReviewType;
+use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,24 +22,47 @@ class ProductReviewController extends BackendController
     public function index(ProductReviewRepository $productReviewRepository, Request $request): Response
     {
         $data = [
-            'title' => 'ProductReview 列表',
+            'title' => '评价产品列表',
             'form' => [
+                'productId' => $request->query->get('productId', null),
                 'keyword' => $request->query->get('keyword', null),
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
-        $data['data'] = $productReviewRepository->findProductReviewsQueryBuilder($data['form']['keyword']);
+        $data['data'] = $productReviewRepository->findReviewedProductsQueryBuilder($data['form']['productId'], $data['form']['keyword']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/product_review/index.html.twig', $data);
     }
 
     /**
+     * @Route("/product/review/info/{id}", name="product_review_info", methods="GET")
+     */
+    public function info(ProductReviewRepository $productReviewRepository, Request $request, Product $product): Response
+    {
+        $data = [
+            'title' => '产品评价详情',
+            'product' => $product,
+            'page' => $request->query->getInt('page', 1)
+        ];
+        $data['statistics'] = $productReviewRepository->findProductReviewStatistics($product->getId());
+        $data['data'] = $productReviewRepository->findProductReviewsQueryBuilder($product->getId());
+        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['page'], self::PAGE_LIMIT);
+        return $this->render('backend/product_review/info.html.twig', $data);
+    }
+
+    /**
      * @Route("/product/review/new", name="product_review_new", methods="GET|POST")
      */
-    public function new(Request $request): Response
+    public function new(ProductRepository $productRepository, Request $request): Response
     {
         $productReview = new ProductReview();
         $form = $this->createForm(ProductReviewType::class, $productReview);
+
+        if ($request->query->get('productId')) {
+            $product = $productRepository->find($request->query->get('productId'));
+            $form->get('product')->setData($product);
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -81,7 +106,7 @@ class ProductReviewController extends BackendController
      */
     public function delete(Request $request, ProductReview $productReview): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$productReview->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $productReview->getId(), $request->request->get('_token'))) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($productReview);
             $em->flush();

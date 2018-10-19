@@ -1,0 +1,208 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}ProductReview{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
+                    <a href="{{ path('product_review_new', {productId: app.request.attributes.get('id')}) }}"
+                       type="button" class="btn btn-info pull-right">添加评价</a>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <!-- BAR CHART -->
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">产品详情</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <div class="chart" style="height: 250px;">
+                                        <div class="box box-solid">
+                                            <div class="box-body">
+                                                <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
+                                                    {{ product.title }}
+                                                </h4>
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        {% if product.productImages.count %}
+                                                            <a href="{{ path('product_edit', {id: product.id}) }}"
+                                                               class="ad-click-event">
+                                                                <img src="{{ path('imagePreview', {fileId: product.productImages.first.file.id}) }}"
+                                                                     alt="MaterialPro" class="media-object"
+                                                                     style="width: 150px;height: auto;border-radius: 4px;box-shadow: 0 1px 3px rgba(0,0,0,.15);">
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <div class="clearfix">
+                                                            <p class="pull-right">
+                                                                <a href="{{ path('product_edit', {id: product.id}) }}"
+                                                                   class="btn btn-info btn-sm ad-click-event">查看详情</a>
+                                                            </p>
+
+                                                            <h4 style="margin-top: 0">产品ID ─ {{ product.id }}</h4>
+
+                                                            <p>{{ macros.cut(product.shortDescription, 50) }}</p>
+                                                            <p style="margin-bottom: 0">
+                                                                <i class="fa fa-spinner margin-r5"></i> {{ product.statusText }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <!-- BAR CHART -->
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">总评价数量 ─ {{ statistics.totalReviewed }}</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <div class="chart" id="rate-chart" style="height: 200px;"></div>
+
+                                    <div class="progress-group">
+                                        <span class="progress-text">好评率 ─ {{ (statistics.favorableRate * 100)|number_format(2, '.') }}
+                                            %</span>
+                                        <span class="progress-number"><b>{{ statistics.totalRate5 }}</b>/{{ statistics.totalReviewed }}</span>
+
+                                        <div class="progress sm">
+                                            <div class="progress-bar progress-bar-yellow"
+                                                 style="width: {{ statistics.favorableRate * 100 }}%"></div>
+                                        </div>
+                                    </div>
+                                    <!-- /.progress-group -->
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th width="10%">产品评价ID</th>
+                                <th width="10%">用户ID</th>
+                                <th width="10%">用户名</th>
+                                <th width="10%">拼团订单ID</th>
+                                <th width="10%">拼团完成时间</th>
+                                <th width="10%">评价评分</th>
+                                <th width="10%">评价内容</th>
+                                <th width="10%">评价图片</th>
+                                <th width="10%">评价创建时间</th>
+                                <th width="10%" class="text-center hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if pagination.getTotalItemCount %}
+                                {% for item in pagination %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>TODO:???</td>
+                                        <td>TODO:???</td>
+                                        <td>{{ item.groupUserOrder.id|default }}</td>
+                                        <td>TODO:???</td>
+                                        <td>{{ item.rate }}</td>
+                                        <td>{{ item.review }}</td>
+                                        <td>
+                                            {% if item.productReviewImages.count %}
+                                                {% for productReviewImage in item.productReviewImages %}
+                                                    <img src="{{ path('imagePreview', {fileId: productReviewImage.file.id}) }}" width="40" height="40"/>
+                                                    {% if not loop.last %}<br />{% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ item.createdAt }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('product_review_edit', {id: item.id, productId: app.request.attributes.get('id')}) }}"
+                                                   title="修改">
+                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="10" class="alert alert-warning">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <div class="no-margin pull-right">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: 'ProductReview'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(function () {
+            "use strict";
+            // Rate BAR CHART
+            var bar = new Morris.Bar({
+                element: 'rate-chart',
+                resize: true,
+                data: [
+                    {y: 'Rate 1', total: {{ statistics.totalRate1 }}},
+                    {y: 'Rate 2', total: {{ statistics.totalRate2 }}},
+                    {y: 'Rate 3', total: {{ statistics.totalRate3 }}},
+                    {y: 'Rate 4', total: {{ statistics.totalRate4 }}},
+                    {y: 'Rate 5', total: {{ statistics.totalRate5 }}},
+                ],
+                barColors: ['#f56954'],
+                xkey: 'y',
+                ykeys: ['total'],
+                labels: ['Total'],
+                hideHover: 'auto'
+            });
+        });
+    </script>
+
+    {% include '/backend/includes/delete.js.html.twig' with {title: 'ProductReview'} %}
+{% endblock %}

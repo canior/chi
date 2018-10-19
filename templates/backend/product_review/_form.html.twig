@@ -1,5 +1,9 @@
 {{ form_start(form) }}
     {{ form_widget(form) }}
-    <a class="btn btn-danger" href="{{ path('product_review_index') }}">{{ 'Back to list'|trans }}</a>
+    {% if app.request.query.get('productId') %}
+        <a class="btn btn-danger" href="{{ path('product_review_info', {id: app.request.query.get('productId')}) }}">{{ 'Back to list'|trans }}</a>
+    {% else %}
+        <a class="btn btn-danger" href="{{ path('product_review_index') }}">{{ 'Back to list'|trans }}</a>
+    {% endif %}
     <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

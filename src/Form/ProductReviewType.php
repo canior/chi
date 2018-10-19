@@ -2,7 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\GroupUserOrder;
+use App\Entity\Product;
 use App\Entity\ProductReview;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,11 +17,20 @@ class ProductReviewType extends AbstractType
         $builder
             ->add('rate')
             ->add('review')
-            ->add('status')
-            ->add('createdAt')
-            ->add('updatedAt')
-            ->add('product')
-            ->add('groupUserOrder')
+            ->add('product', EntityType::class, [
+                'class' => Product::class,
+                'choice_label' => 'title',
+                'attr' => [
+                    'class' => 'chosen'
+                ]
+            ])
+            ->add('groupUserOrder', EntityType::class, [
+                'class' => GroupUserOrder::class,
+                'choice_label' => 'id',
+                'attr' => [
+                    'class' => 'chosen'
+                ]
+            ])
         ;
     }
 

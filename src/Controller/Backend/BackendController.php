@@ -92,6 +92,9 @@ class BackendController extends DefaultController
                 [
                     'path' => [
                         'product_review_index',
+                        'product_review_info',
+                        'product_review_new',
+                        'product_review_edit',
                     ],
                     'name' => '产品评价',
                     'icon' => 'fa fa-comments',

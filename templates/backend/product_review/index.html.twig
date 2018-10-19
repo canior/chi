@@ -11,12 +11,16 @@
                 <div class="box-header">
                     {% include "backend/includes/app.session.flashbag.html.twig" %}
                     <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
-                    <a href="{{ path('product_review_new') }}" type="button" class="btn btn-info pull-right">添加</a>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
                         <form class="cmxform" id="myForm">
+                            <div class="col-md-3 form-group">
+                                <label>产品ID</label>
+                                <input type="number" name="productId" class="form-control" value="{{ form.productId }}"
+                                       placeholder="按 产品ID 查询">
+                            </div>
                             <div class="col-md-3 form-group">
                                 <label>关键词</label>
                                 <input type="text" name="keyword" class="form-control" value="{{ form.keyword }}"
@@ -32,12 +36,11 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th width="10%">Rate</th>
-                                <th width="10%">Review</th>
-                                <th width="10%">Id</th>
-                                <th width="10%">Status</th>
-                                <th width="10%">CreatedAt</th>
-                                <th width="10%">UpdatedAt</th>
+                                <th width="10%">产品ID</th>
+                                <th width="10%">产品名称</th>
+                                <th width="10%">评价数量</th>
+                                <th width="10%">好评率</th>
+                                <th width="10%">最后评价时间</th>
                                 <th width="10%" class="text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
@@ -45,23 +48,15 @@
                             {% if pagination.getTotalItemCount %}
                                 {% for item in pagination %}
                                     <tr>
-                                        <td>{{ item.rate }}</td>
-                                        <td>{{ item.review }}</td>
-                                        <td>{{ item.id }}</td>
-                                        <td>{{ item.status }}</td>
-                                        <td>{{ item.createdAt }}</td>
-                                        <td>{{ item.updatedAt }}</td>
+                                        <td>{{ item.product.id }}</td>
+                                        <td>{{ item.product.title }}</td>
+                                        <td>{{ item.totalReviewed }}</td>
+                                        <td>{{ item.favorableRate|default(0) }}</td>
+                                        <td>{{ item.lastReviewedAt }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{ path('product_review_edit', {'id': item.id}) }}" title="修改">
-                                                    <span class="glyphicon glyphicon-edit"></span>
-                                                </a>&nbsp;
-                                                <a class="delete" data-toggle="modal" data-target="#modal-delete"
-                                                   data-url="{{ path('product_review_delete', {'id': item.id}) }}"
-                                                   data-item='{"name": "{{ macros.cut(item.name, 30) }}"}'
-                                                   data-token="{{ csrf_token('delete' ~ item.id) }}"
-                                                   title="删除">
-                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                <a href="{{ path('product_review_info', {'id': item.product.id}) }}" title="修改">
+                                                    <span class="fa fa-hand-o-right fa-2x"></span>
                                                 </a>
                                             </div>
                                         </td>
@@ -69,7 +64,7 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="7" class="alert alert-warning">no records found</td>
+                                    <td colspan="6" class="alert alert-warning">no records found</td>
                                 </tr>
                             {% endif %}
                             </tbody>
