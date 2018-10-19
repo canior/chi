@@ -8,7 +8,6 @@
 
 namespace App\Command\Product\Image;
 
-use App\Command\AbstractCommandHandler;
 use App\Command\CommandInterface;
 use App\Entity\File;
 use App\Entity\Product;
@@ -18,7 +17,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use League\Tactician\CommandBus;
 use Psr\Log\LoggerInterface;
 
-class CreateOrUpdateProductImagesCommandHandler extends AbstractCommandHandler
+class CreateOrUpdateProductImagesCommandHandler //extends AbstractCommandHandler
 {
     /**
      * @var CommandBus
@@ -52,7 +51,7 @@ class CreateOrUpdateProductImagesCommandHandler extends AbstractCommandHandler
      * @param CommandInterface|CreateOrUpdateProductImagesCommand $command
      * @return mixed|void
      */
-    public function handle(CommandInterface $command)
+    public function handle(CreateOrUpdateProductImagesCommand $command)
     {
         $this->log->info('start processing product images');
 

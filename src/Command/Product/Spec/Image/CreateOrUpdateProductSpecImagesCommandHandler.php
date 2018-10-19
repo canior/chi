@@ -8,7 +8,6 @@
 
 namespace App\Command\Product\Spec\Image;
 
-use App\Command\AbstractCommandHandler;
 use App\Command\CommandInterface;
 use App\Entity\File;
 use App\Entity\Product;
@@ -18,7 +17,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use League\Tactician\CommandBus;
 use Psr\Log\LoggerInterface;
 
-class CreateOrUpdateProductSpecImagesCommandHandler extends AbstractCommandHandler
+class CreateOrUpdateProductSpecImagesCommandHandler //extends AbstractCommandHandler
 {
     /**
      * @var CommandBus
@@ -36,7 +35,7 @@ class CreateOrUpdateProductSpecImagesCommandHandler extends AbstractCommandHandl
     private $log;
 
     /**
-     * CreateOrUpdateProductImagesCommandHandler constructor.
+     * CreateOrUpdateProductSpecImagesCommandHandler constructor.
      * @param CommandBus $commandBus
      * @param ObjectManager $em
      * @param LoggerInterface $log
@@ -52,7 +51,7 @@ class CreateOrUpdateProductSpecImagesCommandHandler extends AbstractCommandHandl
      * @param CommandInterface|CreateOrUpdateProductSpecImagesCommand $command
      * @return mixed|void
      */
-    public function handle(CommandInterface $command)
+    public function handle(CreateOrUpdateProductSpecImagesCommand $command)
     {
         $this->log->info('start processing product spec images');
 

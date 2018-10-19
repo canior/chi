@@ -8,7 +8,6 @@
 
 namespace App\Command\File;
 
-use App\Command\AbstractCommandHandler;
 use App\Command\CommandInterface;
 use App\Entity\File as FileDao;
 use App\Entity\User;
@@ -16,7 +15,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use League\Tactician\CommandBus;
 use Psr\Log\LoggerInterface;
 
-class UploadFileCommandHandler extends AbstractCommandHandler
+class UploadFileCommandHandler //extends AbstractCommandHandler
 {
     /**
      * @var CommandBus
@@ -56,7 +55,7 @@ class UploadFileCommandHandler extends AbstractCommandHandler
      * @param CommandInterface|UploadFileCommand $command
      * @return mixed
      */
-    public function handle(CommandInterface $command)
+    public function handle(UploadFileCommand $command)
     {
         $this->log->info('start processing file');
 
