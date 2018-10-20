@@ -49,6 +49,11 @@ class UserController extends BaseController
                 $user = $userRepository->findOneBy(['wxOpenId' => $openId]);
                 if ($user == null) {
                     $user = new User();
+                    $user->setUsername($nickName);
+                    $user->setUsernameCanonical($nickName);
+                    $user->setEmail($openId . '@qq.com');
+                    $user->setEmailCanonical($openId . '@qq.com');
+                    $user->setPassword("IamCustomer");
                     $user->setNickname($nickName);
                     $user->setAvatarUrl($avatarUrl);
                     $user->setWxOpenId($openId);

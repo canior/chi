@@ -14,10 +14,13 @@ use FOS\UserBundle\Model\User as BaseUser;
  */
 class User extends BaseUser implements Dao
 {
+    const ROLE_CUSTOMER = 'ROLE_CUSTOMER';
     const ROLE_CUSTOMER_SERVICE = 'ROLE_CUSTOMER_SERVICE';
     const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
     public static $roleTexts = [
+        self::ROLE_CUSTOMER_SERVICE => '客户',
         self::ROLE_CUSTOMER_SERVICE => '客服',
         self::ROLE_ADMIN => '管理员',
         self::ROLE_SUPER_ADMIN => '超级管理员'
@@ -114,7 +117,9 @@ class User extends BaseUser implements Dao
         parent::__construct();
 
         $this->setCreatedAt();
+        $this->setEnabled(true);
         $this->setTotalRewards(0);
+        $this->setRoles([self::ROLE_CUSTOMER]);
         $this->subUsers = new ArrayCollection();
         $this->userShares = new ArrayCollection();
         $this->userActivities = new ArrayCollection();
