@@ -94,6 +94,7 @@ Page({
         productId: this.data.product.id,
         thirdSession: wx.getStorageSync('thirdSession'),
       },
+      method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
