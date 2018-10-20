@@ -21,14 +21,6 @@ class UserRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param $thirdSession
-     * @return User|null
-     */
-    public function findUserByThirdSession($thirdSession) {
-        return $this->find($thirdSession);
-    }
-
-    /**
      * @param null $userId
      * @param null $username
      * @param null $loginTimeStart

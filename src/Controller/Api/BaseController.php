@@ -10,6 +10,7 @@ namespace App\Controller\Api;
 
 use App\Controller\DefaultController;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -53,9 +54,11 @@ class BaseController extends DefaultController
     protected function getWxUser($thirdSession):?User
     {
         /**
-         * @var User $user
+         * @var UserRepository $userRepository
          */
-        $user = $this->getEntityManager()->getRepository(User::class)->find(1);
+        $userRepository = $this->getEntityManager()->getRepository(User::class);
+        $user = $userRepository->find($thirdSession);
+
         return $user;
     }
 

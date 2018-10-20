@@ -21,6 +21,7 @@ use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
 use App\Repository\UserRepository;
+use App\Service\Wx\WxPayment;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,7 +59,11 @@ class GroupOrderController extends BaseController
 
 
         //TODO 向微信提交支付信息
+        $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
 
+        $body = "创建开团订单";
+        $wxPaymentApi = new WxPayment($this->getLog());
+        $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
 
         $data = [
             'groupOrder' => $groupOrder->getArray()
@@ -93,6 +98,7 @@ class GroupOrderController extends BaseController
 
 
         //TODO 向微信提交支付信息
+
 
         $data = [
             'groupOrder' => $groupOrder->getArray()

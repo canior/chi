@@ -35,7 +35,7 @@ class UserController extends BaseController
         $user = null;
         $msg = "";
         if ($thirdSession) {
-            $user = $userRepository->findUserByThirdSession($thirdSession);
+            $user = $this->getWxUser($thirdSession);
         }
 
         if ($user != null) {

@@ -20,7 +20,7 @@ class WxPayment
     private $appSecret;
     private $appKey;
     private $mchId;
-    private $wxPayApiUrl = 'https://api.mch.weixin.qq.com';
+    private $wxPayApiUrl;
     private $wxPayNotifyUrl;
     private $wxPayRefundNotifyUrl;
     private $certPath;
@@ -33,34 +33,44 @@ class WxPayment
      * @param $config
      * @param LoggerInterface $log
      */
-    public function __construct($config = [], LoggerInterface $log)
+    public function __construct(LoggerInterface $log)
     {
-        $this->appId = $config['appId'];
-        $this->appKey = $config['appKey'];
-        $this->mchId = $config['mchId'];
-        $this->certPath = isset($config['certPath'])?$config['certPath']:null;
-        $this->sslKeyPath = isset($config['sslKeyPath'])?$config['sslKeyPath']:null;
-        $this->caInfoPath = isset($config['caInfoPath'])?$config['caInfoPath']:null;
-        if (isset($config['wxPayApiUrl'])) {
-            $this->wxPayApiUrl = $config['wxPayApiUrl'];
-        }
-        if (isset($config['wxPayNotifyUrl'])) {
-            $this->wxPayNotifyUrl = $config['wxPayNotifyUrl'];
-        }
-        if (isset($config['wxPayRefundNotifyUrl'])) {
-            $this->wxPayRefundNotifyUrl = $config['wxPayRefundNotifyUrl'];
-        }
+        $this->appId = 'wx94523ddb2226fcbd';
+        $this->appKey = '22777c0558b563aa6abfa54a12970c26';
+        $this->mchId = '1487253982';
+
+        $this->certPath = '/home/ubuntu/projects/chi/config/Resources/apiclient_cert.pem';
+        $this->sslKeyPath = '/home/ubuntu/projects/chi/config/Resources/apiclient_key.pem';
+        $this->caInfoPath = '/home/ubuntu/projects/chi/config/Resources/rootca.pem';
+
+        $this->wxPayApiUrl = 'https://api.mch.weixin.qq.com';
+
+        $this->wxPayNotifyUrl = 'http://www.baidu.com';
+        $this->wxPayRefundNotifyUrl = 'http://www.baidu.com';
+
         $this->log = $log;
     }
 
     /**
      * 获取Prepay ID
      * https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1
-     * @param $info = [body, outTradeNo, totalFee, openid]
+     * @param $openId
+     * @param $outTradeNo
+     * @param $amount
+     * @param $body
+     * @return array
      */
-    public function getPrepayId($info)
+    public function getPrepayId($openId, $outTradeNo, $amount, $body)
     {
+        $info = [
+            'body' => $body,
+            'outTradeNo' => $outTradeNo,
+            'totalFee' => $amount,
+            'openid' => $openId
+        ];
+
         $appkey = $this->appKey;
+
         $postData = [
             'appid' => $this->appId,
             'nonce_str' => $this->createNoncestr(),
@@ -87,7 +97,7 @@ class WxPayment
         $code = $response->getStatusCode(); // 200
         $reason = $response->getReasonPhrase(); // OK
         $body = $response->getBody();
-
+        $this->log->info ("wxPayment prepay id response: " . $body);
         if($code === 200) {
             $result = $this->xmlToArray($body);
             // var_dump($result);die();
