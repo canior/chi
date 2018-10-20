@@ -62,13 +62,26 @@ class GroupOrderController extends BaseController
 
         $body = "创建开团订单";
         $wxPaymentApi = new WxPayment($this->getLog());
-        $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
+        $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
+        $prePayId = $result['prepay_id'];
+        $noneStr = $result['none_str'];
+        $paySign = $result['sign'];
 
-        //$groupOrder->getMasterGroupUserOrder()->setPrePayId(time());//TODO
+        $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
+        $groupUserOrder->setPrePayId($prePayId);
+        $this->getEntityManager()->persist($groupUserOrder);
+        $this->getEntityManager()->flush();
+
 
         $data = [
+            'timeStamp' => time(),
+            'noneStr' => $noneStr,
+            'package' => $prePayId,
+            'signType' => 'MD5',
+            'paySign' => $paySign,
             'groupOrder' => $groupOrder->getArray()
         ];
+        
         return $this->responseJson('success', 200, $data);
     }
 
