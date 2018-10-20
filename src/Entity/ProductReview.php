@@ -50,7 +50,7 @@ class ProductReview implements Dao
     private $review;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ProductReviewImage", mappedBy="productReview")
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductReviewImage", mappedBy="productReview", orphanRemoval=true, cascade={"persist","remove"})
      */
     private $productReviewImages;
 
@@ -176,9 +176,11 @@ class ProductReview implements Dao
 
         return [
             'id' => $this->getId(),
+            'user' => $this->getGroupUserOrder()->getUser()->getArray(),
             'rate' => $this->getRate(),
             'review' => $this->getReview(),
             'productReviewImages' => $productReviewImageArray,
+            'createdAt' => $this->getCreatedAt(true)
         ];
     }
 }

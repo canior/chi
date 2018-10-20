@@ -7,8 +7,8 @@ Page({
    */
   data: {
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
-    product: null,
-    productReviews: null,
+    product: [],
+    productReviews: [],
   },
 
   /**
@@ -16,15 +16,15 @@ Page({
    */
   onLoad: function (options) {
     wx.setNavigationBarTitle({ title: app.globalData.appName })    
-    //const id = options.id ? options.id : 1;
-    //this.getProduct(id);
-    //this.getProductReview(id);
+    const productId = options.id ? options.id : 1;
+    this.getProduct(productId);
+    this.getProductReview(productId);
   },
 
   getProduct: function (id) {
     const that = this;
     wx.request({
-      url: app.globalData.baseUrl + '/product/' + id,
+      url: app.globalData.baseUrl + '/products/' + id,
       data: {
       },
       success: (res) => {
@@ -46,7 +46,7 @@ Page({
   getProductReview: function (id) {
     const that = this;
     wx.request({
-      url: app.globalData.baseUrl + '/product/reviews/' + id,
+      url: app.globalData.baseUrl + '/products/' + id + '/reviews/',
       data: {
         limit: 5
       },
@@ -83,7 +83,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    wx.hideLoading();
+    this.getProduct();
+    this.getProductReview();
   },
 
   /**

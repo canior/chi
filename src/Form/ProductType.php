@@ -24,12 +24,14 @@ class ProductType extends AbstractType
             ->add('images', DropzoneType::class, [
                 'label' => '图片',
                 'maxFiles' => 5,
+                'priority' => true,
                 'data_class' => null,
                 'mapped' => false,
             ])
             ->add('specImages', DropzoneType::class, [
                 'label' => '描述图片',
                 'maxFiles' => 5,
+                'priority' => true,
                 'data_class' => null,
                 'mapped' => false,
             ])

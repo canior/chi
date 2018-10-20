@@ -128,8 +128,8 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>{{ item.id }}</td>
-                                        <td>TODO:???</td>
-                                        <td>TODO:???</td>
+                                        <td>{{ item.groupUserOrder.user.id|default }}</td>
+                                        <td>{{ item.groupUserOrder.user.username|default }}</td>
                                         <td>{{ item.groupUserOrder.id|default }}</td>
                                         <td>TODO:???</td>
                                         <td>{{ item.rate }}</td>
@@ -137,7 +137,7 @@
                                         <td>
                                             {% if item.productReviewImages.count %}
                                                 {% for productReviewImage in item.productReviewImages %}
-                                                    <img src="{{ path('imagePreview', {fileId: productReviewImage.file.id}) }}" width="40" height="40"/>
+                                                    <img src="{{ path('imagePreview', {fileId: productReviewImage.imageFile.id}) }}" width="40" height="40"/>
                                                     {% if not loop.last %}<br />{% endif %}
                                                 {% endfor %}
                                             {% endif %}

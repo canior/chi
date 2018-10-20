@@ -325,12 +325,13 @@ class Product implements Dao
             'id' => $this->getId(),
             'title' => $this->getTitle(),
             'price' => $this->getPrice(),
-            'original' => $this->getOriginalPrice(),
+            'originalPrice' => $this->getOriginalPrice(),
             'freight' => $this->getFreight(),
             'shortDescription' => $this->getShortDescription(),
             'rewards' => $this->getRewards(),
             'productImages' => $productImageArray,
             'productSpecImages' => $productSpecImagesArray,
+            'stock' => $this->getStock(),
         ];
     }
 

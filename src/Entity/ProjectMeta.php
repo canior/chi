@@ -11,13 +11,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ProjectMeta implements Dao
 {
-    public function __construct(string $metaKey, string $metaValue, ?string $memo)
-    {
-        $this->setMetaKey($metaKey);
-        $this->setMetaValue($metaValue);
-        $this->setMemo($memo);
-    }
-
     use IdTrait;
 
     /**
@@ -35,6 +28,24 @@ class ProjectMeta implements Dao
      * @ORM\Column(type="text", nullable=true)
      */
     private $memo;
+
+
+    const HOME_BANNER_1 = "home_banner_1";
+    const HOME_BANNER_2 = "home_banner_2";
+    const HOME_BANNER_3 = "home_banner_3";
+
+    /**
+     * ProjectMeta constructor.
+     * @param string $metaKey
+     * @param string $metaValue
+     * @param null|string $memo
+     */
+    public function __construct(string $metaKey, string $metaValue, ?string $memo)
+    {
+        $this->setMetaKey($metaKey);
+        $this->setMetaValue($metaValue);
+        $this->setMemo($memo);
+    }
 
     public function getMetaKey(): ?string
     {
@@ -71,5 +82,16 @@ class ProjectMeta implements Dao
         $this->memo = $memo;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArray() : array {
+        return [
+            'id' => $this->getId(),
+            'metaKey' => $this->getMetaKey(),
+            'metaValue' => $this->getMetaValue()
+        ];
     }
 }

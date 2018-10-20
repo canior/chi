@@ -8,7 +8,6 @@
 
 namespace App\Controller\Api;
 
-namespace App\Controller\Api;
 
 use App\Command\EnqueueCommand;
 use App\Command\Notification\NotifyCompletedGroupOrderCommand;

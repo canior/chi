@@ -25,6 +25,7 @@ class DropzoneType extends AbstractType
         $view->vars['maxFilesize'] = $options['maxFilesize'];
         $view->vars['acceptedFiles'] = $options['acceptedFiles'];
         $view->vars['uploadMultiple'] = $options['uploadMultiple'];
+        $view->vars['priority'] = $options['priority'];
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -36,7 +37,8 @@ class DropzoneType extends AbstractType
             'maxFiles' => 1,
             'maxFilesize' => 5,
             'acceptedFiles' => 'image/*',
-            'uploadMultiple' => 'false'
+            'uploadMultiple' => 'false',
+            'priority' => false
         ]);
     }
 
