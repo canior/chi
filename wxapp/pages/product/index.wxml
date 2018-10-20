@@ -31,7 +31,7 @@
         <view class="price">拼团价￥<text>{{product.price}}</text></view>
         <view class="freight">包邮</view>
         <view class="ori-price">￥{{product.originalPrice}}</view>
-        <view class="btn">我要拼团</view>
+        <view class="btn" bindtap="toProductDetail">我要拼团</view>
       </view>      
     </view>
 
