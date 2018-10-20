@@ -78,6 +78,6 @@
       <image src="/images/service.png"/>
       <text>客服</text>
     </button>
-    <view class="btn" bindtap="openGroup">￥100 发起拼团</view>
+    <button class="btn" bindtap="openGroup" disabled="{{btnDisabled}}">￥100 发起拼团</button>
   </view>
 </view>

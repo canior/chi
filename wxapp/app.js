@@ -2,7 +2,7 @@
 App({
   onLaunch: function () {
     // 获取或更新用户信息
-    //this.getUserInfo();
+    this.getUserInfo();
   },
 
   // 获取或更新用户信息

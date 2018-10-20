@@ -10,6 +10,7 @@ Page({
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
     product: [],
     productReviews: [],
+    btnDisabled: false //防止连击button
   },
 
   /**
@@ -19,10 +20,10 @@ Page({
     wx.setNavigationBarTitle({ title: app.globalData.appName })    
     const productId = options.id ? options.id : 1;
     this.getProduct(productId);
-    //this.getProductReview(productId);
+    this.getProductReview(productId);
     this.setData({
       isLogin: app.globalData.isLogin
-    })    
+    })
   },
 
   getProduct: function (id) {
@@ -88,6 +89,11 @@ Page({
   },
   createGroup: function() {
     const that = this;
+    wx.showLoading({
+      title: '跳转支付',
+      mask: true,
+    });
+    that.setData({ btnDisabled: true });
     wx.request({
       url: app.globalData.baseUrl + '/groupOrder/create',
       data: {
@@ -96,13 +102,53 @@ Page({
       },
       method: 'POST',
       success: (res) => {
+        wx.hideLoading();
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
+          wx.requestPayment({
+            timeStamp: toString(res.data.data.timeStamp),
+            nonceStr: res.data.data.nonce_str,
+            package: res.data.data.package,
+            signType: res.data.data.signType,
+            paySign: res.data.data.paySign,
+            success: function (res) { 
+              wx.request({
+                url: app.globalData.baseUrl + '//groupOrder/notifyPayment',
+                data: {
+                  isPaid: true,
+                  thirdSession: wx.getStorageSync('thirdSession'),
+                  groupOrderId: res.data.data.groupOrder.id,
+                },
+                success: (res) => {
+                  if (res.statusCode == 200 && res.data.code == 200) {
+                    console.log(res.data.data)
+                    wx.redirectTo({
+                      url: '/pages/group/index/?id=' + res.data.data.groupOrder.id,
+                    })
+                  } else {
+                    console.log('wx.request return error', res.statusCode);
+                  }
+                },
+                fail(e) {
+                },
+                complete(e) { }
+              })
+            },
+            fail: function (res) {
+              wx.showToast({
+                title: '支付失败',
+              });
+              that.setData({ btnDisabled: false });
+            },
+            complete: function (res) { }
+          })          
         } else {
           console.log('wx.request return error', res.statusCode);
         }
       },
       fail(e) {
+        wx.hideLoading();
+        that.setData({ btnDisabled: false });
       },
       complete(e) { }
     })
@@ -120,6 +166,7 @@ Page({
    */
   onShow: function () {
     this.setData({
+      btnDisabled: false,
       isLogin: app.globalData.isLogin
     })
   },
