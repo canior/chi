@@ -41,7 +41,7 @@ class UserController extends BaseController
         if ($user != null) {
             $msg = 'has_logined';
         } else {
-            $wxApi = new WxCommon();
+            $wxApi = new WxCommon($this->getLog());
             $result = $wxApi->getSessionByCode($code);
 
             if ($result['status']) {

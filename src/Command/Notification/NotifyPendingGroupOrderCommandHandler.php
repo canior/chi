@@ -13,6 +13,7 @@ use App\Command\AbstractCommandHandler;
 use App\Command\CommandInterface;
 use App\Repository\GroupOrderRepository;
 use App\Service\Wx\WxCommon;
+use Psr\Log\LoggerInterface;
 
 class NotifyPendingGroupOrderCommandHandler  extends AbstractCommandHandler
 {
@@ -21,10 +22,12 @@ class NotifyPendingGroupOrderCommandHandler  extends AbstractCommandHandler
     /**
      * NotifyPendingGroupOrderCommandHandler constructor.
      * @param GroupOrderRepository $groupOrderRepository
+     * @param LoggerInterface $logger
      */
-    public function __construct(GroupOrderRepository $groupOrderRepository)
+    public function __construct(GroupOrderRepository $groupOrderRepository, LoggerInterface $logger)
     {
         $this->groupOrderRepository = $groupOrderRepository;
+        $this->log = $logger;
     }
 
     /**
@@ -44,7 +47,7 @@ class NotifyPendingGroupOrderCommandHandler  extends AbstractCommandHandler
         $data = [];
         $emphasisKeyword = "";
 
-        $wxApi = new WxCommon();
+        $wxApi = new WxCommon($this->log);
         $wxApi->sendMessage($toUser, $templateId, $page, $formId, $data, $emphasisKeyword);
 
         //TODO 这里要判断如果发送失败怎么办
