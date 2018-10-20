@@ -1,18 +1,13 @@
 //app.js
 App({
   onLaunch: function () {
-    // 展示本地存储能力
-    var logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
+    // 获取或更新用户信息
+    //this.getUserInfo();
+  },
 
-    // 登录
-    wx.login({
-      success: res => {
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-      }
-    })
-    // 获取用户信息
+  // 获取或更新用户信息
+  getUserInfo: function () {
+    const that = this
     wx.getSetting({
       success: res => {
         if (res.authSetting['scope.userInfo']) {
@@ -20,23 +15,158 @@ App({
           wx.getUserInfo({
             success: res => {
               // 可以将 res 发送给后台解码出 unionId
-              this.globalData.userInfo = res.userInfo
-
-              // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-              // 所以此处加入 callback 以防止这种情况
-              if (this.userInfoReadyCallback) {
-                this.userInfoReadyCallback(res)
-              }
+              console.log('app:getUserInfo', res.userInfo);
+              that.globalData.userInfo = res.userInfo
+              that.login(res.userInfo, function () {
+                // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+                // 所以此处加入 callback 以防止这种情况
+                if (that.userInfoReadyCallback) {
+                  that.userInfoReadyCallback(res)
+                }
+              });
             }
           })
+        } else {
+          // 未授权或已取消授权
+          console.log("app:authSetting['scope.userInfo']=false");
+          that.login();
         }
       }
     })
   },
+
+  // 登录: 创建新用户或记录老用户登录信息, 返回thirdSession
+  login: function (userInfo = null, callback = null) {
+    const that = this;
+    let thirdSession = wx.getStorageSync('thirdSession');
+    wx.login({
+      success: res => {
+        // 发送 res.code 到后台换取 openId, sessionKey, unionId        
+        console.log('app:wx.login', res)
+        wx.request({
+          url: that.globalData.baseUrl + '/user/login',
+          data: {
+            code: res.code,
+            thirdSession: thirdSession,
+            nickName: userInfo ? userInfo.nickName : null,
+            avatarUrl: userInfo ? userInfo.avatarUrl : null
+          },
+          method: 'POST',
+          success: (res) => {
+            if (res.data.code == 200) {
+              console.log('app:wx.request /user/login', res);
+              wx.setStorageSync('thirdSession', res.data.data.thirdSession);
+              that.globalData.isLogin = that.isLogin();
+              if (that.globalData.isLogin && callback) {
+                callback()
+              }
+            } else {// 后台问题
+              that.debug('app', 'code_not_200', res);
+            }
+          },
+          fail(e) {
+            that.debug('app', 'wx.request_fail', e);
+          },
+          complete(e) { }
+        })
+      }
+    })
+  },
+
+  // 判断是否授权并登录
+  isLogin: function () {
+    if (this.globalData.userInfo && wx.getStorageSync('thirdSession')) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+  
+  // 统一请求授权
+  unifiedAuth(authKey, prompt, callbak) {
+    const that = this
+    // 判断授权
+    wx.getSetting({
+      success(res) {
+        //console.log(res.authSetting[authKey]);
+        if (res.authSetting[authKey] || res.authSetting[authKey] == undefined) {//保持授权或首次进入
+          callbak()
+        } else {//前面拒绝授权
+          wx.showModal({
+            title: '授权设置',
+            content: prompt,
+            success: function (res) {
+              if (res.confirm) {//用户允许
+                wx.openSetting({
+                  success: function (res) {
+                    console.log('wx.openSetting:succ', res);
+                    if (res.authSetting[authKey]) {
+                      callbak()
+                    } else {
+                      wx.showToast({
+                        title: '授权失败',
+                        icon: 'success',
+                        duration: 1000
+                      })
+                    }
+                  },
+                  fail: function (e) {
+                    console.log('wx.openSetting:fail', e);
+                  }
+                })
+              }
+              if (res.cancel) {//用户拒绝
+                wx.showToast({
+                  title: '授权失败',
+                  icon: 'success',
+                  duration: 1000
+                })
+              }
+            }
+          })//wx.showModal
+        }
+      }
+    })
+  },
+
+  // 请求后台记录错误日志
+  debug: function (pageName, slug, log) {
+    console.log('debug', pageName, slug, log);
+    wx.request({
+      url: this.globalData.baseUrl + '/errlog',
+      data: {
+        pageName: pageName,
+        slug: slug,
+        log: JSON.stringify(log)
+      },
+      method: 'POST',
+      success(res) {
+        console.log('debug success', res);
+      },
+      fail(res) {//wx.request失败
+        wx.showToast({
+          icon: 'loading',
+          title: '网络开小差了, 请稍后再试',
+        })
+      }
+    });
+  },
+
+  // 四舍五入
+  roundFixed: function (num, fixed) {
+    var pos = num.toString().indexOf('.'),
+      decimal_places = num.toString().length - pos - 1,
+      _int = num * Math.pow(10, decimal_places),
+      divisor_1 = Math.pow(10, decimal_places - fixed),
+      divisor_2 = Math.pow(10, fixed);
+    return Math.round(_int / divisor_1) / divisor_2;
+  },
+
   globalData: {
     appName: 'i吃咖',
     baseUrl: 'http://chi/wxapi',
     imgUrlPrefix: 'http://chi/image/preview',
-    userInfo: null
+    isLogin: false,   //是否授权并登录
+    userInfo: null,   //授权后获取的用户信息, 如昵称头像
   }
 })

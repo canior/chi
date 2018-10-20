@@ -1,0 +1,18 @@
+<!--pages/user/login.wxml-->
+<view class="container">
+    <view class="banner">
+        <image src=""></image>
+    </view>
+    <view class="btn-container">
+        <!--未授权出弹窗,已授权不再出-->
+        <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo" class="btn">
+            <image src="/images/wechat.png"></image>
+            <text>微信用户快速登录</text>
+        </button>
+        <!--可能会有低版本-->
+        <view wx:if="{{!canIUse}}" bindtap="doLogin" class="btn">
+            <image src="/images/wechat.png"></image>
+            <text>微信用户快速登录</text>
+        </view>
+    </view>
+</view>
