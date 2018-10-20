@@ -41,11 +41,11 @@ class UserController extends BaseController
         if ($user != null) {
             $msg = 'has_logined';
         } else {
-            $wxApi = new WxCommon(getenv('WX_APP_ID'), getenv('WX_APP_SECRET'));
+            $wxApi = new WxCommon($this->getLog());
             $result = $wxApi->getSessionByCode($code);
 
             if ($result['status']) {
-                $openId = $result['data']['openId'];
+                $openId = $result['data']['openid'];
                 $user = $userRepository->findOneBy(['wxOpenId' => $openId]);
                 if ($user == null) {
                     $user = new User();

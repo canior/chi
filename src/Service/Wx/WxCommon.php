@@ -8,6 +8,7 @@ namespace App\Service\Wx;
 
 use App\Service\Wx\WxTrait;
 use GuzzleHttp\Client;
+use Psr\Log\LoggerInterface;
 
 /**
  * WxCommon
@@ -24,11 +25,17 @@ class WxCommon
     private $appKey;
     private $mchId;
     private $wxNotifyUrl;
+    private $log;
 
-    public function __construct($appId, $appSecret)
+    /**
+     * WxCommon constructor.
+     * @param LoggerInterface $log
+     */
+    public function __construct(LoggerInterface $log)
     {
-        $this->appId = $appId;
-        $this->appSecret = $appSecret;
+        $this->appId = 'wx8f94c87c188f4c94';
+        $this->appSecret = '2b2af631a049d9d1fe37acab222cd2db';
+        $this->log = $log;
     }
 
     /**
@@ -60,6 +67,7 @@ class WxCommon
         $code = $response->getStatusCode(); // 200
         $reason = $response->getReasonPhrase(); // OK
         $body = $response->getBody();
+        $this->log->info("response:" . $body);
 
         if($code === 200) {
             $result = json_decode($body, true);
