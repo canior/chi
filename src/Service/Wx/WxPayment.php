@@ -4,9 +4,8 @@
  * Date: 2017-09-08
  */
 
-namespace App\Service\Payment;
+namespace App\Service\Wx;
 
-use App\Service\Wx\WxTrait;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 
