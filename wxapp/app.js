@@ -164,8 +164,8 @@ App({
 
   globalData: {
     appName: 'i吃咖',
-    baseUrl: 'http://chi/wxapi',
-    imgUrlPrefix: 'http://chi/image/preview',
+    baseUrl: 'https://chi.yunlishuju.com/wxapi',
+    imgUrlPrefix: 'https://chi.yunlishuju.com/image/preview',
     isLogin: false,   //是否授权并登录
     userInfo: null,   //授权后获取的用户信息, 如昵称头像
   }
