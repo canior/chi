@@ -52,6 +52,7 @@ class GroupOrderController extends BaseController
         $product = $this->getEntityManager()->getRepository(Product::class)->find($productId);
 
         $groupOrder = new GroupOrder($user, $product);
+        $groupOrder->getMasterGroupUserOrder()->setPrePayId(time());//TODO
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
