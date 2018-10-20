@@ -25,10 +25,13 @@ class WxCommon
     private $mchId;
     private $wxNotifyUrl;
 
-    public function __construct($appId, $appSecret)
+    /**
+     * WxCommon constructor.
+     */
+    public function __construct()
     {
-        $this->appId = $appId;
-        $this->appSecret = $appSecret;
+        $this->appId = 'wx8f94c87c188f4c94';
+        $this->appSecret = '2b2af631a049d9d1fe37acab222cd2db';
     }
 
     /**
