@@ -83,7 +83,6 @@ class WxPayment
             'trade_type' => 'JSAPI',
             'openid' => $info['openid'],
         ];
-
         // 排序待提交数据并签名
         $postData['sign'] = $this->sign($postData);
         $postStr = $this->arrayToXml($postData);

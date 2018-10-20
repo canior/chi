@@ -53,7 +53,6 @@ class GroupOrderController extends BaseController
         $product = $this->getEntityManager()->getRepository(Product::class)->find($productId);
 
         $groupOrder = new GroupOrder($user, $product);
-        $groupOrder->getMasterGroupUserOrder()->setPrePayId(time());//TODO
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
@@ -64,6 +63,8 @@ class GroupOrderController extends BaseController
         $body = "创建开团订单";
         $wxPaymentApi = new WxPayment($this->getLog());
         $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
+
+        //$groupOrder->getMasterGroupUserOrder()->setPrePayId(time());//TODO
 
         $data = [
             'groupOrder' => $groupOrder->getArray()
