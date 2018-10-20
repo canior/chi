@@ -4,6 +4,8 @@ namespace App\Controller\Api;
 use App\Entity\User;
 use App\Entity\UserAddress;
 use App\Repository\UserAddressRepository;
+use App\Repository\UserRepository;
+use App\Service\Wx\WxCommon;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,6 +15,63 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class UserController extends BaseController
 {
+
+    /**
+     * 获取用户openId
+     *
+     * @Route("/user/login", name="userLogin", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @return Response
+     */
+    public function loginAction(Request $request, UserRepository $userRepository) : Response {
+        $data = json_decode($request->getContent(), true);
+        $code = isset($data['code']) ? $data['code'] : null;
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $nickName = isset($data['nickName']) ? $data['nickName'] : null;
+        $avatarUrl = isset($data['avatarUrl']) ? $data['avatarUrl'] : null;
+        //$userInfo = isset($data['userInfo']) ? json_decode($data['userInfo'], true) : null;
+
+        $user = null;
+        $msg = "";
+        if ($thirdSession) {
+            $user = $userRepository->findUserByThirdSession($thirdSession);
+        }
+
+        if ($user != null) {
+            $msg = 'has_logined';
+        } else {
+            $wxApi = new WxCommon(getenv('WX_APP_ID'), getenv('WX_APP_SECRET'));
+            $result = $wxApi->getSessionByCode($code);
+
+            if ($result['status']) {
+                $openId = $result['data']['openId'];
+                $user = $userRepository->findOneBy(['wxOpenId' => $openId]);
+                if ($user == null) {
+                    $user = new User();
+                    $user->setNickname($nickName);
+                    $user->setAvatarUrl($avatarUrl);
+                    $user->setWxOpenId($openId);
+                    $this->getEntityManager()->persist($user);
+                    $this->getEntityManager()->flush();
+
+                    $userId = $user->getId();
+                    $thirdSession = $userId;//生成我们自己的第三方session
+                    $msg = "login_success";
+                } else {
+                    $msg = "has_logined"
+                }
+            } else {
+                $msg = "login_failed";
+            }
+        }
+
+        return $this->responseJson($msg, 200, [
+            'thirdSession' => $thirdSession,
+        ]);
+
+    }
+
 
     /**
      *
@@ -35,11 +94,6 @@ class UserController extends BaseController
 
         return $this->responseJson(null, 200, $usersArray);
     }
-
-    public function getUser() {
-
-    }
-
 
     /**
      * 获取用户收货地址

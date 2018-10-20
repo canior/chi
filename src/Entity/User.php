@@ -113,7 +113,7 @@ class User extends BaseUser implements Dao
     {
         parent::__construct();
 
-        $this->setCreatedAt(time());
+        $this->setCreatedAt();
         $this->setTotalRewards(0);
         $this->subUsers = new ArrayCollection();
         $this->userShares = new ArrayCollection();
@@ -121,6 +121,7 @@ class User extends BaseUser implements Dao
         $this->userAddresses = new ArrayCollection();
         $this->groupOrders = new ArrayCollection();
         $this->groupUserOrderLogs = new ArrayCollection();
+        $this->setUpdatedAt();
     }
 
     public function getId()
