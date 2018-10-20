@@ -16,7 +16,7 @@
       <view class="img">
             <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
               <swiper-item wx:for="{{product.productImages}}" wx:key="id" wx:for-item="productImage">
-                <image src="{{imgUrlPrefix + productImage.id}}" />
+                <image src="{{imgUrlPrefix + '/' + productImage.id}}" />
               </swiper-item>
             </swiper>
         <view class="tip"><text>两人</text><text>拼团</text></view>
