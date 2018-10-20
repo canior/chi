@@ -39,7 +39,7 @@ class UserController extends BaseController
         }
 
         if ($user != null) {
-            $msg = 'has_logined';
+            $msg = 'login_success';
         } else {
             $wxApi = new WxCommon($this->getLog());
             $result = $wxApi->getSessionByCode($code);
@@ -62,10 +62,8 @@ class UserController extends BaseController
 
                     $userId = $user->getId();
                     $thirdSession = $userId;//生成我们自己的第三方session
-                    $msg = "login_success";
-                } else {
-                    $msg = "has_logined";
                 }
+                $msg = "login_success";
             } else {
                 $this->getLog()->info(json_encode($result));
                 $msg = "login_failed";
