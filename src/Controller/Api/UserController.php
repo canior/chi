@@ -67,6 +67,7 @@ class UserController extends BaseController
                     $msg = "has_logined";
                 }
             } else {
+                $this->getLog()->info(json_decode($result));
                 $msg = "login_failed";
             }
         }
