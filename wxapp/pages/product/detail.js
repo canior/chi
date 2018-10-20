@@ -19,7 +19,7 @@ Page({
     wx.setNavigationBarTitle({ title: app.globalData.appName })    
     const productId = options.id ? options.id : 1;
     this.getProduct(productId);
-    this.getProductReview(productId);
+    //this.getProductReview(productId);
     this.setData({
       isLogin: app.globalData.isLogin
     })    
