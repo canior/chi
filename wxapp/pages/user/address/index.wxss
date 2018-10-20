@@ -1,1 +1,67 @@
 /* pages/user/address/index.wxss */
+.default {
+  padding: 0 40rpx;
+}
+.default image {
+  width: 31rpx;
+  height: 31rpx;
+  margin-right: 10rpx;
+  vertical-align: text-bottom;
+}
+.default .addr {
+  margin-left: 42rpx;
+}
+.row {
+  padding: 30rpx 0;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+}
+.row .name {
+  font-size: 30rpx;
+}
+.row .addr {
+  font-size: 24rpx;
+  color: #353535;
+}
+.row .addr-container {
+  display: flex;
+  align-items: center;
+}
+.row .edit image {
+  width: 24rpx;
+  height: 26rpx;
+}
+.row .edit {
+  position: absolute;
+  right: 0;
+}
+.row:last-child {
+  margin-bottom: 100px;
+}
+.bottom {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.bottom image {
+  width: 35rpx;
+  height: 30rpx;
+  vertical-align: text-bottom;
+  margin-right: 10rpx;
+}
+.bottom .left, .bottom .right {
+  font-size: 30rpx;
+  text-align: center;
+  width: 50%;
+  padding: 30rpx 0;
+}
+.bottom .left {
+  color: #fff;
+  background-color: #434343;
+}
+.bottom .right {
+  background-color: #ffdf00;
+}

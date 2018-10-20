@@ -1,0 +1,162 @@
+/* pages/group/index.wxss */
+.top {
+  font-size: 30rpx;
+  color: white;
+  background-color: #ff5353;
+  padding: 30rpx;
+}
+.top image {
+  width: 29rpx;
+  height: 35rpx;
+  vertical-align: text-bottom;
+  margin-right: 20rpx;
+}
+.group-user {
+  display: flex;
+  justify-content: center;
+}
+.group-user .user {
+  display: flex;
+  flex-direction: column;
+  padding: 30rpx;
+}
+.group-user .user image {
+  width: 103rpx;
+  height: 103rpx;
+}
+.group-user .user .avatar {
+  position: relative;
+}
+.group-user .user .avatar text {
+  font-size: 20rpx;
+  color: white;
+  background-color: #ff4d42;
+  position: absolute;
+  bottom: 5rpx;
+  left: 10rpx;
+  width: 80rpx;
+  border-radius: 20rpx;
+  text-align: center;
+}
+.group-user .user .nickname {
+  font-size: 20rpx;
+  width: 103rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  margin-top: 10rpx;  
+}
+.group-container {
+  text-align: center;
+}
+.group-container .hint {
+  font-size: 24rpx;
+}
+.group-container .hint text {
+  font-size: 36rpx;
+  color: #ff4d42;
+}
+.group-container .count-down:before, .group-container .count-down:after {
+  content: ' ';
+  background-color: #fcd2d0;
+  height: 1px;
+  width: 27%;
+  position: absolute;
+  top: 45%;
+}.group-container .count-down:before {
+  left: 0;
+}.group-container .count-down:after {
+  right: 0;
+}
+.group-container .count-down {
+  font-size: 24rpx;
+  color: #353535;
+  position: relative;
+  width: 70%;
+  margin: 0 auto;
+}
+.group-container .count-down text {
+  color: #ff4d42;
+  background-color: #fcd2d0;
+}
+.rule {
+  padding: 40rpx 0;
+}
+.rule .title, .share .title {
+  font-size: 30rpx;
+  color: #353535;
+  padding-bottom: 30rpx;
+}
+.rule .flow {
+  font-size: 24rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+}
+.rule .flow .step {
+  width: 120rpx;
+  height: 120rpx;
+  border: 1px solid #000;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 30rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+}
+.rule .flow .arrow-right {
+  border-top: 2px solid #000;
+  border-right: 2px solid #000;
+  width: 20rpx;
+  height: 20rpx;
+  transform: rotate(45deg);
+  margin: 0 20rpx 0 10rpx;
+}
+.share {
+  padding-bottom: 100px;
+}
+.share .user image {
+  width: 64rpx;
+  height: 64rpx;
+}
+.share .user {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 20rpx 0;
+  border-bottom: 1px solid #ececec;
+}
+.share .user .nickname, .share .user .count {
+  font-size: 20rpx;
+}
+.share .user .nickname {
+  width: 100rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0 30rpx 0 20rpx;
+}
+.share .user .count text {
+  color: #ff4d42;
+}
+.share .user .btn {
+  font-size: 24rpx;
+  color: #ffc018;
+  border: 1px solid #ffc018;
+  border-radius: 20rpx;
+  position: absolute;
+  right: 0;
+  padding: 5rpx 30rpx 0 30rpx;
+}
+.bottom {
+  font-size: 30rpx;
+  font-weight: bold;
+  text-align: center;
+  background-color: #ffdf00;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30rpx 0;
+}

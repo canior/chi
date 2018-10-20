@@ -1,0 +1,69 @@
+<!--pages/group/index.wxml-->
+<view class="top">
+  <image src="/images/bell.png"/>
+  <text>张三今天收入100元...  李四今天进账50元...</text>
+</view>
+
+<view class="container">
+  <view class="chi-item">
+    <view class="left"><image src="/images/demo/product-thumb.png"/></view>
+    <view class="right">
+      <view class="line title">【麦摄氏度】5瓶装 代餐 330毫升</view>
+      <view class="line desc">2人团 还剩1000份</view>
+      <view class="line chi-price-container">
+        <view class="price">拼团价￥<text>100</text></view>
+        <view class="freight">包邮</view>
+        <view class="ori-price">￥200</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="chi-reward-container">
+    <view class="reward">下单返现￥20</view>
+    <view class="detail" bindtap="toWhere?">每单皆有返现，查看详情></view>
+  </view>
+
+  <view class="group-container">
+    <view class="group-user">
+      <view class="user">
+        <view class="avatar"><image src="/images/demo/group-user.png"/><text>团长</text></view>
+        <view class="nickname">唐唐Tandy</view>
+      </view>
+      <view class="user">
+        <view class="avatar"><image src="/images/demo/group-who.png"/></view>
+        <view class="nickname">迪丽ShouldNone</view>
+      </view>
+    </view>
+    <view class="hint">仅剩<text>1</text>人，快呼唤小伙伴参加吧！</view>
+    <view class="count-down">剩余 <text class="hr">50</text>:<text class="min">00</text>:<text class="sec">00</text> 结束</view>
+  </view>
+
+  <view class="rule">
+    <view class="title">拼团玩法</view>
+    <view class="flow">
+      <view class="step"><text>分享订单\n或产品</text></view>
+      <view class="arrow-right"/>
+      <view class="step">好友下单</view>
+      <view class="arrow-right"/>
+      <view class="step">双方收益</view>
+    </view>
+  </view>
+</view>
+
+<view class="split-brand"/>
+
+<view class="container">
+  <view class="share">
+    <view class="title">谁看了你的拼团</view>
+    <view class="user" wx:for="12345" wx:key="index">
+      <image src="/images/demo/user-thumb.png"/>
+      <view class="nickname">唐唐TandyTandy</view>
+      <view class="count">已浏览<text>2</text>次</view>
+      <view class="btn">呼唤他</view>
+    </view>
+  </view>
+</view>
+
+<view class="bottom">
+  <text>邀请好友参团</text>
+</view>

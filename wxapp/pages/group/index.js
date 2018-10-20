@@ -1,42 +1,18 @@
-// pages/user/address/index.js
-const app = getApp()
+// pages/group/index.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    addresses: [],
+
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    //const user_id = options.id ? options.id : 1;
-    //this.getAddresses(user_id)
-  },
 
-  getAddresses: function(user_id) {
-    const that = this;
-    wx.request({
-      url: app.globalData.baseUrl + '/user/addresses/' + user_id,
-      data: {
-      },
-      success: (res) => {
-        if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
-          that.setData({
-            addresses: res.data.data
-          })
-        } else {
-          console.log('wx.request return error', res.statusCode);
-        }
-      },
-      fail(e) {
-      },
-      complete(e) { }
-    })
   },
 
   /**
