@@ -6,16 +6,17 @@
 
 namespace App\Service\Payment;
 
-use App\Service\Traits\WxTrait;
+use App\Service\Wx\WxTrait;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 
 /**
-* WxPay
+* WxPayment
 */
-class WxPay
+class WxPayment
 {
     use WxTrait;
+
     private $appId;
     private $appSecret;
     private $appKey;
@@ -29,7 +30,7 @@ class WxPay
     private $log;
 
     /**
-     * WxPay constructor.
+     * WxPayment constructor.
      * @param $config
      * @param LoggerInterface $log
      */

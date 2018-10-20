@@ -4,7 +4,7 @@
  * Date: 2017-09-08
  */
 
-namespace App\Service\Traits;
+namespace App\Service\Wx;
 
 trait WxTrait
 {

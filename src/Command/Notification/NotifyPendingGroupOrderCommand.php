@@ -35,7 +35,7 @@ class NotifyPendingGroupOrderCommand implements SerializableCommandInterface
      */
     public function serialize()
     {
-        // TODO: Implement serialize() method.
+        return "{groupOrderId:" . $this-> groupOrderId. " }";
     }
 
     /**
@@ -44,6 +44,6 @@ class NotifyPendingGroupOrderCommand implements SerializableCommandInterface
      */
     public function deserialize($json)
     {
-        // TODO: Implement deserialize() method.
+        return json_decode($json, true);
     }
 }

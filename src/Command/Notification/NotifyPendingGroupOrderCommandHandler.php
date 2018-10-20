@@ -12,6 +12,7 @@ namespace App\Command\Notification;
 use App\Command\AbstractCommandHandler;
 use App\Command\CommandInterface;
 use App\Repository\GroupOrderRepository;
+use App\Service\WxCommon;
 
 class NotifyPendingGroupOrderCommandHandler  extends AbstractCommandHandler
 {
@@ -42,10 +43,10 @@ class NotifyPendingGroupOrderCommandHandler  extends AbstractCommandHandler
         $toUser = $groupUserOrder->getUser()->getWxOpenId();
         $data = [];
         $emphasisKeyword = "";
-        
-        $messageArray = [];
 
-        //TODO sendMessage
+        $wxApi = new WxCommon(getenv('WX_APP_ID'), getenv('WX_APP_SECRET'));
+        $wxApi->sendMessage($toUser, $templateId, $page, $formId, $data, $emphasisKeyword);
 
+        //TODO 这里要判断如果发送失败怎么办
     }
 }

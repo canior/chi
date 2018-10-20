@@ -4,9 +4,9 @@
  * Date: 2017-09-08
  */
 
-namespace App\Service;
+namespace App\Service\Wx;
 
-use App\Service\Traits\WxTrait;
+use App\Service\Wx\WxTrait;
 use GuzzleHttp\Client;
 
 /**
@@ -15,30 +15,27 @@ use GuzzleHttp\Client;
  */
 class WxCommon
 {
+    const API_URL = 'https://api.weixin.qq.com';
+
     use WxTrait;
+
     private $appId;
     private $appSecret;
     private $appKey;
     private $mchId;
-    private $wxApiUrl = 'https://api.weixin.qq.com';
-    private $wxNotifyUrl = 'https://api.yunlishuju.com/wxapi/common/notify';
+    private $wxNotifyUrl;
 
-    public function __construct($config = [])
+    public function __construct($appId, $appSecret)
     {
-        $this->appId = $config['appid'];
-        $this->appSecret = $config['appsecret'];
-        if (isset($config['wxApiUrl'])) {
-            $this->wxApiUrl = $config['wxApiUrl'];
-        }
-        if (isset($config['wxNotifyUrl'])) {
-            $this->wxNotifyUrl = $config['wxNotifyUrl'];
-        }
+        $this->appId = $appId;
+        $this->appSecret = $appSecret;
     }
 
     /**
      * 通过code获取session
      * https://mp.weixin.qq.com/debug/wxadoc/dev/api/api-login.html#wxloginobject
      * @param
+     * @return array
      */
     public function getSessionByCode($code = '')
     {
@@ -49,7 +46,7 @@ class WxCommon
             ];
         }
 
-        $client = new Client(['base_uri' => $this->wxApiUrl]);
+        $client = new Client(['base_uri' => self::API_URL]);
         $info = [
             'appid' => $this->appId,
             'secret' => $this->appSecret,
@@ -93,7 +90,7 @@ class WxCommon
      */
     public function getAccessToken()
     {
-        $client = new Client(['base_uri' => $this->wxApiUrl]);
+        $client = new Client(['base_uri' => self::API_URL]);
         $url = "cgi-bin/token?grant_type=client_credential&appid={$this->appId}&secret={$this->appSecret}";
         $response = $client->get($url);
         $code = $response->getStatusCode(); // 200
@@ -103,13 +100,14 @@ class WxCommon
             $result = json_decode($body, true);
             return $result['access_token'];
         } else {
-            return false;
+            return false; //TODO 这里如果出问题了怎么办
         }
     }
 
     /**
      * 获取二维码
      * @param array $params 二维码包含的数据参数
+     * @return bool|string
      */
     public function getQrcode($accessToken, $params)
     {
@@ -117,7 +115,7 @@ class WxCommon
             return false;
         }
 
-        $client = new Client(['base_uri' => $this->wxApiUrl]);
+        $client = new Client(['base_uri' => self::API_URL]);
         $postInfo = [
             'scene' => urlencode( isset($params['scene']) ? $params['scene'] : '' ),
             'page' => isset($params['page']) ? $params['page'] : 'pages/index/index',
@@ -145,6 +143,7 @@ class WxCommon
      * 解密用户敏感数据
      * @param   $sessionKey
      * @param array $userInfo ($code, encryptedData, iv)
+     * @return int
      */
     public function getDecryptData($sessionKey, $userInfo)
     {
@@ -157,8 +156,6 @@ class WxCommon
      * @param $sessionKey
      * @param $encryptedData string 加密的用户数据
      * @param $iv string 与用户数据一同返回的初始向量
-     * @param $data string 解密后的原文
-     *
      * @return int 成功0，失败返回对应的错误码
      */
     private function decryptData($sessionKey, $encryptedData, $iv)
@@ -187,5 +184,48 @@ class WxCommon
             return ['err'=>'illegal_buffer_appid'];
         }
         return $data;
+    }
+
+
+    /**
+     * https://developers.weixin.qq.com/miniprogram/dev/api/open-api/template-message/sendTemplateMessage.html
+     * 发送消息通知接口
+     * 用户完成一次支付，小程序可以获得 3 次发送模板消息的机会。
+     * 用户提交一次表单，小程序可以获得 1 次发送模板消息的机会。
+     *
+     * @param string $openId
+     * @param int $templateId
+     * @param string $page
+     * @param int $formId
+     * @param array $keywordsMapping ex. ['keywords1' => ['value' => 'abc']]
+     * @param string $emphasisKeyword
+     * @return string
+     */
+    public function sendMessage(string $openId, int $templateId, string $page, int $formId, array $keywordsMapping = [], string $emphasisKeyword = null) : string {
+        $accessToken = $this->getAccessToken();
+
+        $client = new Client(['base_uri' => self::API_URL]);
+        $postInfo = [
+            'touser' => $openId,
+            'template_id' => $templateId,
+            'page' => $page,
+            'form_id' => $formId,
+            'data' => $keywordsMapping,
+            'emphasis_keyword' => $emphasisKeyword
+        ];
+        $url = "/cgi-bin/message/wxopen/template/send?access_token={$accessToken}";
+        $postStr = json_encode($postInfo);
+        $response = $client->post($url, [
+            'body' => $postStr,
+        ]);
+        $code = $response->getStatusCode(); // 200
+        $reason = $response->getReasonPhrase(); // OK
+        $body = $response->getBody()->getContents();
+
+        if($code === 200) {
+            return $body;
+        } else {
+            return "sending message error";
+        }
     }
 }
