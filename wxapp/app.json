@@ -2,8 +2,8 @@
   "pages":[    
     "pages/product/index",
     "pages/product/detail",
-
     "pages/group/index",
+    
     "pages/user/address/index",
     
     "pages/index/index",

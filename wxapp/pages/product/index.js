@@ -8,6 +8,7 @@ Page({
   data: {
     imgUrlPrefix: app.globalData.imgUrlPrefix,
     products: [],
+    banners: [],
   },
 
   /**
@@ -15,7 +16,7 @@ Page({
    */
   onLoad: function (options) {
     wx.setNavigationBarTitle({ title: app.globalData.appName })
-    //this.getProducts()
+    this.getProducts()
   },
 
   getProducts: function () {
@@ -28,14 +29,14 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           that.setData({
-              products: res.data.data.products
+              products: res.data.data.products,
+              banners: res.data.data.banners
           })
         } else {
           console.log('wx.request return error', res.statusCode);
         }
       },
-      fail(e) {
-      },
+      fail(e) {},
       complete(e) { }
     })
   },
@@ -58,7 +59,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    
+    
   },
 
   /**

@@ -10,8 +10,10 @@ namespace App\Controller\Api;
 
 use App\Entity\Product;
 use App\Entity\ProductReview;
+use App\Entity\ProjectMeta;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
+use App\Repository\ProjectMetaRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,11 +29,18 @@ class ProductController extends BaseController
      * @Route("/products/", name="productIndex", methods="GET")
      * @param Request $request
      * @param ProductRepository $productRepository
+     * @param ProjectMetaRepository $projectMetaRepository
      * @return Response
      */
-    public function indexAction(Request $request, ProductRepository $productRepository) : Response {
+    public function indexAction(Request $request, ProductRepository $productRepository, ProjectMetaRepository $projectMetaRepository) : Response {
         $bannersArray = [];
         $productsArray = [];
+
+        $projectMetas = $projectMetaRepository->findBy(['metaKey' => [ProjectMeta::HOME_BANNER_1, ProjectMeta::HOME_BANNER_2, ProjectMeta::HOME_BANNER_3]]);
+        foreach ($projectMetas as $projectMeta) {
+            $bannersArray[] = $projectMeta->getMetaValue();
+        }
+
         $products = $productRepository->findActiveProducts($request->query->getInt('page', 1), self::PAGE_LIMIT);
         foreach($products as $product) {
             $productsArray[] = $product->getArray();
@@ -48,7 +57,7 @@ class ProductController extends BaseController
     /**
      * 获取产品详情
      *
-     * @Route("/product/{id}", name="productDetail", methods="GET")
+     * @Route("/products/{id}", name="productDetail", methods="GET")
      * @param Request $request
      * @param Product $product
      * @return Response
@@ -60,14 +69,16 @@ class ProductController extends BaseController
     /**
      * 获取指定产品的评价，评价条数限制limit
      *
-     * @Route("/product/reviews/{id}", name="productReviews", methods="GET")
+     * @Route("/products/{id}/reviews", name="productReviews", methods="GET")
      * @param Request $request
      * @param Product $product
      * @param ProductReviewRepository $productReviewRepository
      * @return Response
      */
-    public function productReviewAction(Request $request, Product $product, ProductReviewRepository $productReviewRepository): Response {
-        $limit = $request->query->getInt('limit', 5);
+    public function productReviewIndexAction(Request $request, Product $product, ProductReviewRepository $productReviewRepository): Response {
+        $limit = $request->query->getInt('page', 1);
+        //TODO 这里要能刷新分页
+
         $productPreviews = $productReviewRepository->findBy(['product' => $product, 'status' => ProductReview::ACTIVE], ['id' => 'DESC'], $limit);
         $data = [];
         foreach($productPreviews as $productReview) {

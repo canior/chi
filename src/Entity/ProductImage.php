@@ -77,6 +77,7 @@ class ProductImage implements Dao
         return [
             'id' => $this->getId(),
             'fileId' => $this->getFile()->getId(),
+            'name' => 'cao',
         ];
     }
 }

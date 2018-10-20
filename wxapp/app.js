@@ -35,8 +35,8 @@ App({
   },
   globalData: {
     appName: 'i吃咖',
-    baseUrl: 'http://chi/wxapi',
-    imgUrlPrefix: 'http://chi/image/preview',
+    baseUrl: 'http://0.0.0.0:8000/wxapi',
+    imgUrlPrefix: 'http://0.0.0.0:8000/image/preview/',
     userInfo: null
   }
 })

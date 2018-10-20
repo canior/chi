@@ -92,6 +92,12 @@ class GroupUserOrder implements Dao
      */
     private $trackingNo;
 
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $prePayId;
+
     /**
      * @ORM\OneToMany(targetEntity="GroupUserOrderRewards", mappedBy="groupUserOrder", fetch="EXTRA_LAZY")
      */
@@ -451,6 +457,22 @@ class GroupUserOrder implements Dao
         }
 
         return $this;
+    }
+
+    /**
+     * @param null|string $prePayId
+     * @return GroupUserOrder
+     */
+    public function setPrePayId(?string $prePayId) : self {
+        $this->prePayId = $prePayId;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPrePayId() {
+        return $this->prePayId;
     }
 
     /**
