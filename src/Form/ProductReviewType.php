@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\GroupUserOrder;
 use App\Entity\Product;
 use App\Entity\ProductReview;
+use App\Form\Type\DropzoneType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,6 +31,13 @@ class ProductReviewType extends AbstractType
                 'attr' => [
                     'class' => 'chosen'
                 ]
+            ])
+            ->add('images', DropzoneType::class, [
+                'label' => '图片',
+                'maxFiles' => 5,
+                'priority' => false,
+                'data_class' => null,
+                'mapped' => false,
             ])
         ;
     }
