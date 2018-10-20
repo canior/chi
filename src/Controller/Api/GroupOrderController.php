@@ -81,7 +81,7 @@ class GroupOrderController extends BaseController
             'paySign' => $paySign,
             'groupOrder' => $groupOrder->getArray()
         ];
-        
+
         return $this->responseJson('success', 200, $data);
     }
 
