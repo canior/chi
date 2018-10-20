@@ -45,7 +45,7 @@ class UserController extends BaseController
             $result = $wxApi->getSessionByCode($code);
 
             if ($result['status']) {
-                $openId = $result['data']['openId'];
+                $openId = $result['data']['openid'];
                 $user = $userRepository->findOneBy(['wxOpenId' => $openId]);
                 if ($user == null) {
                     $user = new User();
