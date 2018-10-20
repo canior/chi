@@ -75,12 +75,12 @@
   <view class="bottom">
     <view class="home" bindtap="toHome">
       <image src="/images/home2.png"/>
-      <text>首页</text>
+      <text>分享</text>
     </view>
     <button class="service btn-clear" open-type='contact'>
       <image src="/images/service.png"/>
       <text>客服</text>
     </button>
-    <view class="btn">￥100 发起拼团</view>
+    <view class="btn" bindtap="openGroup">￥100 发起拼团</view>
   </view>
 </view>

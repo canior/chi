@@ -11,7 +11,7 @@
 
   <view class="product-container">
   
-    <view class="product" wx:for="{{products}}" wx:for-item="product" wx:key="id" bindtap="toProductDetail">
+    <view class="product" wx:for="{{products}}" wx:for-item="product" wx:key="id" bindtap="toProductDetail" data-id="{{product.id}}">
       
       <view class="img">
             <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
@@ -31,7 +31,7 @@
         <view class="price">拼团价￥<text>{{product.price}}</text></view>
         <view class="freight">包邮</view>
         <view class="ori-price">￥{{product.originalPrice}}</view>
-        <view class="btn" bindtap="toProductDetail">我要拼团</view>
+        <view class="btn" catchtap="toProductDetail" data-id="{{product.id}}">我要拼团</view>
       </view>      
     </view>
 

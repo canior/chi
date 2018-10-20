@@ -6,6 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    isLogin: false,
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
     product: [],
     productReviews: [],
@@ -19,10 +20,14 @@ Page({
     const productId = options.id ? options.id : 1;
     this.getProduct(productId);
     this.getProductReview(productId);
+    this.setData({
+      isLogin: app.globalData.isLogin
+    })    
   },
 
   getProduct: function (id) {
     const that = this;
+    console.log(app.globalData.baseUrl + '/products/' + id);
     wx.request({
       url: app.globalData.baseUrl + '/products/' + id,
       data: {
@@ -72,6 +77,36 @@ Page({
     })
   },
 
+  openGroup: function(e) {
+    if (this.data.isLogin) {
+      this.createGroup();
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },
+  createGroup: function() {
+    const that = this;
+    wx.request({
+      url: app.globalData.baseUrl + '/groupOrder/create',
+      data: {
+        productId: this.data.product.id,
+        thirdSession: wx.getStorageSync('thirdSession'),
+      },
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
+    })
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -83,9 +118,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    wx.hideLoading();
-    this.getProduct();
-    this.getProductReview();
+
   },
 
   /**
