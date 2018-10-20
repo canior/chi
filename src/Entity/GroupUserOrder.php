@@ -94,7 +94,7 @@ class GroupUserOrder implements Dao
 
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     private $prePayId;
 

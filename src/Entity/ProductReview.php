@@ -50,7 +50,7 @@ class ProductReview implements Dao
     private $review;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ProductReviewImage", mappedBy="productReview")
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductReviewImage", mappedBy="productReview", orphanRemoval=true, cascade={"persist","remove"})
      */
     private $productReviewImages;
 

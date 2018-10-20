@@ -2,6 +2,7 @@
 
 namespace App\Controller\Backend;
 
+use App\Command\Product\Review\CreateOrUpdateProductReviewImagesCommand;
 use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Form\ProductReviewType;
@@ -69,8 +70,23 @@ class ProductReviewController extends BackendController
             $em = $this->getDoctrine()->getManager();
             $em->persist($productReview);
             $em->flush();
+
+            try {
+                $images = isset($request->request->get('product_review')['images']) ? $request->request->get('product_review')['images'] : [];
+                $imagesCommand = new CreateOrUpdateProductReviewImagesCommand($productReview->getId(), $images);
+                $this->getCommandBus()->handle($imagesCommand);
+            } catch (\Exception $e) {
+                $this->getLog()->error('can not run CreateOrUpdateProductReviewImagesCommand because of' . $e->getMessage());
+                if ($this->isDev()) {
+                    dump($e->getFile());
+                    dump($e->getMessage());
+                    die;
+                }
+                return new Response('页面错误', 500);
+            }
+
             $this->addFlash('notice', '添加成功');
-            return $this->redirectToRoute('product_review_index');
+            return $this->redirectToRoute('product_review_info', ['id' => $productReview->getProduct()->getId()]);
         }
 
         return $this->render('backend/product_review/new.html.twig', [
@@ -86,12 +102,44 @@ class ProductReviewController extends BackendController
     public function edit(Request $request, ProductReview $productReview): Response
     {
         $form = $this->createForm(ProductReviewType::class, $productReview);
+
+        // init images
+        if (!$productReview->getProductReviewImages()->isEmpty()) {
+            $images = [];
+            foreach ($productReview->getProductReviewImages() as $image) {
+                $images[$image->getImageFile()->getId()] = [
+                    'id' => $image->getId(),
+                    'fileId' => $image->getImageFile()->getId(),
+                    'name' => $image->getImageFile()->getName(),
+                    'size' => $image->getImageFile()->getSize()
+                ];
+            }
+            $form->get('images')->setData($images);
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $images = isset($request->request->get('product_review')['images']) ? $request->request->get('product_review')['images'] : [];
+                $imagesCommand = new CreateOrUpdateProductReviewImagesCommand($productReview->getId(), $images);
+                $this->getCommandBus()->handle($imagesCommand);
+            } catch (\Exception $e) {
+                $this->getLog()->error('can not run CreateOrUpdateProductReviewImagesCommand because of' . $e->getMessage());
+                if ($this->isDev()) {
+                    dump($e->getFile());
+                    dump($e->getMessage());
+                    die;
+                }
+                return new Response('页面错误', 500);
+            }
+
+            $productReview->setUpdatedAt(time());
+
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');
-            return $this->redirectToRoute('product_review_edit', ['id' => $productReview->getId()]);
+
+            return $this->redirectToRoute('product_review_edit', array_merge(['id' => $productReview->getId()], $request->query->all()));
         }
 
         return $this->render('backend/product_review/edit.html.twig', [

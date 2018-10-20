@@ -59,8 +59,10 @@
                                 {% if maxFiles > 1 %}
                                 file._fileId = Dropzone.createElement('<input name="{{ full_name }}[' + json.fileId + '][fileId]" type="hidden" value="' + json.fileId + '"/>');
                                 file.previewElement.appendChild(file._fileId);
+                                {% if priority %}
                                 file._priority = Dropzone.createElement('<div><label>优先级</label><br/><input class="input-sm" style="width:120px;" name="{{ full_name }}[' + json.fileId + '][priority]" type="number" value="0"/></div>');
                                 file.previewElement.appendChild(file._priority);
+                                {% endif %}
                                 {% else %}
                                 file._fileId = Dropzone.createElement('<input name="{{ full_name }}" type="hidden" value="' + json.fileId + '"/>');
                                 file.previewElement.appendChild(file._fileId);
@@ -89,8 +91,10 @@
                                     file.previewElement.appendChild(file._id);
                                     file._fileId = Dropzone.createElement('<input name="{{ full_name }}[' + file.fileId + '][fileId]" type="hidden" value="' + file.fileId + '"/>');
                                     file.previewElement.appendChild(file._fileId);
+                                    {% if priority %}
                                     file._priority = Dropzone.createElement('<div><label>优先级</label><br/><input class="input-sm" style="width:120px;" name="{{ full_name }}[' + file.fileId + '][priority]" type="number" value="' + file.priority + '"/></div>');
                                     file.previewElement.appendChild(file._priority);
+                                    {% endif %}
                                     {% else %}
                                     file._fileId = Dropzone.createElement('<input name="{{ full_name }}" type="hidden" value="' + file.id + '"/>');
                                     file.previewElement.appendChild(file._fileId);

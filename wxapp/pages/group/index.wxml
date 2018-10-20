@@ -64,6 +64,21 @@
   </view>
 </view>
 
-<view class="bottom">
+<view class="bottom" bindtap="showModal" wx:if="{{!showModal}}">
   <text>邀请好友参团</text>
+</view>
+<view class="mask" wx:if="{{showModal}}" bindtap="hideModal"/>
+<view class="modal" wx:if="{{showModal}}">
+  <view class="title">分享到</view>
+  <view class="body">
+    <button class="item" open-type="share">
+      <image src="/images/share-wx.png"/><text>微信好友</text>
+    </button>
+    <button class="item">
+      <image src="/images/share-moments.png"/><text>生成朋友圈图片</text>
+    </button>
+  </view>
+  <view class="foot" bindtap="hideModal">
+    <icon type="clear" size="20"/>
+  </view>
 </view>

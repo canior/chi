@@ -5,7 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    showModal: false,
   },
 
   /**
@@ -13,6 +13,17 @@ Page({
    */
   onLoad: function (options) {
 
+  },
+
+  showModal: function(e) {
+    this.setData({
+      showModal: true
+    })
+  },
+  hideModal: function (e) {
+    this.setData({
+      showModal: false
+    })
   },
 
   /**
@@ -61,6 +72,10 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-
+    return {
+      title: "分享标题",
+      imageUrl: '',
+      path: ''
+    }
   }
 })
