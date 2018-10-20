@@ -105,7 +105,7 @@ class WxPayment
                 return [
                     'status' => true,
                     'prepay_id' => $result['prepay_id'],
-                    'nonce_str' => $result['none_str'],
+                    'nonce_str' => $result['nonce_str'],
                     'sign' => $result['sign']
                 ];
             } else {

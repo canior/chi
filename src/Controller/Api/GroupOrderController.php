@@ -64,7 +64,7 @@ class GroupOrderController extends BaseController
         $wxPaymentApi = new WxPayment($this->getLog());
         $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
         $prePayId = $result['prepay_id'];
-        $noneStr = $result['none_str'];
+        $nonceStr = $result['nonce_str'];
         $paySign = $result['sign'];
 
         $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
@@ -75,7 +75,7 @@ class GroupOrderController extends BaseController
 
         $data = [
             'timeStamp' => time(),
-            'noneStr' => $noneStr,
+            'nonce_str' => $nonceStr,
             'package' => $prePayId,
             'signType' => 'MD5',
             'paySign' => $paySign,
