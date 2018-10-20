@@ -59,7 +59,7 @@ class UserController extends BaseController
                     $thirdSession = $userId;//生成我们自己的第三方session
                     $msg = "login_success";
                 } else {
-                    $msg = "has_logined"
+                    $msg = "has_logined";
                 }
             } else {
                 $msg = "login_failed";
