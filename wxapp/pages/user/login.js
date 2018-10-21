@@ -20,7 +20,7 @@ Page({
   getUserInfo: function (e) {
     let userInfo = e.detail.userInfo
     if (userInfo) {// 用户接受授权
-      console.log('login', e.detail.userInfo)
+      //console.log('login', e.detail.userInfo)
       app.globalData.userInfo = e.detail.userInfo;
       if (app.globalData.isLogin) {// 有thirdSession,登录成功
         wx.navigateBack()
@@ -30,7 +30,7 @@ Page({
         });
       }
     } else {// 用户拒绝授权
-      console.log('login', '授权被拒绝');
+      //console.log('login', '授权被拒绝');
       wx.showModal({
         title: '用户未授权',
         content: '如需使用全部功能，请重新登录',
