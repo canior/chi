@@ -181,13 +181,13 @@ class GroupOrderController extends BaseController
             $templateId = "9RLVQOC7gP3qJipiFX2efKvz2oSYuJRs0dDaY2UeDIA";
             $page = "pages/group/index?id=" . $groupOrderId;
             $toUser = $groupUserOrder->getUser()->getWxOpenId();
-            $data = [['keyword1' => ['value' => $groupOrder->getProduct()->getTitle()]],
-                ['keyword2' => ['value' => $groupOrder->getProduct()->getPrice()]],
-                ['keyword3' => ['value' => 1]],
-                ['keyword4' => ['value' => $groupOrder->getExpiredAt(true)]]];
+            $data = ['keyword1' => ['value' => $groupOrder->getProduct()->getTitle()],
+                'keyword2' => ['value' => $groupOrder->getProduct()->getPrice()],
+                'keyword3' => ['value' => 1],
+                'keyword4' => ['value' => '2019-01-01 12:12:12']];
             $emphasisKeyword = "keyword3.DATA";
 
-            $wxApi = new WxCommon($this->log);
+            $wxApi = new WxCommon($this->getLog());
             $wxApi->sendMessage($toUser, $templateId, $page, $formId, $data, $emphasisKeyword);
 
             //$command = new NotifyPendingGroupOrderCommand($groupOrder->getId());

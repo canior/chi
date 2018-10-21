@@ -22,9 +22,9 @@
     <view class="sold">已售1234份</view>
   </view>
 
-  <view class="name">【麦摄氏度】5瓶装 代餐 330毫升</view>
+  <view class="name">{{product.title}}</view>
 
-  <view class="desc">1瓶饮料取代“早餐+咖啡”</view>
+  <view class="desc">{{product.shortDescription}}</view>
 
   <view class="chi-reward-container">
     <view class="reward">下单返现￥{{product.rewards}}</view>
@@ -51,18 +51,18 @@
 
   <view class="review-container">
     <view class="title"><view>商品评论（10）</view><view class="more">查看更多></view></view>
-    <view class="review" wx:for="123" wx:key="index">
+    <view class="review" wx:for="{{productReviews}}" wx:key="index" wx:for-item="productReview">
       <view class="user">
-        <view class="avatar"><image src="/images/user-avatar.png"/></view>
+        <view class="avatar"><image src="{{productReview.user.avatarUrl}}"/></view>
         <view class="info">
-          <view class="nickname">张三</view>
-          <view class="date">2018-08-24</view>
+          <view class="nickname">{{productReview.user.nickname}}</view>
+          <view class="date">{{productReview.createdAt}}</view>
         </view>
       </view>
-      <view class="review-text">评论内容共显示三行评论内容共显示三行评论内容共显示三行评论内容共显示三行评论内容共显示三行评论内容共显示三行评论内容共显示三行！</view>
+      <view class="review-text">{{productReview.review}}</view>
       <view class="imgs">
-        <block wx:for="123" wx:key="index">
-          <image src="/images/demo/product-review.jpg"/>
+        <block wx:for="{{productReview.productReviewImages}}" wx:key="index" wx:for-item="productReviewImage">
+          <image src="{{imgUrlPrefix + '/' + productReviewImage.fileId}}"/>
         </block>
       </view>
       <view class="split-line"/>      
@@ -78,6 +78,6 @@
       <image src="/images/service.png"/>
       <text>客服</text>
     </button>
-    <button class="btn" bindtap="openGroup" disabled="{{btnDisabled}}">￥100 发起拼团</button>
+    <button class="btn" bindtap="openGroup" disabled="{{btnDisabled}}">￥{{product.price}} 开团 (单买价￥{{product.originalPrice}})</button>
   </view>
 </view>

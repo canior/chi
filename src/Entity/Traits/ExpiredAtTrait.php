@@ -27,6 +27,10 @@ trait ExpiredAtTrait
         return $this->expiredAt;
     }
 
+    /**
+     * @param int $expiredAt|null
+     * @return $this
+     */
     public function setExpiredAt(?int $expiredAt): self
     {
         $this->expiredAt = $expiredAt;
