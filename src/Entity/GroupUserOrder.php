@@ -581,7 +581,8 @@ class GroupUserOrder implements Dao
             'product' => $this->getGroupOrder()->getProduct()->getArray(),
             'rewards' => $this->getOrderRewards(),
             'isMasterOrder'=> $this->isMasterOrder(),
-            'wxPrePayId' => $this->getPrePayId()
+            'wxPrePayId' => $this->getPrePayId(),
+            'user' => $this->getUser()->getArray()
         ];
     }
 }

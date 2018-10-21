@@ -3,6 +3,8 @@ namespace App\Controller\Api;
 
 use App\Entity\User;
 use App\Entity\UserAddress;
+use App\Repository\GroupOrderRepository;
+use App\Repository\GroupUserOrderRepository;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
 use App\Service\Wx\WxCommon;
@@ -79,44 +81,175 @@ class UserController extends BaseController
 
 
     /**
-     *
+     * 我的拼团列表
+     * @Route("/user/groupOrders/", name="myGroupOrders", methods="GET")
      * @param Request $request
+     * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
      */
-    public function getUsersAction(Request $request) {
+    public function getGroupOrdersAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
 
         $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
 
-        $userId = isset($data['userId']) ? $data['userId'] : null;
-        $skillId = isset($data['skillId']) ? $data['skillId'] : null;
-        $gender = isset($data['gender']) ? $data['gender'] : null;
-        $regionId = isset($data['regionId']) ? $data['regionId'] : null;
-        $skillLevelId = isset($data['skillLevelId']) ? $data['skillLevelId'] : null;
-        $page = isset($data['page']) ? $data['page'] : null;
-        $pageLimit = isset($data['pageLimit']) ? $data['pageLimit'] : null;
+        $groupOrdersArray = [];
+        $groupOrders = $groupUserOrderRepository->findBy(['user' => $user]);
+        foreach ($groupOrders as $groupOrder) {
+            $groupOrdersArray[] = $groupOrder->getArray();
+        }
 
-        $usersArray = $this->getDataAccess()->getUsersJson($userId, $regionId, $skillId, $gender, $skillLevelId);
+        return $this->responseJson('success', 200, [
+            'groupOrders' => $groupOrdersArray
+        ]);
+    }
 
-        return $this->responseJson(null, 200, $usersArray);
+    /**
+     * 我的拼团
+     * @Route("/user/groupOrders/{groupOrderId}", name="myGroupOrder", methods="GET")
+     * @param Request $request
+     * @param $groupOrderId
+     * @param GroupOrderRepository $groupOrderRepository
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @return Response
+     */
+    public function getGroupOrderAction(Request $request, $groupOrderId, GroupOrderRepository $groupOrderRepository, GroupUserOrderRepository $groupUserOrderRepository) : Response {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+        $groupOrder = $groupOrderRepository->find($groupOrderId);
+
+        $groupUserOrder = $groupUserOrderRepository->find(['user' => $user, 'groupOrder' => $groupOrder]);
+        $groupUserOrderArray = $groupUserOrder->getArray();
+
+        return $this->responseJson('success', 200, [
+            'groupUserOrder' => $groupUserOrderArray
+        ]);
+    }
+
+    /**
+     * 确认收货
+     * @Route("/user/groupOrders/{groupOrderId}", name="updateMyGroupOrder", methods="PUT")
+     * @param Request $request
+     * @param $groupOrderId
+     * @param GroupOrderRepository $groupOrderRepository
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @return Response
+     */
+    public function updateGroupOrderAction(Request $request, $groupOrderId, GroupOrderRepository $groupOrderRepository, GroupUserOrderRepository $groupUserOrderRepository) : Response {
+        return $this->responseJson('success', 200, []);
+    }
+
+    /**
+     * 添加评论
+     * @Route("/user/groupOrders/{groupOrderId}", name="updateMyGroupOrder", methods="GET")
+     * @param Request $request
+     * @param $groupOrderId
+     * @param GroupOrderRepository $groupOrderRepository
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @return Response
+     */
+    public function addProductReviewAction(Request $request, $groupOrderId, GroupOrderRepository $groupOrderRepository, GroupUserOrderRepository $groupUserOrderRepository) : Response {
+        return $this->responseJson('success', 200, []);
+    }
+
+
+
+    /**
+     * 获取用户收货地址列表
+     *
+     * @Route("/user/addresses", name="listUserAddresses", methods="GET")
+     * @param Request $request
+     * @param UserAddressRepository $userAddressRepository
+     * @return Response
+     */
+    public function listUserAddressesAction(Request $request, UserAddressRepository $userAddressRepository): Response {
+
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        $userAddresses = $userAddressRepository->findBy(['user' => $user, 'isDeleted' => false], ['id' => 'DESC']);
+
+        $userAddressesArray = [];
+        foreach($userAddresses as $userAddress) {
+            $userAddressesArray[] = $userAddress->getArray();
+        }
+        return $this->responseJson('success', 200, [
+            'userAddresses' => $userAddressesArray
+        ]);
     }
 
     /**
      * 获取用户收货地址
      *
-     * @Route("/user/addresses/{id}", name="userAddresses", methods="GET")
+     * @Route("/user/addresses/{$userAddressId}", name="getUserAddress", methods="GET")
      * @param Request $request
-     * @param User $user
+     * @param $userAddressId
      * @param UserAddressRepository $userAddressRepository
      * @return Response
      */
-    public function userAddressesAction(Request $request, User $user, UserAddressRepository $userAddressRepository): Response {
-        $userAddresses = $userAddressRepository->findBy(['user' => $user, 'isDeleted' => false], ['id' => 'DESC']);
-        $data = [];
-        foreach($userAddresses as $userAddress) {
-            $data[] = $userAddress->getArray();
-        }
-        return $this->responseJson('success', 200, $data);
+    public function getUserAddressAction(Request $request, $userAddressId, UserAddressRepository $userAddressRepository): Response {
+
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        $userAddress = $userAddressRepository->find($userAddressId);
+
+        return $this->responseJson('success', 200, [
+            'userAddresses' => $userAddress->getArray()
+        ]);
     }
+
+    /**
+     * 添加用户收货地址
+     *
+     * @Route("/user/addresses", name="addUserAddress", methods="POST")
+     * @param Request $request
+     * @param $userAddressId
+     * @param UserAddressRepository $userAddressRepository
+     * @return Response
+     */
+    public function addUserAddressAction(Request $request, $userAddressId, UserAddressRepository $userAddressRepository): Response {
+
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        //TODO
+
+        $userAddress = $userAddressRepository->find($userAddressId);
+
+        return $this->responseJson('success', 200, [
+            'userAddresses' => $userAddress->getArray()
+        ]);
+    }
+
+    /**
+     * 更新用户收货地址
+     *
+     * @Route("/user/addresses/{$userAddressId}", name="updateUserAddress", methods="PUT")
+     * @param Request $request
+     * @param $userAddressId
+     * @param UserAddressRepository $userAddressRepository
+     * @return Response
+     */
+    public function updateUserAddressAction(Request $request, $userAddressId, UserAddressRepository $userAddressRepository): Response {
+
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        $userAddress = $userAddressRepository->find($userAddressId);
+
+        //TODO
+
+        return $this->responseJson('success', 200, [
+            'userAddresses' => $userAddress->getArray()
+        ]);
+    }
+
 
 
 }
