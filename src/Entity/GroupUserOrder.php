@@ -132,7 +132,7 @@ class GroupUserOrder implements Dao
         $this->setUpdatedAt();
         $this->setCreated();
         $this->setUnPaid();
-        $this->setTotal($this->getGroupOrder()->getProduct()->getPrice());
+        $this->setTotal($groupOrder->getProduct()->getPrice());
         $this->setOrderRewards(0);
 
     }

@@ -115,7 +115,7 @@ class GroupOrderController extends BaseController
         //微信提交支付
         $body = "create order"; //TODO 开团信息要怎么写
         $wxPaymentApi = new WxPayment($this->getLog());
-        $this->getLog()->info("join group user order: " . $groupUserOrder->getId() . $groupUserOrder->getTotal());
+        $this->getLog()->info("join group user order: id=" . $groupUserOrder->getId() .  ' total=' . $groupUserOrder->getTotal());
         $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
         $prePayId = $result['prepay_id'];
         $prePayInfo = $wxPaymentApi->getOrderDataToWxApp($prePayId);
