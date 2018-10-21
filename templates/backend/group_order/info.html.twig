@@ -1,0 +1,293 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}ProductReview{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4">
+                            <!-- BAR CHART -->
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">拼团详情</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="chart" style="height: 200px;">
+                                        <div class="box box-solid">
+                                            <div class="box-body">
+                                                <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
+                                                    {{ group_order.id }}
+                                                </h4>
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <div class="clearfix">
+                                                            <p class="pull-right">
+                                                                <a href="{{ path('group_order_index', {id: group_order.id}) }}"
+                                                                   class="btn btn-info btn-sm ad-click-event">查看</a>
+                                                            </p>
+
+                                                            <h4 style="margin-top: 0">拼团创建时间 ─ {{ group_order.createdAt }}</h4>
+                                                            <h4 style="margin-top: 0">拼团结束时间 ─ {{ group_order.completedAt }}</h4>
+                                                            <h4 style="margin-top: 0">拼团打开人数 ─ TODO:???</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            <!-- BAR CHART -->
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">产品详情</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="chart" style="height: 200px;">
+                                        <div class="box box-solid">
+                                            <div class="box-body">
+                                                <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
+                                                    {{ group_order.product.title }}
+                                                </h4>
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        {% if group_order.product.productImages.count %}
+                                                            <a href="{{ path('product_edit', {id: group_order.product.id}) }}"
+                                                               class="ad-click-event">
+                                                                <img src="{{ path('imagePreview', {fileId: group_order.product.productImages.first.file.id}) }}"
+                                                                     alt="MaterialPro" class="media-object"
+                                                                     style="width: 150px;height: auto;border-radius: 4px;box-shadow: 0 1px 3px rgba(0,0,0,.15);">
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <div class="clearfix">
+                                                            <p class="pull-right">
+                                                                <a href="{{ path('product_edit', {id: group_order.product.id}) }}"
+                                                                   class="btn btn-info btn-sm ad-click-event">查看详情</a>
+                                                            </p>
+
+                                                            <h4 style="margin-top: 0">产品ID ─ {{ group_order.product.id }}</h4>
+                                                            <h4 style="margin-top: 0">产品价格 ─ {{ group_order.product.price }}</h4>
+
+                                                            <p>{{ macros.cut(group_order.product.shortDescription, 50) }}</p>
+                                                            <p style="margin-bottom: 0">
+                                                                <i class="fa fa-spinner margin-r5"></i> {{ group_order.product.statusText }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            <!-- BAR CHART -->
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">拼团状态</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="chart" style="height: 200px;">
+                                        {{ form_start(form) }}
+                                        {{ form_widget(form) }}
+                                        <button class="btn btn-primary">{{ button_label|default('Update') }}</button>
+                                        {{ form_end(form) }}
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <!-- BAR CHART -->
+                            <div class="box box-warning">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">订单信息</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th width="5%">订单ID</th>
+                                                <th width="5%">用户ID</th>
+                                                <th width="10%">角色</th>
+                                                <th width="10%">产品ID</th>
+                                                <th width="10%">产品名</th>
+                                                <th width="10%">产品价格</th>
+                                                <th width="10%">订单状态</th>
+                                                <th width="10%">支付状态</th>
+                                                <th width="10%">支付金额</th>
+                                                <th width="10%">创建时间</th>
+                                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% if group_order.groupUserOrders.count %}
+                                                {% for item in group_order.groupUserOrders %}
+                                                    <tr>
+                                                        <td>{{ item.id }}</td>
+                                                        <td>{{ item.user.id }}</td>
+                                                        <td>{{ item.role }}</td>
+                                                        <td>{{ item.groupOrder.product.id|default }}</td>
+                                                        <td>{{ item.groupOrder.product.title|default }}</td>
+                                                        <td>{{ item.groupOrder.product.price|number_format }}</td>
+                                                        <td>{{ item.statusText }}</td>
+                                                        <td>{{ item.paymentStatusText }}</td>
+                                                        <td>{{ item.total|number_format }}</td>
+                                                        <td>{{ item.createdAt }}</td>
+                                                        <td class="text-center">
+                                                            <div class="btn-group">
+                                                                {#<a href="{{ path('group_user_order_edit', {id: item.id}) }}"#}
+                                                                   {#title="修改">#}
+                                                                    {#<span class="glyphicon glyphicon-edit"></span>#}
+                                                                {#</a>#}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="11" class="alert alert-warning">no records found</td>
+                                                </tr>
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /table -->
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <div class="col-sm-12 col-md-12">
+                            <!-- BAR CHART -->
+                            <div class="box box-success">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">用户分享</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th width="10%">用户ID</th>
+                                                <th width="10%">分享源</th>
+                                                <th width="10%">打开时间</th>
+                                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% if group_order.userShares is defined %}
+                                                {% for item in group_order.userShares %}
+                                                    <tr>
+                                                        <td>{{ item.user.id }}</td>
+                                                        <td>{{ item.parentUser.id|default }}</td>
+                                                        <td>{{ item.createdAt }}</td>
+                                                        <td class="text-center">
+                                                            <div class="btn-group">
+                                                                {#<a href="{{ path('product_review_edit', {id: item.id, productId: app.request.attributes.get('id')}) }}"#}
+                                                                   {#title="修改">#}
+                                                                    {#<span class="glyphicon glyphicon-edit"></span>#}
+                                                                {#</a>#}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="4" class="alert alert-danger">TODO: 如何获取用户分享？</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="4" class="alert alert-warning">no records found</td>
+                                                </tr>
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /table -->
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                    </div>
+                    <!-- /row -->
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: 'ProductReview'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include '/backend/includes/delete.js.html.twig' with {title: 'ProductReview'} %}
+{% endblock %}

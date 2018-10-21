@@ -104,7 +104,7 @@ class BackendController extends DefaultController
             ]
         ],
         [
-            'path' => 'backendIndex',
+            'path' => 'group_order_index',
             'name' => '拼团管理',
             'icon' => 'fa fa-shopping-bag',
             'active' => false,
@@ -112,10 +112,10 @@ class BackendController extends DefaultController
             'subMenus' => [
                 [
                     'path' => [
-                        '_twig_error_test',
+                        'group_order_index',
+                        'group_order_info',
                     ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:拼团订单',
+                    'name' => '拼团订单',
                     'icon' => 'fa fa-list-ol',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',

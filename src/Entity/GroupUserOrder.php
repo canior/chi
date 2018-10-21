@@ -53,6 +53,8 @@ class GroupUserOrder implements Dao
         self::REFUNDED => '已退款'
     ];
 
+    const GROUP_MASTER = '团长';
+    const GROUP_MEMBER = '团员';
 
     /**
      * @ORM\ManyToOne(targetEntity="GroupOrder", inversedBy="groupUserOrders")
@@ -559,6 +561,13 @@ class GroupUserOrder implements Dao
      */
     public function isMasterOrder() : bool {
         return $this->getUser()->getId() == $this->getGroupOrder()->getUser()->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getRole(): string {
+        return $this->isMasterOrder() ? self::GROUP_MASTER : self::GROUP_MEMBER;
     }
 
     /**

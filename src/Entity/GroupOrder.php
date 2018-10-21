@@ -7,7 +7,6 @@ use App\Entity\Traits\ExpiredAtTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\StatusTrait;
 use App\Entity\Traits\UpdatedAtTrait;
-use App\Repository\GroupUserOrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -219,6 +218,17 @@ class GroupOrder implements Dao
      */
     public function isCompleted() : bool {
         return self::COMPLETED == $this->getStatus();
+    }
+
+    /**
+     * Get completed at
+     *
+     * @param bool $formatted
+     * @return int
+     */
+    public function getCompletedAt($formatted = true)
+    {
+        return $this->isCompleted() ? $this->getUpdatedAt($formatted) : null;
     }
 
     public function setExpired() : self {

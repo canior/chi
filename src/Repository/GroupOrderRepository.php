@@ -19,32 +19,39 @@ class GroupOrderRepository extends ServiceEntityRepository
         parent::__construct($registry, GroupOrder::class);
     }
 
-//    /**
-//     * @return Group[] Returns an array of Group objects
-//     */
-    /*
-    public function findByExampleField($value)
+    public function findGroupOrdersQueryBuilder($id = null, $groupUserOrderId = null, $userId = null, $productName = null, $status = null)
     {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('g.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $query = $this->createQueryBuilder('go');
 
-    /*
-    public function findOneBySomeField($value): ?Group
-    {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ($id) {
+            $query->where('go.id = :id')
+                ->setParameter('id', $id);
+        }
+
+        if ($groupUserOrderId || $userId) {
+            $query->leftJoin('go.groupUserOrders', 'guo');
+            if ($groupUserOrderId) {
+                $query->andWhere('guo.id = :groupUserOrderId')
+                    ->setParameter('groupUserOrderId', $groupUserOrderId);
+            }
+
+            if ($userId) {
+                $query->andWhere('guo.user = :userId')
+                    ->setParameter('userId', $userId);
+            }
+        }
+
+        if ($productName) {
+            $literal = $query->expr()->literal("%$productName%");
+            $query->leftJoin('go.product', 'p')
+                ->andWhere($query->expr()->like('p.title', $literal));
+        }
+
+        if ($status) {
+            $query->andWhere('go.status = :status')
+                ->setParameter('status', $status);
+        }
+
+        return $query->orderBy('go.id', 'DESC');
     }
-    */
 }

@@ -1,0 +1,130 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}GroupOrder{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <form class="cmxform" id="myForm">
+                            <div class="col-md-2 form-group">
+                                <label>拼团ID</label>
+                                <input type="number" name="groupOrderId" class="form-control" value="{{ form.groupOrderId }}"
+                                       placeholder="按 拼团ID 查询">
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>订单ID</label>
+                                <input type="number" name="groupUserOrderId" class="form-control" value="{{ form.groupUserOrderId }}"
+                                       placeholder="按 订单ID 查询">
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>拼团用户ID</label>
+                                <input type="number" name="userId" class="form-control" value="{{ form.userId }}"
+                                       placeholder="按 拼团用户ID 查询">
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>产品名</label>
+                                <input type="text" name="productName" class="form-control" value="{{ form.productName }}"
+                                       placeholder="按 产品名 查询">
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>状态</label>
+                                <select name="status" class="form-control chosen">
+                                {% for status, text in statuses %}
+                                    <option value="{{ status }}"{% if status == form.status %} selected{% endif %}>{{ text }}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>&nbsp;</label>
+                                <input class="form-control btn btn-primary" type="submit" value="搜索"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th width="10%">拼团ID</th>
+                                <th width="10%">订单ID</th>
+                                <th width="10%">产品图片</th>
+                                <th width="10%">产品名</th>
+                                <th width="10%">产品价格</th>
+                                <th width="10%">拼团状态</th>
+                                <th width="10%">创建时间</th>
+                                <th width="10%">结束时间</th>
+                                <th width="10%" class="text-center hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if pagination.getTotalItemCount %}
+                                {% for item in pagination %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>
+                                            {% for groupUserOrder in item.groupUserOrders %}
+                                                {# TODO: link to groupUserOrder info page? #}
+                                                <a href="{{ path('group_user_order_edit', {id: groupUserOrder.id}) }}">{{ groupUserOrder.id }}</a>
+                                                {% if not loop.last %}<br />{% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            {% if item.product.productImages.count %}
+                                                {% for productImage in item.product.productImages %}
+                                                    <img src="{{ path('imagePreview', {fileId: productImage.file.id}) }}" width="40" height="40"/>
+                                                    {% if not loop.last %}<br />{% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ item.product.title }}</td>
+                                        <td>{{ item.product.price }}</td>
+                                        <td>{{ item.statusText }}</td>
+                                        <td>{{ item.createdAt }}</td>
+                                        <td>{{ item.CompletedAt }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('group_order_info', {'id': item.id}) }}" title="查看详情">
+                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="9" class="alert alert-warning">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <div class="no-margin pull-right">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: 'GroupOrder'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include '/backend/includes/delete.js.html.twig' with {title: 'GroupOrder'} %}
+{% endblock %}
