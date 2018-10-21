@@ -26,12 +26,12 @@
   <view class="group-container">
     <view class="group-user">
       <view class="user">
-        <view class="avatar"><image src="/images/demo/group-user.png"/><text>团长</text></view>
-        <view class="nickname">唐唐Tandy</view>
+        <view class="avatar"><image src="{{userInfo.avatarUrl}}"/><text>团长</text></view>
+        <view class="nickname">{{userInfo.nickName}}</view>
       </view>
       <view class="user">
         <view class="avatar"><image src="/images/demo/group-who.png"/></view>
-        <view class="nickname">迪丽ShouldNone</view>
+        <view class="nickname">???</view>
       </view>
     </view>
     <view class="hint">仅剩<text>1</text>人，快呼唤小伙伴参加吧！</view>

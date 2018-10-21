@@ -9,6 +9,8 @@ Page({
     showModal: false,
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
     groupOrder: null,
+    userInfo: {},
+    isOpener: false, //是否开团人（团长）
   },
 
   /**
@@ -17,6 +19,14 @@ Page({
   onLoad: function (options) {
     const id = options.id ? options.id : 10020;
     this.getGroupOrder(id);
+    this.setData({
+      userInfo: app.globalData.userInfo
+    })
+    app.userInfoReadyCallback = res => {
+      this.setData({
+        userInfo: app.globalData.userInfo
+      })
+    }
   },
 
   getGroupOrder: function(id) {

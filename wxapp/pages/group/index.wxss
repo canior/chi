@@ -23,6 +23,7 @@
 .group-user .user image {
   width: 103rpx;
   height: 103rpx;
+  border-radius: 50%;
 }
 .group-user .user .avatar {
   position: relative;

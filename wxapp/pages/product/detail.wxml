@@ -28,7 +28,7 @@
 
   <view class="chi-reward-container">
     <view class="reward">下单返现￥{{product.rewards}}</view>
-    <view class="detail" bindtap="toWhere?">每单皆有返回现，查看详情></view>
+    <view class="detail" bindtap="toWhere?">每单皆有返现，查看详情></view>
   </view>
 
   <view class="feature">
@@ -72,7 +72,7 @@
   <view class="bottom">
     <view class="home" bindtap="toHome">
       <image src="/images/home2.png"/>
-      <text>分享</text>
+      <text>首页</text>
     </view>
     <button class="service btn-clear" open-type='contact'>
       <image src="/images/service.png"/>
