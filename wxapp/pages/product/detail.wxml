@@ -26,7 +26,7 @@
 
   <view class="desc">1瓶饮料取代“早餐+咖啡”</view>
 
-  <view class="reward-container">
+  <view class="chi-reward-container">
     <view class="reward">下单返现￥{{product.rewards}}</view>
     <view class="detail" bindtap="toWhere?">每单皆有返回现，查看详情></view>
   </view>

@@ -28,7 +28,6 @@ Page({
 
   getProduct: function (id) {
     const that = this;
-    console.log(app.globalData.baseUrl + '/products/' + id);
     wx.request({
       url: app.globalData.baseUrl + '/products/' + id,
       data: {
@@ -113,7 +112,7 @@ Page({
             paySign: res.data.data.paySign,
             success: function (res) { 
               wx.request({
-                url: app.globalData.baseUrl + '//groupOrder/notifyPayment',
+                url: app.globalData.baseUrl + '/groupOrder/notifyPayment',
                 data: {
                   isPaid: true,
                   thirdSession: wx.getStorageSync('thirdSession'),
@@ -130,11 +129,13 @@ Page({
                   }
                 },
                 fail(e) {
+                  console.log('wx.request /groupOrder/notifyPayment: fail', e)
                 },
                 complete(e) { }
               })
             },
             fail: function (res) {
+              console.log('wx.requestpayment: fail', res)
               wx.showToast({
                 title: '支付失败',
               });

@@ -79,24 +79,6 @@
   color: #b2b2b2;
   padding-left: 10rpx;
 }
-.reward-container {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ffdf00;
-  margin: 20rpx 0;
-  width: 80%;
-}
-.reward-container .reward {
-  font-size: 28rpx;
-  font-weight: bold;
-  background-color: #ffdf00;
-  padding: 5rpx 20rpx;
-}
-.reward-container .detail {
-  font-size: 24rpx;
-  color: #353535;
-  padding: 5rpx 20rpx;
-}
 .feature .title, .specs .title {
   font-size: 30rpx;
   font-weight: bold;

@@ -42,30 +42,30 @@ App({
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId        
-        console.log('app:wx.login', res)
+        //console.log('app:wx.login', res)
         wx.request({
           url: that.globalData.baseUrl + '/user/login',
           data: {
             code: res.code,
             thirdSession: thirdSession,
             nickName: userInfo ? userInfo.nickName : null,
-            avatarUrl: userInfo ? userInfo.avatarUrl : null
+            avatarUrl: userInfo ? userInfo.avatarUrl : null,
+            userInfo: userInfo
           },
           method: 'POST',
           success: (res) => {
-            if (res.data.code == 200) {
-              console.log('app:wx.request /user/login', res);
+            console.log('app:wx.request /user/login', res);
+            if (res.data.code == 200 && res.data.msg == 'login_success') {
               wx.setStorageSync('thirdSession', res.data.data.thirdSession);
               that.globalData.isLogin = that.isLogin();
+              that.globalData.user = res.data.data.user;
               if (that.globalData.isLogin && callback) {
                 callback()
               }
-            } else {// 后台问题
-              that.debug('app', 'code_not_200', res);
             }
           },
           fail(e) {
-            that.debug('app', 'wx.request_fail', e);
+            console.log('app:wx.request /user/login fail', e);
           },
           complete(e) { }
         })
@@ -168,5 +168,6 @@ App({
     imgUrlPrefix: 'https://chi.yunlishuju.com/image/preview',
     isLogin: false,   //是否授权并登录
     userInfo: null,   //授权后获取的用户信息, 如昵称头像
+    user: null,       //用户信息:userId,nickName,...
   }
 })
