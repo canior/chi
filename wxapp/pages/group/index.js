@@ -19,7 +19,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const id = options.id ? options.id : 10093;
+    const id = options.id ? options.id : 10110;
     this.getGroupOrder(id);
   },
 
@@ -213,7 +213,7 @@ Page({
     return {
       title: "分享标题",
       imageUrl: '',
-      path: '/pages/group/index'
+      path: '/pages/group/index/?id=' + this.data.groupOrder.id
     }
   }
 })
