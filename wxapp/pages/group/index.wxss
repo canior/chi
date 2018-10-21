@@ -50,6 +50,8 @@
 }
 .group-container {
   text-align: center;
+  border-top: 1px solid #ececec;
+  margin-top: 30rpx;
 }
 .group-container .hint {
   font-size: 24rpx;
@@ -57,6 +59,25 @@
 .group-container .hint text {
   font-size: 36rpx;
   color: #ff4d42;
+}
+.group-container .status {
+  font-size: 30rpx;
+  color: #ffc018;
+  padding: 20rpx 0 10rpx;
+  position: relative;
+  width: 60%;
+  margin: 0 auto;
+}.group-container .status:before, .group-container .status:after {
+  content: ' ';
+  background-color: #ffc018;
+  height: 1px;
+  width: 30%;
+  position: absolute;
+  top: 45%;
+}.group-container .status:before {
+  left: 0;
+}.group-container .status:after {
+  right: 0;
 }
 .group-container .count-down:before, .group-container .count-down:after {
   content: ' ';
@@ -114,9 +135,6 @@
   transform: rotate(45deg);
   margin: 0 20rpx 0 10rpx;
 }
-.share {
-  padding-bottom: 100px;
-}
 .share .user image {
   width: 64rpx;
   height: 64rpx;
@@ -149,6 +167,9 @@
   position: absolute;
   right: 0;
   padding: 5rpx 30rpx 0 30rpx;
+}
+.bottom-space {
+  height: 100px;
 }
 .bottom {
   font-size: 30rpx;
@@ -215,4 +236,161 @@
 }
 .modal .foot {
   padding: 20rpx 0;
+}
+.bottom-join {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border-top: 1px solid #e8e8e8;
+  padding: 0;
+  height: 110rpx;
+}
+.bottom-join image {
+  width: 41rpx;
+  height: 41rpx;
+  margin-bottom: 6rpx;
+}
+.bottom-join .home, .bottom-join .service {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  font-size: 24rpx;
+  color: #353535;
+  width: 17%;
+}
+.bottom-join .home {
+  border-right: 1px solid #e8e8e8;  
+}
+.bottom-join .btn {
+  font-size: 30rpx;
+  font-weight: bold;
+  text-align: center;
+  background-color: #ffdf00;
+  width: 66%;
+  height: 110rpx;
+  line-height: 110rpx;
+}
+.btn-clear {
+  background-color: transparent;
+  border: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  position: absolute;
+  border-radius: 0 !important;
+  line-height: inherit;
+}
+.btn-clear::after {
+  transform: inherit;
+  -webkit-transform: inherit;
+  top: inherit;
+  left: inherit;
+  border: 0;
+}
+.bottom-done {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.bottom-done .left, .bottom-done .right {
+  font-size: 30rpx;
+  text-align: center;
+  width: 50%;
+  padding: 30rpx 0;
+}
+.bottom-done .left {
+  color: #fff;
+  background-color: #434343;
+}
+.bottom-done .right {
+  background-color: #ffdf00;
+}
+.addr-container {
+  border: 1px solid #ececec;
+  padding: 30rpx 20rpx;
+}
+.addr-container image {
+  width: 31rpx;
+  height: 31rpx;
+  margin-right: 10rpx;
+}
+.addr-container .no-addr {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.addr-container .no-addr text {
+  font-size: 30rpx;
+  color: #ff4d42;
+}
+.addr-container .no-addr .edit {
+  position: absolute;
+  right: 0;
+  padding: 10rpx 10rpx 5rpx 60rpx;
+}
+.addr-container .default text {
+  font-size: 30rpx;
+}
+.addr-container .default .addr {
+  font-size: 24rpx;
+  color: #353535;
+  margin-left: 40rpx;
+}
+.addr-container .default .line {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.addr-container .default .line .status {
+  font-size: 24rpx;
+  color: #ff4d42;
+  position: absolute;
+  right: 0;
+}
+.service-container {
+  display: flex;
+  justify-content: center;
+  padding: 30rpx;
+  font-size: 24rpx;
+  color: #353535;
+}
+.service-container image {
+  width: 30rpx;
+  height: 30rpx;
+  margin-right: 10rpx;
+}
+.service-container .service {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}.service-container .service button {
+  font-size: 24rpx;
+  color: #353535;  
+  background-color: transparent;  
+}.service-container .service button::after {
+  border: none;
+}.service-container .service button image {
+  vertical-align: text-bottom;
+}
+.service-container .service.space {
+  padding: 0 60rpx 0 40rpx;
+}
+.reward-in {
+  font-size: 30rpx;
+  text-align: center;
+  background-color: #ffdf00;
+  margin: 30rpx 60rpx;
+  padding: 30rpx 0;
+  border-radius: 60rpx;
+}
+.reward-in text {
+  font-size: 24rpx;
 }
