@@ -10,6 +10,7 @@ Page({
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
     groupOrder: null,
     userInfo: {},
+    isOpener: false, //是否开团人（团长）
   },
 
   /**
@@ -21,6 +22,11 @@ Page({
     this.setData({
       userInfo: app.globalData.userInfo
     })
+    app.userInfoReadyCallback = res => {
+      this.setData({
+        userInfo: app.globalData.userInfo
+      })
+    }
   },
 
   getGroupOrder: function(id) {
