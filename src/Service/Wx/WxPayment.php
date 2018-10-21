@@ -45,8 +45,8 @@ class WxPayment
 
         $this->wxPayApiUrl = 'https://api.mch.weixin.qq.com';
 
-        $this->wxPayNotifyUrl = 'http://www.baidu.com';
-        $this->wxPayRefundNotifyUrl = 'http://www.baidu.com';
+        $this->wxPayNotifyUrl = 'https://api.yunlishuju.com/wxapi/notify/order';
+        $this->wxPayRefundNotifyUrl = 'https://api.yunlishuju.com/wxapi/notify/order';
 
         $this->log = $log;
     }
