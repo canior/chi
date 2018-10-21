@@ -202,14 +202,14 @@ class WxCommon
      * 用户提交一次表单，小程序可以获得 1 次发送模板消息的机会。
      *
      * @param string $openId
-     * @param int $templateId
+     * @param string $templateId
      * @param string $page
-     * @param int $formId
+     * @param string $formId
      * @param array $keywordsMapping ex. ['keywords1' => ['value' => 'abc']]
      * @param string $emphasisKeyword
      * @return string
      */
-    public function sendMessage(string $openId, int $templateId, string $page, int $formId, array $keywordsMapping = [], string $emphasisKeyword = null) : string {
+    public function sendMessage(string $openId, string $templateId, string $page, string $formId, array $keywordsMapping = [], string $emphasisKeyword = null) : string {
         $accessToken = $this->getAccessToken();
 
         $client = new Client(['base_uri' => self::API_URL]);
