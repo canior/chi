@@ -52,20 +52,22 @@ class GroupOrderController extends BaseController
          */
         $product = $this->getEntityManager()->getRepository(Product::class)->find($productId);
 
+        //判断是否这个用户有一张正在进行中的拼团订单，如果有则返回
+
+
         $groupOrder = new GroupOrder($user, $product);
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
 
-        //TODO 向微信提交支付信息
+        //向微信提交支付信息
         $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
 
-        $body = "创建开团订单";
+        $body = "创建开团订单"; //TODO 开团信息要怎么写
         $wxPaymentApi = new WxPayment($this->getLog());
         $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
         $prePayId = $result['prepay_id'];
-        $nonceStr = $result['nonce_str'];
-        $paySign = $result['sign'];
+        $prePayInfo = $wxPaymentApi->getOrderDataToWxApp($prePayId);
 
         $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
         $groupUserOrder->setPrePayId($prePayId);
@@ -74,12 +76,7 @@ class GroupOrderController extends BaseController
 
 
         $data = [
-            'timeStamp' => time(),
-            'nonceStr' => $nonceStr,
-            'package' => $prePayId,
-            'signType' => 'MD5',
-            'paySign' => $paySign,
-            'totalFee' => $groupUserOrder->getTotal(),
+            'payment' => $prePayInfo,
             'groupOrder' => $groupOrder->getArray()
         ];
 
