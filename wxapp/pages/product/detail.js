@@ -106,7 +106,7 @@ Page({
           console.log(res.data.data)
           wx.requestPayment({
             timeStamp: toString(res.data.data.timeStamp),
-            nonceStr: res.data.data.nonce_str,
+            nonceStr: res.data.data.nonceStr,
             package: res.data.data.package,
             signType: res.data.data.signType,
             paySign: res.data.data.paySign,
