@@ -124,7 +124,7 @@ Page({
                   if (res.statusCode == 200 && res.data.code == 200) {
                     console.log(res.data.data)
                     wx.redirectTo({
-                      url: '/pages/group/index/?id=' + res.data.data.groupOrder.id,
+                      url: '/pages/group/index?id=' + res.data.data.groupOrder.id,
                     })
                   } else {
                     console.log('wx.request return error', res.statusCode);
