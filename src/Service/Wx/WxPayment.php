@@ -102,11 +102,10 @@ class WxPayment
             // var_dump($result);die();
             if ($result['return_code'] == 'SUCCESS'
                 && $result['result_code'] == 'SUCCESS') {
+
                 return [
                     'status' => true,
                     'prepay_id' => $result['prepay_id'],
-                    'nonce_str' => $result['nonce_str'],
-                    'sign' => $result['sign']
                 ];
             } else {
                 return [
