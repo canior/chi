@@ -21,6 +21,7 @@ use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
 use App\Repository\UserRepository;
+use App\Service\Wx\WxCommon;
 use App\Service\Wx\WxPayment;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -173,8 +174,24 @@ class GroupOrderController extends BaseController
         $this->getEntityManager()->flush();
 
         if ($groupOrder->isPending()) {
-            $command = new NotifyPendingGroupOrderCommand($groupOrder->getId());
-            $this->getCommandBus()->handle($command);
+
+            $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
+
+            $formId = $groupUserOrder->getPrePayId();
+            $templateId = "9RLVQOC7gP3qJipiFX2efKvz2oSYuJRs0dDaY2UeDIA";
+            $page = "pages/group/index?id=" . $groupOrderId;
+            $toUser = $groupUserOrder->getUser()->getWxOpenId();
+            $data = [['keyword1' => ['value' => $groupOrder->getProduct()->getTitle()]],
+                ['keyword2' => ['value' => $groupOrder->getProduct()->getPrice()]],
+                ['keyword3' => ['value' => 1]],
+                ['keyword4' => ['value' => $groupOrder->getExpiredAt(true)]]];
+            $emphasisKeyword = "keyword3.DATA";
+
+            $wxApi = new WxCommon($this->log);
+            $wxApi->sendMessage($toUser, $templateId, $page, $formId, $data, $emphasisKeyword);
+
+            //$command = new NotifyPendingGroupOrderCommand($groupOrder->getId());
+            //$this->getCommandBus()->handle($command);
         } else if ($groupOrder->isCompleted()) {
             $command = new NotifyCompletedGroupOrderCommand($groupOrder->getId());
             //$this->getCommandBus()->handle($command);
