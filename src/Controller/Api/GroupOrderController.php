@@ -137,23 +137,22 @@ class GroupOrderController extends BaseController
      * @return Response
      */
     public function notifyPaymentAction(Request $request, GroupOrderRepository $groupOrderRepository, UserRepository $userRepository) : Response {
-        //TODO 检查微信支付状态
-        $isPaid = true;
-        $userId = 2;
-        $groupOrderId = 12;
+        $data = json_decode($request->getContent(), true);
+        $isPaid =  isset($data['isPaid']) ? $data['isPaid'] : false;
+        $groupOrderId =  isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
 
+        $user = $this->getWxUser($thirdSession);
         $groupOrder = $groupOrderRepository->find($groupOrderId);
 
         if (!$isPaid) {
-            //TODO 未支付不改变任何东西,考虑返回啥
-            exit;
+            return $this->responseJson('group_order_created_fail', 200, $data);
         }
 
 
-        if ($groupOrder->getUser()->getId() == $userId) {
+        if ($groupOrder->getUser()->getId() == $user->getId()) {
             $groupOrder->setPending();
         } else {
-            $user = $userRepository->find($userId);
             $groupOrder->setCompleted($user);
         }
 
@@ -171,7 +170,7 @@ class GroupOrderController extends BaseController
         $data = [
             'groupOrder' => $groupOrder->getArray()
         ];
-        return $this->responseJson('success', 200, $data);
+        return $this->responseJson('group_order_created_success', 200, $data);
 
     }
 
