@@ -7,7 +7,7 @@ Page({
    */
   data: {
     isLogin: false,
-    imgUrlPrefix: app.globalData.imgUrlPrefix,    
+    imgUrlPrefix: app.globalData.imgUrlPrefix,
     product: [],
     productReviews: [],
     btnDisabled: false //防止连击button
@@ -59,7 +59,7 @@ Page({
           console.log(res.data.data)
           that.setData({
             productReviews: res.data.data
-          })          
+          })
         } else {
           console.log('wx.request return error', res.statusCode);
         }
@@ -106,13 +106,13 @@ Page({
           const payment = res.data.data.payment;
           wx.requestPayment({
 
-            timeStamp: toString(res.data.data.timeStamp),
+            timeStamp: res.data.data.payment.timeStamp.toString(),
             nonceStr: res.data.data.payment.nonceStr,
             package: res.data.data.payment.package,
             signType: res.data.data.payment.signType,
             paySign: res.data.data.payment.paySign,
 
-            success: function (res) { 
+            success: function (res) {
               wx.request({
                 url: app.globalData.baseUrl + '/groupOrder/notifyPayment',
                 data: {
@@ -144,7 +144,7 @@ Page({
               that.setData({ btnDisabled: false });
             },
             complete: function (res) { }
-          })          
+          })
         } else {
           console.log('wx.request return error', res.statusCode);
         }
