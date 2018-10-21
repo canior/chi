@@ -18,6 +18,7 @@ use Psr\Log\LoggerInterface;
 class NotifyPendingGroupOrderCommandHandler  extends AbstractCommandHandler
 {
     private $groupOrderRepository;
+    private $log;
 
     /**
      * NotifyPendingGroupOrderCommandHandler constructor.

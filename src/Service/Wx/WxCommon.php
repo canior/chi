@@ -223,13 +223,14 @@ class WxCommon
         ];
         $url = "/cgi-bin/message/wxopen/template/send?access_token={$accessToken}";
         $postStr = json_encode($postInfo);
+        $this->log->info("send message: " . $postStr);
         $response = $client->post($url, [
             'body' => $postStr,
         ]);
         $code = $response->getStatusCode(); // 200
         $reason = $response->getReasonPhrase(); // OK
         $body = $response->getBody()->getContents();
-
+        $this->log->info("send message received: " . $body);
         if($code === 200) {
             return $body;
         } else {
