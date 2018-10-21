@@ -9,6 +9,7 @@ Page({
     showModal: false,
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
     groupOrder: null,
+    userInfo: {},
   },
 
   /**
@@ -17,6 +18,9 @@ Page({
   onLoad: function (options) {
     const id = options.id ? options.id : 10020;
     this.getGroupOrder(id);
+    this.setData({
+      userInfo: app.globalData.userInfo
+    })
   },
 
   getGroupOrder: function(id) {
