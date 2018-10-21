@@ -174,10 +174,10 @@ class GroupOrderController extends BaseController
 
         if ($groupOrder->isPending()) {
             $command = new NotifyPendingGroupOrderCommand($groupOrder->getId());
-            $this->getCommandBus()->handle($command);
+            //$this->getCommandBus()->handle($command);
         } else if ($groupOrder->isCompleted()) {
             $command = new NotifyCompletedGroupOrderCommand($groupOrder->getId());
-            $this->getCommandBus()->handle($command);
+            //$this->getCommandBus()->handle($command);
         }
 
         $data = [
