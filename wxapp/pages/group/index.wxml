@@ -41,7 +41,7 @@
         <view class="nickname">{{user && !isOpenUser ? user.nickname : '???'}}</view>
       </view>
     </view>
-    <block wx:if="{{groupOrder.status=='completed'}}">
+    <block wx:if="{{groupOrder.status != 'completed'}}">
       <view class="hint">仅剩<text>1</text>人，快呼唤小伙伴参加吧！</view>
       <view class="count-down">剩余 <text class="hr">50</text>:<text class="min">00</text>:<text class="sec">00</text> 结束</view>
     </block>
@@ -50,7 +50,7 @@
 
 
 <!--收货信息: 仅在拼团成功后开团人和参团人能够看到-->
-<!--<block wx:if="{{groupOrder.status=='completed' && user && (groupOrder.groupUserOrders[0].user.id==user.id || groupOrder.groupUserOrders[1].user.id==user.id)}}">-->
+<block wx:if="{{groupOrder.status == 'completed' && user && (groupOrder.groupUserOrders[0].user.id == user.id || groupOrder.groupUserOrders[1].user.id == user.id)}}">
 <view class="container">
   <view class="addr-container">
     <view class="no-addr"><!--没有地址-->
@@ -87,7 +87,7 @@
   </view>
   <view class="split-brand"/>
 </view>
-<!--</block><!--收货信息-->
+</block><!--收货信息-->
 
 
 <!--拼团玩法-->
