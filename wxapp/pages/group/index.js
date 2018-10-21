@@ -213,7 +213,7 @@ Page({
     return {
       title: "分享标题",
       imageUrl: '',
-      path: '/pages/group/index/?id=' + this.data.groupOrder.id
+      path: '/pages/group/index?id=' + this.data.groupOrder.id
     }
   }
 })
