@@ -76,7 +76,7 @@ class GroupOrderController extends BaseController
 
 
         $data = [
-            $prePayInfo,
+            'payment' => $prePayInfo,
             'groupOrder' => $groupOrder->getArray()
         ];
 
