@@ -195,7 +195,12 @@ class GroupOrder implements Dao
 
         $slaveGroupUserOrder->setPaid();
         $slaveGroupUserOrder->setOrderRewards($this->getProduct()->getRewards()/2);
+        $slaveGroupUserOrder->setPending();
 
+        $masterGroupUserOrder = $this->getMasterGroupUserOrder();
+        $masterGroupUserOrder->setPending();
+        $masterGroupUserOrder->setUpdatedAt();
+        
         $this->setUpdatedAt();
         return $this;
     }
