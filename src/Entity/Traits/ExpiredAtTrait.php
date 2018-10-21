@@ -15,8 +15,15 @@ trait ExpiredAtTrait
      */
     private $expiredAt;
 
-    public function getExpiredAt(): ?int
+    /**
+     * @param bool $formatted
+     * @return int|null
+     */
+    public function getExpiredAt($formatted = true): ?int
     {
+        if ($formatted) {
+            return $this->expiredAt ? date(self::DATETIME_FORMAT, $this->expiredAt) : null;
+        }
         return $this->expiredAt;
     }
 

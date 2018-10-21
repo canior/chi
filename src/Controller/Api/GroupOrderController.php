@@ -110,9 +110,22 @@ class GroupOrderController extends BaseController
 
 
         //TODO 向微信提交支付信息
+        $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
+
+        $body = "create order"; //TODO 开团信息要怎么写
+        $wxPaymentApi = new WxPayment($this->getLog());
+        $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
+        $prePayId = $result['prepay_id'];
+        $prePayInfo = $wxPaymentApi->getOrderDataToWxApp($prePayId);
+
+        $groupUserOrder = $groupOrder->getSlaveGroupUserOrder();
+        $groupUserOrder->setPrePayId($prePayId);
+        $this->getEntityManager()->persist($groupUserOrder);
+        $this->getEntityManager()->flush();
 
 
         $data = [
+            'payment' => $prePayInfo,
             'groupOrder' => $groupOrder->getArray()
         ];
         return $this->responseJson('success', 200, $data);
@@ -159,13 +172,13 @@ class GroupOrderController extends BaseController
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
-//        if ($groupOrder->isPending()) {
-//            $command = new EnqueueCommand(new NotifyPendingGroupOrderCommand($groupOrder->getId()), true);
-//            $this->getCommandBus()->handle($command);
-//        } else if ($groupOrder->isCompleted()) {
-//            $command = new EnqueueCommand(new NotifyCompletedGroupOrderCommand($groupOrder->getId()), true);
-//            $this->getCommandBus()->handle($command);
-//        }
+        if ($groupOrder->isPending()) {
+            $command = new NotifyPendingGroupOrderCommand($groupOrder->getId());
+            $this->getCommandBus()->handle($command);
+        } else if ($groupOrder->isCompleted()) {
+            $command = new NotifyCompletedGroupOrderCommand($groupOrder->getId());
+            $this->getCommandBus()->handle($command);
+        }
 
         $data = [
             'groupOrder' => $groupOrder->getArray()
