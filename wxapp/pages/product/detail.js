@@ -104,21 +104,22 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           const payment = res.data.data.payment;
+          const groupOrderId = res.data.data.groupOrder.id;
           wx.requestPayment({
             timeStamp: payment.timeStamp.toString(),
             nonceStr: payment.nonceStr,
             package: payment.package,
             signType: payment.signType,
             paySign: payment.paySign,
-            success: function (res) { 
+            success: function (res) {
               wx.request({
                 url: app.globalData.baseUrl + '/groupOrder/notifyPayment',
                 data: {
                   isPaid: true,
                   thirdSession: wx.getStorageSync('thirdSession'),
-                  groupOrderId: res.data.data.groupOrder.id,
+                  groupOrderId: groupOrderId,
                 },
-                method: "POST",
+                method: 'POST',
                 success: (res) => {
                   if (res.statusCode == 200 && res.data.code == 200) {
                     console.log(res.data.data)
