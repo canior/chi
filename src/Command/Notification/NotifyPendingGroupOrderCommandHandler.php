@@ -15,7 +15,7 @@ use App\Repository\GroupOrderRepository;
 use App\Service\Wx\WxCommon;
 use Psr\Log\LoggerInterface;
 
-class NotifyPendingGroupOrderCommandHandler  extends AbstractCommandHandler
+class NotifyPendingGroupOrderCommandHandler // extends AbstractCommandHandler
 {
     private $groupOrderRepository;
     private $log;
@@ -35,7 +35,7 @@ class NotifyPendingGroupOrderCommandHandler  extends AbstractCommandHandler
      * @param CommandInterface|NotifyPendingGroupOrderCommand $command
      * @return mixed
      */
-    public function handle(CommandInterface $command)
+    public function handle(NotifyPendingGroupOrderCommand $command)
     {
         $groupOrderId = $command->getGroupOrderId();
         $groupOrder = $this->groupOrderRepository->find($groupOrderId);
