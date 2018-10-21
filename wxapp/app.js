@@ -47,7 +47,7 @@ App({
           url: that.globalData.baseUrl + '/user/login',
           data: {
             code: res.code,
-            thirdSession: thirdSession,
+            thirdSession: thirdSession ? thirdSession : null,
             nickName: userInfo ? userInfo.nickName : null,
             avatarUrl: userInfo ? userInfo.avatarUrl : null,
             userInfo: userInfo

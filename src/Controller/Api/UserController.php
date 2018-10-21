@@ -59,10 +59,10 @@ class UserController extends BaseController
                     $user->setWxOpenId($openId);
                     $this->getEntityManager()->persist($user);
                     $this->getEntityManager()->flush();
-
-                    $userId = $user->getId();
-                    $thirdSession = $userId;//生成我们自己的第三方session
                 }
+                $userId = $user->getId();
+                $thirdSession = $userId;//生成我们自己的第三方session
+
                 $msg = "login_success";
             } else {
                 $this->getLog()->info(json_encode($result));
