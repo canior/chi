@@ -184,7 +184,7 @@ class GroupOrderController extends BaseController
             $data = [['keyword1' => ['value' => $groupOrder->getProduct()->getTitle()]],
                 ['keyword2' => ['value' => $groupOrder->getProduct()->getPrice()]],
                 ['keyword3' => ['value' => 1]],
-                ['keyword4' => ['value' => $groupOrder->getExpiredAt(true)]]];
+                ['keyword4' => ['value' => $groupOrder->getExpiredAt()]]];
             $emphasisKeyword = "keyword3.DATA";
 
             $wxApi = new WxCommon($this->log);
