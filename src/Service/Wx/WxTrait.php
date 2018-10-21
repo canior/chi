@@ -39,7 +39,7 @@ trait WxTrait
         $appkey = $this->appKey;
         ksort($data);
         $this->log->info("creating sign data: " . json_encode($data));
-        $readyToMD5 = $this->formatBizQueryParaMap($data)."&key={$appkey}" ;
+        $readyToMD5 = $this->formatBizQueryParaMap($data)."&key={$this->mchId}" ;
         $this->log->info("before md5 " . $readyToMD5 );
         return strtoupper( md5( $readyToMD5 ) );
     }
