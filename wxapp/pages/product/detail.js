@@ -104,12 +104,13 @@ Page({
         wx.hideLoading();
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
+          const payment = res.data.data.payment;
           wx.requestPayment({
-            timeStamp: toString(res.data.data.timeStamp),
-            nonceStr: res.data.data.nonceStr,
-            package: res.data.data.package,
-            signType: res.data.data.signType,
-            paySign: res.data.data.paySign,
+            timeStamp: toString(payment.timeStamp),
+            nonceStr: payment.nonceStr,
+            package: payment.package,
+            signType: payment.signType,
+            paySign: payment.paySign,
             success: function (res) { 
               wx.request({
                 url: app.globalData.baseUrl + '/groupOrder/notifyPayment',
