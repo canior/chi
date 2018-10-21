@@ -75,10 +75,11 @@ class GroupOrderController extends BaseController
 
         $data = [
             'timeStamp' => time(),
-            'nonce_str' => $nonceStr,
+            'nonceStr' => $nonceStr,
             'package' => $prePayId,
             'signType' => 'MD5',
             'paySign' => $paySign,
+            'totalFee' => $groupUserOrder->getTotal(),
             'groupOrder' => $groupOrder->getArray()
         ];
 
