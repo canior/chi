@@ -72,6 +72,7 @@ class UserController extends BaseController
 
         return $this->responseJson($msg, 200, [
             'thirdSession' => $thirdSession,
+            'user' => $user->getArray()
         ]);
 
     }

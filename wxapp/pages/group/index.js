@@ -1,4 +1,5 @@
 // pages/group/index.js
+const app = getApp()
 Page({
 
   /**
@@ -6,13 +7,40 @@ Page({
    */
   data: {
     showModal: false,
+    imgUrlPrefix: app.globalData.imgUrlPrefix,    
+    groupOrder: null,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    const id = options.id ? options.id : 10020;
+    this.getGroupOrder(id);
+  },
 
+  getGroupOrder: function(id) {
+    const that = this;
+    wx.request({
+      url: app.globalData.baseUrl + '/groupOrder/view',
+      data: {
+        groupOrderId: id
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          that.setData({
+            groupOrder: res.data.data.groupOrder
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
+    })
   },
 
   showModal: function(e) {
