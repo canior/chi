@@ -1,7 +1,7 @@
 <!--pages/group/index.wxml-->
 <view class="top">
   <image src="/images/bell.png"/>
-  <text>张三今天收入100元...  李四今天进账50元...</text>
+  <text>groupOrderId: {{groupOrder.id}}</text>
 </view>
 
 <!--产品信息-->
