@@ -118,6 +118,7 @@ Page({
                   thirdSession: wx.getStorageSync('thirdSession'),
                   groupOrderId: res.data.data.groupOrder.id,
                 },
+                method: "POST",
                 success: (res) => {
                   if (res.statusCode == 200 && res.data.code == 200) {
                     console.log(res.data.data)

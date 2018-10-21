@@ -1,21 +1,25 @@
 <!--pages/user/address/index.wxml-->
 <view class="container">
 
-  <view class="row default">
-    <view class="name"><image src="/images/addr.png"/><text>唐亚迪 123****456</text></view>
-    <view class="addr">默认地址: 上海松江区莘砖公路668号A座1501室</view>
-  </view>
-
   <view class="row" wx:for="123" wx:key="index">
-    <view class="name"><text>唐亚迪 123****456</text></view>
-    <view class="addr-container">
-      <view class="addr">地址: 上海松江区莘砖公路668号A座1501室</view>
-      <view class="edit"><image src="/images/edit.png"/></view>
+    <view class="left">
+      <view class="line">
+        <view class="name">唐亚迪</view>
+        <view class="phone">123****456</view>
+      </view>
+      <view class="line">
+        <view class="default"><text>默认</text></view>          
+        <view class="addr">上海松江区莘砖公路668号A座1501室</view>
+      </view>
+    </view>
+    <view class="right" bindtap="editAddress" data-id="{{item.id}}">
+      <image src="/images/edit.png"/>
     </view>
   </view>
+
 </view>
 
 <view class="bottom">
-  <view class="left">＋新建地址</view>
+  <view class="left" bindtap="createAddress">＋新建地址</view>
   <view class="right"><image src="/images/wx.png"/>微信导入地址</view>
 </view>

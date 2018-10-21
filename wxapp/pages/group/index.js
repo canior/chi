@@ -9,8 +9,9 @@ Page({
     showModal: false,
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
     groupOrder: null,
+    openUserId: null, //开团人（团长）
+    userId: null,
     userInfo: {},
-    isOpener: false, //是否开团人（团长）
   },
 
   /**

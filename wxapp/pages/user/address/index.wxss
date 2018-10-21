@@ -1,43 +1,38 @@
 /* pages/user/address/index.wxss */
-.default {
-  padding: 0 40rpx;
-}
-.default image {
-  width: 31rpx;
-  height: 31rpx;
-  margin-right: 10rpx;
-  vertical-align: text-bottom;
-}
-.default .addr {
-  margin-left: 42rpx;
-}
 .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 30rpx 0;
   border-bottom: 1px solid #ddd;
-  position: relative;
 }
-.row .name {
+.line {
+  display: flex;
+  justify-content: flex-start;
+}
+.name, .phone {
   font-size: 30rpx;
 }
-.row .addr {
+.name, .default {
+  width: 138rpx;
+}
+.addr {
   font-size: 24rpx;
   color: #353535;
 }
-.row .addr-container {
-  display: flex;
-  align-items: center;
+.right {
+  padding: 30rpx 40rpx;
 }
-.row .edit image {
+.right image {
   width: 24rpx;
   height: 26rpx;
 }
-.row .edit {
-  position: absolute;
-  right: 0;
+.default text {
+  font-size: 24rpx;
+  color: #888;
+  border: 1px solid #888; 
 }
-.row:last-child {
-  margin-bottom: 100px;
-}
+
 .bottom {
   display: flex;
   align-items: center;
