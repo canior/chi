@@ -241,6 +241,7 @@ class WxPayment
             'nonceStr' => $this->createNoncestr(),
             'package' => 'prepay_id='.$prepayId,
             'signType' => 'MD5',
+            'key' => $this->appKey
         ];
         $signData['paySign'] = $this->sign($signData);
 

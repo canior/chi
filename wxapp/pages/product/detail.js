@@ -106,10 +106,10 @@ Page({
           console.log(res.data.data)
           wx.requestPayment({
             timeStamp: toString(res.data.data.timeStamp),
-            nonceStr: res.data.data.nonceStr,
-            package: res.data.data.package,
-            signType: res.data.data.signType,
-            paySign: res.data.data.paySign,
+            nonceStr: res.data.data.payment.nonceStr,
+            package: res.data.data.payment.package,
+            signType: res.data.data.payment.signType,
+            paySign: res.data.data.payment.paySign,
             success: function (res) { 
               wx.request({
                 url: app.globalData.baseUrl + '/groupOrder/notifyPayment',
