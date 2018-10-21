@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Product;
 use App\Entity\ProductReview;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -19,6 +20,28 @@ class ProductReviewRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, ProductReview::class);
+    }
+
+
+    /**
+     * @param $productId
+     * @param int $page
+     * @param int $pageLimit
+     * @return ProductReview[]
+     */
+    public function findActiveProductReviews($productId, $page=1, $pageLimit=5) {
+        $query = $this->getEntityManager()->createQueryBuilder();
+        $query->select('pr')
+            ->from(ProductReview::class, 'pr')
+            ->join(Product::class, 'p')
+            ->where('pr.status = :status')
+            ->setParameter('status', ProductReview::ACTIVE)
+            ->andWhere('p.id = :productId')
+            ->setParameter('productId', $productId)
+            ->orderBy('pr.id', 'desc')
+            ->setFirstResult(($page-1) * $pageLimit)
+            ->setMaxResults($pageLimit);
+        return $query->getQuery()->getResult();
     }
 
     /**

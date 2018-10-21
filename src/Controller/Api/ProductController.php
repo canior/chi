@@ -69,19 +69,17 @@ class ProductController extends BaseController
     /**
      * 获取指定产品的评价，评价条数限制limit
      *
-     * @Route("/products/{id}/reviews", name="productReviews", methods="GET")
+     * @Route("/products/{productId}/reviews", name="productReviews", methods="GET")
      * @param Request $request
-     * @param Product $product
+     * @param int $productId
      * @param ProductReviewRepository $productReviewRepository
      * @return Response
      */
-    public function productReviewIndexAction(Request $request, Product $product, ProductReviewRepository $productReviewRepository): Response {
+    public function productReviewIndexAction(Request $request, int $productId, ProductReviewRepository $productReviewRepository): Response {
         $limit = $request->query->getInt('page', 1);
-        //TODO 这里要能刷新分页
-
-        $productPreviews = $productReviewRepository->findBy(['product' => $product, 'status' => ProductReview::ACTIVE], ['id' => 'DESC'], $limit);
+        $productReviews = $productReviewRepository->findActiveProductReviews($productId, 1, 5);
         $data = [];
-        foreach($productPreviews as $productReview) {
+        foreach($productReviews as $productReview) {
             $data[] = $productReview->getArray();
         }
         return $this->responseJson('success', 200, $data);
