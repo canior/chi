@@ -187,7 +187,7 @@ class GroupOrderController extends BaseController
                 ['keyword4' => ['value' => '2019-01-01 12:12:12']]];
             $emphasisKeyword = "keyword3.DATA";
 
-            $wxApi = new WxCommon($this->log);
+            $wxApi = new WxCommon($this->getLog());
             $wxApi->sendMessage($toUser, $templateId, $page, $formId, $data, $emphasisKeyword);
 
             //$command = new NotifyPendingGroupOrderCommand($groupOrder->getId());
