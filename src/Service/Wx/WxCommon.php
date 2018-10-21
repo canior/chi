@@ -211,7 +211,7 @@ class WxCommon
      */
     public function sendMessage(string $openId, string $templateId, string $page, string $formId, array $keywordsMapping = [], string $emphasisKeyword = null) : string {
         $accessToken = $this->getAccessToken();
-
+        $this->log->info("got access token" . $accessToken);
         $client = new Client(['base_uri' => self::API_URL]);
         $postInfo = [
             'touser' => $openId,
