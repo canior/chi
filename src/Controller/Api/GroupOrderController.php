@@ -103,16 +103,16 @@ class GroupOrderController extends BaseController
 
         $groupOrder = $groupOrderRepository->find($groupOrderId);
 
-        $groupUserOrder = new GroupUserOrder($user);
-        $groupOrder->addGroupUserOrder($groupUserOrder);
 
+        $groupUserOrder = $groupOrder->getSlaveGroupUserOrder($user);
+        if ($groupUserOrder == null) {
+            $groupUserOrder = new GroupUserOrder($groupOrder, $user);
+            $groupOrder->addGroupUserOrder($groupUserOrder);
+        }
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
-
-        // 向微信提交支付信息
-        $groupUserOrder = $groupOrder->getSlaveGroupUserOrder($user);
-
+        //微信提交支付
         $body = "create order"; //TODO 开团信息要怎么写
         $wxPaymentApi = new WxPayment($this->getLog());
         $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
