@@ -110,8 +110,8 @@ class GroupOrderController extends BaseController
         $this->getEntityManager()->flush();
 
 
-        //TODO 向微信提交支付信息
-        $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
+        // 向微信提交支付信息
+        $groupUserOrder = $groupOrder->getSlaveGroupUserOrder($user);
 
         $body = "create order"; //TODO 开团信息要怎么写
         $wxPaymentApi = new WxPayment($this->getLog());
@@ -119,7 +119,6 @@ class GroupOrderController extends BaseController
         $prePayId = $result['prepay_id'];
         $prePayInfo = $wxPaymentApi->getOrderDataToWxApp($prePayId);
 
-        $groupUserOrder = $groupOrder->getSlaveGroupUserOrder();
         $groupUserOrder->setPrePayId($prePayId);
         $this->getEntityManager()->persist($groupUserOrder);
         $this->getEntityManager()->flush();

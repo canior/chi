@@ -189,7 +189,7 @@ class GroupOrder implements Dao
         $this->status = self::COMPLETED;
 
         //如果已经有了支付过的参团订单则不做任何操作
-        $slaveGroupUserOrder = $this->getSlaveGroupUserOrder();
+        $slaveGroupUserOrder = $this->getSlaveGroupUserOrder($joiner);
         if ($slaveGroupUserOrder != null and $slaveGroupUserOrder->isPaid()) {
             return $this;
         }
@@ -287,11 +287,12 @@ class GroupOrder implements Dao
 
     /**
      * 返回团员订单
+     * @param User $user
      * @return GroupUserOrder|null
      */
-    public function getSlaveGroupUserOrder() : ?GroupUserOrder {
+    public function getSlaveGroupUserOrder(User $user) : ?GroupUserOrder {
         foreach ($this->getGroupUserOrders() as $groupUserOrder) {
-            if (!$groupUserOrder->isMasterOrder()) {
+            if (!$groupUserOrder->isMasterOrder() and $groupUserOrder->getUser()->getId() == $user->getId()) {
                 return $groupUserOrder;
             }
         }
