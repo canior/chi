@@ -63,7 +63,7 @@ class GroupOrderController extends BaseController
         //向微信提交支付信息
         $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
 
-        $body = "创建开团订单"; //TODO 开团信息要怎么写
+        $body = "create order"; //TODO 开团信息要怎么写
         $wxPaymentApi = new WxPayment($this->getLog());
         $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
         $prePayId = $result['prepay_id'];
