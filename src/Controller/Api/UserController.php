@@ -185,16 +185,16 @@ class UserController extends BaseController
     /**
      * 获取用户收货地址
      *
-     * @Route("/user/address/{$userAddressId}", name="getUserAddress", methods="POST")
+     * @Route("/user/address", name="getUserAddress", methods="POST")
      * @param Request $request
-     * @param $userAddressId
      * @param UserAddressRepository $userAddressRepository
      * @return Response
      */
-    public function getUserAddressAction(Request $request, $userAddressId, UserAddressRepository $userAddressRepository): Response {
+    public function getUserAddressAction(Request $request, UserAddressRepository $userAddressRepository): Response {
 
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $userAddressId = isset($data['userAddressId']) ? $data['userAddressId'] : null;
         $user = $this->getWxUser($thirdSession);
 
         $userAddress = $userAddressRepository->find($userAddressId);

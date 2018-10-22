@@ -28,10 +28,12 @@ Page({
   getAddress: function(id) {
     const that = this;
     wx.request({
-      url: app.globalData.baseUrl + '/user/address/' + id,
+      url: app.globalData.baseUrl + '/user/address',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
+        userAddressId: id
       },
+      method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
