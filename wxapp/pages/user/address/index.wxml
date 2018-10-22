@@ -1,22 +1,24 @@
 <!--pages/user/address/index.wxml-->
 <view class="container">
 
-  <view class="row" wx:for="123" wx:key="index" bindtouchstart="touchS" bindtouchmove="touchM" bindtouchend="touchE" style="{{txtStyle}}">
-    <view class="left">
-      <view class="line">
-        <view class="name">唐亚迪</view>
-        <view class="phone">123****456</view>
+  <view class="item" wx:for="{{addresses}}" wx:key="index">
+    <view class="top" bindtouchstart="touchS" bindtouchmove="touchM" bindtouchend="touchE" style="{{item.txtStyle}}" data-index="{{index}}">
+      <view class="left">
+        <view class="line">
+          <view class="name">{{item.name}}</view>
+          <view class="phone">{{item.phone}}</view>
+        </view>
+        <view class="line">
+          <view class="default"><text wx:if="{{item.isDefault}}">默认</text></view>
+          <view class="addr">{{item.address}}</view>
+        </view>
       </view>
-      <view class="line">
-        <view class="default"><text>默认</text></view>          
-        <view class="addr">上海松江区莘砖公路668号A座1501室</view>
+      <view class="right" bindtap="editAddress" data-id="{{item.id}}">
+        <image src="/images/edit.png"/>
       </view>
     </view>
-    <view class="right" bindtap="editAddress" data-id="{{item.id}}">
-      <image src="/images/edit.png"/>
-    </view>
+    <view class="del" bindtap="delAddress">删除</view>
   </view>
-
 </view>
 
 <view class="bottom">

@@ -205,7 +205,7 @@ class UserController extends BaseController
     /**
      * 添加用户收货地址
      *
-     * @Route("/user/addresses", name="addUserAddress", methods="POST")
+     * @Route("/user/address/post", name="addUserAddress", methods="POST")
      * @param Request $request
      * @param $userAddressId
      * @param UserAddressRepository $userAddressRepository
@@ -229,7 +229,7 @@ class UserController extends BaseController
     /**
      * 更新用户收货地址
      *
-     * @Route("/user/addresses/{$userAddressId}", name="updateUserAddress", methods="PUT")
+     * @Route("/user/address/put/{$userAddressId}", name="updateUserAddress", methods="PUT")
      * @param Request $request
      * @param $userAddressId
      * @param UserAddressRepository $userAddressRepository
