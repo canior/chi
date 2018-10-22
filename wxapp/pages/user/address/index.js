@@ -43,7 +43,7 @@ Page({
 
   editAddress: function(e) {
     const id = e.currentTarget.dataset.id ? e.currentTarget.dataset.id : '';
-    wx.navigateTo({
+    wx.redirectTo({
       url: '/pages/user/address/edit?id=' + id,
     })
   },
