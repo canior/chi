@@ -28,9 +28,9 @@ Page({
       method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
+          //console.log(res.data.data)
           that.setData({
-            addresses: res.data.data
+            addresses: res.data.data.userAddresses
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -43,7 +43,7 @@ Page({
   },
 
   editAddress: function(e) {
-    const id = e.currentTarget.dataset.id ? e.currentTarget.dataset.id : null;
+    const id = e.currentTarget.dataset.id ? e.currentTarget.dataset.id : '';
     wx.navigateTo({
       url: '/pages/user/address/edit?id=' + id,
     })

@@ -1,10 +1,12 @@
 <?php
 namespace App\Controller\Api;
 
+use App\Entity\Region;
 use App\Entity\User;
 use App\Entity\UserAddress;
 use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
+use App\Repository\RegionRepository;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
 use App\Service\Wx\WxCommon;
@@ -203,7 +205,7 @@ class UserController extends BaseController
     }
 
     /**
-     * 添加用户收货地址
+     * 添加或更新用户收货地址
      *
      * @Route("/user/address/post", name="addUserAddress", methods="POST")
      * @param Request $request
@@ -211,15 +213,54 @@ class UserController extends BaseController
      * @param UserAddressRepository $userAddressRepository
      * @return Response
      */
-    public function addUserAddressAction(Request $request, $userAddressId, UserAddressRepository $userAddressRepository): Response {
+    public function addUserAddressAction(Request $request, UserAddressRepository $userAddressRepository, RegionRepository $regionRepository): Response {
 
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $user = $this->getWxUser($thirdSession);
 
         //TODO
+        $userAddressId = isset($data['userAddressId']) ? $data['userAddressId'] : null;
+        $name = isset($data['name']) ? $data['name'] : null;
+        $phone = isset($data['phone']) ? $data['phone'] : null;
+        $province = isset($data['province']) ? $data['province'] : null;
+        $city = isset($data['city']) ? $data['city'] : null;
+        $county = isset($data['county']) ? $data['county'] : null;
+        $address = isset($data['address']) ? $data['address'] : null;
+        $isDefault = isset($data['isDefault']) ? $data['isDefault'] : null;
 
-        $userAddress = $userAddressRepository->find($userAddressId);
+        // 查询或新建region
+        $provinceDao = $regionRepository->findBy(['name' => $province, 'parentRegion' => null]);
+        if (!$provinceDao) {
+            $provinceDao = new Region();
+            $provinceDao->setName();
+            $this->getEntityManager()->persist($provinceDao);
+            $this->getEntityManager()->flush();
+        }
+        $cityDao = $regionRepository->findBy(['name' => $city, 'parentRegion' => $provinceDao]);
+        if (!$cityDao) {
+            $cityDao = new Region();
+            $cityDao->setName()->setParentRegion($provinceDao);
+            $this->getEntityManager()->persist($cityDao);
+            $this->getEntityManager()->flush();
+        }
+        $countyDao = $regionRepository->findBy(['name' => $city, 'parentRegion' => $cityDao]);
+        if (!$countyDao) {
+            $countyDao = new Region();
+            $countyDao->setName()->setParentRegion($cityDao);
+            $this->getEntityManager()->persist($countyDao);
+            $this->getEntityManager()->flush();
+        }
+
+        // 查询或新建userAddress
+        if ($userAddressId) {
+            $userAddress = $userAddressRepository->find($userAddressId);
+        } else {
+            $userAddress = new UserAddress();
+        }
+        $userAddress->setName($name)->setPhone($phone)->setRegion($countyDao)->setAddress($address)->setIsDefault($isDefault)->setUpdatedAt(time());
+        $this->getEntityManager()->persist($userAddress);
+        $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
             'userAddresses' => $userAddress->getArray()

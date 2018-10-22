@@ -6,6 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    id: '',
     name: '',
     phone: '',
     region: [],
@@ -85,6 +86,15 @@ Page({
     wx.request({
       url: app.globalData.baseUrl + '/user/address/post',
       data: {
+        userAddressId: this.data.id,
+        name: this.data.name,
+        phone: this.data.phone,
+        province: this.data.region[0],
+        city: this.data.region[1],
+        county: this.data.region[2],
+        address: this.data.address,
+        isDefault: this.data.isDefault,
+        thirdSession: wx.getStorageSync('thirdSession'),
       },
       method: 'POST',
       success: (res) => {
@@ -112,6 +122,13 @@ Page({
     if (!this.data.phone) {
       wx.showModal({
         content: '请输入手机号码',
+        showCancel: false,
+      });
+      return false;
+    }
+    if (!(/^1[34578]\d{9}$/.test(this.data.phone))) {
+      wx.showModal({
+        content: '手机号码有误',
         showCancel: false,
       });
       return false;
