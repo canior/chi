@@ -17,7 +17,7 @@
         <image src="/images/edit.png"/>
       </view>
     </view>
-    <view class="del" bindtap="delAddress">删除</view>
+    <view class="del" bindtap="delAddress" data-id="{{item.id}}">删除</view>
   </view>
 </view>
 

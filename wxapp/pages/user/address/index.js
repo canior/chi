@@ -14,11 +14,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const user_id = options.id ? options.id : 4;
-    this.getAddresses(user_id)
+    this.getAddresses()
   },
 
-  getAddresses: function(user_id) {
+  getAddresses: function() {
     const that = this;
     wx.request({
       url: app.globalData.baseUrl + '/user/addresses',
@@ -46,6 +45,40 @@ Page({
     const id = e.currentTarget.dataset.id ? e.currentTarget.dataset.id : '';
     wx.navigateTo({
       url: '/pages/user/address/edit?id=' + id,
+    })
+  },
+
+  delAddress: function(e) {
+    const id = e.currentTarget.dataset.id;
+    const that = this;
+    wx.showModal({
+      title: '提示',
+      content: '您是否确认要删除所选择的收货地址？',
+      confirmText: '是',
+      cancelText: '否',
+      success: function (res) {
+        if (res.confirm) {
+          wx.request({
+            url: app.globalData.baseUrl + '/user/address/delete',
+            data: {
+              thirdSession: wx.getStorageSync('thirdSession'),
+              userAddressId: id
+            },
+            method: 'POST',
+            success: (res) => {
+              if (res.statusCode == 200 && res.data.code == 200) {
+                //console.log(res.data.data)
+                that.getAddresses()
+              } else {
+                console.log('wx.request return error', res.statusCode);
+              }
+            },
+            fail(e) {
+            },
+            complete(e) { }
+          })
+        }
+      }
     })
   },
 

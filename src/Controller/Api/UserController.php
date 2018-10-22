@@ -287,7 +287,7 @@ class UserController extends BaseController
 
         $userAddressId = isset($data['userAddressId']) ? $data['userAddressId'] : null;
         $userAddress = $userAddressRepository->find($userAddressId);
-        $userAddress->getIsDeleted(true)->setUpdatedAt(time());
+        $userAddress->setIsDeleted(true)->setUpdatedAt(time());
         $this->getEntityManager()->persist($userAddress);
         $this->getEntityManager()->flush();
 
