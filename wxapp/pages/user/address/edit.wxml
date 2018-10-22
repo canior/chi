@@ -1,2 +1,26 @@
 <!--pages/user/address/edit.wxml-->
-<text>pages/user/address/edit.wxml</text>
+<view class="container">
+  <view class="row">
+    <input placeholder="姓名" value="{{name}}" bindblur="inputName"/>
+  </view>
+  <view class="row">
+    <input placeholder="手机号码" value="{{phone}}" bindblur="inputPhone"/>
+  </view>
+  <view class="row">
+    <picker mode="region" bindchange="bindRegionChange" value="{{region}}" custom-item="{{customItem}}">
+      <input placeholder="省市、区县" value="{{regionText}}" disabled="true"/>
+    </picker>    
+  </view>
+  <view class="row">
+    <input placeholder="详细地址" value="{{address}}" bindblur="inputAddress"/>
+  </view>
+  <view class="row">
+    <checkbox-group bindchange="setDefault" data-isdefault="{{isDefault}}">
+      <checkbox checked="{{isDefault}}"/>设为默认地址
+    </checkbox-group>
+  </view>
+</view>
+
+<view class="bottom" bindtap="save">
+  <view class="btn">保存</view>
+</view>

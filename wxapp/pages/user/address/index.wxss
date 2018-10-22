@@ -22,6 +22,7 @@
 }
 .right {
   padding: 30rpx 40rpx;
+  border: 1px solid #000;
 }
 .right image {
   width: 24rpx;

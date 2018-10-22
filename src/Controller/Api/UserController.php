@@ -183,7 +183,7 @@ class UserController extends BaseController
     /**
      * 获取用户收货地址
      *
-     * @Route("/user/addresses/{$userAddressId}", name="getUserAddress", methods="GET")
+     * @Route("/user/address/{$userAddressId}", name="getUserAddress", methods="GET")
      * @param Request $request
      * @param $userAddressId
      * @param UserAddressRepository $userAddressRepository

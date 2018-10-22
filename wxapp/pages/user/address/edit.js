@@ -6,17 +6,132 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    name: '',
+    phone: '',
+    region: [],
+    regionText: null,    
+    customItem: '',
+    address: '',
+    isDefault: true,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const id = options.id ? options.id : 1;
-    
-
+    if (options.id) {
+      this.getAddress(options.id)
+    }
   },
+
+  getAddress: function(id) {
+    const that = this;
+    wx.request({
+      url: app.globalData.baseUrl + '/user/address/' + id,
+      data: {
+      },
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          that.setData({
+
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
+    })
+  },
+
+  inputName: function(e) {
+    this.setData({
+      name: e.detail.value
+    })
+  },
+
+  inputPhone: function (e) {
+    this.setData({
+      phone: e.detail.value
+    })
+  },
+
+  inputAddress: function (e) {
+    this.setData({
+      address: e.detail.value
+    })
+  },
+
+  bindRegionChange: function (e) {
+    const region = e.detail.value
+    this.setData({
+      region: region,
+      regionText: region[0]+' '+region[1]+' '+region[2]
+    })
+  },
+
+  setDefault: function(e) {
+    this.setData({
+      isDefault: !e.currentTarget.dataset.isdefault
+    })
+  },
+
+  // 保存
+  save: function (e) {
+    const that = this;
+    if (!that.validation()) return;
+    wx.request({
+      url: app.globalData.baseUrl + '/user/address/post',
+      data: {
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
+    })
+  },
+
+  // 检查输入是否完整
+  validation: function () {
+    if (!this.data.name) {
+      wx.showModal({
+        content: '请输入姓名',
+        showCancel: false,
+      });
+      return false;
+    }
+    if (!this.data.phone) {
+      wx.showModal({
+        content: '请输入手机号码',
+        showCancel: false,
+      });
+      return false;
+    }
+    if (this.data.region.length == 0) {
+      wx.showModal({
+        content: '请选择省市、区县',
+        showCancel: false,
+      });
+      return false;
+    }
+    if (!this.data.address) {
+      wx.showModal({
+        content: '请输入详细地址',
+        showCancel: false,
+      });
+      return false;
+    }        
+    return true;
+  },  
 
   /**
    * 生命周期函数--监听页面初次渲染完成

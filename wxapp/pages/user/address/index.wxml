@@ -1,7 +1,7 @@
 <!--pages/user/address/index.wxml-->
 <view class="container">
 
-  <view class="row" wx:for="123" wx:key="index">
+  <view class="row" wx:for="123" wx:key="index" bindtouchstart="touchS" bindtouchmove="touchM" bindtouchend="touchE" style="{{txtStyle}}">
     <view class="left">
       <view class="line">
         <view class="name">唐亚迪</view>
@@ -20,6 +20,6 @@
 </view>
 
 <view class="bottom">
-  <view class="left" bindtap="createAddress">＋新建地址</view>
+  <view class="left" bindtap="editAddress">＋新建地址</view>
   <view class="right"><image src="/images/wx.png"/>微信导入地址</view>
 </view>
