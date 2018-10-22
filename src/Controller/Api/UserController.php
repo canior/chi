@@ -233,21 +233,21 @@ class UserController extends BaseController
         $provinceDao = $regionRepository->findBy(['name' => $province, 'parentRegion' => null]);
         if (!$provinceDao) {
             $provinceDao = new Region();
-            $provinceDao->setName();
+            $provinceDao->setName($province);
             $this->getEntityManager()->persist($provinceDao);
             $this->getEntityManager()->flush();
         }
         $cityDao = $regionRepository->findBy(['name' => $city, 'parentRegion' => $provinceDao]);
         if (!$cityDao) {
             $cityDao = new Region();
-            $cityDao->setName()->setParentRegion($provinceDao);
+            $cityDao->setName($city)->setParentRegion($provinceDao);
             $this->getEntityManager()->persist($cityDao);
             $this->getEntityManager()->flush();
         }
-        $countyDao = $regionRepository->findBy(['name' => $city, 'parentRegion' => $cityDao]);
+        $countyDao = $regionRepository->findBy(['name' => $county, 'parentRegion' => $cityDao]);
         if (!$countyDao) {
             $countyDao = new Region();
-            $countyDao->setName()->setParentRegion($cityDao);
+            $countyDao->setName($county)->setParentRegion($cityDao);
             $this->getEntityManager()->persist($countyDao);
             $this->getEntityManager()->flush();
         }
