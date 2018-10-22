@@ -9,7 +9,7 @@
           <view class="phone">{{item.phone}}</view>
         </view>
         <view class="line">
-          <view class="default"><text wx:if="{{item.isDefault}}">默认</text></view>
+          <view class="default"><text wx:if="{{item.is_default}}">默认</text></view>
           <view class="addr">{{item.address}}</view>
         </view>
       </view>

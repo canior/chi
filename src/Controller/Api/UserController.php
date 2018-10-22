@@ -185,7 +185,7 @@ class UserController extends BaseController
     /**
      * 获取用户收货地址
      *
-     * @Route("/user/address/{$userAddressId}", name="getUserAddress", methods="GET")
+     * @Route("/user/address/{$userAddressId}", name="getUserAddress", methods="POST")
      * @param Request $request
      * @param $userAddressId
      * @param UserAddressRepository $userAddressRepository
@@ -262,6 +262,8 @@ class UserController extends BaseController
         $userAddress->setName($name)->setPhone($phone)->setRegion($countyDao)->setAddress($address)->setIsDefault($isDefault)->setUpdatedAt(time());
         $this->getEntityManager()->persist($userAddress);
         $this->getEntityManager()->flush();
+
+        //TODO: 若$isDefault=true则要检查其它地址中有无已设为默认的，有要去掉，不然就会有多个默认
 
         return $this->responseJson('success', 200, [
             'userAddresses' => $userAddress->getArray()

@@ -13,7 +13,7 @@ Page({
     regionText: null,    
     customItem: '',
     address: '',
-    isDefault: true,
+    isDefault: false,
   },
 
   /**
@@ -30,6 +30,7 @@ Page({
     wx.request({
       url: app.globalData.baseUrl + '/user/address/' + id,
       data: {
+        thirdSession: wx.getStorageSync('thirdSession'),
       },
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
@@ -99,7 +100,10 @@ Page({
       method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
+          //console.log(res.data.data)
+          wx.redirectTo({
+            url: '/pages/user/address/index',
+          })
         } else {
           console.log('wx.request return error', res.statusCode);
         }
