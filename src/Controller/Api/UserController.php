@@ -158,7 +158,7 @@ class UserController extends BaseController
     /**
      * 获取用户收货地址列表
      *
-     * @Route("/user/addresses", name="listUserAddresses", methods="GET")
+     * @Route("/user/addresses", name="listUserAddresses", methods="POST")
      * @param Request $request
      * @param UserAddressRepository $userAddressRepository
      * @return Response
