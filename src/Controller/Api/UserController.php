@@ -257,6 +257,7 @@ class UserController extends BaseController
             $userAddress = $userAddressRepository->find($userAddressId);
         } else {
             $userAddress = new UserAddress();
+            $userAddress->setUser($user);
         }
         $userAddress->setName($name)->setPhone($phone)->setRegion($countyDao)->setAddress($address)->setIsDefault($isDefault)->setUpdatedAt(time());
         $this->getEntityManager()->persist($userAddress);
