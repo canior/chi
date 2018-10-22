@@ -22,6 +22,9 @@ Page({
   onLoad: function (options) {
     if (options.id) {
       this.getAddress(options.id)
+      wx.setNavigationBarTitle({ title: '编辑地址' })
+    } else {
+      wx.setNavigationBarTitle({ title: '新建地址' })
     }
   },
 

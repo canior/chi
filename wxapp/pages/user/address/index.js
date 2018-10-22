@@ -14,7 +14,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.getAddresses()
+    //this.getAddresses()
   },
 
   getAddresses: function() {
@@ -43,7 +43,7 @@ Page({
 
   editAddress: function(e) {
     const id = e.currentTarget.dataset.id ? e.currentTarget.dataset.id : '';
-    wx.redirectTo({
+    wx.navigateTo({
       url: '/pages/user/address/edit?id=' + id,
     })
   },
@@ -145,7 +145,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.getAddresses()
   },
 
   /**

@@ -3,6 +3,8 @@
   height: 80px;
   border-bottom: 1px solid #ddd;
   position: relative;
+}.item:first-child {
+  border-top: 1px solid #ddd;
 }
 .top {
   position: absolute;
