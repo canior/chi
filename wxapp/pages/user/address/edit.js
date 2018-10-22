@@ -10,7 +10,7 @@ Page({
     name: '',
     phone: '',
     region: [],
-    regionText: null,    
+    regionText: null,
     customItem: '',
     address: '',
     isDefault: false,
@@ -37,8 +37,15 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
+          const userAddress = res.data.data.userAddresses
           that.setData({
-
+            id: userAddress.id,
+            name: userAddress.name,
+            phone: userAddress.phone,
+            region: [userAddress.region.province, userAddress.region.city, userAddress.region.county],
+            regionText: userAddress.region.province+' '+userAddress.region.city+' '+userAddress.region.county,
+            address: userAddress.address,
+            isDefault: userAddress.is_default
           })
         } else {
           console.log('wx.request return error', res.statusCode);

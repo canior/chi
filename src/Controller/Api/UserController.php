@@ -209,17 +209,17 @@ class UserController extends BaseController
      *
      * @Route("/user/address/post", name="addUserAddress", methods="POST")
      * @param Request $request
-     * @param $userAddressId
      * @param UserAddressRepository $userAddressRepository
+     * @param RegionRepository $regionRepository
      * @return Response
      */
     public function addUserAddressAction(Request $request, UserAddressRepository $userAddressRepository, RegionRepository $regionRepository): Response {
 
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+
         $user = $this->getWxUser($thirdSession);
 
-        //TODO
         $userAddressId = isset($data['userAddressId']) ? $data['userAddressId'] : null;
         $name = isset($data['name']) ? $data['name'] : null;
         $phone = isset($data['phone']) ? $data['phone'] : null;
@@ -271,23 +271,25 @@ class UserController extends BaseController
     }
 
     /**
-     * 更新用户收货地址
+     * 删除用户收货地址
      *
-     * @Route("/user/address/put/{$userAddressId}", name="updateUserAddress", methods="PUT")
+     * @Route("/user/address/delete", name="deleteUserAddress", methods="POST")
      * @param Request $request
-     * @param $userAddressId
      * @param UserAddressRepository $userAddressRepository
      * @return Response
      */
-    public function updateUserAddressAction(Request $request, $userAddressId, UserAddressRepository $userAddressRepository): Response {
+    public function updateUserAddressAction(Request $request, UserAddressRepository $userAddressRepository): Response {
 
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+
         $user = $this->getWxUser($thirdSession);
 
+        $userAddressId = isset($data['userAddressId']) ? $data['userAddressId'] : null;
         $userAddress = $userAddressRepository->find($userAddressId);
-
-        //TODO
+        $userAddress->getIsDeleted(true)->setUpdatedAt(time());
+        $this->getEntityManager()->persist($userAddress);
+        $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
             'userAddresses' => $userAddress->getArray()
