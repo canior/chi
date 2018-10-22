@@ -107,6 +107,7 @@ class GroupUserOrder implements Dao
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ProductReview", mappedBy="groupUserOrder", fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $productReviews;
 

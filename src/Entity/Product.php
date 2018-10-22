@@ -86,6 +86,11 @@ class Product implements Dao
     private $productReviews;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\ProductStatistics", mappedBy="product", cascade={"persist", "remove"})
+     */
+    private $productStatistics;
+
+    /**
      * Product constructor.
      */
     public function __construct()
@@ -349,5 +354,22 @@ class Product implements Dao
      */
     public function increaseStock(int $num = 1) {
         $this->stock += $num;
+    }
+
+    public function getProductStatistics(): ?ProductStatistics
+    {
+        return $this->productStatistics;
+    }
+
+    public function setProductStatistics(ProductStatistics $productStatistics): self
+    {
+        $this->productStatistics = $productStatistics;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $productStatistics->getProduct()) {
+            $productStatistics->setProduct($this);
+        }
+
+        return $this;
     }
 }

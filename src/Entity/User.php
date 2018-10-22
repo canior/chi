@@ -112,6 +112,11 @@ class User extends BaseUser implements Dao
      */
     private $groupUserOrderLogs;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\UserStatistics", mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $userStatistics;
+
     public function __construct()
     {
         parent::__construct();
@@ -439,5 +444,22 @@ class User extends BaseUser implements Dao
             'nickname' => $this->getNickname(),
             'avatarUrl' => $this->getAvatarUrl(),
         ];
+    }
+
+    public function getUserStatistics(): ?UserStatistics
+    {
+        return $this->userStatistics;
+    }
+
+    public function setUserStatistics(UserStatistics $userStatistics): self
+    {
+        $this->userStatistics = $userStatistics;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $userStatistics->getUser()) {
+            $userStatistics->setUser($this);
+        }
+
+        return $this;
     }
 }
