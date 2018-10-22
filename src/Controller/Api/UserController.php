@@ -230,21 +230,21 @@ class UserController extends BaseController
         $isDefault = isset($data['isDefault']) ? $data['isDefault'] : null;
 
         // 查询或新建region
-        $provinceDao = $regionRepository->findBy(['name' => $province, 'parentRegion' => null]);
+        $provinceDao = $regionRepository->findOneBy(['name' => $province, 'parentRegion' => null]);
         if (!$provinceDao) {
             $provinceDao = new Region();
             $provinceDao->setName($province);
             $this->getEntityManager()->persist($provinceDao);
             $this->getEntityManager()->flush();
         }
-        $cityDao = $regionRepository->findBy(['name' => $city, 'parentRegion' => $provinceDao]);
+        $cityDao = $regionRepository->findOneBy(['name' => $city, 'parentRegion' => $provinceDao]);
         if (!$cityDao) {
             $cityDao = new Region();
             $cityDao->setName($city)->setParentRegion($provinceDao);
             $this->getEntityManager()->persist($cityDao);
             $this->getEntityManager()->flush();
         }
-        $countyDao = $regionRepository->findBy(['name' => $county, 'parentRegion' => $cityDao]);
+        $countyDao = $regionRepository->findOneBy(['name' => $county, 'parentRegion' => $cityDao]);
         if (!$countyDao) {
             $countyDao = new Region();
             $countyDao->setName($county)->setParentRegion($cityDao);
