@@ -23,11 +23,10 @@ Page({
     if (options.id) {
       if (options.id == 'import') {
         this.importAddress()
-        wx.setNavigationBarTitle({ title: '导入地址' })
       } else {
         this.getAddress(options.id)
-        wx.setNavigationBarTitle({ title: '编辑地址' })
       }
+      wx.setNavigationBarTitle({ title: '编辑地址' })
     } else {
       wx.setNavigationBarTitle({ title: '新建地址' })
     }
