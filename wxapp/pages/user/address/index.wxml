@@ -10,7 +10,7 @@
         </view>
         <view class="line">
           <view class="default"><text wx:if="{{item.is_default}}">默认</text></view>
-          <view class="addr">{{item.address}}</view>
+          <view class="addr">{{item.region.fullname}} {{item.address}}</view>
         </view>
       </view>
       <view class="right" bindtap="editAddress" data-id="{{item.id}}">
@@ -23,5 +23,5 @@
 
 <view class="bottom">
   <view class="left" bindtap="editAddress">＋新建地址</view>
-  <view class="right"><image src="/images/wx.png"/>微信导入地址</view>
+  <view class="right" bindtap="importAddress"><image src="/images/wx.png"/>微信导入地址</view>
 </view>

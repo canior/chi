@@ -82,6 +82,30 @@ Page({
     })
   },
 
+  importAddress: function (e) {
+    app.unifiedAuth(
+      'scope.address',
+      '需要使用您的通讯地址，是否允许？',
+      function () {
+        wx.chooseAddress({
+          success: (res) => {
+            console.log(res);
+            app.globalData.addressInfo = res;
+            wx.navigateTo({
+              url: '/pages/user/address/edit?id=import',
+              success: function(res) {},
+              fail: function(res) {},
+              complete: function(res) {},
+            })
+          },
+          fail: function (err) {
+            console.log('wx.chooseAddress fail', err)
+          }
+        })
+      }
+    )
+  },
+
   // 左滑开始
   touchS: function (e) {
     //console.log("touchS", e);

@@ -21,8 +21,13 @@ Page({
    */
   onLoad: function (options) {
     if (options.id) {
-      this.getAddress(options.id)
-      wx.setNavigationBarTitle({ title: '编辑地址' })
+      if (options.id == 'import') {
+        this.importAddress()
+        wx.setNavigationBarTitle({ title: '导入地址' })
+      } else {
+        this.getAddress(options.id)
+        wx.setNavigationBarTitle({ title: '编辑地址' })
+      }
     } else {
       wx.setNavigationBarTitle({ title: '新建地址' })
     }
@@ -90,6 +95,19 @@ Page({
     this.setData({
       isDefault: !e.currentTarget.dataset.isdefault
     })
+  },
+
+  importAddress: function() {
+    const addressInfo = app.globalData.addressInfo;
+    if (addressInfo) {
+      this.setData({
+        name: addressInfo.userName,
+        phone: addressInfo.telNumber,
+        region: [addressInfo.provinceName, addressInfo.cityName, addressInfo.countyName],
+        regionText: addressInfo.provinceName+' '+addressInfo.cityName+' '+addressInfo.countyName,
+        address: addressInfo.detailInfo
+      })
+    }
   },
 
   // 保存
