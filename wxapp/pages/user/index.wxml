@@ -2,17 +2,22 @@
 <view class="container">
   <view class="top">
     <view class="left">
-      <image src="/images/demo/my-avatar.png"/>
-      <text>唐亚迪Tandy</text>
+      <view class="avatar">
+        <image src="/images/demo/my-avatar.png" wx:if="{{isLogin}}"/>
+      </view>
+      <text>{{isLogin ? '唐亚迪Tandy' : '未登录'}}</text>
     </view>
-    <view class="right">
+    <view class="right" wx:if="{{isLogin}}">
       <view>￥10.00</view>
       <view class="myreward"><image src="/images/my-reward.png"/>我的收益</view>
     </view>
+    <view class="right" wx:if="{{!isLogin}}">
+      <navigator url="/pages/user/login">请登录</navigator>
+    </view>    
   </view>
   <view class="row">
     <view class="left">我的订单</view>
-    <view class="right">查看全部<view class="arrow-right"/></view>
+    <view class="right" bindtap="toUserOrder">查看全部<view class="arrow-right"/></view>
   </view>
   <view class="row">
     <view class="step"><image src="/images/my-pending.png"/><text>待发货</text></view>
@@ -23,7 +28,7 @@
 </view>
 <view class="split-brand"/>
 <view class="container">
-  <navigator class="row" url="" hover-class="none">
+  <navigator class="row" url="/pages/user/group/index" hover-class="none">
     <view class="left">我的拼团</view>
     <view class="right"><view class="arrow-right"/></view>
   </navigator>

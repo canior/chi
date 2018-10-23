@@ -1,12 +1,11 @@
-// pages/user/index.js
-const app= getApp()
+// pages/user/order/detail.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    isLogin: app.globalData.isLogin,
+    order: null
   },
 
   /**
@@ -16,10 +15,10 @@ Page({
 
   },
 
-  //我的订单
-  toUserOrder: function () {
-    wx.navigateTo({
-      url: '/pages/user/order/index',
+  //继续拼团
+  toProductDetail: function (e) {
+    wx.redirectTo({
+      url: '/pages/product/detail?id=' + '1',
     })
   },
 
@@ -41,7 +40,7 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    this.setData({ isLogin: app.globalData.isLogin })
+
   },
 
   /**

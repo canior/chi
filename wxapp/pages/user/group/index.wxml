@@ -1,0 +1,37 @@
+<!--pages/user/group/index.wxml-->
+<view class="navbar">
+  <block wx:for="{{menu}}" wx:key="index">
+    <view class="nav{{curIndex==index ? ' active' : ''}}" data-index="{{index}}"bindtap="tapMenu">{{item}}</view>
+  </block>
+</view>
+<view class="split-brand"/>
+
+<block wx:for="1234" wx:key="index">
+  <view class="section">
+    <view class="row">
+      <view class="left">拼团编号：88665522</view>
+      <view class="right pending">等待成团</view>
+    </view>
+    <view class="row">
+      <view class="left">
+        <image src="/images/demo/product-thumb.png"/>
+        <view>
+          <view class="line name">【麦摄氏度】5瓶装 代餐 330毫升</view>
+          <view class="line chi-price-container">
+            <view class="price">拼团价￥<text>{{'100.00'}}</text></view>
+            <view class="freight">包邮</view>
+            <view class="ori-price">￥{{'200.00'}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="row">
+      <view class="left">2018-08-24 18:24:15</view>
+      <view class="right">
+        <button bindtap="toOrderDetail" data-id="{{'1'}}">订单详情</button>
+        <button bindtap="toGroupDetail" data-id="{{'1'}}">拼团详情</button>
+      </view>
+    </view>
+  </view>
+  <view class="split-brand"/>
+</block>

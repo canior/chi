@@ -11,12 +11,16 @@
   display: flex;
   align-items: center;
 }
+.top .left .avatar {
+  width: 126rpx;
+  height: 126rpx;
+  border: 1px solid #ededed;
+  border-radius: 50%;
+  margin-right: 20rpx
+}
 .top .left image {
   width: 126rpx;
   height: 126rpx;
-  border-radius: 50%;
-  border: 1px solid #ededed;
-  margin-right: 20rpx
 }
 .top .right {
   text-align: center;
@@ -32,6 +36,13 @@
   border: 1px solid #000;
   border-radius: 20rpx;
   padding: 0 20rpx;
+}
+.top .right navigator {
+  font-size: 24rpx;
+  color: #ff4d42;
+  border: 1px solid #ff4d42;
+  border-radius: 40rpx;
+  padding: 10rpx 30rpx;
 }
 .row {
   display: flex;

@@ -1,12 +1,13 @@
-// pages/user/index.js
-const app= getApp()
+// pages/user/order/index.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    isLogin: app.globalData.isLogin,
+    menu: ['全部', '待发货', '已发货', '确认收货', '待评价'],
+    curIndex: 0,
+    orderList: [],
   },
 
   /**
@@ -16,10 +17,17 @@ Page({
 
   },
 
-  //我的订单
-  toUserOrder: function () {
+  tapMenu: function (e) {
+    this.setData({
+      curIndex: e.currentTarget.dataset.index
+    })
+  },
+
+  // 转订单详情
+  toUserOrderDetail: function (e) {
+    const orderId = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: '/pages/user/order/index',
+      url: '/pages/user/order/detail?id=' + orderId,
     })
   },
 
@@ -41,7 +49,7 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    this.setData({ isLogin: app.globalData.isLogin })
+
   },
 
   /**

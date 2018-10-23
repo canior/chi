@@ -1,12 +1,14 @@
-// pages/user/index.js
-const app= getApp()
+// pages/user/group/index.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    isLogin: app.globalData.isLogin,
+    menu: ['我的拼团', '等待成团', '拼团成功', '拼团失败'],
+    curIndex: 0,
+    groupOrderList: [], 
+
   },
 
   /**
@@ -16,12 +18,27 @@ Page({
 
   },
 
-  //我的订单
-  toUserOrder: function () {
-    wx.navigateTo({
-      url: '/pages/user/order/index',
+  tapMenu: function (e) {
+    this.setData({
+      curIndex: e.currentTarget.dataset.index
     })
   },
+
+  // 转拼团详情
+  toGroupDetail: function (e) {
+    const groupId = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: '/pages/group/index?id=' + groupId,
+    })
+  },
+
+  // 转订单详情
+  toOrderDetail: function (e) {
+    const orderId = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: '/pages/user/order/detail?id=' + orderId,
+    })
+  },  
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -41,7 +58,7 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    this.setData({ isLogin: app.globalData.isLogin })
+
   },
 
   /**

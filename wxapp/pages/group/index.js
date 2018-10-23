@@ -19,8 +19,11 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const id = options.id ? options.id : 10110;
-    this.getGroupOrder(id);
+    const id = options.id;
+    const isLogin = app.globalData.isLogin;
+    if (isLogin && id) {
+      this.getGroupOrder(id);
+    }
   },
 
   getGroupOrder: function(id) {
@@ -40,17 +43,8 @@ Page({
           that.setData({
             groupOrder: groupOrder,
             user: user,
-            isOpenUser: isOpenUser,
-            isLogin: app.globalData.isLogin            
-          })
-
-          app.userInfoReadyCallback = res => {
-            that.setData({
-              user: app.globalData.user,
-              isLogin: app.globalData.isLogin,
-              isOpenUser: app.globalData.user && app.globalData.user.id == groupOrder.user.id
-            })
-          }          
+            isOpenUser: isOpenUser
+          })       
         } else {
           console.log('wx.request return error', res.statusCode);
         }

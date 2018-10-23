@@ -1,0 +1,51 @@
+<!--pages/user/order/detail.wxml-->
+<view class="top">
+  <view>下单时间：2018-08-24 11:20:30</view>
+  <view>订单编号：123456789</view>
+</view>
+<view class="split-brand"/>
+
+<view class="section">
+  <view class="row">
+    <view class="left">订单编号：88665522</view>
+    <view class="right pending">待发货</view>
+  </view>
+  <view class="row">
+    <view class="left">
+      <image src="/images/demo/product-thumb.png"/>
+      <view>
+        <view class="line name">【麦摄氏度】5瓶装 代餐 330毫升</view>
+        <view class="line chi-price-container">
+          <view class="price">拼团价￥<text>{{'100.00'}}</text></view>
+          <view class="freight">包邮</view>
+          <view class="ori-price">￥{{'200.00'}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="row">
+    <button>商品评价</button>
+    <button open-type="contact">客服咨询</button>
+    <button>确认收货</button>
+  </view>
+</view>
+<view class="split-brand"/>
+
+<view class="address">
+  <view class="left"><image src="/images/addr.png"/></view>
+  <view class="right">
+    <view class="name">唐亚迪 123***4567</view>
+    <view class="addr">上海松江区莘砖公路668号A座1501室</view>
+  </view>
+</view>
+
+<view class="payment">
+  <view>支付方式：<text>微信</text></view>
+  <view>商品合计：<text>￥100.00</text></view>
+  <view>物流运费：<text>￥0.00</text></view>
+  <view>拼团返现：<text class="highlight">￥5.00</text></view>
+  <view class="split-line"/>
+  <view>实际付费：<text class="highlight">￥95.00</text></view>
+</view>
+
+<view class="bottom" bindtap="toProductDetail">继续拼团</view>
