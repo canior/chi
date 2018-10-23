@@ -76,7 +76,6 @@
   font-size: 24rpx;
   color: #ff4d42;
   font-weight: bold;
-  padding-left: 10rpx;
 }
 .product .price-container .price text {
   font-size: 36rpx;

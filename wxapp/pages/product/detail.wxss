@@ -1,13 +1,13 @@
 /* pages/product/detail.wxss */
 .banner {
   text-align: center;
-  padding-top: 100rpx;
+  position: relative;
 }
 .banner swiper {
   height: 555rpx;
 }
 .banner swiper image {
-  width: 690rpx;
+  width: 100%;
   height: 555rpx;
 }
 .banner .tip {
@@ -53,7 +53,6 @@
   font-size: 24rpx;
   color: #ff4d42;
   font-weight: bold;
-  padding-left: 10rpx;
 }
 .price-container .price text {
   font-size: 36rpx;
@@ -77,13 +76,16 @@
 .desc {
   font-size: 24rpx;
   color: #b2b2b2;
-  padding-left: 10rpx;
+  padding: 20rpx 0;
 }
-.feature .title, .specs .title {
+.chi-reward-container {
+  margin-bottom: 20rpx;
+}
+.feature .title, .specs .title, .review-container .title {
   font-size: 30rpx;
   font-weight: bold;
   color: #353535;
-  margin-top: 30rpx;
+  margin: 20rpx 0;
 }
 .feature .tags {
   display: flex;
@@ -111,17 +113,7 @@
   width: 690rpx;
   height: 450rpx;
 }
-.review-container .title {
-  font-size: 24rpx;
-  color: #353535;
-  display: flex;
-  border: 1px solid #ececec;
-  position: relative;
-  padding: 10rpx 30rpx;
-}
-.review-container .title .more {
-  position: absolute;
-  right: 30rpx;
+.review-container {
 }
 .review-container {
   padding-bottom: 100px;
@@ -168,7 +160,6 @@
   right: 0;
   background-color: #fff;
   border-top: 1px solid #e8e8e8;
-  padding: 0;
   height: 110rpx;
 }
 .bottom image {

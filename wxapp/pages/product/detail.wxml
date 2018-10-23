@@ -31,7 +31,7 @@
     <view class="detail" bindtap="toWhere?">每单皆有返现，查看详情></view>
   </view>
 
-  <view class="feature">
+  <!--<view class="feature">
     <view class="title">印象墙</view>
     <view class="tags">
       <view class="tag" wx:for="1234567" wx:key="index">
@@ -39,7 +39,7 @@
         <text class="count">326</text>
       </view>
     </view>
-  </view>
+  </view>-->
   <view class="split-line"/>
 
   <view class="specs">
@@ -48,9 +48,12 @@
       <image src="{{imgUrlPrefix + '/' + productSpecImage.fileId}}"/>
     </view>
   </view>
+</view>
+<view class="split-line"/>
 
+<view class="container">
   <view class="review-container">
-    <view class="title"><view>商品评论（10）</view><view class="more">查看更多></view></view>
+    <view class="title">商品评论</view>
     <view class="review" wx:for="{{productReviews}}" wx:key="index" wx:for-item="productReview">
       <view class="user">
         <view class="avatar"><image src="{{productReview.user.avatarUrl}}"/></view>
@@ -68,8 +71,9 @@
       <view class="split-line"/>      
     </view>
   </view>
+</view>
 
-  <view class="bottom">
+<view class="bottom">
     <view class="home" bindtap="toHome">
       <image src="/images/home2.png"/>
       <text>首页</text>
@@ -78,6 +82,5 @@
       <image src="/images/service.png"/>
       <text>客服</text>
     </button>
-    <button class="btn" bindtap="openGroup" disabled="{{btnDisabled}}">￥{{product.price}} 开团 (单买价￥{{product.originalPrice}})</button>
-  </view>
+    <button class="btn" bindtap="openGroup" disabled="{{btnDisabled}}">￥{{product.price}} 发起拼团</button>
 </view>
