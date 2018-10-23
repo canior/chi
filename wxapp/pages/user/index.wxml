@@ -1,0 +1,43 @@
+<!--pages/user/index.wxml-->
+<view class="container">
+  <view class="top">
+    <view class="left">
+      <image src="/images/demo/my-avatar.png"/>
+      <text>唐亚迪Tandy</text>
+    </view>
+    <view class="right">
+      <view>￥10.00</view>
+      <view class="myreward"><image src="/images/my-reward.png"/>我的收益</view>
+    </view>
+  </view>
+  <view class="row">
+    <view class="left">我的订单</view>
+    <view class="right">查看全部<view class="arrow-right"/></view>
+  </view>
+  <view class="row">
+    <view class="step"><image src="/images/my-pending.png"/><text>待发货</text></view>
+    <view class="step"><image src="/images/my-ship.png"/><text>已发货</text></view>
+    <view class="step"><image src="/images/my-receive.png"/><text>确认收货</text></view>
+    <view class="step"><image src="/images/my-review.png"/><text>待评价</text></view>
+  </view>
+</view>
+<view class="split-brand"/>
+<view class="container">
+  <navigator class="row" url="" hover-class="none">
+    <view class="left">我的拼团</view>
+    <view class="right"><view class="arrow-right"/></view>
+  </navigator>
+  <view class="split-line"/>
+  <navigator class="row" url="/pages/user/address/index" hover-class="none">
+    <view class="left">地址管理</view>
+    <view class="right"><view class="arrow-right"/></view>
+  </navigator>
+  <view class="split-line"/>
+  <button class="row btn-clear" open-type='contact'>
+    <view class="left">客服咨询</view>
+    <view class="right"><view class="arrow-right"/></view>
+  </button>
+  <view class="split-line"/>
+
+
+</view>
