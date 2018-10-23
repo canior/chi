@@ -169,5 +169,6 @@ App({
     isLogin: false,   //是否授权并登录
     userInfo: null,   //授权后获取的用户信息, 如昵称头像
     user: null,       //用户信息:userId,nickName,...
+    addressInfo: null,//微信通讯地址
   }
 })

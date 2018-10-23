@@ -1,0 +1,81 @@
+/* pages/user/index.wxss */
+.top {
+  font-size: 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ededed;
+  padding: 20rpx;
+}
+.top .left {
+  display: flex;
+  align-items: center;
+}
+.top .left image {
+  width: 126rpx;
+  height: 126rpx;
+  border-radius: 50%;
+  border: 1px solid #ededed;
+  margin-right: 20rpx
+}
+.top .right {
+  text-align: center;
+}
+.top .right image {
+  width: 23rpx;
+  height: 25rpx;
+  vertical-align: text-top;
+  margin-right: 5rpx;
+}
+.top .right .myreward {
+  font-size: 24rpx;
+  border: 1px solid #000;
+  border-radius: 20rpx;
+  padding: 0 20rpx;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 0;
+}
+.row .left {
+  font-size: 30rpx;
+  font-weight: bold;
+}
+.row .right {
+  font-size: 24rpx;
+  color: #888;
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx;
+}
+.arrow-right {
+  border-top: 2px solid #888;
+  border-right: 2px solid #888;
+  width: 18rpx;
+  height: 18rpx;
+  transform: rotate(45deg);
+}
+.row .step {
+  font-size: 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}.row .step:first-child {
+  padding-left: 40rpx;
+}
+.row .step:last-child {
+  padding-right: 40rpx;
+}
+.row .step image {
+  width: 57rpx;
+  height: 47rpx;
+  margin-bottom: 20rpx;
+}
+.btn-clear {
+  background-color: transparent;
+  width: 100%;
+}.btn-clear::after {
+  border: 0;
+}
