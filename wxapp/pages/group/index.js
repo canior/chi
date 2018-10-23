@@ -6,28 +6,21 @@ Page({
    * 页面的初始数据
    */
   data: {
+    isLogin: false,
     showModal: false,
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
     groupOrder: null,
-    openUserId: null, //开团人（团长）
-    userId: null,
-    userInfo: {},
+    user: null,
+    isOpenUser: null, //是否开团人
+    btnDisabled: false //防止连击button    
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const id = options.id ? options.id : 10020;
+    const id = options.id ? options.id : 10110;
     this.getGroupOrder(id);
-    this.setData({
-      userInfo: app.globalData.userInfo
-    })
-    app.userInfoReadyCallback = res => {
-      this.setData({
-        userInfo: app.globalData.userInfo
-      })
-    }
   },
 
   getGroupOrder: function(id) {
@@ -41,9 +34,23 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
+          const groupOrder = res.data.data.groupOrder;
+          const user = app.globalData.user;
+          var isOpenUser = user && user.id == groupOrder.user.id;
           that.setData({
-            groupOrder: res.data.data.groupOrder
+            groupOrder: groupOrder,
+            user: user,
+            isOpenUser: isOpenUser,
+            isLogin: app.globalData.isLogin            
           })
+
+          app.userInfoReadyCallback = res => {
+            that.setData({
+              user: app.globalData.user,
+              isLogin: app.globalData.isLogin,
+              isOpenUser: app.globalData.user && app.globalData.user.id == groupOrder.user.id
+            })
+          }          
         } else {
           console.log('wx.request return error', res.statusCode);
         }
@@ -54,6 +61,95 @@ Page({
     })
   },
 
+  joinGroup: function (e) {
+    if (this.data.isLogin) {
+      this.createGroupOrder();
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },
+  createGroupOrder: function () {
+    const that = this;
+    wx.showLoading({
+      title: '跳转支付',
+      mask: true,
+    });
+    that.setData({ btnDisabled: true });
+    wx.request({
+      url: app.globalData.baseUrl + '/groupOrder/join',
+      data: {
+        groupOrderId: this.data.groupOrder.id,
+        thirdSession: wx.getStorageSync('thirdSession'),
+      },
+      method: 'POST',
+      success: (res) => {
+        wx.hideLoading();
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          const payment = res.data.data.payment;
+          const groupOrderId = res.data.data.groupOrder.id;
+          wx.requestPayment({
+            timeStamp: payment.timeStamp.toString(),
+            nonceStr: payment.nonceStr,
+            package: payment.package,
+            signType: payment.signType,
+            paySign: payment.paySign,
+            success: function (res) {
+              wx.request({
+                url: app.globalData.baseUrl + '/groupOrder/notifyPayment',
+                data: {
+                  isPaid: true,
+                  thirdSession: wx.getStorageSync('thirdSession'),
+                  groupOrderId: groupOrderId,
+                },
+                method: 'POST',
+                success: (res) => {
+                  if (res.statusCode == 200 && res.data.code == 200) {
+                    console.log(res.data.data)
+                    wx.redirectTo({
+                      url: '/pages/group/index?id=' + res.data.data.groupOrder.id,
+                    })
+                  } else {
+                    console.log('wx.request return error', res.statusCode);
+                  }
+                },
+                fail(e) {
+                  console.log('wx.request /groupOrder/notifyPayment: fail', e)
+                },
+                complete(e) { }
+              })
+            },
+            fail: function (res) {
+              console.log('wx.requestpayment: fail', res)
+              wx.showToast({
+                title: '支付失败',
+              });
+              that.setData({ btnDisabled: false });
+            },
+            complete: function (res) { }
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+        wx.hideLoading();
+        that.setData({ btnDisabled: false });
+      },
+      complete(e) { }
+    })
+  },  
+
+  // 继续拼团
+  toProductDetail: function() {
+    wx.navigateTo({
+      url: '/pages/product/detail?id=' + this.data.groupOrder.product.id,
+    })
+  },
+
+  // 邀请好友
   showModal: function(e) {
     this.setData({
       showModal: true
@@ -76,7 +172,10 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.setData({
+      btnDisabled: false,
+      isLogin: app.globalData.isLogin
+    })
   },
 
   /**
@@ -114,7 +213,7 @@ Page({
     return {
       title: "分享标题",
       imageUrl: '',
-      path: ''
+      path: '/pages/group/index?id=' + this.data.groupOrder.id
     }
   }
 })

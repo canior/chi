@@ -118,20 +118,22 @@ class GroupUserOrder implements Dao
 
     /**
      * GroupUserOrder constructor.
+     * @param GroupOrder $groupOrder
      * @param User $user
      */
-    public function __construct(User $user)
+    public function __construct(GroupOrder $groupOrder, User $user)
     {
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
         $this->groupUserOrderLogs = new ArrayCollection();
 
+        $this->setGroupOrder($groupOrder);
         $this->setUser($user);
         $this->setCreatedAt();
         $this->setUpdatedAt();
         $this->setCreated();
         $this->setUnPaid();
-        $this->setTotal(0);
+        $this->setTotal($groupOrder->getProduct()->getPrice());
         $this->setOrderRewards(0);
 
     }
@@ -582,7 +584,8 @@ class GroupUserOrder implements Dao
             'product' => $this->getGroupOrder()->getProduct()->getArray(),
             'rewards' => $this->getOrderRewards(),
             'isMasterOrder'=> $this->isMasterOrder(),
-            'wxPrePayId' => $this->getPrePayId()
+            'wxPrePayId' => $this->getPrePayId(),
+            'user' => $this->getUser()->getArray()
         ];
     }
 }

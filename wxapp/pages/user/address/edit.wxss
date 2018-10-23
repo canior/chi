@@ -1,1 +1,19 @@
 /* pages/user/address/edit.wxss */
+.row {
+  border-top: 1px solid #eee;
+  padding: 30rpx 0;
+  font-size: 30rpx;
+  color: #353535;
+}.row:last-child{
+  border-bottom: 1px solid #eee;
+}
+.bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  background-color: #ffdf00;
+  padding: 30rpx;
+  font-size: 30rpx;
+}

@@ -1,10 +1,22 @@
 /* pages/user/address/index.wxss */
-.row {
+.item {
+  height: 80px;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+}.item:first-child {
+  border-top: 1px solid #ddd;
+}
+.top {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30rpx 0;
-  border-bottom: 1px solid #ddd;
+  width: 100%;
+  background-color: #fff;
+  z-index: 9;
 }
 .line {
   display: flex;
@@ -22,6 +34,7 @@
 }
 .right {
   padding: 30rpx 40rpx;
+  /*border: 1px solid #000;*/
 }
 .right image {
   width: 24rpx;
@@ -31,6 +44,19 @@
   font-size: 24rpx;
   color: #888;
   border: 1px solid #888; 
+}
+.del {
+  font-size: 24rpx;
+  color: #fff;
+  background-color: #ff4d42;
+  position: absolute;
+  right: 0;
+  top: 0; 
+  bottom: 0;
+  z-index: 8;
+  height: 80px;
+  line-height: 80px;
+  padding: 0 40rpx;
 }
 
 .bottom {

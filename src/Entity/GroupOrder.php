@@ -124,10 +124,9 @@ class GroupOrder implements Dao
         if ($this->getMasterGroupUserOrder() != null)
             return $this;
 
-        $groupUserOrder = new GroupUserOrder($this->getUser());
+        $groupUserOrder = new GroupUserOrder($this, $this->getUser());
         $groupUserOrder->setOrderRewards($this->getProduct()->getRewards()/2);
         $groupUserOrder->setTotal($this->getProduct()->getPrice());
-        $groupUserOrder->setGroupOrder($this);
         $this->addGroupUserOrder($groupUserOrder);
 
         $this->setUpdatedAt();
@@ -189,22 +188,19 @@ class GroupOrder implements Dao
         $this->status = self::COMPLETED;
 
         //如果已经有了支付过的参团订单则不做任何操作
-        $slaveGroupUserOrder = $this->getSlaveGroupUserOrder();
+        $slaveGroupUserOrder = $this->getSlaveGroupUserOrder($joiner);
         if ($slaveGroupUserOrder != null and $slaveGroupUserOrder->isPaid()) {
             return $this;
         }
 
-        $groupUserOrder = new GroupUserOrder($joiner);
-        $groupUserOrder->setOrderRewards($this->getProduct()->getRewards()/2);
-        $groupUserOrder->setTotal($this->getProduct()->getPrice());
-        $groupUserOrder->setGroupOrder($this);
-        $this->addGroupUserOrder($groupUserOrder);
+        $slaveGroupUserOrder->setPaid();
+        $slaveGroupUserOrder->setOrderRewards($this->getProduct()->getRewards()/2);
+        $slaveGroupUserOrder->setPending();
 
-        foreach ($this->getGroupUserOrders() as $groupUserOrder) {
-            $groupUserOrder->setPending();
-            $groupUserOrder->setPaid();
-        }
-
+        $masterGroupUserOrder = $this->getMasterGroupUserOrder();
+        $masterGroupUserOrder->setPending();
+        $masterGroupUserOrder->setUpdatedAt();
+        
         $this->setUpdatedAt();
         return $this;
     }
@@ -287,11 +283,12 @@ class GroupOrder implements Dao
 
     /**
      * 返回团员订单
+     * @param User $user
      * @return GroupUserOrder|null
      */
-    public function getSlaveGroupUserOrder() : ?GroupUserOrder {
+    public function getSlaveGroupUserOrder(User $user) : ?GroupUserOrder {
         foreach ($this->getGroupUserOrders() as $groupUserOrder) {
-            if (!$groupUserOrder->isMasterOrder()) {
+            if (!$groupUserOrder->isMasterOrder() and $groupUserOrder->getUser()->getId() == $user->getId()) {
                 return $groupUserOrder;
             }
         }
