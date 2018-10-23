@@ -1,0 +1,523 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}ProductReview{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4">
+                            <!-- BAR CHART -->
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">基本信息</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="chart" style="height: 200px;">
+                                        <div class="box box-solid">
+                                            <div class="box-body">
+                                                <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
+                                                    用户ID ─ {{ user.id }}
+                                                </h4>
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        {% if user.avatarUrl %}
+                                                            <img src="{{ user.avatarUrl }}" alt="MaterialPro" class="media-object"
+                                                                 style="width: 150px;height: auto;border-radius: 4px;box-shadow: 0 1px 3px rgba(0,0,0,.15);">
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <div class="clearfix">
+                                                            <h4 style="margin-top: 0">昵称 ─ {{ user.nickname }}</h4>
+                                                            <h4 style="margin-top: 0">性别 ─ {{ user.gender }}</h4>
+                                                            <h4 style="margin-top: 0">城市 ─ {{ user.location }}</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        {{ form_start(form) }}
+                        <div class="col-sm-12 col-md-4">
+                            <!-- BAR CHART -->
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">用户角色</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="chart" style="height: 200px;">
+                                        {{ form_row(form.roles) }}
+                                        <button class="btn btn-primary">{{ button_label|default('Update') }}</button>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        {{ form_end(form) }}
+                        <div class="col-sm-12 col-md-4">
+                            <!-- BAR CHART -->
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">收货地址</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="chart" style="height: 200px;">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th width="10%">地址ID</th>
+                                                    <th width="10%">地址</th>
+                                                    <th width="10%">默认</th>
+                                                    <th width="10%" class="text-center hidden-xs">操作</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% if user.userAddresses.count %}
+                                                    {% for item in user.userAddresses %}
+                                                        {% if not item.isDeleted %}
+                                                            <tr>
+                                                                <td>{{ item.id }}</td>
+                                                                <td>{{ item.address }}</td>
+                                                                <td>{{ item.isDefault }}</td>
+                                                                <td class="text-center">
+                                                                    <div class="btn-group">
+                                                                        <a href="{{ path('user_address_edit', {id: item.id}) }}"
+                                                                           target="_blank" title="编辑">
+                                                                            <span class="fa fa-edit"></span>
+                                                                        </a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <tr>
+                                                        <td colspan="4" class="alert alert-warning">no records found</td>
+                                                    </tr>
+                                                {% endif %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- /table -->
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <!-- BAR CHART -->
+                            <div class="box box-warning">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">上线用户 ─ {{ user.parentUser.nickname|default }} 总计分享({{ user.userShares.count }})</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <a href="{{ path('user_share_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th width="10%">ID</th>
+                                                <th width="10%">分享用户ID</th>
+                                                <th width="10%">分享用户昵称</th>
+                                                <th width="10%">分享方式</th>
+                                                <th width="10%">是否点开</th>
+                                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% if user.userShares.count %}
+                                                {% for item in user.userShares %}
+                                                    {% if loop.index < 6 %}
+                                                        <tr>
+                                                            <td>{{ item.id }}</td>
+                                                            <td>
+                                                                <a href="{{ path('user_info', {'id': item.parentUser.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.parentUser.id }}
+                                                                </a>
+                                                            </td>
+                                                            <td>
+                                                                <a href="{{ path('user_info', {'id': item.parentUser.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.parentUser.nickname }}
+                                                                </a>
+                                                            </td>
+                                                            <td>{{ 'TODO: ???' }}</td>
+                                                            <td>{{ item.statusText }}</td>
+                                                            <td class="text-center">
+                                                                <div class="btn-group">
+                                                                    {#TODO: change to user_share_info#}
+                                                                    <a href="{{ path('user_share_edit', {id: item.id}) }}"
+                                                                       title="查看详情">
+                                                                        <span class="fa fa-hand-o-right fa-2x"></span>
+                                                                    </a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="6" class="alert alert-warning">no records found</td>
+                                                </tr>
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /table -->
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <div class="col-sm-12 col-md-12">
+                            <!-- BAR CHART -->
+                            <div class="box box-warning">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">
+                                        上线用户ID ─ {{ user.parentUser.id|default }}
+                                        上线用户名 ─ {{ user.parentUser.nickname|default }}
+                                        {% set totalUserRewards = 0 %}
+                                        {% for groupUserOrderReward in user.groupUserOrderRewards %}
+                                            {% set totalUserRewards = totalUserRewards + groupUserOrderReward.userRewards %}
+                                        {% endfor %}
+                                        总收益 ─ {{ totalUserRewards|number_format }}
+                                        总传销收益 ─ {{ 'TODO: ???' }}
+                                        总有效下线用户数量({{ user.userStatistics.childrenNum|default(0) }})
+                                    </h3>
+
+                                    <div class="box-tools pull-right">
+                                        <a href="{{ path('group_user_order_rewards_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th width="10%">拼团ID</th>
+                                                <th width="10%">订单ID</th>
+                                                <th width="10%">用户ID</th>
+                                                <th width="10%">收益金额</th>
+                                                <th width="10%">收益时间</th>
+                                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% if user.groupUserOrderRewards.count %}
+                                                {% for item in user.groupUserOrderRewards %}
+                                                    {% if loop.index < 6 %}
+                                                    <tr>
+                                                        <td>{{ item.groupUserOrder.groupOrder.id }}</td>
+                                                        <td>{{ item.groupUserOrder.id }}</td>
+                                                        <td>
+                                                            <a href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.user.id }}
+                                                            </a>
+                                                        </td>
+                                                        <td>{{ item.userRewards|number_format }}</td>
+                                                        <td>{{ item.createdAt }}</td>
+                                                        <td class="text-center">
+                                                            <div class="btn-group">
+                                                                {#TODO: change to group_user_order_rewards_info#}
+                                                                <a href="{{ path('group_user_order_rewards_edit', {id: item.id}) }}"
+                                                                   title="查看详情">
+                                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="6" class="alert alert-warning">no records found</td>
+                                                </tr>
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /table -->
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <div class="col-sm-12 col-md-12">
+                            <!-- BAR CHART -->
+                            <div class="box box-success">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">
+                                        总消费金额 ─ {{ user.userStatistics.spentTotal|default(0)|number_format }}
+                                        总拼团数量 ─ {{ user.groupUserOrders.count|default(0) }}
+                                        总开团数量 ─ {{ user.groupOrders.count|default(0) }}
+                                        总参团数量 ─ {{ 'TODO: ???' }}
+                                    </h3>
+
+                                    <div class="box-tools pull-right">
+                                        <a href="{{ path('group_user_order_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th width="10%">拼团ID</th>
+                                                <th width="10%">订单ID</th>
+                                                <th width="10%">产品图片</th>
+                                                <th width="10%">产品名</th>
+                                                <th width="10%">产品价格</th>
+                                                <th width="10%">拼团状态</th>
+                                                <th width="10%">开始时间</th>
+                                                <th width="10%">结束时间</th>
+                                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% if user.groupUserOrders.count %}
+                                                {% for item in user.groupUserOrders %}
+                                                    <tr>
+                                                        <td>{{ item.groupOrder.id }}</td>
+                                                        <td>{{ item.id }}</td>
+                                                        <td>
+                                                            {% if item.groupOrder.product.productImages.count %}
+                                                                {% for productImage in item.groupOrder.product.productImages %}
+                                                                    <img src="{{ path('imagePreview', {fileId: productImage.file.id}) }}" width="40" height="40"/>
+                                                                    {% if not loop.last %}<br />{% endif %}
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ item.groupOrder.product.title }}</td>
+                                                        <td>{{ item.groupOrder.product.price|number_format }}</td>
+                                                        <td>{{ item.groupOrder.statusText }}</td>
+                                                        <td>{{ item.createdAt }}</td>
+                                                        <td>{{ item.completedAt }}</td>
+                                                        <td class="text-center">
+                                                            <div class="btn-group">
+                                                                <a href="{{ path('group_user_order_info', {id: item.id}) }}"
+                                                                   title="查看详情">
+                                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="9" class="alert alert-warning">no records found</td>
+                                                </tr>
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /table -->
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                    </div>
+                    <!-- /row -->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <!-- BAR CHART -->
+                            <div class="box box-success">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">用户行为</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <a href="{{ path('user_activity_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th width="10%">页面</th>
+                                                <th width="10%">访问时间</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% if user.userActivities.count %}
+                                                {% for item in user.userActivities %}
+                                                    <tr>
+                                                        <td>{{ item.page }}</td>
+                                                        <td>{{ item.createdAt }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="2" class="alert alert-warning">no records found</td>
+                                                </tr>
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /table -->
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <!-- BAR CHART -->
+                            <div class="box box-success">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">产品评价</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <a href="{{ path('product_review_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th width="10%">订单ID</th>
+                                                <th width="10%">产品图片</th>
+                                                <th width="10%">产品名</th>
+                                                <th width="10%">评分</th>
+                                                <th width="10%">评价</th>
+                                                <th width="10%">评价图片</th>
+                                                <th width="10%">评价时间</th>
+                                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% if productReviews is not empty %}
+                                                {% for item in productReviews %}
+                                                    <tr>
+                                                        <td>{{ item.groupUserOrder.id }}</td>
+                                                        <td>
+                                                            {% if item.product.productImages.count %}
+                                                                {% for productImage in item.product.productImages %}
+                                                                    <img src="{{ path('imagePreview', {fileId: productImage.file.id}) }}" width="40" height="40"/>
+                                                                    {% if not loop.last %}<br />{% endif %}
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ item.product.title }}</td>
+                                                        <td>{{ item.rate }}</td>
+                                                        <td>{{ item.review }}</td>
+                                                        <td>
+                                                            {% if item.productReviewImages.count %}
+                                                                {% for productReviewImage in item.productReviewImages %}
+                                                                    <img src="{{ path('imagePreview', {fileId: productReviewImage.imageFile.id}) }}" width="40" height="40"/>
+                                                                    {% if not loop.last %}<br />{% endif %}
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ item.createdAt }}</td>
+                                                        <td class="text-center">
+                                                            <div class="btn-group">
+                                                                <a href="{{ path('product_review_edit', {id: item.id}) }}"
+                                                                   target="_blank" title="编辑">
+                                                                    <span class="fa fa-edit"></span>
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="8" class="alert alert-warning">no records found</td>
+                                                </tr>
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /table -->
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                    </div>
+                    <!-- /row -->
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: 'ProductReview'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include '/backend/includes/delete.js.html.twig' with {title: 'ProductReview'} %}
+{% endblock %}

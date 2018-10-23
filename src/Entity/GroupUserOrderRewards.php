@@ -15,13 +15,13 @@ class GroupUserOrderRewards implements Dao
         CreatedAtTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity="GroupUserOrder", inversedBy="groupUserOrderRewards")
+     * @ORM\ManyToOne(targetEntity="App\Entity\GroupUserOrder", inversedBy="groupUserOrderRewards")
      * @ORM\JoinColumn(nullable=false)
      */
     private $groupUserOrder;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="groupUserOrderRewards")
      */
     private $user;
 

@@ -53,14 +53,18 @@
                                                 <img src="{{ item.avatarUrl }}" width="40" height="40"/>
                                             {% endif %}
                                         </td>
-                                        <td>{{ 'TODO' }}</td>
-                                        <td>{{ item.userShares.count }}</td>
-                                        <td>{{ item.subUsers.count }}</td>
-                                        <td>{{ item.totalRewards }}</td>
-                                        <td>{{ item.lastLogin|date }}</td>
+                                        <td>{{ item.userStatistics.spentTotal|default(0)|number_format }}</td>
+                                        <td>{{ item.userStatistics.sharedNum|default(0) }}</td>
+                                        <td>{{ item.userStatistics.childrenNum|default(0) }}</td>
+                                        <td>{{ item.totalRewards|number_format }}</td>
+                                        <td>{{ item.lastLogin ? item.lastLogin|date : '' }}</td>
                                         <td>{{ item.createdAt }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
+                                                <a href="{{ path('user_info', {'id': item.id}) }}" title="查看详情">
+                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                </a>
+                                                {#
                                                 <a href="{{ path('user_edit', {'id': item.id}) }}" title="修改">
                                                     <span class="glyphicon glyphicon-edit"></span>
                                                 </a>&nbsp;
@@ -71,6 +75,7 @@
                                                    title="删除">
                                                     <span class="glyphicon glyphicon-trash"></span>
                                                 </a>
+                                                #}
                                             </div>
                                         </td>
                                     </tr>

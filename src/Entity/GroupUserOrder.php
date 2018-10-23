@@ -69,7 +69,7 @@ class GroupUserOrder implements Dao
     private $userAddress;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="groupUserOrders")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -101,7 +101,7 @@ class GroupUserOrder implements Dao
     private $prePayId;
 
     /**
-     * @ORM\OneToMany(targetEntity="GroupUserOrderRewards", mappedBy="groupUserOrder", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderRewards", mappedBy="groupUserOrder", fetch="EXTRA_LAZY")
      */
     private $groupUserOrderRewards;
 
@@ -318,6 +318,17 @@ class GroupUserOrder implements Dao
 
     public function isUnPaid() : bool {
         return self::UNPAID == $this->getPaymentStatus();
+    }
+
+    /**
+     * Get completed at
+     *
+     * @param bool $formatted
+     * @return int
+     */
+    public function getCompletedAt($formatted = true)
+    {
+        return $this->isPaid() ? $this->getUpdatedAt($formatted) : null;
     }
 
     public function setRefunding() : self {

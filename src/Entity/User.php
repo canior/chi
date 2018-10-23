@@ -83,34 +83,51 @@ class User extends BaseUser implements Dao
     private $parentUser;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="parentUser", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="parentUser", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $subUsers;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserShare", mappedBy="user", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\UserShare", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
      */
     private $userShares;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserActivity", mappedBy="user", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\UserActivity", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $userActivities;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserAddress", mappedBy="user", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\UserAddress", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $userAddresses;
 
     /**
-     * @ORM\OneToMany(targetEntity="GroupOrder", mappedBy="user", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupOrder", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $groupOrders;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderLog", mappedBy="user", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrder", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $groupUserOrders;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderLog", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $groupUserOrderLogs;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderRewards", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $groupUserOrderRewards;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\UserStatistics", mappedBy="user", cascade={"persist", "remove"})
@@ -130,7 +147,9 @@ class User extends BaseUser implements Dao
         $this->userActivities = new ArrayCollection();
         $this->userAddresses = new ArrayCollection();
         $this->groupOrders = new ArrayCollection();
+        $this->groupUserOrders = new ArrayCollection();
         $this->groupUserOrderLogs = new ArrayCollection();
+        $this->groupUserOrderRewards = new ArrayCollection();
         $this->setUpdatedAt();
     }
 
@@ -429,6 +448,68 @@ class User extends BaseUser implements Dao
             // set the owning side to null (unless already changed)
             if ($groupUserOrderLog->getUser() === $this) {
                 $groupUserOrderLog->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GroupUserOrder[]
+     */
+    public function getGroupUserOrders(): Collection
+    {
+        return $this->groupUserOrders;
+    }
+
+    public function addGroupUserOrder(GroupUserOrder $groupUserOrder): self
+    {
+        if (!$this->groupUserOrders->contains($groupUserOrder)) {
+            $this->groupUserOrders[] = $groupUserOrder;
+            $groupUserOrder->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupUserOrder(GroupUserOrder $groupUserOrder): self
+    {
+        if ($this->groupUserOrders->contains($groupUserOrder)) {
+            $this->groupUserOrders->removeElement($groupUserOrder);
+            // set the owning side to null (unless already changed)
+            if ($groupUserOrder->getUser() === $this) {
+                $groupUserOrder->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GroupUserOrderRewards[]
+     */
+    public function getGroupUserOrderRewards(): Collection
+    {
+        return $this->groupUserOrderRewards;
+    }
+
+    public function addGroupUserOrderReward(GroupUserOrderRewards $groupOrderReward): self
+    {
+        if (!$this->groupUserOrderRewards->contains($groupOrderReward)) {
+            $this->groupUserOrderRewards[] = $groupOrderReward;
+            $groupOrderReward->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupUserOrderReward(GroupUserOrderRewards $groupOrderReward): self
+    {
+        if ($this->groupUserOrderRewards->contains($groupOrderReward)) {
+            $this->groupUserOrderRewards->removeElement($groupOrderReward);
+            // set the owning side to null (unless already changed)
+            if ($groupOrderReward->getUser() === $this) {
+                $groupOrderReward->setUser(null);
             }
         }
 

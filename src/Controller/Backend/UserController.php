@@ -3,8 +3,11 @@
 namespace App\Controller\Backend;
 
 use App\Entity\User;
+use App\Form\UserRoleType;
 use App\Form\UserType;
+use App\Repository\ProductReviewRepository;
 use App\Repository\UserRepository;
+use FOS\UserBundle\Model\UserManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,16 +27,44 @@ class UserController extends BackendController
             'form' => [
                 'userId' => $request->query->getInt('userId', null),
                 'username' => $request->query->get('username', null),
-                'loginTimeStart' => $request->query->get('loginTimeStart', date('Y-m-d') . ' 00:00:00'),
-                'loginTimeEnd' => $request->query->get('loginTimeEnd', date('Y-m-d') . ' 23:59:59'),
+//                'loginTimeStart' => $request->query->get('loginTimeStart', date('Y-m-d') . ' 00:00:00'),
+                'loginTimeStart' => $request->query->get('loginTimeStart', null),
+//                'loginTimeEnd' => $request->query->get('loginTimeEnd', date('Y-m-d') . ' 23:59:59'),
+                'loginTimeEnd' => $request->query->get('loginTimeEnd', null),
                 'createdAtStart' => $request->query->get('createdAtStart', null),
                 'createdAtEnd' => $request->query->get('createdAtEnd', null),
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
-        $data['data'] = $userRepository->findUsers($data['form']['userId'], $data['form']['username'], $data['form']['loginTimeStart'], $data['form']['loginTimeEnd'], $data['form']['createdAtStart'], $data['form']['createdAtEnd']);
+        $data['data'] = $userRepository->findUsersQueryBuilder($data['form']['userId'], $data['form']['username'], $data['form']['loginTimeStart'], $data['form']['loginTimeEnd'], $data['form']['createdAtStart'], $data['form']['createdAtEnd']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/user/index.html.twig', $data);
+    }
+
+    /**
+     * @Route("/user/new/info/{id}", name="user_info", methods="GET|POST")
+     */
+    public function info(Request $request, User $user, UserManagerInterface $userManager, ProductReviewRepository $productReviewRepository): Response
+    {
+        $form = $this->createForm(UserRoleType::class, $user);
+        $form->get('roles')->setData($user->getRoles());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $roles = $request->request->get('user_role')['roles'];
+            $user->setRoles($roles);
+            $userManager->updateUser($user);
+
+            $this->addFlash('notice', '修改成功');
+            return $this->redirectToRoute('user_info', ['id' => $user->getId()]);
+        }
+
+        return $this->render('backend/user/info.html.twig', [
+            'user' => $user,
+            'title' => 'User 详情',
+            'form' => $form->createView(),
+            'productReviews' => $productReviewRepository->findUserProductReviews($user->getId(), 1, 3)
+        ]);
     }
 
     /**
