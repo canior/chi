@@ -15,7 +15,14 @@ Page({
 
   },
 
-  //继续拼团
+  // 商品评价
+  toUserComment: function (e) {
+    wx.navigateTo({
+      url: '/pages/user/order/review',
+    })
+  },
+
+  // 继续拼团
   toProductDetail: function (e) {
     wx.redirectTo({
       url: '/pages/product/detail?id=' + '1',

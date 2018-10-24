@@ -1,0 +1,46 @@
+<!--pages/user/order/review.wxml-->
+<view class="container">
+  <view class="row">
+    <image src="/images/demo/product-thumb.png"/>
+    <view>
+      <view class="name">【麦摄氏度】5瓶装 代餐 330毫升</view>
+      <view class="desc">1瓶饮料取代“早餐+咖啡”</view>
+      <view class="chi-price-container">
+        <view class="price">拼团价￥<text>{{'100.00'}}</text></view>
+        <view class="freight">包邮</view>
+        <view class="ori-price">￥{{'200.00'}}</view>
+      </view>
+    </view>
+  </view>
+</view>
+<view class="split-line"/>
+<view class="container">
+  <view class="comment">
+    <view class="title">商品评价</view>
+    <view class="rate-container">
+      <image wx:if="{{rate < 1}}" data-idx="1" data-val="off" bindtap="rate" src="/images/star.png"/>
+      <image wx:if="{{rate > 0}}" data-idx="1" data-val="on" bindtap="rate" src="/images/star-selected.png"/>
+      <image wx:if="{{rate < 2}}" data-idx="2" data-val="off" bindtap="rate" src="/images/star.png"/>
+      <image wx:if="{{rate > 1}}" data-idx="2" data-val="on" bindtap="rate" src="/images/star-selected.png"/>
+      <image wx:if="{{rate < 3}}" data-idx="3" data-val="off" bindtap="rate" src="/images/star.png"/>
+      <image wx:if="{{rate > 2}}" data-idx="3" data-val="on" bindtap="rate" src="/images/star-selected.png"/>
+      <image wx:if="{{rate < 4}}" data-idx="4" data-val="off" bindtap="rate" src="/images/star.png"/>
+      <image wx:if="{{rate > 3}}" data-idx="4" data-val="on" bindtap="rate" src="/images/star-selected.png"/>
+      <image wx:if="{{rate < 5}}" data-idx="5" data-val="off" bindtap="rate" src="/images/star.png"/>
+      <image wx:if="{{rate > 4}}" data-idx="5" data-val="on" bindtap="rate" src="/images/star-selected.png"/>
+    </view>
+    <view class="upload-box" bindtap="upload">
+        <view class="tl"/><view class="tr"/><view class="bl"/><view class="br"/>
+        <block wx:if="{{tmpImageFilePaths.length == 0}}">
+            <image src="/images/camera.png"/>
+            <text>上传照片</text>
+        </block>
+        <image wx:if="{{tmpImageFilePaths.length > 0}}" src="{{tmpImageFilePaths[0]}}" mode='aspectFit'/>        
+    </view>
+    <view class="review">  
+      <textarea placeholder="亲，商品质量如何？" maxlength="200" placeholder-style="font-size:24rpx;color:#888" bindblur="review"></textarea>
+    </view>
+  </view>
+</view>
+
+<view class="bottom" bindtap="submit">提交</view>

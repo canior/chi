@@ -296,6 +296,37 @@ class UserController extends BaseController
         ]);
     }
 
+    /**
+     * 用户评价上传图片
+     *
+     * @Route("/user/file/upload", name=“userFileUpload", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function uploadFileAction(Request $request)
+    {
+        $thirdSession = $request->request->get('thirdSession');
+        $user = $this->getWxUser($thirdSession);
 
+        /**
+         * @var UploadedFile[] $files
+         */
+        $files = $request->files;
+
+        $fileId = null;
+        $name = null;
+        foreach ($files as $file) {
+            try {
+                $command = new UploadFileCommand($file, $user->getId());
+                $fileId = $this->getCommandBus()->handle($command);
+                $name = $file->getClientOriginalName();
+            } catch (\Exception $e) {
+                $this->getLog()->error('upload file failed {error}', ['error' => $e->getMessage()]);
+                return $this->response503('upload file failed');
+            }
+        }
+
+        return $this->responseJson('success', 200, ['fileId' => $fileId]);
+    }
 
 }

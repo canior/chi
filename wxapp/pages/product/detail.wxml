@@ -53,7 +53,7 @@
 
 <view class="container">
   <view class="review-container">
-    <view class="title">商品评论</view>
+    <view class="title">商品评价</view>
     <view class="review" wx:for="{{productReviews}}" wx:key="index" wx:for-item="productReview">
       <view class="user">
         <view class="avatar"><image src="{{productReview.user.avatarUrl}}"/></view>
