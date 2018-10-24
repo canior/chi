@@ -200,7 +200,7 @@ class GroupOrder implements Dao
         $masterGroupUserOrder = $this->getMasterGroupUserOrder();
         $masterGroupUserOrder->setPending();
         $masterGroupUserOrder->setUpdatedAt();
-        
+
         $this->setUpdatedAt();
         return $this;
     }
