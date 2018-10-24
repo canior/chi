@@ -47,6 +47,16 @@ class UserStatistics
      */
     private $spentTotal;
 
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2)
+     */
+    private $orderRewardsTotal;
+
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2)
+     */
+    private $userRewardsTotal;
+
     public function getId()
     {
         return $this->id;
@@ -120,6 +130,30 @@ class UserStatistics
     public function setSpentTotal($spentTotal): self
     {
         $this->spentTotal = $spentTotal;
+
+        return $this;
+    }
+
+    public function getOrderRewardsTotal()
+    {
+        return $this->orderRewardsTotal;
+    }
+
+    public function setOrderRewardsTotal($orderRewardsTotal): self
+    {
+        $this->orderRewardsTotal = $orderRewardsTotal;
+
+        return $this;
+    }
+
+    public function getUserRewardsTotal()
+    {
+        return $this->userRewardsTotal;
+    }
+
+    public function setUserRewardsTotal($userRewardsTotal): self
+    {
+        $this->userRewardsTotal = $userRewardsTotal;
 
         return $this;
     }
