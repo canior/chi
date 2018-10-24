@@ -303,8 +303,8 @@ class UserController extends BaseController
      * @param Request $request
      * @return Response
      */
-    public function uploadFileAction(Request $request)
-    {
+    public function uploadFileAction(Request $request): Response {
+
         $thirdSession = $request->request->get('thirdSession');
         $user = $this->getWxUser($thirdSession);
 

@@ -32,7 +32,7 @@
     <view class="upload-box" bindtap="upload">
         <view class="tl"/><view class="tr"/><view class="bl"/><view class="br"/>
         <block wx:if="{{tmpImageFilePaths.length == 0}}">
-            <image src="/images/camera.png"/>
+            <image class="camera" src="/images/camera.png"/>
             <text>上传照片</text>
         </block>
         <image wx:if="{{tmpImageFilePaths.length > 0}}" src="{{tmpImageFilePaths[0]}}" mode='aspectFit'/>        

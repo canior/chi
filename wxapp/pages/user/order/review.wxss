@@ -78,6 +78,9 @@
   height: 15rpx;
 }
 .comment .upload-box image {
+  width: 172rpx;
+  height: 172rpx; 
+}.comment .upload-box image.camera {
   width: 63rpx;
   height: 50rpx;
 }
