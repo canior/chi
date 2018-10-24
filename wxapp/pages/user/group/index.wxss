@@ -8,7 +8,7 @@
 .nav {
   font-size: 30rpx;
 }.nav.active {
-  border-bottom: 2px solid #ffdf00;
+  border-bottom: 3px solid #ffdf00;
 }
 .row {
   display: flex;

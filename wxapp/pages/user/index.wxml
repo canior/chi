@@ -3,13 +3,15 @@
   <view class="top">
     <view class="left">
       <view class="avatar">
-        <image src="/images/demo/my-avatar.png" wx:if="{{isLogin}}"/>
+        <image src="{{user.avatarUrl}}" wx:if="{{isLogin}}"/>
       </view>
-      <text>{{isLogin ? '唐亚迪Tandy' : '未登录'}}</text>
+      <text>{{isLogin ? user.nickname : '未登录'}}</text>
     </view>
     <view class="right" wx:if="{{isLogin}}">
       <view>￥10.00</view>
-      <view class="myreward"><image src="/images/my-reward.png"/>我的收益</view>
+      <view class="myreward" bindtap="toUserReward">
+        <image src="/images/my-reward.png"/>我的收益
+      </view>
     </view>
     <view class="right" wx:if="{{!isLogin}}">
       <navigator url="/pages/user/login">请登录</navigator>
@@ -28,15 +30,15 @@
 </view>
 <view class="split-brand"/>
 <view class="container">
-  <navigator class="row" url="/pages/user/group/index" hover-class="none">
+  <view class="row" bindtap="toUserGroup">
     <view class="left">我的拼团</view>
     <view class="right"><view class="arrow-right"/></view>
-  </navigator>
+  </view>
   <view class="split-line"/>
-  <navigator class="row" url="/pages/user/address/index" hover-class="none">
+  <view class="row" bindtap="toUserAddress">
     <view class="left">地址管理</view>
     <view class="right"><view class="arrow-right"/></view>
-  </navigator>
+  </view>
   <view class="split-line"/>
   <button class="row btn-clear" open-type='contact'>
     <view class="left">客服咨询</view>

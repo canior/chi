@@ -21,6 +21,7 @@
 .top .left image {
   width: 126rpx;
   height: 126rpx;
+  border-radius: 50%;
 }
 .top .right {
   text-align: center;
