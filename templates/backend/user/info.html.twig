@@ -144,10 +144,11 @@
                             <!-- BAR CHART -->
                             <div class="box box-warning">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">上线用户 ─ {{ user.parentUser.nickname|default }} 总计分享({{ user.userShares.count }})</h3>
+                                    <h3 class="box-title">上线用户 ─ {{ user.parentUser.nickname|default }} 总计分享({{ user.shareSources.count }})</h3>
 
                                     <div class="box-tools pull-right">
-                                        <a href="{{ path('user_share_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
+                                        {# TODO: share_source_index ?#}
+                                        {#<a href="{{ path('', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>#}
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
                                                     class="fa fa-minus"></i>
                                         </button>
@@ -167,8 +168,8 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {% if user.userShares.count %}
-                                                {% for item in user.userShares %}
+                                            {% if user.shareSources.count %}
+                                                {% for item in user.shareSources %}
                                                     {% if loop.index < 6 %}
                                                         <tr>
                                                             <td>{{ item.id }}</td>
@@ -186,11 +187,11 @@
                                                             <td>{{ item.statusText }}</td>
                                                             <td class="text-center">
                                                                 <div class="btn-group">
-                                                                    {#TODO: change to user_share_info#}
-                                                                    <a href="{{ path('user_share_edit', {id: item.id}) }}"
-                                                                       title="查看详情">
-                                                                        <span class="fa fa-hand-o-right fa-2x"></span>
-                                                                    </a>
+                                                                    {#TODO: change to share_source_info?#}
+                                                                    {#<a href="{{ path('', {id: item.id}) }}"#}
+                                                                       {#title="查看详情">#}
+                                                                        {#<span class="fa fa-hand-o-right fa-2x"></span>#}
+                                                                    {#</a>#}
                                                                 </div>
                                                             </td>
                                                         </tr>

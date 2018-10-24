@@ -91,6 +91,11 @@ class Product implements Dao
     private $productStatistics;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="product")
+     */
+    private $shareSources;
+
+    /**
      * Product constructor.
      */
     public function __construct()
@@ -101,6 +106,7 @@ class Product implements Dao
         $this->productImages = new ArrayCollection();
         $this->productSpecImages = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
+        $this->shareSources = new ArrayCollection();
     }
 
     public function getSku(): ?string
@@ -368,6 +374,37 @@ class Product implements Dao
         // set the owning side of the relation if necessary
         if ($this !== $productStatistics->getProduct()) {
             $productStatistics->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ShareSource[]
+     */
+    public function getShareSources(): Collection
+    {
+        return $this->shareSources;
+    }
+
+    public function addShareSource(ShareSource $shareSource): self
+    {
+        if (!$this->shareSources->contains($shareSource)) {
+            $this->shareSources[] = $shareSource;
+            $shareSource->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShareSource(ShareSource $shareSource): self
+    {
+        if ($this->shareSources->contains($shareSource)) {
+            $this->shareSources->removeElement($shareSource);
+            // set the owning side to null (unless already changed)
+            if ($shareSource->getProduct() === $this) {
+                $shareSource->setProduct(null);
+            }
         }
 
         return $this;
