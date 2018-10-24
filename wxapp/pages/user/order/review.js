@@ -75,10 +75,17 @@ Page({
             'thirdSession': wx.getStorageSync('thirdSession'),
           },
           success: function (res) {
-            if (res.statusCode == 200 && res.data.code == 200) {
-              console.log(res.data.data)
-            } else {
-              console.log('wx.request return error', res.statusCode);
+            if (res.statusCode == 200) {
+              var data = JSON.parse(res.data);
+              if (data.code == 200) {
+                that.setData({
+                  fileId: data.data.fileId
+                })
+              } else {// 上传失败
+                console.log('wx.uploadFile return error', res);
+              }
+            } else {// 上传失败
+              console.log('wx.uploadFile return error', res);
             }
           },
           fail: function (res) {
