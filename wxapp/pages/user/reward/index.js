@@ -1,4 +1,4 @@
-// pages/user/index.js
+// pages/user/reward/index.js
 const app = getApp()
 Page({
 
@@ -6,8 +6,12 @@ Page({
    * 页面的初始数据
    */
   data: {
+    menu: ['好友贡献', '活跃', '失效'],
+    curIndex: 0,
     isLogin: app.globalData.isLogin,
     user: app.globalData.user,
+
+    total_rewards: 10,
   },
 
   /**
@@ -17,40 +21,12 @@ Page({
 
   },
 
-  // 转我的拼团
-  toUserGroup: function () {
-    if (this.data.isLogin) {
-      wx.navigateTo({
-        url: '/pages/user/group/index',
-      })
-    }
-  },
-
-  // 转我的订单
-  toUserOrder: function () {
-    if (this.data.isLogin) {
-      wx.navigateTo({
-        url: '/pages/user/order/index',
-      })
-    }
-  },
-
-  // 转地址管理
-  toUserAddress: function () {
-    if (this.data.isLogin) {
-      wx.navigateTo({
-        url: '/pages/user/address/index',
-      })
-    }
-  },
-
-  // 转我的收益
-  toUserReward: function () {
-    wx.switchTab({
-      url: '/pages/user/reward/index',
+  tapMenu: function (e) {
+    this.setData({
+      curIndex: e.currentTarget.dataset.index
     })
   },
-
+  
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

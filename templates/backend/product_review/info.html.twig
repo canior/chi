@@ -1,6 +1,6 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}ProductReview{% endblock %}
+{% block title %}Product Review Info{% endblock %}
 
 {% import 'form/macros.html.twig' as macros %}
 
@@ -180,8 +180,6 @@
         <!-- /.col -->
     </div>
     <!-- /.row -->
-
-    {% include 'backend/includes/delete.modal.html.twig' with {title: 'ProductReview'} %}
 {% endblock %}
 
 {% block javascripts %}
@@ -209,6 +207,4 @@
             });
         });
     </script>
-
-    {% include '/backend/includes/delete.js.html.twig' with {title: 'ProductReview'} %}
 {% endblock %}

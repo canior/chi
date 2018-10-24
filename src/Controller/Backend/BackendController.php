@@ -51,10 +51,10 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
-                        '_twig_error_test',
+                        'user_rewards',
+                        'user_rewards_info',
                     ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:用户收益',
+                    'name' => '用户收益',
                     'icon' => 'fa fa-rmb',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',

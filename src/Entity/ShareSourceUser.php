@@ -7,26 +7,27 @@ use App\Entity\Traits\IdTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UserSourceRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\ShareSourceUserRepository")
  */
-class UserSource
+class ShareSourceUser
 {
     use IdTrait,
         CreatedAtTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="userSources")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="shareSourceUsers")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\UserShare", inversedBy="userSources")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ShareSource", inversedBy="shareSourceUsers")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $otherUserShare;
+    private $shareSource;
 
     /**
-     * UserSource constructor.
+     * ShareSourceUser constructor.
      */
     public function __construct()
     {
@@ -45,14 +46,14 @@ class UserSource
         return $this;
     }
 
-    public function getOtherUserShare(): ?UserShare
+    public function getShareSource(): ?ShareSource
     {
-        return $this->otherUserShare;
+        return $this->shareSource;
     }
 
-    public function setOtherUserShare(?UserShare $otherUserShare): self
+    public function setShareSource(?ShareSource $shareSource): self
     {
-        $this->otherUserShare = $otherUserShare;
+        $this->shareSource = $shareSource;
 
         return $this;
     }

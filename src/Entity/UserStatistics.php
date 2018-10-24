@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\IdTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -9,12 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class UserStatistics
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use IdTrait;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="userStatistics", cascade={"persist", "remove"})
@@ -57,9 +53,18 @@ class UserStatistics
      */
     private $userRewardsTotal;
 
-    public function getId()
+    /**
+     * UserStatistics constructor.
+     */
+    public function __construct()
     {
-        return $this->id;
+        $this->setChildrenNum(0);
+        $this->setSharedNum(0);
+        $this->setGroupOrderNum(0);
+        $this->setGroupUserOrderNum(0);
+        $this->setSpentTotal(0);
+        $this->setOrderRewardsTotal(0);
+        $this->setUserRewardsTotal(0);
     }
 
     public function getUser(): ?User
@@ -156,5 +161,10 @@ class UserStatistics
         $this->userRewardsTotal = $userRewardsTotal;
 
         return $this;
+    }
+
+    public function getRewardsTotal()
+    {
+        return $this->orderRewardsTotal + $this->userRewardsTotal;
     }
 }

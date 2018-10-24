@@ -89,11 +89,6 @@ class User extends BaseUser implements Dao
     private $subUsers;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserShare", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
-     */
-    private $userShares;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\UserActivity", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
@@ -135,9 +130,14 @@ class User extends BaseUser implements Dao
     private $userStatistics;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserSource", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="user")
      */
-    private $userSources;
+    private $shareSources;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSourceUser", mappedBy="user")
+     */
+    private $shareSourceUsers;
 
     public function __construct()
     {
@@ -148,7 +148,6 @@ class User extends BaseUser implements Dao
         $this->setTotalRewards(0);
         $this->setRoles([self::ROLE_CUSTOMER]);
         $this->subUsers = new ArrayCollection();
-        $this->userShares = new ArrayCollection();
         $this->userActivities = new ArrayCollection();
         $this->userAddresses = new ArrayCollection();
         $this->groupOrders = new ArrayCollection();
@@ -156,7 +155,8 @@ class User extends BaseUser implements Dao
         $this->groupUserOrderLogs = new ArrayCollection();
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->setUpdatedAt();
-        $this->userSources = new ArrayCollection();
+        $this->shareSources = new ArrayCollection();
+        $this->shareSourceUsers = new ArrayCollection();
     }
 
     public function getId()
@@ -299,37 +299,6 @@ class User extends BaseUser implements Dao
             // set the owning side to null (unless already changed)
             if ($subUser->getParentUser() === $this) {
                 $subUser->setParentUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|UserShare[]
-     */
-    public function getUserShares(): Collection
-    {
-        return $this->userShares;
-    }
-
-    public function addUserShare(UserShare $userShare): self
-    {
-        if (!$this->userShares->contains($userShare)) {
-            $this->userShares[] = $userShare;
-            $userShare->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserShare(UserShare $userShare): self
-    {
-        if ($this->userShares->contains($userShare)) {
-            $this->userShares->removeElement($userShare);
-            // set the owning side to null (unless already changed)
-            if ($userShare->getUser() === $this) {
-                $userShare->setUser(null);
             }
         }
 
@@ -525,7 +494,8 @@ class User extends BaseUser implements Dao
     /**
      * @return array
      */
-    public function getArray() : array {
+    public function getArray(): array
+    {
         return [
             'id' => $this->getId(),
             'nickname' => $this->getNickname(),
@@ -551,30 +521,86 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @return Collection|UserSource[]
+     * @return null|GroupOrder
      */
-    public function getUserSources(): Collection
+    public function getLastRewardsGroupOrder()
     {
-        return $this->userSources;
+        /**
+         * @var GroupUserOrder $lastGroupUserOrder
+         */
+        $lastGroupUserOrder = $this->groupUserOrders->isEmpty() ? null : $this->groupUserOrders->first();
+        /**
+         * @var GroupUserOrderRewards $lastGroupUserOrderReward
+         */
+        $lastGroupUserOrderReward = $this->groupUserOrderRewards->isEmpty() ? null : $this->groupUserOrderRewards->first();
+        if ($lastGroupUserOrder && $lastGroupUserOrderReward) {
+            return $lastGroupUserOrder->getGroupOrder()->getCreatedAt(false) > $lastGroupUserOrderReward->getGroupUserOrder()->getGroupOrder()->getCreatedAt(false)
+                ? $lastGroupUserOrder->getGroupOrder()
+                : $lastGroupUserOrderReward->getGroupUserOrder()->getGroupOrder();
+        } elseif ($lastGroupUserOrder) {
+            return $lastGroupUserOrder->getGroupOrder();
+        } elseif ($lastGroupUserOrderReward) {
+            return $lastGroupUserOrderReward->getGroupUserOrder()->getGroupOrder();
+        }
+        return null;
     }
 
-    public function addUserSource(UserSource $userSource): self
+    /**
+     * @return Collection|ShareSource[]
+     */
+    public function getShareSources(): Collection
     {
-        if (!$this->userSources->contains($userSource)) {
-            $this->userSources[] = $userSource;
-            $userSource->setUser($this);
+        return $this->shareSources;
+    }
+
+    public function addShareSource(ShareSource $shareSource): self
+    {
+        if (!$this->shareSources->contains($shareSource)) {
+            $this->shareSources[] = $shareSource;
+            $shareSource->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeUserSource(UserSource $userSource): self
+    public function removeShareSource(ShareSource $shareSource): self
     {
-        if ($this->userSources->contains($userSource)) {
-            $this->userSources->removeElement($userSource);
+        if ($this->shareSources->contains($shareSource)) {
+            $this->shareSources->removeElement($shareSource);
             // set the owning side to null (unless already changed)
-            if ($userSource->getUser() === $this) {
-                $userSource->setUser(null);
+            if ($shareSource->getUser() === $this) {
+                $shareSource->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ShareSourceUser[]
+     */
+    public function getShareSourceUsers(): Collection
+    {
+        return $this->shareSourceUsers;
+    }
+
+    public function addShareSourceUser(ShareSourceUser $shareSourceUser): self
+    {
+        if (!$this->shareSourceUsers->contains($shareSourceUser)) {
+            $this->shareSourceUsers[] = $shareSourceUser;
+            $shareSourceUser->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShareSourceUser(ShareSourceUser $shareSourceUser): self
+    {
+        if ($this->shareSourceUsers->contains($shareSourceUser)) {
+            $this->shareSourceUsers->removeElement($shareSourceUser);
+            // set the owning side to null (unless already changed)
+            if ($shareSourceUser->getUser() === $this) {
+                $shareSourceUser->setUser(null);
             }
         }
 
