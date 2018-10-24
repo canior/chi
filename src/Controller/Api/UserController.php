@@ -10,6 +10,7 @@ use App\Repository\RegionRepository;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
 use App\Service\Wx\WxCommon;
+use App\Command\File\UploadFileCommand;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

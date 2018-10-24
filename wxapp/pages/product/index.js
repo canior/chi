@@ -22,7 +22,7 @@ Page({
   getProducts: function () {
     const that = this;
     wx.request({
-      url: app.globalData.baseUrl + '/products',
+      url: app.globalData.baseUrl + '/products/',
       data: {
       },
       success: (res) => {
