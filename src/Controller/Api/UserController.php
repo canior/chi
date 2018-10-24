@@ -296,10 +296,11 @@ class UserController extends BaseController
         ]);
     }
 
+
     /**
      * 用户评价上传图片
      *
-     * @Route("/user/file/upload", name=“userFileUpload", methods="POST")
+     * @Route("/user/file/upload", name="userFileUpload", methods="POST")
      * @param Request $request
      * @return Response
      */
