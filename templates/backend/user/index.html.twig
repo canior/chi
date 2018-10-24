@@ -17,12 +17,45 @@
                 <div class="box-body">
                     <div class="row">
                         <form class="cmxform" id="myForm">
-                            <div class="col-md-3 form-group">
+                            <div class="col-md-1 form-group">
+                                <label>用户ID</label>
+                                <input type="number" name="userId" class="form-control" value="{{ form.userId }}"
+                                       placeholder="按 用户ID 查询">
+                            </div>
+                            <div class="col-md-2 form-group">
                                 <label>用户名</label>
                                 <input type="text" name="username" class="form-control" value="{{ form.username }}"
-                                       placeholder="按 username 查询">
+                                       placeholder="按 用户名 查询">
                             </div>
-                            <div class="col-md-3 form-group">
+                            <div class="col-md-4 form-group">
+                                <label>登录时间</label>
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <input type="text" name="loginTimeStart" class="form-control" value="{{ form.loginTimeStart }}"
+                                               placeholder="开始时间">
+                                    </div>
+                                    <div class="col-xs-1"> ~ </div>
+                                    <div class="col-xs-5">
+                                        <input type="text" name="loginTimeEnd" class="form-control" value="{{ form.loginTimeEnd }}"
+                                               placeholder="结束时间">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label>创建时间</label>
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <input type="text" name="createdAtStart" class="form-control" value="{{ form.createdAtStart }}"
+                                               placeholder="开始时间">
+                                    </div>
+                                    <div class="col-xs-1"> ~ </div>
+                                    <div class="col-xs-5">
+                                        <input type="text" name="createdAtEnd" class="form-control" value="{{ form.createdAtEnd }}"
+                                               placeholder="结束时间">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1 form-group">
                                 <label>&nbsp;</label>
                                 <input class="form-control btn btn-primary" type="submit" value="搜索"/>
                             </div>
@@ -33,6 +66,8 @@
                             <thead>
                             <tr>
                                 <th width="10%">用户ID</th>
+                                {#<th width="10%">用户名</th>#}
+                                {#<th width="10%">昵称</th>#}
                                 <th width="10%">用户头像</th>
                                 <th width="10%">拼团消费总额</th>
                                 <th width="10%">总分享数量</th>
@@ -48,19 +83,25 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>{{ item.id }}</td>
+                                        {#<td>{{ item.username }}</td>#}
+                                        {#<td>{{ item.nickname }}</td>#}
                                         <td>
                                             {% if item.avatarUrl %}
                                                 <img src="{{ item.avatarUrl }}" width="40" height="40"/>
                                             {% endif %}
                                         </td>
-                                        <td>{{ 'TODO' }}</td>
-                                        <td>{{ item.userShares.count }}</td>
-                                        <td>{{ item.subUsers.count }}</td>
-                                        <td>{{ item.totalRewards }}</td>
-                                        <td>{{ item.lastLogin|date }}</td>
+                                        <td>{{ item.userStatistics.spentTotal|default(0)|number_format }}</td>
+                                        <td>{{ item.userStatistics.sharedNum|default(0) }}</td>
+                                        <td>{{ item.userStatistics.childrenNum|default(0) }}</td>
+                                        <td>{{ item.totalRewards|number_format }}</td>
+                                        <td>{{ item.lastLogin ? item.lastLogin|date : '' }}</td>
                                         <td>{{ item.createdAt }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
+                                                <a href="{{ path('user_info', {'id': item.id}) }}" title="查看详情">
+                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                </a>
+                                                {#
                                                 <a href="{{ path('user_edit', {'id': item.id}) }}" title="修改">
                                                     <span class="glyphicon glyphicon-edit"></span>
                                                 </a>&nbsp;
@@ -71,13 +112,14 @@
                                                    title="删除">
                                                     <span class="glyphicon glyphicon-trash"></span>
                                                 </a>
+                                                #}
                                             </div>
                                         </td>
                                     </tr>
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="22" class="alert alert-warning">no records found</td>
+                                    <td colspan="11" class="alert alert-warning">no records found</td>
                                 </tr>
                             {% endif %}
                             </tbody>
@@ -102,5 +144,67 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script type="text/javascript">
+        $(function () {
+            // bind daterangepicker
+            var timeFormat = 'YYYY-MM-DD';
+            var $loginTimeStart = $('input[name="loginTimeStart"]');
+            var $loginTimeEnd = $('input[name="loginTimeEnd"]');
+            var $createdAtStart = $('input[name="createdAtStart"]');
+            var $createdAtEnd = $('input[name="createdAtEnd"]');
+            $loginTimeStart.daterangepicker({
+                autoUpdateInput: false,
+                singleDatePicker: true,
+                singleClasses: "picker_2",
+                locale: {
+                    format: timeFormat
+                }
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $loginTimeEnd.data('daterangepicker').setStartDate(picker.startDate.format(timeFormat));
+                $loginTimeEnd.data('daterangepicker').setEndDate(picker.startDate.format(timeFormat));
+                $loginTimeEnd.data('daterangepicker').minDate = picker.startDate;
+                $(this).val(picker.startDate.format(timeFormat) + ' 00:00:00');
+            });
+            $loginTimeEnd.daterangepicker({
+                autoUpdateInput: false,
+                singleDatePicker: true,
+                singleClasses: "picker_2",
+                locale: {
+                    format: timeFormat
+                }
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $loginTimeStart.data('daterangepicker').setStartDate(picker.startDate.format(timeFormat));
+                $loginTimeStart.data('daterangepicker').setEndDate(picker.startDate.format(timeFormat));
+                $loginTimeStart.data('daterangepicker').maxDate = picker.startDate;
+                $(this).val(picker.startDate.format(timeFormat) + ' 23:59:59');
+            });
+            $createdAtStart.daterangepicker({
+                autoUpdateInput: false,
+                singleDatePicker: true,
+                singleClasses: "picker_2",
+                locale: {
+                    format: timeFormat
+                }
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $createdAtEnd.data('daterangepicker').setStartDate(picker.startDate.format(timeFormat));
+                $createdAtEnd.data('daterangepicker').setEndDate(picker.startDate.format(timeFormat));
+                $createdAtEnd.data('daterangepicker').minDate = picker.startDate;
+                $(this).val(picker.startDate.format(timeFormat) + ' 00:00:00');
+            });
+            $createdAtEnd.daterangepicker({
+                autoUpdateInput: false,
+                singleDatePicker: true,
+                singleClasses: "picker_2",
+                locale: {
+                    format: timeFormat
+                }
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $createdAtStart.data('daterangepicker').setStartDate(picker.startDate.format(timeFormat));
+                $createdAtStart.data('daterangepicker').setEndDate(picker.startDate.format(timeFormat));
+                $createdAtStart.data('daterangepicker').maxDate = picker.startDate;
+                $(this).val(picker.startDate.format(timeFormat) + ' 23:59:59');
+            });
+        });
+    </script>
     {% include '/backend/includes/delete.js.html.twig' with {title: 'User'} %}
 {% endblock %}

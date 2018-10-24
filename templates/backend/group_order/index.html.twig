@@ -72,8 +72,7 @@
                                         <td>{{ item.id }}</td>
                                         <td>
                                             {% for groupUserOrder in item.groupUserOrders %}
-                                                {# TODO: link to groupUserOrder info page? #}
-                                                <a href="{{ path('group_user_order_edit', {id: groupUserOrder.id}) }}">{{ groupUserOrder.id }}</a>
+                                                <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {id: groupUserOrder.id}) }}">{{ groupUserOrder.id }}</a>
                                                 {% if not loop.last %}<br />{% endif %}
                                             {% endfor %}
                                         </td>

@@ -137,7 +137,7 @@
                                                 <td>{{ item.groupUserOrder.user.id|default }}</td>
                                                 <td>{{ item.groupUserOrder.user.username|default }}</td>
                                                 <td>{{ item.groupUserOrder.id|default }}</td>
-                                                <td>TODO:???</td>
+                                                <td>{{ item.groupUserOrder.completedAt }}</td>
                                                 <td>{{ item.rate }}</td>
                                                 <td>{{ item.review }}</td>
                                                 <td>
@@ -155,7 +155,7 @@
                                                         <a href="{{ path('product_review_edit', {id: item.id, productId: app.request.attributes.get('id')}) }}"
                                                            title="修改">
                                                             <span class="glyphicon glyphicon-edit"></span>
-
+                                                        </a>
                                                     </div>
                                                 </td>
                                             </tr>

@@ -46,13 +46,14 @@ class GroupOrderController extends BackendController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             $status = $request->request->get('group_order')['status'];
             $isMethod = 'is' . ucwords($status);
             if (in_array($status, array_keys(GroupOrder::$statuses))
                 && !$groupOrder->$isMethod()) {
                 $setMethod = 'set' . ucwords($status);
                 $groupOrder->$setMethod();
+
+                $em = $this->getDoctrine()->getManager();
                 $em->persist($groupOrder);
                 $em->flush();
             }

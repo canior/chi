@@ -122,10 +122,10 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
-                        '_twig_error_test',
+                        'group_order_index',
+                        'group_user_order_info',
                     ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:用户订单',
+                    'name' => '用户订单',
                     'icon' => 'fa fa-list-ul',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',

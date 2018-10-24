@@ -22,7 +22,6 @@ class ProductReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductReview::class);
     }
 
-
     /**
      * @param $productId
      * @param int $page
@@ -40,6 +39,23 @@ class ProductReviewRepository extends ServiceEntityRepository
             ->setParameter('productId', $productId)
             ->orderBy('pr.id', 'desc')
             ->setFirstResult(($page-1) * $pageLimit)
+            ->setMaxResults($pageLimit);
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * @param $userId
+     * @param int $page
+     * @param int $pageLimit
+     * @return ProductReview[]
+     */
+    public function findUserProductReviews($userId, $page = 1, $pageLimit = 5) {
+        $query = $this->createQueryBuilder('pr');
+        $query->leftJoin('pr.groupUserOrder', 'guo')
+            ->where('guo.user = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('pr.id', 'DESC')
+            ->setFirstResult(($page - 1) * $pageLimit)
             ->setMaxResults($pageLimit);
         return $query->getQuery()->getResult();
     }
