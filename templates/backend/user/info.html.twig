@@ -1,6 +1,6 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}ProductReview{% endblock %}
+{% block title %}User Info{% endblock %}
 
 {% import 'form/macros.html.twig' as macros %}
 
@@ -173,12 +173,12 @@
                                                         <tr>
                                                             <td>{{ item.id }}</td>
                                                             <td>
-                                                                <a href="{{ path('user_info', {'id': item.parentUser.id}) }}" target="_blank" title="查看详情">
+                                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.parentUser.id}) }}" target="_blank" title="查看详情">
                                                                     {{ item.parentUser.id }}
                                                                 </a>
                                                             </td>
                                                             <td>
-                                                                <a href="{{ path('user_info', {'id': item.parentUser.id}) }}" target="_blank" title="查看详情">
+                                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.parentUser.id}) }}" target="_blank" title="查看详情">
                                                                     {{ item.parentUser.nickname }}
                                                                 </a>
                                                             </td>
@@ -221,13 +221,14 @@
                                         {% for groupUserOrderReward in user.groupUserOrderRewards %}
                                             {% set totalUserRewards = totalUserRewards + groupUserOrderReward.userRewards %}
                                         {% endfor %}
-                                        总收益 ─ {{ totalUserRewards|number_format }}
-                                        总传销收益 ─ {{ 'TODO: ???' }}
-                                        总有效下线用户数量({{ user.userStatistics.childrenNum|default(0) }})
+                                        总收益 ─ {{ user.userStatistics.rewardsTotal|default(0)|number_format }}
+                                        总拼团订单收益 ─ {{ user.userStatistics.orderRewardsTotal|default(0)|number_format }}
+                                        总传销收益 ─ {{ user.userStatistics.userRewardsTotal|default(0)|number_format }}
+                                        总下线用户数量({{ user.userStatistics.childrenNum|default(0) }})
                                     </h3>
 
                                     <div class="box-tools pull-right">
-                                        <a href="{{ path('group_user_order_rewards_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
+                                        <a href="{{ path('user_rewards', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
                                                     class="fa fa-minus"></i>
                                         </button>
@@ -254,7 +255,7 @@
                                                         <td>{{ item.groupUserOrder.groupOrder.id }}</td>
                                                         <td>{{ item.groupUserOrder.id }}</td>
                                                         <td>
-                                                            <a href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
                                                                 {{ item.user.id }}
                                                             </a>
                                                         </td>
@@ -497,11 +498,8 @@
         <!-- /.col -->
     </div>
     <!-- /.row -->
-
-    {% include 'backend/includes/delete.modal.html.twig' with {title: 'ProductReview'} %}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    {% include '/backend/includes/delete.js.html.twig' with {title: 'ProductReview'} %}
 {% endblock %}

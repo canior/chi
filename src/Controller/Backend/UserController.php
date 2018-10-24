@@ -42,7 +42,7 @@ class UserController extends BackendController
     }
 
     /**
-     * @Route("/user/new/info/{id}", name="user_info", methods="GET|POST")
+     * @Route("/user/info/{id}", name="user_info", methods="GET|POST")
      */
     public function info(Request $request, User $user, UserManagerInterface $userManager, ProductReviewRepository $productReviewRepository): Response
     {
@@ -64,6 +64,35 @@ class UserController extends BackendController
             'title' => 'User 详情',
             'form' => $form->createView(),
             'productReviews' => $productReviewRepository->findUserProductReviews($user->getId(), 1, 3)
+        ]);
+    }
+
+    /**
+     * @Route("/user/rewards/", name="user_rewards", methods="GET")
+     */
+    public function rewards(UserRepository $userRepository, Request $request): Response
+    {
+        $data = [
+            'title' => '用户收益列表',
+            'form' => [
+                'userId' => $request->query->getInt('userId', null),
+                'username' => $request->query->get('username', null),
+                'page' => $request->query->getInt('page', 1)
+            ]
+        ];
+        $data['data'] = $userRepository->findUsersQueryBuilder($data['form']['userId'], $data['form']['username']);
+        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
+        return $this->render('backend/user/rewards.html.twig', $data);
+    }
+
+    /**
+     * @Route("/user/rewards/info/{id}", name="user_rewards_info", methods="GET")
+     */
+    public function rewardsInfo(Request $request, User $user): Response
+    {
+        return $this->render('backend/user/rewards_info.html.twig', [
+            'user' => $user,
+            'title' => '用户收益详情'
         ]);
     }
 

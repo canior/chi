@@ -1,6 +1,6 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}ProductReview{% endblock %}
+{% block title %}Group Order Info{% endblock %}
 
 {% import 'form/macros.html.twig' as macros %}
 
@@ -273,11 +273,8 @@
         <!-- /.col -->
     </div>
     <!-- /.row -->
-
-    {% include 'backend/includes/delete.modal.html.twig' with {title: 'ProductReview'} %}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    {% include '/backend/includes/delete.js.html.twig' with {title: 'ProductReview'} %}
 {% endblock %}

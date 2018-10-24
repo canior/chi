@@ -525,7 +525,8 @@ class User extends BaseUser implements Dao
     /**
      * @return array
      */
-    public function getArray() : array {
+    public function getArray(): array
+    {
         return [
             'id' => $this->getId(),
             'nickname' => $this->getNickname(),
@@ -579,5 +580,30 @@ class User extends BaseUser implements Dao
         }
 
         return $this;
+    }
+
+    /**
+     * @return null|GroupOrder
+     */
+    public function getLastRewardsGroupOrder()
+    {
+        /**
+         * @var GroupUserOrder $lastGroupUserOrder
+         */
+        $lastGroupUserOrder = $this->groupUserOrders->isEmpty() ? null : $this->groupUserOrders->first();
+        /**
+         * @var GroupUserOrderRewards $lastGroupUserOrderReward
+         */
+        $lastGroupUserOrderReward = $this->groupUserOrderRewards->isEmpty() ? null : $this->groupUserOrderRewards->first();
+        if ($lastGroupUserOrder && $lastGroupUserOrderReward) {
+            return $lastGroupUserOrder->getGroupOrder()->getCreatedAt(false) > $lastGroupUserOrderReward->getGroupUserOrder()->getGroupOrder()->getCreatedAt(false)
+                ? $lastGroupUserOrder->getGroupOrder()
+                : $lastGroupUserOrderReward->getGroupUserOrder()->getGroupOrder();
+        } elseif ($lastGroupUserOrder) {
+            return $lastGroupUserOrder->getGroupOrder();
+        } elseif ($lastGroupUserOrderReward) {
+            return $lastGroupUserOrderReward->getGroupUserOrder()->getGroupOrder();
+        }
+        return null;
     }
 }
