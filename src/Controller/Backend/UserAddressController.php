@@ -4,6 +4,7 @@ namespace App\Controller\Backend;
 
 use App\Entity\UserAddress;
 use App\Form\UserAddressType;
+use App\Repository\RegionRepository;
 use App\Repository\UserAddressRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,12 +59,26 @@ class UserAddressController extends BackendController
     /**
      * @Route("/user/address/{id}/edit", name="user_address_edit", methods="GET|POST")
      */
-    public function edit(Request $request, UserAddress $userAddress): Response
+    public function edit(Request $request, UserAddress $userAddress, RegionRepository $regionRepository): Response
     {
         $form = $this->createForm(UserAddressType::class, $userAddress);
+
+        // init regions
+        $form->get('provinceId')->setData($userAddress->getRegion() && $userAddress->getRegion()->getProvince() ? $userAddress->getRegion()->getProvince()->getId() : null);
+        $form->get('cityId')->setData($userAddress->getRegion() && $userAddress->getRegion()->getCity() ? $userAddress->getRegion()->getCity()->getId() : null);
+        $form->get('countyId')->setData($userAddress->getRegion() && $userAddress->getRegion()->getCounty() ? $userAddress->getRegion()->getCounty()->getId() : null);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $provinceId = $form->get('provinceId')->getData();
+            $cityId = $form->get('cityId')->getData();
+            $countyId = $form->get('countyId')->getData();
+            $regionId = $countyId ? $countyId : ($cityId ? $cityId : $provinceId);
+            if ($regionId) {
+                $region = $regionRepository->find($regionId);
+                $userAddress->setRegion($region);
+            }
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');
             return $this->redirectToRoute('user_address_edit', ['id' => $userAddress->getId()]);

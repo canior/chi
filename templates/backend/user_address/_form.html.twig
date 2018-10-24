@@ -1,4 +1,25 @@
 {{ form_start(form) }}
+    {{ form_row(form.user, {'attr': {'class': 'disabled'}}) }}
+    <div class="form-group row">
+        <div class="col-md-4{% if form.provinceId.vars.errors|length %} has-error{% endif %}">
+            {{ form_label(form.provinceId) }}
+            {{ form_errors(form.provinceId) }}
+            {{ form_widget(form.provinceId) }}
+            {{ form_help(form.provinceId) }}
+        </div>
+        <div class="col-md-4{% if form.cityId.vars.errors|length %} has-error{% endif %}">
+            {{ form_label(form.cityId) }}
+            {{ form_errors(form.cityId) }}
+            {{ form_widget(form.cityId) }}
+            {{ form_help(form.cityId) }}
+        </div>
+        <div class="col-md-4{% if form.countyId.vars.errors|length %} has-error{% endif %}">
+            {{ form_label(form.countyId) }}
+            {{ form_errors(form.countyId) }}
+            {{ form_widget(form.countyId) }}
+            {{ form_help(form.countyId) }}
+        </div>
+    </div>
     {{ form_widget(form) }}
     <a class="btn btn-danger" href="{{ path('user_address_index') }}">{{ 'Back to list'|trans }}</a>
     <button class="btn btn-primary">{{ button_label|default('Save') }}</button>

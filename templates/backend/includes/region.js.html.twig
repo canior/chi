@@ -1,0 +1,63 @@
+<script type="text/javascript">
+    $(function () {
+        // load region
+        function initRegions($cntr, regionId, selectedId, callback, defaultOption) {
+            if (regionId === null || regionId === '') return;
+            var url = '{{ path('backend_region') }}/' + regionId;
+            if (selectedId) url += '/' + selectedId;
+            $cntr.html('');
+            $.getJSON(url, function (data) {
+                var html = defaultOption || '';
+                var len = data.region.length;
+                for (var i = 0; i < len; i++) {
+                    html += '<option value="' + data.region[i].id + '"' + (selectedId && selectedId === data.region[i].id ? 'selected="selected"' : '' ) + '>' + data.region[i].name + '</option>';
+                }
+                $cntr.html(html);
+                if (callback) callback(data.region);
+            });
+        }
+
+        var $provinceSelect = $('select[id*=_provinceId]');
+        var $citySelect = $('select[id*=_cityId]');
+        var $countySelect = $('select[id*=_countyId]');
+
+        // register province changed
+        $provinceSelect.on('change', function () {
+            $citySelect.html('<option value="">市</option>');
+            $countySelect.html('<option value="">区/县</option>');
+            initRegions($citySelect, $(this).val(), null, function (data) {
+                $citySelect.trigger('change');
+            });
+        });
+        // register city changed
+        if ($countySelect.length) {
+            $citySelect.on('change', function () {
+                $countySelect.html('<option value="">区/县</option>');
+                initRegions($countySelect, $(this).val(), null, null);
+            });
+        }
+
+        // init provinces
+        initRegions($provinceSelect, 0, {% if form.provinceId is defined and form.provinceId.vars.data %}{{ form.provinceId.vars.data }}{% else %}null{% endif %}, function (data) {
+            {% if form.provinceId is defined and form.provinceId.vars.data and not form.cityId.vars.data %}
+//            $provinceSelect.trigger('change');
+            initRegions($citySelect, {{ form.provinceId.vars.data|default('null') }}, null, function (data) {
+                $citySelect.trigger('change');
+            }, '<option value="">市</option>');
+            {% endif %}
+        }, '<option value="">省</option>');
+        // init cities
+        {% if form.cityId is defined and form.cityId.vars.data %}
+        initRegions($citySelect, {{ form.provinceId.vars.data }}, {{ form.cityId.vars.data }}, function (data) {
+            {% if form.countyId is defined and not form.countyId.vars.data %}
+//            $citySelect.trigger('change');
+            initRegions($countySelect, {{ form.cityId.vars.data }}, null, null, '<option value="">区/县</option>');
+            {% endif %}
+        });
+        {% endif %}
+        // init counties
+        {% if form.countyId is defined %}
+        initRegions($countySelect, {{ form.cityId.vars.data|default('null') }}, {{ form.countyId.vars.data|default('null') }}, null);
+        {% endif %}
+    });
+</script>
