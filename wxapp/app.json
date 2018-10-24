@@ -10,6 +10,7 @@
     "pages/user/group/index",
     "pages/user/order/index",
     "pages/user/order/detail",
+    "pages/user/reward/index",    
     "pages/index/index",
     "pages/logs/logs"
   ],
@@ -33,7 +34,7 @@
         "selectedIconPath": "images/home-active.png"
       },
       {
-        "pagePath": "pages/index/index",
+        "pagePath": "pages/user/reward/index",
         "text": "收益",
         "iconPath": "images/reward.png",
         "selectedIconPath": "images/reward-active.png"

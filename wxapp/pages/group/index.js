@@ -20,8 +20,7 @@ Page({
    */
   onLoad: function (options) {
     const id = options.id;
-    const isLogin = app.globalData.isLogin;
-    if (isLogin && id) {
+    if (id) {
       this.getGroupOrder(id);
     }
   },
