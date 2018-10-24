@@ -308,9 +308,6 @@ class UserController extends BaseController
         $thirdSession = $request->request->get('thirdSession');
         $user = $this->getWxUser($thirdSession);
 
-        /**
-         * @var UploadedFile[] $files
-         */
         $files = $request->files;
 
         $fileId = null;
