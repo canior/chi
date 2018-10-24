@@ -4,7 +4,8 @@ namespace App\Entity;
 
 use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\IdTrait;
-use App\Entity\Traits\StatusTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,18 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class UserShare implements Dao
 {
-    const CREATED = 'created';
-    const VIEWED = 'viewed';
-    const BOUGHT = 'bought';
-
-    public static $statuses = [
-        self::CREATED => '已分享',
-        self::VIEWED => '已查看',
-        self::BOUGHT => '已购买'
-    ];
-
     use IdTrait,
-        StatusTrait,
         CreatedAtTrait;
 
     /**
@@ -33,44 +23,27 @@ class UserShare implements Dao
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\Column(type="string", length=255)
      */
-    private $parentUser;
+    private $shareSource;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $page;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserSource", mappedBy="otherUserShare")
+     */
+    private $userSources;
 
     /**
      * UserShare constructor.
      */
     public function __construct()
     {
-        $this->setCreated();
         $this->setCreatedAt(time());
-    }
-
-    public function setCreated() : self {
-        $this->status = self::CREATED;
-        return $this;
-    }
-
-    public function isCreated() : bool {
-        return self::CREATED == $this->getStatus();
-    }
-
-    public function setViewed() : self {
-        $this->status = self::VIEWED;
-        return $this;
-    }
-
-    public function isViewed() : bool {
-        return self::VIEWED == $this->getStatus();
-    }
-
-    public function setBought() : self {
-        $this->status = self::BOUGHT;
-        return $this;
-    }
-
-    public function isBought() : bool {
-        return self::BOUGHT == $this->getStatus();
+        $this->userSources = new ArrayCollection();
     }
 
     public function getUser(): ?User
@@ -85,14 +58,57 @@ class UserShare implements Dao
         return $this;
     }
 
-    public function getParentUser(): ?User
+    public function getShareSource(): ?string
     {
-        return $this->parentUser;
+        return $this->shareSource;
     }
 
-    public function setParentUser(?User $parentUser): self
+    public function setShareSource(string $shareSource): self
     {
-        $this->parentUser = $parentUser;
+        $this->shareSource = $shareSource;
+
+        return $this;
+    }
+
+    public function getPage(): ?string
+    {
+        return $this->page;
+    }
+
+    public function setPage(string $page): self
+    {
+        $this->page = $page;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserSource[]
+     */
+    public function getUserSources(): Collection
+    {
+        return $this->userSources;
+    }
+
+    public function addUserSource(UserSource $userSource): self
+    {
+        if (!$this->userSources->contains($userSource)) {
+            $this->userSources[] = $userSource;
+            $userSource->setOtherUserShare($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserSource(UserSource $userSource): self
+    {
+        if ($this->userSources->contains($userSource)) {
+            $this->userSources->removeElement($userSource);
+            // set the owning side to null (unless already changed)
+            if ($userSource->getOtherUserShare() === $this) {
+                $userSource->setOtherUserShare(null);
+            }
+        }
 
         return $this;
     }

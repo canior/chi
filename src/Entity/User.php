@@ -134,6 +134,11 @@ class User extends BaseUser implements Dao
      */
     private $userStatistics;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserSource", mappedBy="user")
+     */
+    private $userSources;
+
     public function __construct()
     {
         parent::__construct();
@@ -151,6 +156,7 @@ class User extends BaseUser implements Dao
         $this->groupUserOrderLogs = new ArrayCollection();
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->setUpdatedAt();
+        $this->userSources = new ArrayCollection();
     }
 
     public function getId()
@@ -539,6 +545,37 @@ class User extends BaseUser implements Dao
         // set the owning side of the relation if necessary
         if ($this !== $userStatistics->getUser()) {
             $userStatistics->setUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserSource[]
+     */
+    public function getUserSources(): Collection
+    {
+        return $this->userSources;
+    }
+
+    public function addUserSource(UserSource $userSource): self
+    {
+        if (!$this->userSources->contains($userSource)) {
+            $this->userSources[] = $userSource;
+            $userSource->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserSource(UserSource $userSource): self
+    {
+        if ($this->userSources->contains($userSource)) {
+            $this->userSources->removeElement($userSource);
+            // set the owning side to null (unless already changed)
+            if ($userSource->getUser() === $this) {
+                $userSource->setUser(null);
+            }
         }
 
         return $this;
