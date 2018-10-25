@@ -135,12 +135,6 @@ class User extends BaseUser implements Dao
      */
     private $shareSources;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ShareSourceUser", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
-     * @ORM\OrderBy({"id" = "DESC"})
-     */
-    private $shareSourceUsers;
-
     public function __construct()
     {
         parent::__construct();
@@ -157,7 +151,6 @@ class User extends BaseUser implements Dao
         $this->groupUserOrderLogs = new ArrayCollection();
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->shareSources = new ArrayCollection();
-        $this->shareSourceUsers = new ArrayCollection();
         $this->setUpdatedAt();
     }
 
@@ -582,31 +575,8 @@ class User extends BaseUser implements Dao
     /**
      * @return Collection|ShareSourceUser[]
      */
-    public function getShareSourceUsers(): Collection
+    private function getShareSourceUsers(): Collection
     {
         return $this->shareSourceUsers;
-    }
-
-    public function addShareSourceUser(ShareSourceUser $shareSourceUser): self
-    {
-        if (!$this->shareSourceUsers->contains($shareSourceUser)) {
-            $this->shareSourceUsers[] = $shareSourceUser;
-            $shareSourceUser->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeShareSourceUser(ShareSourceUser $shareSourceUser): self
-    {
-        if ($this->shareSourceUsers->contains($shareSourceUser)) {
-            $this->shareSourceUsers->removeElement($shareSourceUser);
-            // set the owning side to null (unless already changed)
-            if ($shareSourceUser->getUser() === $this) {
-                $shareSourceUser->setUser(null);
-            }
-        }
-
-        return $this;
     }
 }
