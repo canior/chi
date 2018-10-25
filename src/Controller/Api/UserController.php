@@ -209,15 +209,25 @@ class UserController extends BaseController
 
     /**
      * 确认收货
-     * @Route("/user/groupOrders/{groupOrderId}", name="updateMyGroupOrder", methods="POST")
+     * @Route("/user/groupUserOrders/{groupUserOrderId}", name="updateMyGroupUserOrder", methods="POST")
      * @param Request $request
-     * @param $groupOrderId
-     * @param GroupOrderRepository $groupOrderRepository
+     * @param $groupUserOrderId
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
      */
-    public function updateGroupUserOrderAction(Request $request, $groupOrderId, GroupOrderRepository $groupOrderRepository, GroupUserOrderRepository $groupUserOrderRepository) : Response {
-        return $this->responseJson('success', 200, []);
+    public function updateGroupUserOrderAction(Request $request, $groupUserOrderId, GroupUserOrderRepository $groupUserOrderRepository) : Response {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
+
+        $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+        $groupUserOrder->setDelivered();
+        $this->getEntityManager()->persist($groupUserOrder);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, [
+            'groupUserOrder' => $groupUserOrder->getArray()
+        ]);
     }
 
     /**
@@ -261,7 +271,7 @@ class UserController extends BaseController
     }
 
     /**
-     * 获取用户收货地址
+     * 获取用户收货地址详情
      *
      * @Route("/user/address", name="getUserAddress", methods="POST")
      * @param Request $request
