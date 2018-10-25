@@ -66,7 +66,6 @@ Page({
       isLogin: app.globalData.isLogin,
       user: app.globalData.user
     })
-    console.log(this.data.user)
   },
 
   /**

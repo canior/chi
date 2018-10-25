@@ -9,7 +9,7 @@ Page({
     menu: ['我的拼团', '等待成团', '拼团成功', '拼团失败'],
     curIndex: 0,
     groupOrders: [], 
-
+    imgUrlPrefix: app.globalData.imgUrlPrefix,
   },
 
   /**
