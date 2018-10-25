@@ -161,4 +161,13 @@ class ShareSource
 
         return $this;
     }
+
+    public function getArray() : array {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'bannerFileId' => $this->getBannerFile()->getId(),
+            'page' => $this->getPage(),
+        ];
+    }
 }

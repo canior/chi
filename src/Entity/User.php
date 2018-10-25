@@ -154,9 +154,9 @@ class User extends BaseUser implements Dao
         $this->groupUserOrders = new ArrayCollection();
         $this->groupUserOrderLogs = new ArrayCollection();
         $this->groupUserOrderRewards = new ArrayCollection();
-        $this->setUpdatedAt();
         $this->shareSources = new ArrayCollection();
         $this->shareSourceUsers = new ArrayCollection();
+        $this->setUpdatedAt();
     }
 
     public function getId()

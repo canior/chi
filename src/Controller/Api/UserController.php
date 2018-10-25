@@ -2,10 +2,12 @@
 namespace App\Controller\Api;
 
 use App\Entity\Region;
+use App\Entity\ShareSource;
 use App\Entity\User;
 use App\Entity\UserAddress;
 use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
+use App\Repository\ProductRepository;
 use App\Repository\RegionRepository;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
@@ -294,6 +296,53 @@ class UserController extends BaseController
         return $this->responseJson('success', 200, [
             'userAddresses' => $userAddress->getArray()
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @return Response
+     */
+    public function createShareSource(Request $request, ProductRepository $productRepository) : Response {
+
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $productId = isset($data['productId']) ? $data['productId'] : null;
+        $shareSourceType = isset($data['shareSourceType']) ? $data['shareSourceType'] : null;
+
+        $user = $this->getWxUser($thirdSession);
+        $product = null;
+
+        if ($productId == null) { //分享用户相关
+            if ($shareSourceType == 'refer') {
+
+            } else if ($shareSourceType == 'quan') {
+
+            }
+        } else { //分享产品相关
+            $product = $productRepository->find($productId);
+            if ($shareSourceType == 'refer') {
+
+            } else if ($shareSourceType == 'quan') {
+
+            }
+        }
+
+
+        $shareSource = new ShareSource();
+        $shareSource->setUser($user);
+        $shareSource->setProduct($product);
+        //$shareSource->setPage()
+        //$shareSource->setTitle();
+        //$shareSource->setBannerFile()
+
+        $user->addShareSource($shareSource);
+        $this->getEntityManager()->persist($user);
+
+        return $this->responseJson('success', 200, [
+            'shareSource' => $shareSource->getArray()
+        ]);
+
     }
 
 
