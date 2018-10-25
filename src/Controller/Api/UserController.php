@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Api;
 
+use App\Entity\GroupUserOrder;
 use App\Entity\Region;
 use App\Entity\ShareSource;
 use App\Entity\User;
@@ -96,10 +97,22 @@ class UserController extends BaseController
 
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+
+        /**
+         * @var string $groupOrderStatus pending, completed, expired
+         */
+        $groupOrderStatus = isset($data['groupOrderStatus']) ? $data['groupOrderStatus'] : null;
+        $groupOrderStatusArray = [];
+        if ($groupOrderStatus != null) {
+            $groupOrderStatusArray[] = $groupOrderStatus;
+        }
+
         $user = $this->getWxUser($thirdSession);
 
         $groupOrdersArray = [];
-        $groupOrders = $groupOrderRepository->findBy(['user' => $user]);
+
+        $groupOrders = $groupOrderRepository->findGroupOrdersForUser($user->getId(), $groupOrderStatusArray);
+
         foreach ($groupOrders as $groupOrder) {
             $groupOrdersArray[] = $groupOrder->getArray();
         }
@@ -110,38 +123,100 @@ class UserController extends BaseController
     }
 
     /**
-     * 我的拼团
+     * 我的拼团详情
      * @Route("/user/groupOrders/{groupOrderId}", name="myGroupOrder", methods="GET")
      * @param Request $request
      * @param $groupOrderId
      * @param GroupOrderRepository $groupOrderRepository
-     * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
      */
-    public function getGroupOrderAction(Request $request, $groupOrderId, GroupOrderRepository $groupOrderRepository, GroupUserOrderRepository $groupUserOrderRepository) : Response {
+    public function getGroupOrderAction(Request $request, $groupOrderId, GroupOrderRepository $groupOrderRepository) : Response {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+
         $user = $this->getWxUser($thirdSession);
         $groupOrder = $groupOrderRepository->find($groupOrderId);
 
-        $groupUserOrder = $groupUserOrderRepository->find(['user' => $user, 'groupOrder' => $groupOrder]);
-        $groupUserOrderArray = $groupUserOrder->getArray();
+        return $this->responseJson('success', 200, [
+            'groupOrder' => $groupOrder->getArray()
+        ]);
+    }
+
+
+    /**
+     * 我的订单列表
+     *
+     * 全部，待成团， 待发货， 已发货， 待收货
+     *
+     * 全部: status and paymentStatus in ['paid', 'refunding', 'refunded']
+     * 待成团: status = 'created', paymentStatus = 'paid'
+     * 待发货: status = 'pending', paymentStatus = 'paid'
+     * 已发货：status = 'shipping' paymentStatus = 'paid'
+     * 已收货: status = 'delivered' paymentStatus = 'paid'
+     *
+     * @Route("/user/groupUserOrders/", name="myGroupUserOrders", methods="POST")
+     * @param Request $request
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @return Response
+     */
+    public function getGroupUserOrdersAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
+
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
+
+
+        $user = $this->getWxUser($thirdSession);
+
+        if ($groupUserOrderStatus == null)
+            $groupUserOrderStatus =  array_keys(GroupUserOrder::$statuses);
+
+        $paymentStatusArray = ['paid', 'refunding', 'refunded'];
+
+        $groupUserOrders = $groupUserOrderRepository->findBy(['user' => $user, 'status' => $groupUserOrderStatus, 'paymentStatus' => $paymentStatusArray]);
+
+        $groupUserOrdersArray = [];
+        foreach ($groupUserOrders as $groupUserOrder) {
+            $groupUserOrdersArray[] = $groupUserOrder->getArray();
+        }
 
         return $this->responseJson('success', 200, [
-            'groupUserOrder' => $groupUserOrderArray
+            'groupUserOrders' => $groupUserOrdersArray
         ]);
     }
 
     /**
+     * 我的订单详情
+     * @Route("/user/groupUserOrders/{groupUserOrderId}", name="myGroupUserOrder", methods="GET")
+     * @param Request $request
+     * @param $groupUserOrderId
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @return Response
+     */
+    public function getGroupUserOrderAction(Request $request, $groupUserOrderId, GroupUserOrderRepository $groupUserOrderRepository) : Response {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
+
+        $user = $this->getWxUser($thirdSession);
+        $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+
+        return $this->responseJson('success', 200, [
+            'groupUserOrder' => $groupUserOrder->getArray()
+        ]);
+    }
+
+
+    /**
      * 确认收货
-     * @Route("/user/groupOrders/{groupOrderId}", name="updateMyGroupOrder", methods="PUT")
+     * @Route("/user/groupOrders/{groupOrderId}", name="updateMyGroupOrder", methods="POST")
      * @param Request $request
      * @param $groupOrderId
      * @param GroupOrderRepository $groupOrderRepository
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
      */
-    public function updateGroupOrderAction(Request $request, $groupOrderId, GroupOrderRepository $groupOrderRepository, GroupUserOrderRepository $groupUserOrderRepository) : Response {
+    public function updateGroupUserOrderAction(Request $request, $groupOrderId, GroupOrderRepository $groupOrderRepository, GroupUserOrderRepository $groupUserOrderRepository) : Response {
         return $this->responseJson('success', 200, []);
     }
 

@@ -19,6 +19,28 @@ class GroupOrderRepository extends ServiceEntityRepository
         parent::__construct($registry, GroupOrder::class);
     }
 
+
+    /**
+     * 返回当前用户开团或参与的团 （拼团中， 拼团成功，拼团过期）
+     * @param int $userId
+     * @param array $groupOrderStatusArray
+     * @return GroupOrder[]
+     */
+    public function findGroupOrdersForUser(int $userId, $groupOrderStatusArray = []) {
+        if (empty($groupOrderStatusArray)) {
+            $groupOrderStatusArray = [GroupOrder::PENDING, GroupOrder::COMPLETED, GroupOrder::EXPIRED];
+        }
+        $query = $this->createQueryBuilder('go');
+        $query->leftJoin('go.groupUserOrders', 'guo');
+        $query->andWhere('guo.user = :userId');
+        $query->setParameter('userId', $userId);
+        $query->andWhere('go.status in (:status) ');
+        $query->setParameter('status', $groupOrderStatusArray);
+        $query->orderBy('go.id', 'DESC');
+
+        return $query->getQuery()->getResult();
+    }
+
     /**
      * @param null $id
      * @param null $groupUserOrderId
