@@ -6,8 +6,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-    isLogin: app.globalData.isLogin,
-    user: app.globalData.user,
+    isLogin: null,
+    user: null,
   },
 
   /**
@@ -66,6 +66,7 @@ Page({
       isLogin: app.globalData.isLogin,
       user: app.globalData.user
     })
+    console.log(this.data.user)
   },
 
   /**
