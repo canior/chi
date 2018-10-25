@@ -6,6 +6,7 @@ use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\IdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Id\UuidGenerator;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,8 +14,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ShareSource
 {
-    use IdTrait,
-        CreatedAtTrait;
+    use CreatedAtTrait;
+
+    /**
+     * @var string
+     * @ORM\Id
+     * @ORM\Column(type="guid")
+     */
+    private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="shareSources")
@@ -55,9 +62,22 @@ class ShareSource
 
     public function __construct()
     {
+        $this->id = uniqid();
         $this->setCreatedAt();
         $this->shareSourceUsers = new ArrayCollection();
     }
+
+    /**
+     * Get string
+     *
+     * @return string
+     */
+    public function getId() : string
+    {
+        return $this->id;
+    }
+
+
 
     public function getUser(): ?User
     {
@@ -137,6 +157,21 @@ class ShareSource
     public function getShareSourceUsers(): Collection
     {
         return $this->shareSourceUsers;
+    }
+
+    /**
+     * 分享源是否包含此用户
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function hasShareSourceUser(User $user) {
+        foreach ($this->getShareSourceUsers() as $shareSourceUser) {
+            if ($shareSourceUser->getUser()->getId() == $user->getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function addShareSourceUser(ShareSourceUser $shareSourceUser): self

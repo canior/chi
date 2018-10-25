@@ -436,9 +436,13 @@ class UserController extends BaseController
 
         $user = $this->getWxUser($thirdSession);
         $product = null;
+        $redirect = null;
+        $bannerFile = null;
 
         if ($productId == null) { //分享用户相关
             if ($shareSourceType == 'refer') {
+                $title = "";
+                $page = "";
 
             } else if ($shareSourceType == 'quan') {
 
@@ -454,14 +458,19 @@ class UserController extends BaseController
 
 
         $shareSource = new ShareSource();
-        $shareSource->setUser($user);
-        $shareSource->setProduct($product);
-        //$shareSource->setPage()
-        //$shareSource->setTitle();
-        //$shareSource->setBannerFile()
 
-        $user->addShareSource($shareSource);
-        $this->getEntityManager()->persist($user);
+//        $shareSource->setUser($user);
+//        $shareSource->setProduct($product);
+//
+//        $shareSourceId = $shareSource->getId();
+//        $page = $redirect . "?shareSourceId=" . $shareSourceId;
+//        $shareSource->setPage($page);
+//
+//        $shareSource->setTitle($title);
+//        $shareSource->setBannerFile($bannerFile);
+//
+//        $user->addShareSource($shareSource);
+//        $this->getEntityManager()->persist($user);
 
         return $this->responseJson('success', 200, [
             'shareSource' => $shareSource->getArray()

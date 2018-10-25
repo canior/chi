@@ -9,6 +9,8 @@
 namespace App\Controller\Api;
 
 use App\Controller\DefaultController;
+use App\Entity\ShareSource;
+use App\Entity\ShareSourceUser;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,18 +50,38 @@ class BaseController extends DefaultController
     }
 
     /**
-     * @param $thirdSession
+     * @param $thirdSession ex. {"userId": 123, "shareSourceId": 456}
      * @return User|null
      */
     protected function getWxUser($thirdSession):?User
     {
-        /**
-         * @var UserRepository $userRepository
-         */
-        $userRepository = $this->getEntityManager()->getRepository(User::class);
-        $user = $userRepository->find($thirdSession);
+        return $this->getEntityManager()->getRepository(User::class)->find($thirdSession);
 
-        return $user;
+
+//        $thirdSessionArray = json_decode($thirdSession, true);
+//        $userId = $thirdSession['userId'];
+//        /**
+//         * @var UserRepository $userRepository
+//         */
+//        $userRepository = $this->getEntityManager()->getRepository(User::class);
+//        $user = $userRepository->find($thirdSession);
+//
+//        $shareSourceId = $thirdSession['shareSourceId'];
+//        /**
+//         * @var ShareSource $shareSource
+//         */
+//        $shareSource = $this->getEntityManager()->getRepository(ShareSource::class)->find($shareSourceId);
+//
+//        if ($shareSource != null) {
+//            $shareSourceUser = new ShareSourceUser();
+//            $shareSourceUser->setUser($user);
+//            $shareSourceUser->setShareSource($shareSource);
+//            $shareSource->addShareSourceUser($shareSourceUser);
+//            $this->getEntityManager()->persist($shareSource);
+//            $this->getEntityManager()->flush();
+//        }
+//
+//        return $user;
     }
 
     protected function getImgUrlPrefix()
