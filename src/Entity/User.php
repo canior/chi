@@ -572,11 +572,4 @@ class User extends BaseUser implements Dao
         return $this;
     }
 
-    /**
-     * @return Collection|ShareSourceUser[]
-     */
-    private function getShareSourceUsers(): Collection
-    {
-        return $this->shareSourceUsers;
-    }
 }

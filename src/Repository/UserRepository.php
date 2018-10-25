@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\ShareSource;
+use App\Entity\ShareSourceUser;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -18,6 +20,23 @@ class UserRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, User::class);
+    }
+
+    /**
+     * 返回最近的上线用户
+     * @param $userId
+     * @return User|null
+     */
+    public function findLatestShareSourceParentUser($userId) : ?User {
+        $users = $shareSourceUserRepository = $this->getEntityManager()
+            ->getRepository(ShareSourceUser::class)
+            ->findBy(['user' => $userId], ['id' => 'DESC'], 1);
+
+        if (empty($users)) {
+            return null;
+        }
+
+        return $users[0];
     }
 
     /**
