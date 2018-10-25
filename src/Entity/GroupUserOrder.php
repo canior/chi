@@ -106,7 +106,7 @@ class GroupUserOrder implements Dao
     private $groupUserOrderRewards;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ProductReview", mappedBy="groupUserOrder", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductReview", mappedBy="groupUserOrder", fetch="EXTRA_LAZY", cascade={"persist"} )
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $productReviews;

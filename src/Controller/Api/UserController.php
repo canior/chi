@@ -2,10 +2,13 @@
 namespace App\Controller\Api;
 
 use App\Entity\GroupUserOrder;
+use App\Entity\ProductReview;
+use App\Entity\ProductReviewImage;
 use App\Entity\Region;
 use App\Entity\ShareSource;
 use App\Entity\User;
 use App\Entity\UserAddress;
+use App\Repository\FileRepository;
 use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
@@ -231,16 +234,51 @@ class UserController extends BaseController
     }
 
     /**
-     * 添加评论
-     * @Route("/user/groupOrders/{groupOrderId}", name="updateMyGroupOrder", methods="GET")
+     * 添加或修改评论
+     * @Route("/user/groupUserOrders/{groupUserOrderId}/review", name="updateProductReview", methods="POST")
      * @param Request $request
-     * @param $groupOrderId
-     * @param GroupOrderRepository $groupOrderRepository
+     * @param $groupUserOrderId
      * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @param FileRepository $fileRepository
      * @return Response
      */
-    public function addProductReviewAction(Request $request, $groupOrderId, GroupOrderRepository $groupOrderRepository, GroupUserOrderRepository $groupUserOrderRepository) : Response {
-        return $this->responseJson('success', 200, []);
+    public function updateProductReviewAction(Request $request, $groupUserOrderId, GroupUserOrderRepository $groupUserOrderRepository, FileRepository $fileRepository) : Response {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $rate = isset($data['rate']) ? $data['rate'] : null;
+        $review = isset($data['review']) ? $data['review'] : null;
+        $reviewImageFileIds = isset($data['imageIds']) ? $data['imageIds'] : [];
+
+        $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+
+        $productReview = null;
+        $productReviews = $groupUserOrder->getProductReviews();
+        if (empty($productReviews)) {
+            $productReview = new ProductReview();
+        } else {
+            $productReview = $productReviews[0];
+        }
+
+        $productReview->setGroupUserOrder($groupUserOrder);
+        $productReview->setProduct($groupUserOrder->getGroupOrder()->getProduct());
+        $productReview->setRate($rate);
+        $productReview->setReview($review);
+
+        foreach ($reviewImageFileIds as $fileId) {
+            $file = $fileRepository->find($fileId);
+            $productReviewImage = new ProductReviewImage();
+            $productReviewImage->setImageFile($file);
+            $productReviewImage->setProductReview($productReview);
+            $productReview->addProductReviewImage($productReviewImage);
+        }
+        $groupUserOrder->addProductReview($productReview);
+
+        $this->getEntityManager()->persist($groupUserOrder);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, [
+            'productReview' => $productReview->getArray()
+        ]);
     }
 
 
