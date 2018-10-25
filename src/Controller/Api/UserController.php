@@ -148,7 +148,7 @@ class UserController extends BaseController
      *
      * 全部，待成团， 待发货， 已发货， 待收货
      *
-     * 全部: status and paymentStatus in ['paid', 'refunding', 'refunded']
+     * 全部: status = null, paymentStatus in ['paid', 'refunding', 'refunded']
      * 待成团: status = 'created', paymentStatus = 'paid'
      * 待发货: status = 'pending', paymentStatus = 'paid'
      * 已发货：status = 'shipping' paymentStatus = 'paid'
