@@ -8,10 +8,9 @@ Page({
   data: {
     menu: ['好友贡献', '活跃', '失效'],
     curIndex: 0,
-    isLogin: app.globalData.isLogin,
-    user: app.globalData.user,
+    isLogin: null,
+    user: null,
 
-    total_rewards: 10,
   },
 
   /**

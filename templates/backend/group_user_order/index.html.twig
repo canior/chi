@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'backend/base.html.twig' %}
 
 {% block title %}GroupUserOrder{% endblock %}
 
@@ -17,12 +17,39 @@
                 <div class="box-body">
                     <div class="row">
                         <form class="cmxform" id="myForm">
-                            <div class="col-md-3 form-group">
-                                <label>关键词</label>
-                                <input type="text" name="keyword" class="form-control" value="{{ form.keyword }}"
-                                       placeholder="按 name 查询">
+                            <div class="col-md-2 form-group">
+                                <label>拼团ID</label>
+                                <input type="number" name="groupOrderId" class="form-control"
+                                       value="{{ form.groupOrderId }}"
+                                       placeholder="按 拼团ID 查询">
                             </div>
-                            <div class="col-md-3 form-group">
+                            <div class="col-md-2 form-group">
+                                <label>订单ID</label>
+                                <input type="number" name="groupUserOrderId" class="form-control"
+                                       value="{{ form.groupUserOrderId }}"
+                                       placeholder="按 订单ID 查询">
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>拼团用户ID</label>
+                                <input type="number" name="userId" class="form-control" value="{{ form.userId }}"
+                                       placeholder="按 拼团用户ID 查询">
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>产品名</label>
+                                <input type="text" name="productName" class="form-control"
+                                       value="{{ form.productName }}"
+                                       placeholder="按 产品名 查询">
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>状态</label>
+                                <select name="status" class="form-control chosen">
+                                    <option value="">全部</option>
+                                    {% for status, text in statuses %}
+                                        <option value="{{ status }}"{% if status == form.status %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
                                 <label>&nbsp;</label>
                                 <input class="form-control btn btn-primary" type="submit" value="搜索"/>
                             </div>
@@ -32,53 +59,46 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                                            <th width="10%">Total</th>
-                                                            <th width="10%">OrderRewards</th>
-                                                            <th width="10%">CarrierName</th>
-                                                            <th width="10%">TrackingNo</th>
-                                                            <th width="10%">PrePayId</th>
-                                                            <th width="10%">Id</th>
-                                                            <th width="10%">Status</th>
-                                                            <th width="10%">PaymentStatus</th>
-                                                            <th width="10%">CreatedAt</th>
-                                                            <th width="10%">UpdatedAt</th>
-                                                            <th width="10%" class="text-center hidden-xs">操作</th>
+                                <th width="10%">订单ID</th>
+                                <th width="10%">拼团ID</th>
+                                <th width="10%">用户ID</th>
+                                <th width="10%">头像</th>
+                                <th width="10%">支付金额</th>
+                                <th width="10%">支付状态</th>
+                                <th width="10%">创建时间</th>
+                                <th width="10%">更新时间</th>
+                                <th width="10%" class="text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% if pagination.getTotalItemCount %}
-                            {% for item in pagination %}
-                            <tr>
-                                                            <td>{{ item.total }}</td>
-                                                            <td>{{ item.orderRewards }}</td>
-                                                            <td>{{ item.carrierName }}</td>
-                                                            <td>{{ item.trackingNo }}</td>
-                                                            <td>{{ item.prePayId }}</td>
-                                                            <td>{{ item.id }}</td>
-                                                            <td>{{ item.status }}</td>
-                                                            <td>{{ item.paymentStatus }}</td>
-                                                            <td>{{ item.createdAt }}</td>
-                                                            <td>{{ item.updatedAt }}</td>
-                                                            <td class="text-center">
-                                    <div class="btn-group">
-                                        <a href="{{ path('group_user_order_edit', {'id': item.id}) }}" title="修改">
-                                        <span class="glyphicon glyphicon-edit"></span>
-                                        </a>&nbsp;
-                                        <a class="delete" data-toggle="modal" data-target="#modal-delete"
-                                           data-url="{{ path('group_user_order_delete', {'id': item.id}) }}"
-                                           data-item='{"name": "{{ macros.cut(item.name, 30) }}"}'
-                                           data-token="{{ csrf_token('delete' ~ item.id) }}"
-                                           title="删除">
-                                            <span class="glyphicon glyphicon-trash"></span>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
+                                {% for item in pagination %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>{{ item.groupOrder.id }}</td>
+                                        <td>{{ item.user.id }}</td>
+                                        <td>
+                                            {% if item.user.avatarUrl %}
+                                                <img src="{{ item.user.avatarUrl }}" width="40" height="40"/>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ item.total }}</td>
+                                        <td>{{ item.statusText }}</td>
+                                        <td>{{ item.createdAt }}</td>
+                                        <td>{{ item.updatedAt }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('group_user_order_info', {'id': item.id}) }}" title="查看详情">
+                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             {% else %}
-                            <tr>
-                                <td colspan="11" class="alert alert-warning">no records found</td>
-                            </tr>
+                                <tr>
+                                    <td colspan="9" class="alert alert-warning">no records found</td>
+                                </tr>
                             {% endif %}
                             </tbody>
                         </table>

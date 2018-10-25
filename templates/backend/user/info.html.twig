@@ -169,33 +169,31 @@
                                             </thead>
                                             <tbody>
                                             {% if user.shareSources.count %}
-                                                {% for item in user.shareSources %}
-                                                    {% if loop.index < 6 %}
-                                                        <tr>
-                                                            <td>{{ item.id }}</td>
-                                                            <td>
-                                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.parentUser.id}) }}" target="_blank" title="查看详情">
-                                                                    {{ item.parentUser.id }}
-                                                                </a>
-                                                            </td>
-                                                            <td>
-                                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.parentUser.id}) }}" target="_blank" title="查看详情">
-                                                                    {{ item.parentUser.nickname }}
-                                                                </a>
-                                                            </td>
-                                                            <td>{{ 'TODO: ???' }}</td>
-                                                            <td>{{ item.statusText }}</td>
-                                                            <td class="text-center">
-                                                                <div class="btn-group">
-                                                                    {#TODO: change to share_source_info?#}
-                                                                    {#<a href="{{ path('', {id: item.id}) }}"#}
-                                                                       {#title="查看详情">#}
-                                                                        {#<span class="fa fa-hand-o-right fa-2x"></span>#}
-                                                                    {#</a>#}
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    {% endif %}
+                                                {% for item in user.shareSources.slice(0, 5) %}
+                                                    <tr>
+                                                        <td>{{ item.id }}</td>
+                                                        <td>
+                                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.parentUser.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.parentUser.id }}
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.parentUser.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.parentUser.nickname }}
+                                                            </a>
+                                                        </td>
+                                                        <td>{{ 'TODO: ???' }}</td>
+                                                        <td>{{ item.statusText }}</td>
+                                                        <td class="text-center">
+                                                            <div class="btn-group">
+                                                                {#TODO: change to share_source_info?#}
+                                                                {#<a href="{{ path('', {id: item.id}) }}"#}
+                                                                   {#title="查看详情">#}
+                                                                    {#<span class="fa fa-hand-o-right fa-2x"></span>#}
+                                                                {#</a>#}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
                                                 {% endfor %}
                                             {% else %}
                                                 <tr>
@@ -250,8 +248,7 @@
                                             </thead>
                                             <tbody>
                                             {% if user.groupUserOrderRewards.count %}
-                                                {% for item in user.groupUserOrderRewards %}
-                                                    {% if loop.index < 6 %}
+                                                {% for item in user.groupUserOrderRewards.slice(0, 5) %}
                                                     <tr>
                                                         <td>{{ item.groupUserOrder.groupOrder.id }}</td>
                                                         <td>{{ item.groupUserOrder.id }}</td>
@@ -272,7 +269,6 @@
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                    {% endif %}
                                                 {% endfor %}
                                             {% else %}
                                                 <tr>

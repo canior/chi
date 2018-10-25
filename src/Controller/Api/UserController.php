@@ -12,6 +12,7 @@ use App\Repository\RegionRepository;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
 use App\Service\Wx\WxCommon;
+use App\Command\File\UploadFileCommand;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -86,19 +87,19 @@ class UserController extends BaseController
 
     /**
      * 我的拼团列表
-     * @Route("/user/groupOrders/", name="myGroupOrders", methods="GET")
+     * @Route("/user/groupOrders/", name="myGroupOrders", methods="POST")
      * @param Request $request
-     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @param GroupOrderRepository $groupOrderRepository
      * @return Response
      */
-    public function getGroupOrdersAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
+    public function getGroupOrdersAction(Request $request, GroupOrderRepository $groupOrderRepository) {
 
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $user = $this->getWxUser($thirdSession);
 
         $groupOrdersArray = [];
-        $groupOrders = $groupUserOrderRepository->findBy(['user' => $user]);
+        $groupOrders = $groupOrderRepository->findBy(['user' => $user]);
         foreach ($groupOrders as $groupOrder) {
             $groupOrdersArray[] = $groupOrder->getArray();
         }
@@ -346,5 +347,34 @@ class UserController extends BaseController
     }
 
 
+    /**
+     * 用户评价上传图片
+     *
+     * @Route("/user/file/upload", name="userFileUpload", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function uploadFileAction(Request $request): Response {
+
+        $thirdSession = $request->request->get('thirdSession');
+        $user = $this->getWxUser($thirdSession);
+
+        $files = $request->files;
+
+        $fileId = null;
+        $name = null;
+        foreach ($files as $file) {
+            try {
+                $command = new UploadFileCommand($file, $user->getId());
+                $fileId = $this->getCommandBus()->handle($command);
+                $name = $file->getClientOriginalName();
+            } catch (\Exception $e) {
+                $this->getLog()->error('upload file failed {error}', ['error' => $e->getMessage()]);
+                return $this->response503('upload file failed');
+            }
+        }
+
+        return $this->responseJson('success', 200, ['fileId' => $fileId]);
+    }
 
 }

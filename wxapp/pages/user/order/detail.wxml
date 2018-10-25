@@ -24,7 +24,7 @@
     </view>
   </view>
   <view class="row">
-    <button>商品评价</button>
+    <button bindtap="toUserComment">商品评价</button>
     <button open-type="contact">客服咨询</button>
     <button>确认收货</button>
   </view>

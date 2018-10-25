@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\GroupUserOrderLogRepository")
  */
-class GroupUserOrderLog
+class GroupUserOrderLog implements Dao
 {
     use IdTrait,
         CreatedAtTrait;

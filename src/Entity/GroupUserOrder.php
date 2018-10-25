@@ -112,7 +112,7 @@ class GroupUserOrder implements Dao
     private $productReviews;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderLog", mappedBy="groupUserOrder", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderLog", mappedBy="groupUserOrder", cascade={"persist"}, fetch="EXTRA_LAZY")
      */
     private $groupUserOrderLogs;
 

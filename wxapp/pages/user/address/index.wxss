@@ -21,11 +21,13 @@
 .line {
   display: flex;
   justify-content: flex-start;
+  align-items: center;
+  line-height: 50rpx;
 }
 .name, .phone {
   font-size: 30rpx;
 }
-.name, .default {
+.name {
   width: 138rpx;
 }
 .addr {
@@ -40,10 +42,13 @@
   width: 24rpx;
   height: 26rpx;
 }
+.default {
+  margin-left: 30rpx;
+}
 .default text {
   font-size: 24rpx;
-  color: #888;
-  border: 1px solid #888; 
+  color: #fff;
+  background-color: #d81e06;
 }
 .del {
   font-size: 24rpx;

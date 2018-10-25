@@ -39,9 +39,10 @@
                             <div class="col-md-2 form-group">
                                 <label>状态</label>
                                 <select name="status" class="form-control chosen">
-                                {% for status, text in statuses %}
-                                    <option value="{{ status }}"{% if status == form.status %} selected{% endif %}>{{ text }}</option>
-                                {% endfor %}
+                                    <option value="">全部</option>
+                                    {% for status, text in statuses %}
+                                        <option value="{{ status }}"{% if status == form.status %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="col-md-2 form-group">

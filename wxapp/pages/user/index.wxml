@@ -8,7 +8,7 @@
       <text>{{isLogin ? user.nickname : '未登录'}}</text>
     </view>
     <view class="right" wx:if="{{isLogin}}">
-      <view>￥10.00</view>
+      <view>{{user.totalRewards}}</view>
       <view class="myreward" bindtap="toUserReward">
         <image src="/images/my-reward.png"/>我的收益
       </view>

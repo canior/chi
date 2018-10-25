@@ -122,7 +122,7 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
-                        'group_order_index',
+                        'group_user_order_index',
                         'group_user_order_info',
                     ],
                     'name' => '用户订单',

@@ -61,11 +61,16 @@ class GroupUserOrderController extends BackendController
         $data = [
             'title' => 'GroupUserOrder 列表',
             'form' => [
-                'keyword' => $request->query->get('keyword', null),
+                'groupOrderId' => $request->query->getInt('groupOrderId', null),
+                'groupUserOrderId' => $request->query->getInt('groupUserOrderId', null),
+                'userId' => $request->query->getInt('userId', null),
+                'productName' => $request->query->get('productName', null),
+                'status' => $request->query->get('status', null),
                 'page' => $request->query->getInt('page', 1)
-            ]
+            ],
+            'statuses' => GroupUserOrder::$statuses
         ];
-        $data['data'] = $groupUserOrderRepository->findByKeyword($data['form']['keyword']);
+        $data['data'] = $groupUserOrderRepository->findGroupUserOrdersQueryBuilder($data['form']['groupOrderId'], $data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['productName'], $data['form']['status']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/group_user_order/index.html.twig', $data);
     }
