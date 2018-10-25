@@ -311,7 +311,8 @@ class GroupOrder implements Dao
             'statusText' => $this->getStatusText(),
             'user' => $this->getUser()->getArray(),
             'product' => $this->getProduct()->getArray(),
-            'groupUserOrders' => $groupUserOrdersArray
+            'groupUserOrders' => $groupUserOrdersArray,
+            'createdAt' => $this->getCreatedAt(true)
         ];
     }
 }

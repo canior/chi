@@ -33,9 +33,11 @@
   border-radius: 10rpx;
 }
 .rate-container image {
-    width: 24rpx;
-    height: 24rpx;
-    margin-right: 5rpx;
+    width: 59rpx;
+    height: 56rpx;
+    margin-right: 20rpx;
+}.rate-container image:last-child {
+    margin-right: 0;
 }
 .chi-arrow-right {
   position: absolute;

@@ -52,7 +52,7 @@ Page({
             region: [userAddress.region.province, userAddress.region.city, userAddress.region.county],
             regionText: userAddress.region.province+' '+userAddress.region.city+' '+userAddress.region.county,
             address: userAddress.address,
-            isDefault: userAddress.is_default
+            isDefault: userAddress.isDefault
           })
         } else {
           console.log('wx.request return error', res.statusCode);

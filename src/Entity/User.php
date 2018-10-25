@@ -502,6 +502,7 @@ class User extends BaseUser implements Dao
             'id' => $this->getId(),
             'nickname' => $this->getNickname(),
             'avatarUrl' => $this->getAvatarUrl(),
+            'totalRewards' => $this->getTotalRewards(),
         ];
     }
 

@@ -3,7 +3,7 @@
   <view class="top-container">
     <view class="top">
       <view class="title">我的收益总金额(元)</view>
-      <view class="total">￥{{total_rewards}}</view>
+      <view class="total">￥{{user.totalRewards}}</view>
       <view class="btn"><text>晒单</text></view>
       <view class="tip"/>
     </view>
@@ -16,7 +16,7 @@
   <view class="split-brand"/>
 </block>
 
-<block wx:for="1234" wx:key="index" wx:if="{{isLogin && total_rewards > 0}}">
+<block wx:for="1234" wx:key="index" wx:if="{{isLogin && user.totalRewards > 0}}">
 <view class="section">
   <view class="row">
     <view class="left">唐亚迪tandy</view>
@@ -41,7 +41,7 @@
 </block>
 
 
-<block wx:if="{{!isLogin || total_rewards == 0}}">
+<block wx:if="{{!isLogin || user.totalRewards == 0}}">
   <!--拼团玩法-->
   <view class="container">
     <view class="rule">
@@ -81,7 +81,7 @@
   <view class="split-brand"/>
 </block>
 
-<block wx:if="{{isLogin && total_rewards > 0}}">
+<block wx:if="{{isLogin && user.totalRewards > 0}}">
   <view class="bottom" bindtap="">查看好友咖位排行榜</view>
 </block>
 <block wx:if="{{!isLogin}}">
