@@ -153,7 +153,7 @@ class UserAddress implements Dao
             'address' => $this->getAddress(),
             'name' => $this->getName(),
             'phone' => $this->getPhone(),
-            'is_default' => $this->getIsDefault(),
+            'isDefault' => $this->getIsDefault(),
         ];
     }
 }

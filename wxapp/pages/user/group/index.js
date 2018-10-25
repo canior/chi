@@ -1,4 +1,5 @@
 // pages/user/group/index.js
+const app = getApp()
 Page({
 
   /**
@@ -7,7 +8,7 @@ Page({
   data: {
     menu: ['我的拼团', '等待成团', '拼团成功', '拼团失败'],
     curIndex: 0,
-    groupOrderList: [], 
+    groupOrders: [], 
 
   },
 
@@ -15,7 +16,31 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    this.getGroupOrders()
+  },
 
+  getGroupOrders: function () {
+    const that = this;
+    wx.request({
+      url: app.globalData.baseUrl + '/user/groupOrders/',
+      data: {
+        thirdSession: wx.getStorageSync('thirdSession'),
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          //console.log(res.data.data)
+          that.setData({
+            groupOrders: res.data.data.groupOrders
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
+    })
   },
 
   tapMenu: function (e) {

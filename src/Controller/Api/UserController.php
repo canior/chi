@@ -85,7 +85,7 @@ class UserController extends BaseController
 
     /**
      * 我的拼团列表
-     * @Route("/user/groupOrders/", name="myGroupOrders", methods="GET")
+     * @Route("/user/groupOrders/", name="myGroupOrders", methods="POST")
      * @param Request $request
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
