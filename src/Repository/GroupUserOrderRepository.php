@@ -19,32 +19,47 @@ class GroupUserOrderRepository extends ServiceEntityRepository
         parent::__construct($registry, GroupUserOrder::class);
     }
 
-//    /**
-//     * @return GroupUserOrder[] Returns an array of GroupUserOrder objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param null $groupOrderId
+     * @param null $groupUserOrderId
+     * @param null $userId
+     * @param null $productName
+     * @param null $status
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findGroupUserOrdersQueryBuilder($groupOrderId = null, $groupUserOrderId = null, $userId = null, $productName = null, $status = null)
     {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('g.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $query = $this->createQueryBuilder('guo');
 
-    /*
-    public function findOneBySomeField($value): ?GroupUserOrder
-    {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ($groupOrderId || $productName) {
+            $query->leftJoin('guo.groupOrder', 'go');
+            if ($groupOrderId) {
+                $query->where('go.id = :groupOrderId')
+                    ->setParameter('groupOrderId', $groupOrderId);
+            }
+
+            if ($productName) {
+                $literal = $query->expr()->literal("%$productName%");
+                $query->leftJoin('go.product', 'p')
+                    ->andWhere($query->expr()->like('p.title', $literal));
+            }
+        }
+
+        if ($groupUserOrderId) {
+            $query->andWhere('guo.id = :groupUserOrderId')
+                ->setParameter('groupUserOrderId', $groupUserOrderId);
+        }
+
+        if ($userId) {
+            $query->andWhere('guo.user = :userId')
+                ->setParameter('userId', $userId);
+        }
+
+        if ($status) {
+            $query->andWhere('guo.status = :status')
+                ->setParameter('status', $status);
+        }
+
+        return $query->orderBy('guo.id', 'DESC');
     }
-    */
 }

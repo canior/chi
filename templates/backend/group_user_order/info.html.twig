@@ -115,7 +115,7 @@
                         {{ form_end(form) }}
                     </div>
                     <div class="row">
-                        <div class="col-sm-12 col-md-12">
+                        <div class="col-sm-12 col-md-4">
                             <!-- BAR CHART -->
                             <div class="box box-warning">
                                 <div class="box-header with-border">
@@ -141,6 +141,66 @@
                             </div>
                             <!-- /.box -->
                         </div>
+                        <div class="col-sm-12 col-md-8">
+                            <!-- BAR CHART -->
+                            <div class="box box-warning">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">操作记录</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th width="10%">用户ID</th>
+                                                <th width="10%">用户名</th>
+                                                <th width="10%">状态变化</th>
+                                                <th width="10%">创建时间</th>
+                                                {#<th width="10%" class="text-center hidden-xs">操作</th>#}
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% if group_user_order.groupUserOrderLogs.count > 1 %}
+                                                {% for item in group_user_order.groupUserOrderLogs.slice(0, 5) %}
+                                                    <tr>
+                                                        <td>{{ item.user.id }}</td>
+                                                        <td>{{ item.user.nickname }}</td>
+                                                        <td>{{ item.description }}</td>
+                                                        <td>{{ item.createdAt }}</td>
+                                                        {#
+                                                        <td class="text-center">
+                                                            <div class="btn-group">
+                                                                <a href="{{ path('group_user_order_log_index', {id: item.id}) }}"
+                                                                   title="查看详情">
+                                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                        #}
+                                                    </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="5" class="alert alert-warning">no records found</td>
+                                                </tr>
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /table -->
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-sm-12 col-md-12">
                             <!-- BAR CHART -->
                             <div class="box box-warning">
@@ -158,13 +218,10 @@
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                             <tr>
-                                                <th width="5%">订单ID</th>
-                                                <th width="5%">用户ID</th>
-                                                <th width="5%">用户名</th>
+                                                <th width="10%">订单ID</th>
+                                                <th width="10%">用户ID</th>
+                                                <th width="10%">用户名</th>
                                                 <th width="10%">角色</th>
-                                                {#<th width="10%">产品ID</th>#}
-                                                {#<th width="10%">产品名</th>#}
-                                                {#<th width="10%">产品价格</th>#}
                                                 <th width="10%">订单状态</th>
                                                 <th width="10%">支付状态</th>
                                                 <th width="10%">支付金额</th>
@@ -181,9 +238,6 @@
                                                         <td>{{ item.user.id }}</td>
                                                         <td>{{ item.user.username }}</td>
                                                         <td>{{ item.role }}</td>
-                                                        {#<td>{{ item.groupOrder.product.id|default }}</td>#}
-                                                        {#<td>{{ item.groupOrder.product.title|default }}</td>#}
-                                                        {#<td>{{ item.groupOrder.product.price|number_format }}</td>#}
                                                         <td>{{ item.statusText }}</td>
                                                         <td>{{ item.paymentStatusText }}</td>
                                                         <td>{{ item.total|number_format }}</td>
@@ -201,7 +255,7 @@
                                                 {% endfor %}
                                             {% else %}
                                                 <tr>
-                                                    <td colspan="11" class="alert alert-warning">no records found</td>
+                                                    <td colspan="9" class="alert alert-warning">no records found</td>
                                                 </tr>
                                             {% endif %}
                                             </tbody>

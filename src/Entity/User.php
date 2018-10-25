@@ -130,12 +130,14 @@ class User extends BaseUser implements Dao
     private $userStatistics;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $shareSources;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ShareSourceUser", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSourceUser", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $shareSourceUsers;
 

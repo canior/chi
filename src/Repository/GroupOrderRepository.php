@@ -19,6 +19,14 @@ class GroupOrderRepository extends ServiceEntityRepository
         parent::__construct($registry, GroupOrder::class);
     }
 
+    /**
+     * @param null $id
+     * @param null $groupUserOrderId
+     * @param null $userId
+     * @param null $productName
+     * @param null $status
+     * @return \Doctrine\ORM\QueryBuilder
+     */
     public function findGroupOrdersQueryBuilder($id = null, $groupUserOrderId = null, $userId = null, $productName = null, $status = null)
     {
         $query = $this->createQueryBuilder('go');
