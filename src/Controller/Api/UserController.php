@@ -87,17 +87,17 @@ class UserController extends BaseController
      * 我的拼团列表
      * @Route("/user/groupOrders/", name="myGroupOrders", methods="POST")
      * @param Request $request
-     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @param GroupOrderRepository $groupOrderRepository
      * @return Response
      */
-    public function getGroupOrdersAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
+    public function getGroupOrdersAction(Request $request, GroupOrderRepository $groupOrderRepository) {
 
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $user = $this->getWxUser($thirdSession);
 
         $groupOrdersArray = [];
-        $groupOrders = $groupUserOrderRepository->findBy(['user' => $user]);
+        $groupOrders = $groupOrderRepository->findBy(['user' => $user]);
         foreach ($groupOrders as $groupOrder) {
             $groupOrdersArray[] = $groupOrder->getArray();
         }
