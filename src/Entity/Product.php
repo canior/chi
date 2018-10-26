@@ -108,6 +108,7 @@ class Product implements Dao
         $this->productSpecImages = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
         $this->shareSources = new ArrayCollection();
+        $this->productStatistics = new ProductStatistics();
     }
 
     public function getSku(): ?string
@@ -170,9 +171,29 @@ class Product implements Dao
         return $this;
     }
 
+    /**
+     * 此产品的总共返现金额
+     * @return float
+     */
     public function getRewards()
     {
         return $this->rewards;
+    }
+
+    /**
+     * 每张订单的返现
+     * @return float|int
+     */
+    public function getOrderRewards() {
+        return $this->rewards / 3;
+    }
+
+    /**
+     * 每个上线传销返现
+     * @return float|int
+     */
+    public function getUserRewards() {
+        return $this->rewards / 3;
     }
 
     public function setRewards($rewards): self

@@ -69,7 +69,7 @@ class GroupUserOrder implements Dao
     private $userAddress;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="groupUserOrders")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="groupUserOrders", cascade="persist")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -101,7 +101,7 @@ class GroupUserOrder implements Dao
     private $prePayId;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderRewards", mappedBy="groupUserOrder", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderRewards", mappedBy="groupUserOrder", cascade="persist", fetch="EXTRA_LAZY")
      */
     private $groupUserOrderRewards;
 
@@ -134,8 +134,7 @@ class GroupUserOrder implements Dao
         $this->setCreated();
         $this->setUnPaid();
         $this->setTotal($groupOrder->getProduct()->getPrice());
-        $this->setOrderRewards(0);
-
+        $this->setOrderRewards($groupOrder->getProduct()->getOrderRewards());
     }
 
     public function setCreated() : self {
@@ -170,6 +169,9 @@ class GroupUserOrder implements Dao
         $log->setFromStatus($oldStatus);
         $log->setToStatus($newStatus);
         $this->addGroupUserOrderLog($log);
+
+        //拼团成功后订单状态变为待发货，此时给订单返现
+        $this->getUser()->getUserStatistics()->increaseOrderRewardsTotal($this->getOrderRewards());
 
         return $this;
     }
@@ -231,6 +233,17 @@ class GroupUserOrder implements Dao
         $log->setToStatus($newStatus);
         $this->addGroupUserOrderLog($log);
 
+        //订单确认收货后，此时给上线传销返现
+        if ($this->getUser()->getParentUser() != null) {
+            $userRewards = new GroupUserOrderRewards();
+            $userRewards->setUser($this->getUser()->getParentUser());
+            $userRewards->setGroupUserOrder($this);
+            $userRewards->setUserRewards($this->getGroupOrder()->getProduct()->getUserRewards());
+            $this->addGroupUserOrderReward($userRewards);
+
+            $this->getUser()->getParentUser()->getUserStatistics()->increaseUserRewardsTotal($this->getOrderRewards());
+        }
+
         return $this;
     }
 
@@ -272,6 +285,8 @@ class GroupUserOrder implements Dao
         $log->setToStatus($newStatus);
         $this->addGroupUserOrderLog($log);
 
+        $this->getUser()->getUserStatistics()->increaseGroupUserOrderNum(-1);
+
         return $this;
     }
 
@@ -291,6 +306,9 @@ class GroupUserOrder implements Dao
         $log->setFromPaymentStatus($oldStatus);
         $log->setToPaymentStatus($newStatus);
         $this->addGroupUserOrderLog($log);
+
+        $this->getUser()->getUserStatistics()->increaseSpentTotal($this->getTotal());
+        $this->getUser()->getUserStatistics()->increaseGroupUserOrderNum(1);
 
         return $this;
     }
@@ -364,6 +382,7 @@ class GroupUserOrder implements Dao
         $log->setToPaymentStatus($newStatus);
         $this->addGroupUserOrderLog($log);
 
+        $this->getUser()->getUserStatistics()->increaseSpentTotal(-$this->getTotal());
 
         return $this;
     }

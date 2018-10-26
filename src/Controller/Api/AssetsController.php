@@ -11,7 +11,6 @@ namespace App\Controller\Api;
 
 class AssetsController extends BaseController
 {
-
     public function indexAction() {
 
     }

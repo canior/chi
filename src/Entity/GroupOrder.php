@@ -125,7 +125,6 @@ class GroupOrder implements Dao
             return $this;
 
         $groupUserOrder = new GroupUserOrder($this, $this->getUser());
-        $groupUserOrder->setOrderRewards($this->getProduct()->getRewards()/2);
         $groupUserOrder->setTotal($this->getProduct()->getPrice());
         $this->addGroupUserOrder($groupUserOrder);
 
@@ -163,6 +162,8 @@ class GroupOrder implements Dao
         $masterUserOrder = $this->getMasterGroupUserOrder();
         $masterUserOrder->setPaid();
 
+        $this->getUser()->getUserStatistics()->increaseGroupOrderNum(1);
+
         $this->setUpdatedAt();
         return $this;
     }
@@ -194,7 +195,6 @@ class GroupOrder implements Dao
         }
 
         $slaveGroupUserOrder->setPaid();
-        $slaveGroupUserOrder->setOrderRewards($this->getProduct()->getRewards()/2);
         $slaveGroupUserOrder->setPending();
 
         $masterGroupUserOrder = $this->getMasterGroupUserOrder();

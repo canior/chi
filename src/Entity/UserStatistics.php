@@ -67,6 +67,65 @@ class UserStatistics
         $this->setUserRewardsTotal(0);
     }
 
+    /**
+     * @param $num
+     * @return $this
+     */
+    public function increaseChildrenNum($num) {
+        $this->childrenNum += $num;
+        return $this;
+    }
+
+    /**
+     * @param $num
+     * @return UserStatistics
+     */
+    public function increaseShareNum($num) {
+        $this->sharedNum += $num;
+        return $this;
+    }
+
+    /**
+     * @param $num
+     * @return UserStatistics
+     */
+    public function increaseGroupOrderNum($num) {
+        $this->groupOrderNum += $num;
+        return $this;
+    }
+
+    /**
+     * @param $num
+     * @return $this
+     */
+    public function increaseGroupUserOrderNum($num) {
+        $this->groupUserOrderNum += $num;
+        return $this;
+    }
+
+    /**
+     * @param $amount
+     * @return $this
+     */
+    public function increaseOrderRewardsTotal($amount) {
+        $this->orderRewardsTotal += $amount;
+        return $this;
+    }
+
+    /**
+     * @param $amount
+     * @return $this
+     */
+    public function increaseSpentTotal($amount) {
+        $this->spentTotal += $amount;
+        return $this;
+    }
+
+    public function increaseUserRewardsTotal($amount) {
+        $this->userRewardsTotal += $amount;
+        return $this;
+    }
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -103,6 +162,10 @@ class UserStatistics
         return $this;
     }
 
+    /**
+     * 返回开团数量
+     * @return int|null
+     */
     public function getGroupOrderNum(): ?int
     {
         return $this->groupOrderNum;

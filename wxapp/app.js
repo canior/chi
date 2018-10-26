@@ -163,9 +163,9 @@ App({
   },
 
   globalData: {
-    appName: 'i吃咖',
-    baseUrl: 'https://laowantong.yunlishuju.com/wxapi',
-    imgUrlPrefix: 'https://laowantong.yunlishuju.com/image/preview',
+    appName: '食咖',
+    baseUrl: 'http://0.0.0.0:8000/wxapi',
+    imgUrlPrefix: 'http://0.0.0.0:8000/image/preview',
     isLogin: false,   //是否授权并登录
     userInfo: null,   //授权后获取的用户信息, 如昵称头像
     user: null,       //用户信息:userId,nickName,...

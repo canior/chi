@@ -15,6 +15,7 @@ use App\Command\Notification\NotifyPendingGroupOrderCommand;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
 use App\Entity\Product;
+use App\Entity\User;
 use App\Entity\UserAddress;
 use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
@@ -32,6 +33,48 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class GroupOrderController extends BaseController
 {
+    /**
+     * 测试
+     * @Route("/groupOrder/test", name="testGroupOrder", methods="POST")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function testAction(Request $request) {
+        if ($this->getEnvironment() != 'dev') exit;
+
+        $data = json_decode($request->getContent(), true);
+        $productId =  isset($data['productId']) ? $data['productId'] : null;
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+
+        $user = $this->getWxUser($thirdSession);
+        $product = $this->getEntityManager()->getRepository(Product::class)->find($productId);
+
+        //开团
+        $groupOrder = new GroupOrder($user, $product);
+        $groupOrder->setPending();
+
+        //参团
+        $joiner = $this->getEntityManager()->getRepository(User::class)->find(2);
+        $joinerGroupUserOrder = new GroupUserOrder($groupOrder, $joiner);
+        $groupOrder->addGroupUserOrder($joinerGroupUserOrder);
+
+        //完成拼团
+        $groupOrder->setCompleted($joiner);
+
+        //团长确认收货
+        $groupOrder->getMasterGroupUserOrder()->setDelivered();
+
+
+        $this->getEntityManager()->persist($groupOrder);
+        $this->getEntityManager()->flush();
+
+        $data = [
+            'groupOrder' => $groupOrder->getArray()
+        ];
+
+        return $this->responseJson('success', 200, $data);
+    }
+
     /**
      * 创建开团订单
      *
@@ -53,13 +96,9 @@ class GroupOrderController extends BaseController
          */
         $product = $this->getEntityManager()->getRepository(Product::class)->find($productId);
 
-        //判断是否这个用户有一张正在进行中的拼团订单，如果有则返回
-
-
         $groupOrder = new GroupOrder($user, $product);
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
-
 
         //向微信提交支付信息
         $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
@@ -113,7 +152,7 @@ class GroupOrderController extends BaseController
         $this->getEntityManager()->flush();
 
         //微信提交支付
-        $body = "create order"; //TODO 开团信息要怎么写
+        $body = "create order"; //TODO 参团信息要怎么写
         $wxPaymentApi = new WxPayment($this->getLog());
         $this->getLog()->info("join group user order: id=" . $groupUserOrder->getId() .  ' total=' . $groupUserOrder->getTotal());
         $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);

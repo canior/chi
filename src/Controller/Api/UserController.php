@@ -9,6 +9,7 @@ use App\Entity\ShareSource;
 use App\Entity\ShareSourceUser;
 use App\Entity\User;
 use App\Entity\UserAddress;
+use App\Entity\UserStatistics;
 use App\Repository\FileRepository;
 use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
@@ -84,9 +85,13 @@ class UserController extends BaseController
                     $user->setEmailCanonical($openId . '@qq.com');
                     $user->setPassword("IamCustomer");
                     $user->setWxOpenId($openId);
+
+                    $userStatistics = new UserStatistics();
+                    $user->setUserStatistics($userStatistics);
                 }
                 $user->setNickname($nickName);
                 $user->setAvatarUrl($avatarUrl);
+
                 $this->getEntityManager()->persist($user);
                 $this->getEntityManager()->flush();
 
@@ -497,7 +502,10 @@ class UserController extends BaseController
         $shareSource->setBannerFile($bannerFile);
         $shareSource->setType($shareSourceType);
 
-        $this->getEntityManager()->persist($shareSource);
+        $user->getUserStatistics()->increaseShareNum(1);
+        $user->addShareSource($shareSource);
+
+        $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
@@ -512,9 +520,10 @@ class UserController extends BaseController
      * @Route("/user/shareSource/addUser", name="addShareSource", methods="POST")
      * @param Request $request
      * @param ShareSourceRepository $shareSourceRepository
+     * @param ShareSourceUserRepository $shareSourceUserRepository
      * @return Response
      */
-    public function addShareSourceUserAction(Request $request, ShareSourceRepository $shareSourceRepository) : Response {
+    public function addShareSourceUserAction(Request $request, ShareSourceRepository $shareSourceRepository, ShareSourceUserRepository $shareSourceUserRepository) : Response {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $shareSourceId = isset($data['shareSourceId']) ? $data['shareSourceId'] : null;
@@ -522,12 +531,20 @@ class UserController extends BaseController
         $user = $this->getWxUser($thirdSession);
         $shareSource = $shareSourceRepository->find($shareSourceId);
 
+        $sharedUser = $shareSourceUserRepository->findOneBy(['user' => $user, 'shareSource' => $shareSource]);
+        if ($sharedUser == null) {
+            $user->getUserStatistics()->increaseChildrenNum(1);
+            $this->getEntityManager()->persist($user);
+        }
+
         $shareSourceUser = new ShareSourceUser();
         $shareSourceUser->setUser($user);
         $shareSourceUser->setShareSource($shareSource);
-
         $shareSource->addShareSourceUser($shareSourceUser);
         $this->getEntityManager()->persist($shareSource);
+
+
+
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
