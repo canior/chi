@@ -57,4 +57,15 @@ class ShareSourceUser implements Dao
 
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function getArray() : array {
+        return [
+            'id' => $this->getId(),
+            'user' => $this->getUser()->getArray(),
+            'shareSource' => $this->getShareSource()->getArray()
+        ];
+    }
 }

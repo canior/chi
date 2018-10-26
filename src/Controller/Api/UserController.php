@@ -6,6 +6,7 @@ use App\Entity\ProductReview;
 use App\Entity\ProductReviewImage;
 use App\Entity\Region;
 use App\Entity\ShareSource;
+use App\Entity\ShareSourceUser;
 use App\Entity\User;
 use App\Entity\UserAddress;
 use App\Repository\FileRepository;
@@ -13,6 +14,8 @@ use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\RegionRepository;
+use App\Repository\ShareSourceRepository;
+use App\Repository\ShareSourceUserRepository;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
 use App\Service\Wx\WxCommon;
@@ -36,11 +39,15 @@ class UserController extends BaseController
      * @return Response
      */
     public function loginAction(Request $request, UserRepository $userRepository) : Response {
+
+        $defaultNickname = '未知用户';
+        $defaultAvatarUrl = null;
+
         $data = json_decode($request->getContent(), true);
         $code = isset($data['code']) ? $data['code'] : null;
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
-        $nickName = isset($data['nickName']) ? $data['nickName'] : null;
-        $avatarUrl = isset($data['avatarUrl']) ? $data['avatarUrl'] : null;
+        $nickName = isset($data['nickName']) ? $data['nickName'] : $defaultNickname; //TODO 这里要添加文案
+        $avatarUrl = isset($data['avatarUrl']) ? $data['avatarUrl'] : null; //需要一张默认的用户头像
         //$userInfo = isset($data['userInfo']) ? json_decode($data['userInfo'], true) : null;
 
         $user = null;
@@ -51,26 +58,38 @@ class UserController extends BaseController
 
         if ($user != null) {
             $msg = 'login_success';
+            $this->getLog()->info("input nickName=" . $nickName . ' and avatarUrl =' . $avatarUrl);
+            if ($defaultNickname == $user->getNickname() and $defaultAvatarUrl == $user->getAvatarUrl()) {
+                $this->getLog()->info("update user nickname and avatar url");
+                $user->setNickname($nickName);
+                $user->setAvatarUrl($avatarUrl);
+                $this->getEntityManager()->persist($user);
+                $this->getEntityManager()->flush();
+            }
         } else {
             $wxApi = new WxCommon($this->getLog());
             $result = $wxApi->getSessionByCode($code);
 
+            $this->getLog()->info ("get wx user response for code [" . $code . "]: ", $result);
             if ($result['status']) {
                 $openId = $result['data']['openid'];
                 $user = $userRepository->findOneBy(['wxOpenId' => $openId]);
+                $this->getLog()->info("found user " . $user == null ? 'true' : 'false');
                 if ($user == null) {
+                    $this->getLog()->info("creating user for openId" . $openId);
                     $user = new User();
-                    $user->setUsername($nickName);
-                    $user->setUsernameCanonical($nickName);
+                    $user->setUsername($openId);
+                    $user->setUsernameCanonical($openId);
                     $user->setEmail($openId . '@qq.com');
                     $user->setEmailCanonical($openId . '@qq.com');
                     $user->setPassword("IamCustomer");
-                    $user->setNickname($nickName);
-                    $user->setAvatarUrl($avatarUrl);
                     $user->setWxOpenId($openId);
-                    $this->getEntityManager()->persist($user);
-                    $this->getEntityManager()->flush();
                 }
+                $user->setNickname($nickName);
+                $user->setAvatarUrl($avatarUrl);
+                $this->getEntityManager()->persist($user);
+                $this->getEntityManager()->flush();
+
                 $userId = $user->getId();
                 $thirdSession = $userId;//生成我们自己的第三方session
 
@@ -421,6 +440,7 @@ class UserController extends BaseController
     }
 
     /**
+     * @Route("/user/shareSource/create", name="createShareSource", methods="POST")
      * @param Request $request
      * @param ProductRepository $productRepository
      * @return Response
@@ -428,52 +448,91 @@ class UserController extends BaseController
     public function createShareSource(Request $request, ProductRepository $productRepository) : Response {
 
         $data = json_decode($request->getContent(), true);
+
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $productId = isset($data['productId']) ? $data['productId'] : null;
         $shareSourceType = isset($data['shareSourceType']) ? $data['shareSourceType'] : null;
+        $page = isset($data['page']) ? $data['page'] : null;
 
         $user = $this->getWxUser($thirdSession);
         $product = null;
-        $redirect = null;
         $bannerFile = null;
+        $title = "";
 
         if ($productId == null) { //分享用户相关
-            if ($shareSourceType == 'refer') {
+            if ($shareSourceType == 'refer') { //转发用户相关小程序
+                //TODO
                 $title = "";
-                $page = "";
-
-            } else if ($shareSourceType == 'quan') {
-
+                $bannerFile = "";
+            } else if ($shareSourceType == 'quan') { //用户相关朋友圈
+                //TODO
+                $title = "";
+                $bannerFile = "";
             }
         } else { //分享产品相关
             $product = $productRepository->find($productId);
-            if ($shareSourceType == 'refer') {
+            $title = $product->getTitle();
 
-            } else if ($shareSourceType == 'quan') {
-
+            if ($shareSourceType == 'refer') { //转发产品相关小程序
+                    $bannerFile = $product->getMainProductImage() == null ? null : $product->getMainProductImage()->getFile();
+            } else if ($shareSourceType == 'quan') { //转发产品相关朋友圈
+                $bannerFile = $product->getMainProductImage() == null ? null : $product->getMainProductImage()->getFile();
             }
         }
 
 
         $shareSource = new ShareSource();
 
-//        $shareSource->setUser($user);
-//        $shareSource->setProduct($product);
-//
-//        $shareSourceId = $shareSource->getId();
-//        $page = $redirect . "?shareSourceId=" . $shareSourceId;
-//        $shareSource->setPage($page);
-//
-//        $shareSource->setTitle($title);
-//        $shareSource->setBannerFile($bannerFile);
-//
-//        $user->addShareSource($shareSource);
-//        $this->getEntityManager()->persist($user);
+        $shareSource->setUser($user);
+        $shareSource->setProduct($product);
+
+        $shareSourceId = $shareSource->getId();
+        if (strpos($page, '?') !== false) {
+            $page .= "&shareSourceId=" . $shareSourceId;
+        } else {
+            $page .= "?shareSourceId=" . $shareSourceId;
+        }
+        $shareSource->setPage($page);
+        $shareSource->setTitle($title);
+        $shareSource->setBannerFile($bannerFile);
+        $shareSource->setType($shareSourceType);
+
+        $this->getEntityManager()->persist($shareSource);
+        $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
             'shareSource' => $shareSource->getArray()
         ]);
 
+    }
+
+    /**
+     * 记录用户来源
+     *
+     * @Route("/user/shareSource/addUser", name="addShareSource", methods="POST")
+     * @param Request $request
+     * @param ShareSourceRepository $shareSourceRepository
+     * @return Response
+     */
+    public function addShareSourceUserAction(Request $request, ShareSourceRepository $shareSourceRepository) : Response {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $shareSourceId = isset($data['shareSourceId']) ? $data['shareSourceId'] : null;
+
+        $user = $this->getWxUser($thirdSession);
+        $shareSource = $shareSourceRepository->find($shareSourceId);
+
+        $shareSourceUser = new ShareSourceUser();
+        $shareSourceUser->setUser($user);
+        $shareSourceUser->setShareSource($shareSource);
+
+        $shareSource->addShareSourceUser($shareSourceUser);
+        $this->getEntityManager()->persist($shareSource);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, [
+            'shareSourceUser' => $shareSourceUser->getArray()
+        ]);
     }
 
 

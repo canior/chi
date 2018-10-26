@@ -234,6 +234,17 @@ class Product implements Dao
         return $this->productImages;
     }
 
+    /**
+     * 返回产品主图
+     * @return ProductImage|null
+     */
+    public function getMainProductImage() {
+        foreach($this->productImages as $productImage) {
+            return $productImage;
+        }
+        return null;
+    }
+
     public function addProductImage(ProductImage $productImage): self
     {
         if (!$this->productImages->contains($productImage)) {

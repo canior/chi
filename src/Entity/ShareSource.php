@@ -53,7 +53,7 @@ class ShareSource implements Dao
     private $bannerFile;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ShareSourceUser", mappedBy="shareSource")
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSourceUser", mappedBy="shareSource", cascade="persist")
      */
     private $shareSourceUsers;
 
@@ -184,8 +184,8 @@ class ShareSource implements Dao
 
     public function getArray() : array {
         return [
-            'id' => $this->getId(),
-            'title' => $this->getTitle(),
+            'id' => $this->id,
+            'title' => $this->title,
             'bannerFileId' => $this->getBannerFile()->getId(),
             'page' => $this->getPage(),
         ];
