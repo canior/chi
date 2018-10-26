@@ -1,0 +1,190 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}User Share Source Info{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <!-- BAR CHART -->
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">产品详情</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="chart" style="height: 200px;">
+                                        <div class="box box-solid">
+                                            <div class="box-body">
+                                                <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
+                                                    {{ productStatistics.product.title }}
+                                                </h4>
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        {% if productStatistics.product.productImages.count %}
+                                                            <a href="{{ path('product_edit', {id: productStatistics.product.id}) }}"
+                                                               class="ad-click-event">
+                                                                <img src="{{ path('imagePreview', {fileId: productStatistics.product.productImages.first.file.id}) }}"
+                                                                     alt="MaterialPro" class="media-object"
+                                                                     style="width: 150px;height: auto;border-radius: 4px;box-shadow: 0 1px 3px rgba(0,0,0,.15);">
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <div class="clearfix">
+                                                            <p class="pull-right">
+                                                                <a href="{{ path('product_edit', {id: productStatistics.product.id}) }}"
+                                                                   class="btn btn-info btn-sm ad-click-event">查看详情</a>
+                                                            </p>
+
+                                                            <h4 style="margin-top: 0">产品ID ─ {{ productStatistics.product.id }}</h4>
+
+                                                            <p>{{ macros.cut(productStatistics.product.shortDescription, 50) }}</p>
+                                                            <p style="margin-bottom: 0">
+                                                                <i class="fa fa-spinner margin-r5"></i> {{ productStatistics.product.statusText }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <!-- BAR CHART -->
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">统计信息</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="chart" style="height: 200px;">
+                                        <div class="box box-solid">
+                                            <div class="box-body">
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <div class="clearfix">
+                                                            <h4 style="margin-top: 0">销售总额 ─ {{ productStatistics.orderAmountTotal|default(0)|number_format }}</h4>
+                                                            <h4 style="margin-top: 0">订单数量 ─ {{ productStatistics.orderNum|default(0) }}</h4>
+                                                            <h4 style="margin-top: 0">用户数量 ─ {{ productStatistics.buyersNum|default(0) }}</h4>
+                                                            <h4 style="margin-top: 0">复购用户数量 ─ {{ productStatistics.returnUsersNum|default(0) }}</h4>
+                                                            <h4 style="margin-top: 0">复购率 ─ {{ productStatistics.returnUsersRate|default(0)|number_format }}</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <!-- BAR CHART -->
+                            <div class="box box-warning">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">拼团列表</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th width="10%">用户ID</th>
+                                                <th width="10%">用户名</th>
+                                                <th width="10%">拼团订单ID</th>
+                                                <th width="10%">产品单价</th>
+                                                <th width="10%">订单金额</th>
+                                                <th width="10%">拼团金额</th>
+                                                <th width="10%">拼团完成时间</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% if pagination.getTotalItemCount %}
+                                                {% for item in pagination %}
+                                                    <tr>
+                                                        <td>
+                                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.user.id }}
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.user.nickname }}
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {'id': item.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.id }}
+                                                            </a>
+                                                        </td>
+                                                        <td>{{ item.groupOrder.product.price|default(0)|number_format }}</td>
+                                                        <td>{{ item.total|default(0)|number_format }}</td>
+                                                        <td>{{ 'TODO: 拼团金额是什么???' }}</td>
+                                                        <td>{{ item.groupOrder.completedAt }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="8" class="alert alert-warning">no records found</td>
+                                                </tr>
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /table -->
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                    </div>
+                    <!-- /row -->
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
