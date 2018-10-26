@@ -598,6 +598,7 @@ class GroupUserOrder implements Dao
             'isMasterOrder'=> $this->isMasterOrder(),
             'wxPrePayId' => $this->getPrePayId(),
             'user' => $this->getUser()->getArray(),
+            'hasReview' => $this->getProductReviews()->isEmpty() ? '0' : 1,
             'createdAt' => $this->getCreatedAt(true)
         ];
     }
