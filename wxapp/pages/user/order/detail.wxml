@@ -24,9 +24,9 @@
     </view>
   </view>
   <view class="row">
-    <button bindtap="toUserComment">商品评价</button>
+    <button bindtap="toUserComment" wx:if="{{groupUserOrder.status == 'delivered'}}">商品评价</button>
     <button open-type="contact">客服咨询</button>
-    <button bindtap="deliver" wx:if="{{groupUserOrder.status != 'delivered'}}">确认收货</button>
+    <button bindtap="deliver" wx:if="{{groupUserOrder.status == 'shipping'}}">确认收货</button>
   </view>
 </view>
 <view class="split-brand"/>

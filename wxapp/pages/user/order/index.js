@@ -22,8 +22,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const status = options.status ? options.status : null
-    this.getGroupUserOrders(status)
+    this.setData({
+        curStatus: options.status ? options.status : null
+    })
   },
 
   getGroupUserOrders: function (status) {
@@ -75,7 +76,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.getGroupUserOrders(this.data.curStatus)
   },
 
   /**

@@ -49,40 +49,50 @@ Page({
   // 确认收货
   deliver: function (e) {
     const that = this;
-    wx.request({
-      url: app.globalData.baseUrl + '/user/groupUserOrder/post',
-      data: {
-        thirdSession: wx.getStorageSync('thirdSession'),
-        groupUserOrderId: this.data.groupUserOrder.id
-      },
-      method: 'POST',
-      success: (res) => {
-        if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
-          that.setData({
-            groupUserOrder: res.data.data.groupUserOrder,
+    wx.showModal({
+      title: '提示',
+      content: '您是否确认已收货',
+      confirmText: '是',
+      cancelText: '否',
+      success: function (res) {
+        if (res.confirm) {
+          wx.request({
+            url: app.globalData.baseUrl + '/user/groupUserOrder/post',
+            data: {
+              thirdSession: wx.getStorageSync('thirdSession'),
+              groupUserOrderId: that.data.groupUserOrder.id
+            },
+            method: 'POST',
+            success: (res) => {
+              if (res.statusCode == 200 && res.data.code == 200) {
+                console.log(res.data.data)
+                that.setData({
+                  groupUserOrder: res.data.data.groupUserOrder,
+                })
+              } else {
+                console.log('wx.request return error', res.statusCode);
+              }
+            },
+            fail(e) {
+            },
+            complete(e) { }
           })
-        } else {
-          console.log('wx.request return error', res.statusCode);
         }
-      },
-      fail(e) {
-      },
-      complete(e) { }
+      }
     })
   },
 
   // 商品评价
   toUserComment: function (e) {
     wx.navigateTo({
-      url: '/pages/user/order/review',
+      url: '/pages/user/order/review?id=' + this.data.groupUserOrder.id,
     })
   },
 
   // 继续拼团
   toProductDetail: function (e) {
-    wx.redirectTo({
-      url: '/pages/product/detail?id=' + '1',
+    wx.reLaunch({
+      url: '/pages/product/detail?id=' + this.data.groupUserOrder.product.id,
     })
   },
 

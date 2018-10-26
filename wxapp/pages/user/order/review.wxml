@@ -1,14 +1,16 @@
 <!--pages/user/order/review.wxml-->
 <view class="container">
   <view class="row">
-    <image src="/images/demo/product-thumb.png"/>
-    <view>
-      <view class="name">【麦摄氏度】5瓶装 代餐 330毫升</view>
-      <view class="desc">1瓶饮料取代“早餐+咖啡”</view>
+    <view class="left">
+      <image src="{{imgUrlPrefix + '/' + groupUserOrder.product.productImages[0].fileId}}"/>
+    </view>
+    <view class="right">
+      <view class="name">{{groupUserOrder.product.title}}</view>
+      <view class="desc">{{groupUserOrder.product.shortDescription}}</view>
       <view class="chi-price-container">
-        <view class="price">拼团价￥<text>{{'100.00'}}</text></view>
+        <view class="price">拼团价￥<text>{{groupUserOrder.product.price}}</text></view>
         <view class="freight">包邮</view>
-        <view class="ori-price">￥{{'200.00'}}</view>
+        <view class="ori-price">￥{{groupUserOrder.product.originalPrice}}</view>
       </view>
     </view>
   </view>

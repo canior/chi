@@ -233,16 +233,16 @@ class UserController extends BaseController
 
     /**
      * 添加或修改评论
-     * @Route("/user/groupUserOrders/{groupUserOrderId}/review", name="updateProductReview", methods="POST")
+     * @Route("/user/groupUserOrder/review", name="updateProductReview", methods="POST")
      * @param Request $request
-     * @param $groupUserOrderId
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @param FileRepository $fileRepository
      * @return Response
      */
-    public function updateProductReviewAction(Request $request, $groupUserOrderId, GroupUserOrderRepository $groupUserOrderRepository, FileRepository $fileRepository) : Response {
+    public function updateProductReviewAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository, FileRepository $fileRepository) : Response {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
         $rate = isset($data['rate']) ? $data['rate'] : null;
         $review = isset($data['review']) ? $data['review'] : null;
         $reviewImageFileIds = isset($data['imageIds']) ? $data['imageIds'] : [];
