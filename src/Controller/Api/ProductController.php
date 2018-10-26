@@ -76,8 +76,8 @@ class ProductController extends BaseController
      * @return Response
      */
     public function productReviewIndexAction(Request $request, int $productId, ProductReviewRepository $productReviewRepository): Response {
-        $limit = $request->query->getInt('page', 1);
-        $productReviews = $productReviewRepository->findActiveProductReviews($productId, 1, 5);
+        $page = $request->query->getInt('page', 1);
+        $productReviews = $productReviewRepository->findActiveProductReviews($productId, $page, 5);
         $data = [];
         foreach($productReviews as $productReview) {
             $data[] = $productReview->getArray();
