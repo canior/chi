@@ -35,16 +35,26 @@
   color: #353535;
   padding: 30rpx;
 }
+.comment .upload-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 30rpx;
+}
 .comment .upload-box {
   width: 172rpx;
   height: 172rpx;
-  margin: 40rpx auto;
+  margin: 40rpx 20rpx 40rpx 0rpx;
   border: 1px dashed #aeaeae;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.comment icon {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
 }
 .comment .upload-box .tl {
   position: absolute;

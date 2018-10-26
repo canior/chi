@@ -10,8 +10,12 @@ Page({
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
     rate: 3,
     review: '',
-    tmpImageFilePaths: [],
-    fileId: null,
+    uploadStack: [
+      { tmpImageFilePath: '', fileId: null },
+      { tmpImageFilePath: '', fileId: null },
+      { tmpImageFilePath: '', fileId: null },
+    ],
+    stackIndex: 0,
     productReview: null,
   },
 
@@ -50,7 +54,11 @@ Page({
   // 提交
   submit: function () {
     const that = this;
-    if (!that.validation()) return;    
+    if (!that.validation()) return;
+    var imageIds = [];
+    that.data.uploadStack.forEach((item) => {
+      if (item.fileId > 0) imageIds.push(item.fileId)
+    })
     wx.request({
       url: app.globalData.baseUrl + '/user/groupUserOrder/review',
       data: {
@@ -58,7 +66,7 @@ Page({
         groupUserOrderId: that.data.groupUserOrder.id,
         rate: that.data.rate,
         review: that.data.review,
-        imageIds: [that.data.fileId]
+        imageIds: imageIds
       },
       method: 'POST',
       success: (res) => {
@@ -114,17 +122,15 @@ Page({
   },
 
   // 上传图片
-  upload: function () {
+  upload: function (e) {
     const that = this;
+    const index = e.currentTarget.dataset.index;
     wx.chooseImage({
       count: 1,
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success: function (res) {
         var tempFilePaths = res.tempFilePaths;
-        that.setData({
-          tmpImageFilePaths: tempFilePaths
-        })
         //启动上传等待中...  
         wx.showLoading({
           title: '正在上传...',
@@ -142,7 +148,8 @@ Page({
               var data = JSON.parse(res.data);
               if (data.code == 200) {
                 that.setData({
-                  fileId: data.data.fileId
+                  ['uploadStack['+index+']']: { tmpImageFilePath: tempFilePaths[0], fileId: data.data.fileId },
+                  stackIndex: index + 1
                 })
               } else {// 上传失败
                 console.log('wx.uploadFile return error', res);
@@ -165,6 +172,21 @@ Page({
         })
       }
     })
+  },
+
+  // 删除上传
+  remove: function (e) {
+    const index = e.currentTarget.dataset.index;
+    var stack = this.data.uploadStack;
+    for (let i = index+1; i < stack.length; i++) {
+      stack[i-1] = stack[i];
+    }
+    stack[stack.length - 1] = { tmpImageFilePath: '', fileId: null };
+    this.setData({
+      uploadStack: stack,
+      stackIndex: this.data.stackIndex - 1
+    })
+    console.log(stack, this.data)
   },
 
   /**

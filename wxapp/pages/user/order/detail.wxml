@@ -41,11 +41,11 @@
 
 <view class="payment">
   <view>支付方式：<text>微信</text></view>
-  <view>商品合计：<text>￥100.00</text></view>
-  <view>物流运费：<text>￥0.00</text></view>
-  <view>拼团返现：<text class="highlight">￥5.00</text></view>
+  <view>商品合计：<text>￥{{groupUserOrder.product.price}}</text></view>
+  <view>物流运费：<text>￥{{groupUserOrder.product.freight}}</text></view>
+  <view>实际付费：<text class="highlight">￥{{groupUserOrder.product.price}}</text></view>
   <view class="split-line"/>
-  <view>实际付费：<text class="highlight">￥95.00</text></view>
+  <view>拼团返现：<text class="highlight">￥{{groupUserOrder.rewards}}</text></view>
 </view>
 
 <view class="bottom" bindtap="toProductDetail">继续拼团</view>
