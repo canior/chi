@@ -72,6 +72,11 @@ class User extends BaseUser implements Dao
     private $location;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\UserStatistics", mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $userStatistics;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Region", cascade={"persist", "remove"})
      */
     private $region;
@@ -123,11 +128,6 @@ class User extends BaseUser implements Dao
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $groupUserOrderRewards;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\UserStatistics", mappedBy="user", cascade={"persist", "remove"})
-     */
-    private $userStatistics;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")

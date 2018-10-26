@@ -9,13 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ShareSourceUserRepository")
  */
-class ShareSourceUser
+class ShareSourceUser implements Dao
 {
     use IdTrait,
         CreatedAtTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="shareSourceUsers")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
