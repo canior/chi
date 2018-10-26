@@ -6,25 +6,88 @@ Page({
    * 页面的初始数据
    */
   data: {
+    groupUserOrder: null,
+    imgUrlPrefix: app.globalData.imgUrlPrefix,    
     rate: 3,
     review: '',
     tmpImageFilePaths: [],
     fileId: null,
+    productReview: null,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    this.getGroupUserOrder(100124)//options.id)    
   },
+
+  getGroupUserOrder: function (id) {
+    const that = this;
+    wx.request({
+      url: app.globalData.baseUrl + '/user/groupUserOrder',
+      data: {
+        thirdSession: wx.getStorageSync('thirdSession'),
+        groupUserOrderId: id
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          that.setData({
+            groupUserOrder: res.data.data.groupUserOrder,
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
+    })
+  },  
 
   // 提交
   submit: function () {
-
-    wx.navigateBack({
+    const that = this;
+    if (!that.validation()) return;    
+    wx.request({
+      url: app.globalData.baseUrl + '/user/groupUserOrder/review',
+      data: {
+        thirdSession: wx.getStorageSync('thirdSession'),
+        groupUserOrderId: that.data.groupUserOrder.id,
+        rate: that.data.rate,
+        review: that.data.review,
+        imageIds: [that.data.fileId]
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          that.setData({
+            productReview: res.data.data.productReview,
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
     })
   },
+
+  // 检查输入是否完整
+  validation: function () {
+    if (!this.data.rate) {
+      wx.showModal({
+        content: '请给评分',
+        showCancel: false,
+      });
+      return false;
+    }
+    return true;
+  }, 
 
   // 评分
   rate: function (e) {

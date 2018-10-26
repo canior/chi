@@ -190,13 +190,12 @@ class UserController extends BaseController
 
     /**
      * 我的订单详情
-     * @Route("/user/groupUserOrders/{groupUserOrderId}", name="myGroupUserOrder", methods="GET")
+     * @Route("/user/groupUserOrder", name="myGroupUserOrder", methods="POST")
      * @param Request $request
-     * @param $groupUserOrderId
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
      */
-    public function getGroupUserOrderAction(Request $request, $groupUserOrderId, GroupUserOrderRepository $groupUserOrderRepository) : Response {
+    public function getGroupUserOrderAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) : Response {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
@@ -212,13 +211,12 @@ class UserController extends BaseController
 
     /**
      * 确认收货
-     * @Route("/user/groupUserOrders/{groupUserOrderId}", name="updateMyGroupUserOrder", methods="POST")
+     * @Route("/user/groupUserOrder/post", name="updateMyGroupUserOrder", methods="POST")
      * @param Request $request
-     * @param $groupUserOrderId
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
      */
-    public function updateGroupUserOrderAction(Request $request, $groupUserOrderId, GroupUserOrderRepository $groupUserOrderRepository) : Response {
+    public function updateGroupUserOrderAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) : Response {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
@@ -235,16 +233,16 @@ class UserController extends BaseController
 
     /**
      * 添加或修改评论
-     * @Route("/user/groupUserOrders/{groupUserOrderId}/review", name="updateProductReview", methods="POST")
+     * @Route("/user/groupUserOrder/review", name="updateProductReview", methods="POST")
      * @param Request $request
-     * @param $groupUserOrderId
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @param FileRepository $fileRepository
      * @return Response
      */
-    public function updateProductReviewAction(Request $request, $groupUserOrderId, GroupUserOrderRepository $groupUserOrderRepository, FileRepository $fileRepository) : Response {
+    public function updateProductReviewAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository, FileRepository $fileRepository) : Response {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
         $rate = isset($data['rate']) ? $data['rate'] : null;
         $review = isset($data['review']) ? $data['review'] : null;
         $reviewImageFileIds = isset($data['imageIds']) ? $data['imageIds'] : [];
@@ -253,7 +251,7 @@ class UserController extends BaseController
 
         $productReview = null;
         $productReviews = $groupUserOrder->getProductReviews();
-        if (empty($productReviews)) {
+        if ($productReviews->isEmpty()) {
             $productReview = new ProductReview();
         } else {
             $productReview = $productReviews[0];
@@ -339,7 +337,7 @@ class UserController extends BaseController
      * @param RegionRepository $regionRepository
      * @return Response
      */
-    public function addUserAddressAction(Request $request, UserAddressRepository $userAddressRepository, RegionRepository $regionRepository): Response {
+    public function updateUserAddressAction(Request $request, UserAddressRepository $userAddressRepository, RegionRepository $regionRepository): Response {
 
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
@@ -404,7 +402,7 @@ class UserController extends BaseController
      * @param UserAddressRepository $userAddressRepository
      * @return Response
      */
-    public function updateUserAddressAction(Request $request, UserAddressRepository $userAddressRepository): Response {
+    public function deleteUserAddressAction(Request $request, UserAddressRepository $userAddressRepository): Response {
 
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;

@@ -4,6 +4,10 @@
   align-items: center;
   padding: 20rpx 0;
 }
+.row .left {
+  width: 161rpx;
+  margin-right: 20rpx;
+}
 .row image {
   width: 161rpx;
   height: 161rpx;
@@ -17,6 +21,7 @@
 .row .desc {
   font-size: 24rpx;
   color: #b2b2b2;
+  line-height: 30rpx;
 }
 .row .chi-price-container {
   display: flex;

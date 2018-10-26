@@ -1,32 +1,32 @@
 <!--pages/user/order/detail.wxml-->
 <view class="top">
-  <view>下单时间：2018-08-24 11:20:30</view>
-  <view>订单编号：123456789</view>
+  <view>下单时间：{{groupUserOrder.createdAt}}</view>
+  <view>订单编号：{{groupUserOrder.id}}</view>
 </view>
 <view class="split-brand"/>
 
 <view class="section">
   <view class="row">
-    <view class="left">订单编号：88665522</view>
-    <view class="right pending">待发货</view>
+    <view class="left">订单编号：{{groupUserOrder.id}}</view>
+    <view class="right pending">{{groupUserOrder.statusText}}</view>
   </view>
   <view class="row">
     <view class="left">
-      <image src="/images/demo/product-thumb.png"/>
+      <image src="{{imgUrlPrefix + '/' + groupUserOrder.product.productImages[0].fileId}}"/>
       <view>
-        <view class="line name">【麦摄氏度】5瓶装 代餐 330毫升</view>
+        <view class="line name">{{groupUserOrder.product.title}}</view>
         <view class="line chi-price-container">
-          <view class="price">拼团价￥<text>{{'100.00'}}</text></view>
+          <view class="price">拼团价￥<text>{{groupUserOrder.product.price}}</text></view>
           <view class="freight">包邮</view>
-          <view class="ori-price">￥{{'200.00'}}</view>
+          <view class="ori-price">￥{{groupUserOrder.product.originalPrice}}</view>
         </view>
       </view>
     </view>
   </view>
   <view class="row">
-    <button bindtap="toUserComment">商品评价</button>
+    <button bindtap="toUserComment" wx:if="{{groupUserOrder.status == 'delivered'}}">商品评价</button>
     <button open-type="contact">客服咨询</button>
-    <button>确认收货</button>
+    <button bindtap="deliver" wx:if="{{groupUserOrder.status == 'shipping'}}">确认收货</button>
   </view>
 </view>
 <view class="split-brand"/>
