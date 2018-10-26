@@ -590,13 +590,15 @@ class GroupUserOrder implements Dao
     public function getArray() : array {
         return [
             'id' => $this->getId(),
-            'status' => $this->getStatusText(),
+            'status' => $this->getStatus(),
+            'statusText' => $this->getStatusText(),
             'paymentStatus' => $this->getPaymentStatusText(),
             'product' => $this->getGroupOrder()->getProduct()->getArray(),
             'rewards' => $this->getOrderRewards(),
             'isMasterOrder'=> $this->isMasterOrder(),
             'wxPrePayId' => $this->getPrePayId(),
-            'user' => $this->getUser()->getArray()
+            'user' => $this->getUser()->getArray(),
+            'createdAt' => $this->getCreatedAt(true)
         ];
     }
 }
