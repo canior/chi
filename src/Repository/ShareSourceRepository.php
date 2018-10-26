@@ -19,4 +19,27 @@ class ShareSourceRepository extends ServiceEntityRepository
         parent::__construct($registry, ShareSource::class);
     }
 
+    /**
+     * @param $userId
+     * @return
+     *   [
+     *      [
+     *          'shareSource' => ShareSource Object
+     *          'totalUsers' => int
+     *      ],
+     *      ...
+     *   ]
+     */
+    public function findShareSources($userId)
+    {
+        $query = $this->getEntityManager()->createQueryBuilder();
+        $query->select('ss AS shareSource')
+            ->from('App:ShareSource', 'ss')
+            ->addSelect('COUNT(DISTINCT(ssu.user)) AS totalUsers')
+            ->leftJoin('ss.shareSourceUsers', 'ssu')
+            ->where('ss.user = :userId')
+            ->setParameter('userId', $userId)
+            ->groupBy('ss.user');
+        return $query->getQuery()->getResult();
+    }
 }

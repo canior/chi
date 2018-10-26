@@ -103,6 +103,7 @@ class Product implements Dao
         $this->setUpdatedAt(time());
         $this->setCreatedAt(time());
         $this->setActive();
+        $this->setFreight(0);
         $this->productImages = new ArrayCollection();
         $this->productSpecImages = new ArrayCollection();
         $this->productReviews = new ArrayCollection();

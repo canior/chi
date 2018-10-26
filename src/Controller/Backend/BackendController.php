@@ -41,10 +41,10 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
-                        '_twig_error_test',
+                        'share_source_index',
+                        'share_source_info',
                     ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:用户分享',
+                    'name' => '用户分享',
                     'icon' => 'fa fa-share-alt',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
@@ -81,10 +81,10 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
-                        '_twig_error_test',
+                        'product_statistics_index',
+                        'product_statistics_info',
                     ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:产品销售',
+                    'name' => '产品销售',
                     'icon' => 'fa fa-dollar',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',

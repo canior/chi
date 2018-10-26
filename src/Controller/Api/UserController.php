@@ -251,7 +251,7 @@ class UserController extends BaseController
 
         $productReview = null;
         $productReviews = $groupUserOrder->getProductReviews();
-        if (empty($productReviews)) {
+        if ($productReviews->isEmpty()) {
             $productReview = new ProductReview();
         } else {
             $productReview = $productReviews[0];
@@ -337,7 +337,7 @@ class UserController extends BaseController
      * @param RegionRepository $regionRepository
      * @return Response
      */
-    public function addUserAddressAction(Request $request, UserAddressRepository $userAddressRepository, RegionRepository $regionRepository): Response {
+    public function updateUserAddressAction(Request $request, UserAddressRepository $userAddressRepository, RegionRepository $regionRepository): Response {
 
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
@@ -402,7 +402,7 @@ class UserController extends BaseController
      * @param UserAddressRepository $userAddressRepository
      * @return Response
      */
-    public function updateUserAddressAction(Request $request, UserAddressRepository $userAddressRepository): Response {
+    public function deleteUserAddressAction(Request $request, UserAddressRepository $userAddressRepository): Response {
 
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;

@@ -62,4 +62,17 @@ class GroupUserOrderRepository extends ServiceEntityRepository
 
         return $query->orderBy('guo.id', 'DESC');
     }
+
+    /**
+     * @param $productId
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findProductGroupUserOrdersQueryBuilder($productId)
+    {
+        return $this->createQueryBuilder('guo')
+            ->leftJoin('guo.groupOrder', 'go')
+            ->where('go.product = :productId')
+            ->setParameter('productId', $productId)
+            ->orderBy('guo.id', 'DESC');
+    }
 }

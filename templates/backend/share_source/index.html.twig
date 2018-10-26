@@ -1,0 +1,100 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}ShareSource{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <form class="cmxform" id="myForm">
+                            <div class="col-md-3 form-group">
+                                <label>用户ID</label>
+                                <input type="number" name="userId" class="form-control" value="{{ form.userId }}"
+                                       placeholder="按 用户ID 查询">
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label>用户名</label>
+                                <input type="text" name="username" class="form-control" value="{{ form.username }}"
+                                       placeholder="按 用户名 查询">
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label>&nbsp;</label>
+                                <input class="form-control btn btn-primary" type="submit" value="搜索"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th width="10%">用户ID</th>
+                                <th width="10%">用户昵称</th>
+                                <th width="10%">分享的用户总数</th>
+                                <th width="10%">最后分享时间</th>
+                                <th width="10%" class="text-center hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if pagination.getTotalItemCount %}
+                                {% for item in pagination %}
+                                    <tr>
+                                        <td>
+                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.id}) }}" target="_blank" title="查看详情">
+                                                {{ item.id }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.id}) }}" target="_blank" title="查看详情">
+                                                {{ item.nickname }}
+                                            </a>
+                                        </td>
+                                        <td>{{ item.userStatistics.sharedNum|default(0) }}</td>
+                                        <td>{{ item.shareSources.first.createdAt|default }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('share_source_info', {id: item.id}) }}"
+                                                   title="查看详情">
+                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="alert alert-warning">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <div class="no-margin pull-right">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: 'ShareSource'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include '/backend/includes/delete.js.html.twig' with {title: 'ShareSource'} %}
+{% endblock %}

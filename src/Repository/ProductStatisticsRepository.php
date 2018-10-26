@@ -19,32 +19,23 @@ class ProductStatisticsRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductStatistics::class);
     }
 
-//    /**
-//     * @return ProductStatistics[] Returns an array of ProductStatistics objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param null $productId
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findProductStatisticsQueryBuilder($productId = null)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $query = $this->createQueryBuilder('ps')
+            ->addOrderBy('ps.orderNum', 'DESC')
+            ->addOrderBy('ps.buyersNum', 'DESC')
+            ->addOrderBy('ps.returnUsersNum', 'DESC')
+            ->addOrderBy('ps.returnUsersRate', 'DESC');
 
-    /*
-    public function findOneBySomeField($value): ?ProductStatistics
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ($productId) {
+            $query->where('ps.product = :productId')
+                ->setParameter('productId', $productId);
+        }
+
+        return $query;
     }
-    */
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\TypeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Id\UuidGenerator;
@@ -12,9 +13,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ShareSourceRepository")
  */
-class ShareSource
+class ShareSource implements Dao
 {
-    use CreatedAtTrait;
+    use TypeTrait,
+        CreatedAtTrait;
 
     /**
      * @var string
@@ -33,11 +35,6 @@ class ShareSource
      * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="shareSources")
      */
     private $product;
-
-    /**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $type;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -99,18 +96,6 @@ class ShareSource
     public function setProduct(?Product $product): self
     {
         $this->product = $product;
-
-        return $this;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
 
         return $this;
     }
