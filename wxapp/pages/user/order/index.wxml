@@ -1,7 +1,7 @@
 <!--pages/user/order/index.wxml-->
 <view class="navbar">
   <block wx:for="{{menu}}" wx:key="index">
-    <view class="nav{{curIndex==index ? ' active' : ''}}" data-index="{{index}}"bindtap="tapMenu">{{item}}</view>
+    <view class="nav{{curIndex==index ? ' active' : ''}}" data-index="{{index}}"bindtap="tapMenu">{{item.name}}</view>
   </block>
 </view>
 <view class="split-brand"/>
