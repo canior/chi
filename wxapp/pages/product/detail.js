@@ -10,6 +10,8 @@ Page({
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
     product: [],
     productReviews: [],
+    page: 1,
+    noMore: false,
     btnDisabled: false //防止连击button
   },
 
@@ -19,7 +21,7 @@ Page({
   onLoad: function (options) {
     const productId = options.id ? options.id : 1;
     this.getProduct(productId);
-    this.getProductReview(productId);
+    this.getProductReview(productId, this.data.page);
     this.setData({
       isLogin: app.globalData.isLogin
     })
@@ -47,19 +49,25 @@ Page({
     })
   },
 
-  getProductReview: function (id) {
+  getProductReview: function (id, page) {
     const that = this;
     wx.request({
-      url: app.globalData.baseUrl + '/products/' + id + '/reviews/',
+      url: app.globalData.baseUrl + '/products/' + id + '/reviews',
       data: {
-        limit: 5
+        page: page
       },
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
+          var productReviews = this.data.productReviews;
+          productReviews.push(...res.data.data);
+          var noMore = res.data.data.length < 5 ? true : false;
+          var page = noMore ? page : page + 1;
           that.setData({
-            productReviews: res.data.data
-          })          
+            productReviews: productReviews,
+            page: page,
+            noMore: noMore
+          })
         } else {
           console.log('wx.request return error', res.statusCode);
         }
@@ -199,7 +207,7 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    this.getProductReview(this.data.product.id, this.data.page)
   },
 
   /**
