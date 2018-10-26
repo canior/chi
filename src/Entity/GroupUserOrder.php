@@ -607,7 +607,7 @@ class GroupUserOrder implements Dao
             'productReviews' => $productReviewsArray,
             'createdAt' => $this->getCreatedAt(true),
             'paymentTotal' => $this->getTotal(),
-            'address' => $this->getUserAddress()->getArray()
+            'address' => $this->getUserAddress() == null ? null : $this->getUserAddress()->getArray()
         ];
     }
 }
