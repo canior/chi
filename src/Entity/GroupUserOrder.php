@@ -588,6 +588,12 @@ class GroupUserOrder implements Dao
      * @return array
      */
     public function getArray() : array {
+
+        $productReviewsArray = [];
+        foreach ($this->getProductReviews() as $productReview) {
+            $productReviewsArray[] = $productReview->getArray();
+        }
+
         return [
             'id' => $this->getId(),
             'status' => $this->getStatus(),
@@ -598,7 +604,7 @@ class GroupUserOrder implements Dao
             'isMasterOrder'=> $this->isMasterOrder(),
             'wxPrePayId' => $this->getPrePayId(),
             'user' => $this->getUser()->getArray(),
-            'productReviews' => $this->getProductReviews(),
+            'productReviews' => $productReviewsArray,
             'createdAt' => $this->getCreatedAt(true),
             'paymentTotal' => $this->getTotal(),
             'address' => $this->getUserAddress()->getArray()
