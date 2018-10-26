@@ -190,13 +190,12 @@ class UserController extends BaseController
 
     /**
      * 我的订单详情
-     * @Route("/user/groupUserOrders/{groupUserOrderId}", name="myGroupUserOrder", methods="GET")
+     * @Route("/user/groupUserOrder", name="myGroupUserOrder", methods="POST")
      * @param Request $request
-     * @param $groupUserOrderId
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
      */
-    public function getGroupUserOrderAction(Request $request, $groupUserOrderId, GroupUserOrderRepository $groupUserOrderRepository) : Response {
+    public function getGroupUserOrderAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) : Response {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;

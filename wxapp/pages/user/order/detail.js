@@ -1,11 +1,13 @@
 // pages/user/order/detail.js
+const app = getApp()
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    order: null
+    groupUserOrder: null,
+    imgUrlPrefix: app.globalData.imgUrlPrefix,    
   },
 
   /**
@@ -14,6 +16,35 @@ Page({
   onLoad: function (options) {
 
   },
+
+  onLoad: function (options) {
+    this.getGroupUserOrder(options.id)
+  },
+
+  getGroupUserOrder: function (id) {
+    const that = this;
+    wx.request({
+      url: app.globalData.baseUrl + '/user/groupUserOrders/',
+      data: {
+        thirdSession: wx.getStorageSync('thirdSession'),
+        groupUserOrderId: id
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          that.setData({
+            groupUserOrder: res.data.data.groupUserOrder,
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
+    })
+  },  
 
   // 商品评价
   toUserComment: function (e) {

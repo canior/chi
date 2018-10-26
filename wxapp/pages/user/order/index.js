@@ -13,7 +13,7 @@ Page({
       { name: '已发货', status: 'shipping' },
       { name: '已收货', status: 'delivered' }
     ],
-    curIndex: 0,
+    curStatus: null,
     groupUserOrders: [],
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
   },
@@ -39,7 +39,8 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           that.setData({
-            groupUserOrders: res.data.data.groupUserOrders
+            groupUserOrders: res.data.data.groupUserOrders,
+            curStatus: status
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -52,9 +53,7 @@ Page({
   },
 
   tapMenu: function (e) {
-    this.setData({
-      curIndex: e.currentTarget.dataset.index
-    })
+    this.getGroupUserOrders(e.currentTarget.dataset.status)
   },
 
   // 转订单详情

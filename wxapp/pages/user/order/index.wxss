@@ -24,15 +24,6 @@
   color: #888;
   display: flex;
   align-items: center;
-}
-.row .left image {
-  width: 135rpx;
-  height: 135rpx;
-  margin-right: 20rpx;
-}
-.row .right {
-  font-size: 24rpx;
-  display: flex;
 }.row .left.pending {
   color: #ffc018;
 }.row .left.shipping {
@@ -41,6 +32,16 @@
   color: #353535;
 }.row .left.completed {
   color: #ff4d42;
+}
+.row .left image {
+  width: 135rpx;
+  height: 135rpx;
+  margin-right: 20rpx;
+}
+.row .right {
+  font-size: 24rpx;
+  color: #888;  
+  display: flex;
 }
 .row .line {
   display: flex;
