@@ -599,7 +599,8 @@ class GroupUserOrder implements Dao
             'wxPrePayId' => $this->getPrePayId(),
             'user' => $this->getUser()->getArray(),
             'hasReview' => $this->getProductReviews()->isEmpty() ? '0' : 1,
-            'createdAt' => $this->getCreatedAt(true)
+            'createdAt' => $this->getCreatedAt(true),
+            'paymentTotal' => $this->getTotal(),
         ];
     }
 }
