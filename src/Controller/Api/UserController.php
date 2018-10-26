@@ -211,13 +211,12 @@ class UserController extends BaseController
 
     /**
      * 确认收货
-     * @Route("/user/groupUserOrders/{groupUserOrderId}", name="updateMyGroupUserOrder", methods="POST")
+     * @Route("/user/groupUserOrder/post", name="updateMyGroupUserOrder", methods="POST")
      * @param Request $request
-     * @param $groupUserOrderId
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
      */
-    public function updateGroupUserOrderAction(Request $request, $groupUserOrderId, GroupUserOrderRepository $groupUserOrderRepository) : Response {
+    public function updateGroupUserOrderAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) : Response {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
