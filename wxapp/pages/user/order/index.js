@@ -14,7 +14,8 @@ Page({
       { name: '已收货', status: 'delivered' }
     ],
     curIndex: 0,
-    getGroupUserOrders: [],
+    groupUserOrders: [],
+    imgUrlPrefix: app.globalData.imgUrlPrefix,    
   },
 
   /**

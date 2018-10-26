@@ -33,13 +33,13 @@
 .row .right {
   font-size: 24rpx;
   display: flex;
-}.row .right.pending {
+}.row .left.pending {
   color: #ffc018;
-}.row .right.shipping {
+}.row .left.shipping {
   color: #353535;
-}.row .right.delivered {
+}.row .left.delivered {
   color: #353535;
-}.row .right.completed {
+}.row .left.completed {
   color: #ff4d42;
 }
 .row .line {
