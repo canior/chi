@@ -8,7 +8,7 @@ Page({
   data: {
     groupUserOrder: null,
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
-    rate: 3,
+    rate: 0,
     review: '',
     uploadStack: [
       { tmpImageFilePath: '', fileId: null },
@@ -16,7 +16,6 @@ Page({
       { tmpImageFilePath: '', fileId: null },
     ],
     stackIndex: 0,
-    productReview: null,
   },
 
   /**
@@ -38,8 +37,35 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
+          const groupUserOrder = res.data.data.groupUserOrder;
+          var rate = 0, 
+            review = '',
+            uploadStack = [
+              { tmpImageFilePath: '', fileId: null },
+              { tmpImageFilePath: '', fileId: null },
+              { tmpImageFilePath: '', fileId: null },
+            ],
+            stackIndex = 0;
+          if (groupUserOrder.productReviews.length > 0) {
+            const productReview = groupUserOrder.productReviews[0];
+            rate = productReview.rate;
+            review = productReview.review;
+            productReview.productReviewImages.forEach((item, index) => {
+              if (index < 3) {
+                uploadStack[index] = {
+                  tmpImageFilePath: that.data.imgUrlPrefix + '/' + item.fileId,
+                  fileId: item.fileId
+                }
+                stackIndex = Math.max(stackIndex, index + 1)
+              }
+            })
+          }
           that.setData({
-            groupUserOrder: res.data.data.groupUserOrder,
+            groupUserOrder: groupUserOrder,
+            rate: rate,
+            review: review,
+            uploadStack: uploadStack,
+            stackIndex: stackIndex
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -72,8 +98,7 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          that.setData({
-            productReview: res.data.data.productReview,
+          wx.navigateBack({
           })
         } else {
           console.log('wx.request return error', res.statusCode);

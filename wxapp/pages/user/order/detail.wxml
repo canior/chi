@@ -12,7 +12,7 @@
   </view>
   <view class="row">
     <view class="left">
-      <image src="{{imgUrlPrefix + '/' + groupUserOrder.product.productImages[0].fileId}}"/>
+      <image src="{{groupUserOrder ? imgUrlPrefix + '/' + groupUserOrder.product.productImages[0].fileId : ''}}"/>
       <view>
         <view class="line name">{{groupUserOrder.product.title}}</view>
         <view class="line chi-price-container">
@@ -31,11 +31,18 @@
 </view>
 <view class="split-brand"/>
 
+<!--手机号码中间四位显示为*号-->
+<wxs module="phone">
+  var encode = function(array) {
+    return array.substring(0, 3) + '****' + array.substring(7);
+  }
+  module.exports.encode = encode;
+</wxs>
 <view class="address">
   <view class="left"><image src="/images/addr.png"/></view>
   <view class="right">
-    <view class="name">唐亚迪 123***4567</view>
-    <view class="addr">上海松江区莘砖公路668号A座1501室</view>
+    <view class="name">{{groupUserOrder.address.name}} {{groupUserOrder.address.phone ? phone.encode(groupUserOrder.address.phone) : ''}}</view>
+    <view class="addr">{{groupUserOrder.address.region.fullname}} {{groupUserOrder.address.address}}</view>
   </view>
 </view>
 
@@ -43,7 +50,7 @@
   <view>支付方式：<text>微信</text></view>
   <view>商品合计：<text>￥{{groupUserOrder.product.price}}</text></view>
   <view>物流运费：<text>￥{{groupUserOrder.product.freight}}</text></view>
-  <view>实际付费：<text class="highlight">￥{{groupUserOrder.product.price}}</text></view>
+  <view>实际付费：<text class="highlight">￥{{groupUserOrder.paymentTotal}}</text></view>
   <view class="split-line"/>
   <view>拼团返现：<text class="highlight">￥{{groupUserOrder.rewards}}</text></view>
 </view>
