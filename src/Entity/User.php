@@ -363,6 +363,18 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * 获取用户的默认地址
+     * @return UserAddress
+     */
+    public function getDefaultUserAddress(): UserAddress
+    {
+        foreach ($this->getUserAddresses as ua) {
+            if (ua->getIsDefault()) return ua;
+        }
+        return null;
+    }
+
+    /**
      * @return Collection|GroupOrder[]
      */
     public function getGroupOrders(): Collection
