@@ -75,10 +75,14 @@
 </view>
 
 <view class="bottom">
-    <view class="home" bindtap="toHome">
+    <!--<view class="home" bindtap="toHome">
       <image src="/images/home2.png"/>
       <text>首页</text>
-    </view>
+    </view>-->
+    <view class="home" bindtap="showModal">
+      <image src="/images/share.png"/>
+      <text>分享</text>
+    </view>    
     <button class="service btn-clear" open-type='contact'>
       <image src="/images/service.png"/>
       <text>客服</text>

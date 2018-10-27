@@ -23,6 +23,10 @@ Page({
       wx.navigateTo({
         url: '/pages/user/group/index',
       })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
     }
   },
 
@@ -32,6 +36,10 @@ Page({
       wx.navigateTo({
         url: '/pages/user/order/index',
       })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
     }
   },
 
@@ -40,6 +48,10 @@ Page({
     if (this.data.isLogin) {
       wx.navigateTo({
         url: '/pages/user/address/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
       })
     }
   },

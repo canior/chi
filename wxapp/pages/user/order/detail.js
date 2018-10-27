@@ -91,7 +91,7 @@ Page({
 
   // 继续拼团
   toProductDetail: function (e) {
-    wx.reLaunch({
+    wx.redirectTo({
       url: '/pages/product/detail?id=' + this.data.groupUserOrder.product.id,
     })
   },
