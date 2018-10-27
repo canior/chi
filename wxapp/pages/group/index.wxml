@@ -1,7 +1,7 @@
 <!--pages/group/index.wxml-->
-<view class="top">
+<view class="top" wx:if="{{groupOrder.status == 'completed' && (userType == 'opener' || userType == 'joiner')}}" bindtap="toUserAddress">
   <image src="/images/bell.png"/>
-  <text>groupOrderId: {{groupOrder.id}}</text>
+  <text>请去完善您的地址信息>></text>
 </view>
 
 <!--产品信息-->
@@ -9,6 +9,7 @@
   <view class="chi-item">
     <view class="left"><image src="{{imgUrlPrefix + '/' + groupOrder.product.productImages[0].fileId}}"/></view>
     <view class="right">
+      <view class="line code">拼团编号：{{groupOrder.id}}</view>
       <view class="line title">{{groupOrder.product.title}}</view>
       <view class="line desc">2人团 还剩{{groupOrder.product.stock}}份</view>
       <view class="line chi-price-container">
@@ -35,33 +36,39 @@
         <view class="nickname">{{groupOrder.user.nickname}}</view>
       </view>
       <view class="user"><!--参团人-->
-        <view class="avatar">
-          <image src="{{user && !isOpenUser ? user.avatarUrl : '/images/demo/group-who.png'}}"/>
-        </view>
-        <view class="nickname">{{user && !isOpenUser ? user.nickname : '???'}}</view>
+        <block wx:if="{{groupOrder.status == 'completed'}}"><!--拼团完成-->
+          <view class="avatar"><image src="{{joinUser.avatarUrl}}"/></view>
+          <view class="nickname">{{joinUser.nickname}}</view>
+        </block>
+        <block wx:else><!--拼团未完成-->
+          <view class="avatar"><image src="{{'/images/demo/group-who.png'}}"/></view>
+          <view class="nickname">{{userType == 'guest' ? '???' : user.nickname}}</view>
+        </block>
       </view>
     </view>
     <block wx:if="{{groupOrder.status != 'completed'}}">
-      <view class="hint">仅剩<text>1</text>人，快呼唤小伙伴参加吧！</view>
+      <view class="hint" wx:if="{{userType == 'opener'}}">仅剩<text>1</text>人，快呼唤小伙伴参加吧！</view>
+      <view class="hint" wx:if="{{userType != 'opener'}}">就差你了，快来助攻吧！</view>
       <view class="count-down">剩余 <text class="hr">50</text>:<text class="min">00</text>:<text class="sec">00</text> 结束</view>
     </block>
   </view>
 </view><!--拼团信息-->
+<view class="split-line"/>
 
 
-<!--收货信息: 仅在拼团成功后开团人和参团人能够看到-->
+<!--收货信息: 仅在拼团成功后开团人和参团人能够看到
 <block wx:if="{{groupOrder.status == 'completed' && user && (groupOrder.groupUserOrders[0].user.id == user.id || groupOrder.groupUserOrders[1].user.id == user.id)}}">
 <view class="container">
   <view class="addr-container">
-    <view class="no-addr"><!--没有地址-->
+    <view class="no-addr">
       <image src="/images/addr.png"/>
       <text>请完善您的地址信息</text>
       <view class="edit"><image src="/images/edit.png"/></view>
     </view>
-    <view class="default"><!--默认地址-->
+    <view class="default">
       <view class="line">
         <image src="/images/addr.png"/>
-        <text space="nbsp">唐亚迪     123****456</text>
+        <text space="nbsp">唐亚迪 123****456</text>
         <view class="status">待发货</view>
       </view>
       <view class="line addr">上海松江区莘砖公路668号A座1501室</view>
@@ -74,7 +81,7 @@
         <text>客服咨询</text>
       </button>
     </view>
-    <block wx:if="{{1}}"><!--订单发货后才出现-->
+    <block wx:if="{{'订单发货后才出现'}}">
       <view class="service space">
         <image src="/images/ship.png"/>
         <text>查看物流</text>
@@ -87,13 +94,13 @@
   </view>
   <view class="split-brand"/>
 </view>
-</block><!--收货信息-->
+</block>收货信息-->
 
 
 <!--拼团玩法-->
-<view class="container">
+<view class="container" wx:if="{{userType == 'opener' || groupOrder.status == 'completed'}}">
   <view class="rule">
-    <view class="title">拼团玩法</view>
+    <view class="title" wx:if="{{groupOrder.status != 'completed'}}">拼团玩法</view>
     <view class="flow">
       <view class="step"><text>分享订单\n或产品</text></view>
       <view class="arrow-right"/>
@@ -106,8 +113,8 @@
 <view class="split-brand"/>
 
 
-<!--谁看了你的拼团:仅拼团未完成时开团人可见-->
-<view class="container" wx:if="{{groupOrder.status != 'completed' && isOpenUser}}">
+<!--谁看了你的拼团:仅拼团未完成时开团人可见
+<view class="container" wx:if="{{groupOrder.status != 'completed' && userType == 'opener'}}">
   <view class="share">
     <view class="title">谁看了你的拼团</view>
     <view class="user" wx:for="12345" wx:key="index">
@@ -117,26 +124,94 @@
       <view class="btn">呼唤他</view>
     </view>
   </view>
-</view><!--谁看了你的拼团-->
+</view>谁看了你的拼团-->
 
 
-<!--恭喜您返现已到账-->
+<!--恭喜您返现已到账:拼团完成后开团人和参团人可看到-->
+<block wx:if="{{groupOrder.status == 'completed' && (userType == 'opener' || userType == 'joiner')}}">
 <view class="container">
   <view class="reward-in">恭喜您！¥20已到账 <text>请查看>></text></view>
 </view>
+</block>
 
+
+<!--更多精彩拼团-->
+<block wx:if="{{groupOrder.status == 'completed'}}">
+<view class="container">
+  <view class="more-group">
+    <navigator class="title" url="/pages/product/index" open-type="switchTab" hover-class="none">
+      <view>更多精彩拼团</view><view class="arrow-right"/>
+    </navigator>
+    <view class="product-container">
+      <view class="product" wx:for="{{products}}" wx:for-item="product" wx:key="id" bindtap="toProductDetail" data-id="{{product.id}}">
+        <view class="img">
+          <image src="{{imgUrlPrefix + '/' + product.productImages[0].fileId}}" />
+          <view class="tip"><text>两人</text><text>拼团</text></view>
+        </view>
+        <view class="name">{{product.title}}</view>
+        <view class="price-container">
+          <view class="price">￥<text>{{product.price}}</text></view>
+          <view class="freight">包邮</view>
+          <view class="ori-price">￥{{product.originalPrice}}</view>
+        </view>
+        <view class="btn-container">
+          <view class="btn" catchtap="toProductDetail" data-id="{{product.id}}">我要拼团</view>
+          <view class="reward">返现￥{{product.rewards}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view><!--更多精彩拼团-->
+</block>
+
+
+<!--商品详情copy-->
+<block wx:if="{{userType != 'opener' && groupOrder.status != 'completed'}}">
+<view class="container">
+  <view class="specs">
+    <view class="title">商品详情</view>
+    <view class="img" wx:for="{{groupOrder.product.productSpecImages}}" wx:key="id" wx:for-item="productSpecImage">
+      <image src="{{imgUrlPrefix + '/' + productSpecImage.fileId}}"/>
+    </view>
+  </view>
+</view>
+<view class="split-line"/>
+<!--商品评价copy-->
+<view class="container">
+  <view class="review-container">
+    <view class="title">商品评价</view>
+    <view class="review" wx:for="{{productReviews}}" wx:key="index" wx:for-item="productReview">
+      <view class="user">
+        <view class="avatar"><image src="{{productReview.user.avatarUrl}}"/></view>
+        <view class="info">
+          <view class="nickname">{{productReview.user.nickname}}</view>
+          <view class="date">{{productReview.createdAt}}</view>
+        </view>
+      </view>
+      <view class="review-text">{{productReview.review}}</view>
+      <view class="imgs">
+        <block wx:for="{{productReview.productReviewImages}}" wx:key="index" wx:for-item="productReviewImage">
+          <image src="{{imgUrlPrefix + '/' + productReviewImage.fileId}}"/>
+        </block>
+      </view>
+      <view class="split-line"/>
+    </view>
+    <view class="nomore" wx:if="{{!hasMore}}">没有了</view>
+  </view>
+</view>
+</block>
 
 <view class="bottom-space"/>
 
 <!--拼团未完成时开团人动作-->
-<block wx:if="{{groupOrder.status != 'completed' && isOpenUser}}">
+<block wx:if="{{groupOrder.status != 'completed' && userType == 'opener'}}">
   <view class="bottom" bindtap="showModal" wx:if="{{!showModal}}">
     <text>邀请好友参团</text>
   </view>
 </block><!--拼团未完成时开团人-->
 
-<!--拼团未完成时参团人动作-->
-<block wx:if="{{groupOrder.status != 'completed' && !isOpenUser}}">
+<!--拼团未完成时非开团人动作-->
+<block wx:if="{{groupOrder.status != 'completed' && userType != 'opener'}}">
   <view class="bottom-join">
     <view class="home" bindtap="showModal">
       <image src="/images/share.png"/>
@@ -148,7 +223,7 @@
     </button>
     <button class="btn" bindtap="joinGroup" disabled="{{btnDisabled}}">￥100 我要参团</button>
   </view>
-</block><!--拼团未完成时参团人-->
+</block><!--拼团未完成时非开团人-->
 
 <!--拼团已完成-->
 <block wx:if="{{groupOrder.status == 'completed'}}">

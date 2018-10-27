@@ -11,7 +11,7 @@ Page({
     product: [],
     productReviews: [],
     page: 1,
-    noMore: false,
+    hasMore: false,
     btnDisabled: false //防止连击button
   },
 
@@ -51,6 +51,9 @@ Page({
 
   getProductReview: function (id, page) {
     const that = this;
+    wx.showLoading({
+      title: '玩命加载中',
+    })    
     wx.request({
       url: app.globalData.baseUrl + '/products/' + id + '/reviews',
       data: {
@@ -61,12 +64,12 @@ Page({
           console.log(res.data.data)
           var productReviews = this.data.productReviews;
           productReviews.push(...res.data.data);
-          var noMore = res.data.data.length < 5 ? true : false;
-          var page = noMore ? page : page + 1;
+          var hasMore = res.data.data.length < 5 ? false : true;
+          var nextPage = hasMore ? page + 1 : page;
           that.setData({
             productReviews: productReviews,
-            page: page,
-            noMore: noMore
+            page: nextPage,
+            hasMore: hasMore
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -74,7 +77,9 @@ Page({
       },
       fail(e) {
       },
-      complete(e) { }
+      complete(e) {
+        wx.hideLoading()
+      }
     })
   },
 
@@ -207,7 +212,9 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-    this.getProductReview(this.data.product.id, this.data.page)
+    if (this.data.hasMore) {
+      this.getProductReview(this.data.product.id, this.data.page)
+    }
   },
 
   /**

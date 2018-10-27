@@ -68,8 +68,9 @@
           <image src="{{imgUrlPrefix + '/' + productReviewImage.fileId}}"/>
         </block>
       </view>
-      <view class="split-line"/>      
+      <view class="split-line"/>
     </view>
+    <view class="nomore" wx:if="{{!hasMore}}">没有了</view>
   </view>
 </view>
 

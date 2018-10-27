@@ -113,7 +113,10 @@
   width: 690rpx;
   height: 450rpx;
 }
-.review-container {
+.review-container .nomore {
+  font-size: 24rpx;
+  color: #888;
+  text-align: center;
 }
 .review-container {
   padding-bottom: 100px;
