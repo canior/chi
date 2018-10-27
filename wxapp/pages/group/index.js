@@ -15,6 +15,7 @@ Page({
     products: [],
     productReviews: [],
     page: 1,
+    limit: 5,
     hasMore: false,
     showModal: false,
     btnDisabled: false //防止连击button
@@ -127,9 +128,9 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          var productReviews = this.data.productReviews;
+          var productReviews = that.data.productReviews;
           productReviews.push(...res.data.data);
-          var hasMore = res.data.data.length < 5 ? false : true;
+          var hasMore = res.data.data.length < that.data.limit ? false : true;
           var nextPage = hasMore ? page + 1 : page;
           that.setData({
             productReviews: productReviews,

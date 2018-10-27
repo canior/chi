@@ -7,8 +7,11 @@ Page({
    */
   data: {
     imgUrlPrefix: app.globalData.imgUrlPrefix,
-    products: [],
     banners: [],
+    products: [],
+    page: 1,
+    limit: 20,
+    hasMore: false,    
   },
 
   /**
@@ -16,28 +19,40 @@ Page({
    */
   onLoad: function (options) {
     wx.setNavigationBarTitle({ title: app.globalData.appName })
-    this.getProducts()
+    this.getProducts(this.data.page)
   },
 
-  getProducts: function () {
+  getProducts: function (page) {
     const that = this;
+    wx.showLoading({
+      title: '玩命加载中',
+    })    
     wx.request({
       url: app.globalData.baseUrl + '/products/',
       data: {
+        page: page
       },
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
+          var products = that.data.products;
+          products.push(...res.data.data.products);
+          var hasMore = res.data.data.products.length < that.data.limit ? false : true;
+          var nextPage = hasMore ? page + 1 : page;
           that.setData({
-              products: res.data.data.products,
-              banners: res.data.data.banners
+            banners: res.data.data.banners,
+            products: products,
+            page: nextPage,
+            hasMore: hasMore
           })
         } else {
           console.log('wx.request return error', res.statusCode);
         }
       },
       fail(e) {},
-      complete(e) { }
+      complete(e) {
+        wx.hideLoading()
+      }
     })
   },
 
@@ -88,7 +103,9 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    if (this.data.hasMore) {
+      this.getProducts(this.data.page)
+    }
   },
 
   /**
