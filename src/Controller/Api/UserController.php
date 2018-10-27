@@ -409,11 +409,16 @@ class UserController extends BaseController
         }
 
         // 若$isDefault=true则要检查其它地址中有无已设为默认的，有要去掉，不然就会有多个默认
-        if ($user->getDefaultUserAddress()) $user->getDefaultUserAddress()->setIsDefault(false);
+        $defaultUserAddress = $user->getDefaultUserAddress();
+        if ($defaultUserAddress) {
+            $defaultUserAddress->setIsDefault(false);
+            $this->getEntityManager()->persist($defaultUserAddress);
+        }
 
         $userAddress->setName($name)->setPhone($phone)->setRegion($countyDao)->setAddress($address)->setIsDefault($isDefault)->setUpdatedAt(time());
-        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->persist($userAddress);
         $this->getEntityManager()->flush();
+
 
         return $this->responseJson('success', 200, [
             'userAddresses' => $userAddress->getArray()
