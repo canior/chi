@@ -368,8 +368,8 @@ class User extends BaseUser implements Dao
      */
     public function getDefaultUserAddress(): UserAddress
     {
-        foreach ($this->getUserAddresses() as ua) {
-            if (ua->getIsDefault()) return ua;
+        foreach ($this->getUserAddresses() as $ua) {
+            if ($ua->getIsDefault()) return $ua;
         }
         return null;
     }
