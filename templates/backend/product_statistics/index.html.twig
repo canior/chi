@@ -16,12 +16,39 @@
                 <div class="box-body">
                     <div class="row">
                         <form class="cmxform" id="myForm">
-                            <div class="col-md-3 form-group">
+                            <div class="col-md-2 form-group">
                                 <label>产品ID</label>
                                 <input type="number" name="productId" class="form-control" value="{{ form.productId }}"
                                        placeholder="按 产品ID 查询">
                             </div>
-                            <div class="col-md-3 form-group">
+                            <div class="col-md-2 form-group">
+                                <label>年</label>
+                                <select name="year" class="form-control chosen">
+                                    <option value="">选择</option>
+                                    {% for i in yearStart..yearEnd %}
+                                        <option value="{{ i }}"{% if form.year == i %} selected{% endif %}>{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>月</label>
+                                <select name="month" class="form-control chosen">
+                                    <option value="">选择</option>
+                                    {% for i in 1..12 %}
+                                        <option value="{{ i }}"{% if form.month == i %} selected{% endif %}>{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>日</label>
+                                <select name="day" class="form-control chosen">
+                                    <option value="">选择</option>
+                                    {% for i in 1..31 %}
+                                        <option value="{{ i }}"{% if form.day == i %} selected{% endif %}>{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
                                 <label>&nbsp;</label>
                                 <input class="form-control btn btn-primary" type="submit" value="搜索"/>
                             </div>
@@ -45,8 +72,8 @@
                             {% if pagination.getTotalItemCount %}
                                 {% for item in pagination %}
                                     <tr>
-                                        <td>{{ item.product.id }}</td>
-                                        <td>{{ item.product.title }}</td>
+                                        <td>{{ item.productStatistics.product.id }}</td>
+                                        <td>{{ item.productStatistics.product.title }}</td>
                                         <td>{{ item.orderAmountTotal|default(0)|number_format }}</td>
                                         <td>{{ item.orderNum|default(0) }}</td>
                                         <td>{{ item.buyersNum|default(0) }}</td>
@@ -54,7 +81,7 @@
                                         <td>{{ item.returnUsersRate|default(0)|number_format }}%</td>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{ path('product_statistics_info', {'id': item.id}) }}" title="查看详情">
+                                                <a href="{{ path('product_statistics_info', {'id': item.productStatistics.id}) }}" title="查看详情">
                                                     <span class="fa fa-hand-o-right fa-2x"></span>
                                                 </a>
                                             </div>

@@ -21,19 +21,46 @@ class ProductStatisticsRepository extends ServiceEntityRepository
 
     /**
      * @param null $productId
+     * @param null $year
+     * @param null $month
+     * @param null $day
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findProductStatisticsQueryBuilder($productId = null)
+    public function findProductStatisticsQueryBuilder($productId = null, $year = null, $month = null, $day = null)
     {
-        $query = $this->createQueryBuilder('ps')
-            ->addOrderBy('ps.orderNum', 'DESC')
-            ->addOrderBy('ps.buyersNum', 'DESC')
-            ->addOrderBy('ps.returnUsersNum', 'DESC')
-            ->addOrderBy('ps.returnUsersRate', 'DESC');
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('ps AS productStatistics')
+            ->addSelect('SUM(ps.reviewsNum) AS reviewsNum')
+            ->addSelect('SUM(ps.orderAmountTotal) AS orderAmountTotal')
+            ->addSelect('SUM(ps.orderNum) AS orderNum')
+            ->addSelect('SUM(ps.buyersNum) AS buyersNum')
+            ->addSelect('SUM(ps.returnUsersNum) AS returnUsersNum')
+            ->addSelect('SUM(ps.returnUsersRate) AS returnUsersRate')
+            ->from('App:ProductStatistics', 'ps')
+            ->groupBy('ps.product')
+            ->addOrderBy('orderNum', 'DESC')
+            ->addOrderBy('buyersNum', 'DESC')
+            ->addOrderBy('returnUsersNum', 'DESC')
+            ->addOrderBy('returnUsersRate', 'DESC');
 
         if ($productId) {
             $query->where('ps.product = :productId')
                 ->setParameter('productId', $productId);
+        }
+
+        if ($year) {
+            $query->andWhere('ps.year = :year')
+                ->setParameter('year', $year);
+        }
+
+        if ($month) {
+            $query->andWhere('ps.month = :month')
+                ->setParameter('month', $month);
+        }
+
+        if ($day) {
+            $query->andWhere('ps.day = :day')
+                ->setParameter('day', $day);
         }
 
         return $query;

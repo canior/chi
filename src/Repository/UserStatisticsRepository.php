@@ -19,32 +19,64 @@ class UserStatisticsRepository extends ServiceEntityRepository
         parent::__construct($registry, UserStatistics::class);
     }
 
-//    /**
-//     * @return UserStatistics[] Returns an array of UserStatistics objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param null $userId
+     * @param null $username
+     * @param null $year
+     * @param null $month
+     * @param null $day
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findUserStatisticsQueryBuilder($userId = null, $username = null, $year = null, $month = null, $day = null)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('us AS userStatistics')
+            ->addSelect('SUM(us.childrenNum) AS childrenNum')
+            ->addSelect('SUM(us.sharedNum) AS sharedNum')
+            ->addSelect('SUM(us.groupOrderNum) AS groupOrderNum')
+            ->addSelect('SUM(us.groupOrderJoinedNum) AS groupOrderJoinedNum')
+            ->addSelect('SUM(us.groupUserOrderNum) AS groupUserOrderNum')
+            ->addSelect('SUM(us.spentTotal) AS spentTotal')
+            ->addSelect('SUM(us.orderRewardsTotal) AS orderRewardsTotal')
+            ->addSelect('SUM(us.userRewardsTotal) AS userRewardsTotal')
+            ->from('App:UserStatistics', 'us')
+            ->groupBy('us.user')
+            // order by 拼团消费总额
+            ->addOrderBy('spentTotal', 'DESC')
+            // order by 总分享数量
+            ->addOrderBy('sharedNum', 'DESC')
+            // order by 有效下线用户数量
+            ->addOrderBy('childrenNum', 'DESC');
 
-    /*
-    public function findOneBySomeField($value): ?UserStatistics
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ($userId) {
+            $query->where('us.user = :userId')
+                ->setParameter('userId', $userId);
+        }
+
+        if ($username) {
+            $orX = $query->expr()->orX();
+            $literal = $query->expr()->literal("%$username%");
+            $orX->add($query->expr()->like('u.username', $literal));
+            $orX->add($query->expr()->like('u.nickname', $literal));
+            $query->leftJoin('us.user', 'u')
+                ->andWhere($orX);
+        }
+
+        if ($year) {
+            $query->andWhere('us.year = :year')
+                ->setParameter('year', $year);
+        }
+
+        if ($month) {
+            $query->andWhere('us.month = :month')
+                ->setParameter('month', $month);
+        }
+
+        if ($day) {
+            $query->andWhere('us.day = :day')
+                ->setParameter('day', $day);
+        }
+
+        return $query;
     }
-    */
 }

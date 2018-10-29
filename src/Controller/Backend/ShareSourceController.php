@@ -8,6 +8,7 @@ use App\Form\ShareSourceType;
 use App\Repository\ShareSourceRepository;
 use App\Repository\ShareSourceUserRepository;
 use App\Repository\UserRepository;
+use App\Repository\UserStatisticsRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,11 +39,20 @@ class ShareSourceController extends BackendController
     /**
      * @Route("/share/source/info/{id}", name="share_source_info", methods="GET")
      */
-    public function info(Request $request, User $user, ShareSourceUserRepository $shareSourceUserRepository, ShareSourceRepository $shareSourceRepository): Response
+    public function info(Request $request, User $user, ShareSourceUserRepository $shareSourceUserRepository, ShareSourceRepository $shareSourceRepository, UserStatisticsRepository $userStatisticsRepository): Response
     {
+        $queryBuilder = $userStatisticsRepository->findUserStatisticsQueryBuilder($user->getId());
+        $userStatisticsTotal = $queryBuilder->getQuery()->getOneOrNullResult();
+        $parentUserStatisticsTotal = null;
+        if ($user->getParentUser()) {
+            $queryBuilder = $userStatisticsRepository->findUserStatisticsQueryBuilder($user->getParentUser()->getId());
+            $parentUserStatisticsTotal = $queryBuilder->getQuery()->getOneOrNullResult();
+        }
         $data = [
             'title' => 'ShareSource 详情',
             'user' => $user,
+            'userStatisticsTotal' => $userStatisticsTotal,
+            'parentUserStatisticsTotal' => $parentUserStatisticsTotal,
             'underlingUsers' => $shareSourceUserRepository->findUnderlingUsers($user->getId()),
             'shareSources' => $shareSourceRepository->findShareSources($user->getId())
         ];

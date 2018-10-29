@@ -52,8 +52,8 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
-                        'user_rewards',
-                        'user_rewards_info',
+                        'user_statistics_index',
+                        'user_statistics_info',
                     ],
                     'name' => '用户收益',
                     'icon' => 'fa fa-rmb',

@@ -44,10 +44,10 @@
                                                         <div class="clearfix">
                                                             <h4 style="margin-top: 0">用户ID ─ {{ user.id }}</h4>
                                                             <h4 style="margin-top: 0">昵称 ─ {{ user.nickname }}</h4>
-                                                            <h4 style="margin-top: 0">总分享数 ─ {{ user.userStatistics.sharedNum|default(0) }}</h4>
-                                                            <h4 style="margin-top: 0">下线总数 ─ {{ user.userStatistics.childrenNum|default(0) }}</h4>
+                                                            <h4 style="margin-top: 0">总分享数 ─ {{ userStatisticsTotal.sharedNum|default(0) }}</h4>
+                                                            <h4 style="margin-top: 0">下线总数 ─ {{ userStatisticsTotal.childrenNum|default(0) }}</h4>
                                                             <h4 style="margin-top: 0">有效下线 ─ {{ user.subUsers.count|default(0) }}</h4>
-                                                            <h4 style="margin-top: 0">无效下线 ─ {{ user.userStatistics.childrenNum|default(0) - user.subUsers.count|default(0) }}</h4>
+                                                            <h4 style="margin-top: 0">无效下线 ─ {{ userStatisticsTotal.childrenNum|default(0) - user.subUsers.count|default(0) }}</h4>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -89,10 +89,10 @@
                                                         <div class="clearfix">
                                                             <h4 style="margin-top: 0">用户ID ─ {{ user.parentUser.id|default }}</h4>
                                                             <h4 style="margin-top: 0">昵称 ─ {{ user.parentUser.nickname|default }}</h4>
-                                                            <h4 style="margin-top: 0">总分享数 ─ {{ user.parentUser.userStatistics.sharedNum|default(0) }}</h4>
-                                                            <h4 style="margin-top: 0">下线总数 ─ {{ user.parentUser.userStatistics.childrenNum|default(0) }}</h4>
+                                                            <h4 style="margin-top: 0">总分享数 ─ {{ parentUserStatisticsTotal.sharedNum|default(0) }}</h4>
+                                                            <h4 style="margin-top: 0">下线总数 ─ {{ parentUserStatisticsTotal.childrenNum|default(0) }}</h4>
                                                             <h4 style="margin-top: 0">有效下线 ─ {{ user.parentUser.subUsers.count|default(0) }}</h4>
-                                                            <h4 style="margin-top: 0">无效下线 ─ {{ user.parentUser.userStatistics.childrenNum|default(0) - user.parentUser.subUsers.count|default(0) }}</h4>
+                                                            <h4 style="margin-top: 0">无效下线 ─ {{ parentUserStatisticsTotal.childrenNum|default(0) - user.parentUser.subUsers.count|default(0) }}</h4>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -110,7 +110,7 @@
                             <!-- BAR CHART -->
                             <div class="box box-warning">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">下线用户列表 | 有效用户总数({{ user.subUsers.count|default(0) }}) 失效用户总数({{ user.userStatistics.childrenNum|default(0) - user.subUsers.count|default(0) }})</h3>
+                                    <h3 class="box-title">下线用户列表 | 有效用户总数({{ user.subUsers.count|default(0) }}) 失效用户总数({{ userStatisticsTotal.childrenNum|default(0) - user.subUsers.count|default(0) }})</h3>
 
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
@@ -163,7 +163,7 @@
                             <!-- BAR CHART -->
                             <div class="box box-warning">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">分享源列表 | 总分享数({{ user.userStatistics.sharedNum|default(0) }})</h3>
+                                    <h3 class="box-title">分享源列表 | 总分享数({{ userStatisticsTotal.sharedNum|default(0) }})</h3>
 
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i

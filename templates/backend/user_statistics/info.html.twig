@@ -1,6 +1,6 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}User Rewards Info{% endblock %}
+{% block title %}UserStatistics Info{% endblock %}
 
 {% import 'form/macros.html.twig' as macros %}
 
@@ -31,22 +31,22 @@
                                         <div class="box box-solid">
                                             <div class="box-body">
                                                 <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
-                                                    用户ID ─ {{ user.id }}
+                                                    用户ID ─ {{ userStatistics.user.id }}
                                                 </h4>
                                                 <div class="media">
                                                     <div class="media-left">
-                                                        {% if user.avatarUrl %}
-                                                            <img src="{{ user.avatarUrl }}" alt="MaterialPro" class="media-object"
+                                                        {% if userStatistics.user.avatarUrl %}
+                                                            <img src="{{ userStatistics.user.avatarUrl }}" alt="MaterialPro" class="media-object"
                                                                  style="width: 150px;height: auto;border-radius: 4px;box-shadow: 0 1px 3px rgba(0,0,0,.15);">
                                                         {% endif %}
                                                     </div>
                                                     <div class="media-body">
                                                         <div class="clearfix">
-                                                            <h4 style="margin-top: 0">用户ID ─ {{ user.id }}</h4>
-                                                            <h4 style="margin-top: 0">昵称 ─ {{ user.nickname }}</h4>
-                                                            <h4 style="margin-top: 0">总收益 ─ {{ user.userStatistics.rewardsTotal|default(0)|number_format }}</h4>
-                                                            <h4 style="margin-top: 0">拼团订单收益 ─ {{ user.userStatistics.orderRewardsTotal|default(0)|number_format }}</h4>
-                                                            <h4 style="margin-top: 0">传销收益 ─ {{ user.userStatistics.userRewardsTotal|default(0)|number_format }}</h4>
+                                                            <h4 style="margin-top: 0">用户ID ─ {{ userStatistics.user.id }}</h4>
+                                                            <h4 style="margin-top: 0">昵称 ─ {{ userStatistics.user.nickname }}</h4>
+                                                            <h4 style="margin-top: 0">总收益 ─ ￥{{ userStatisticsTotal.rewardsTotal|default(0)|number_format }}</h4>
+                                                            <h4 style="margin-top: 0">拼团订单收益 ─ ￥{{ userStatisticsTotal.orderRewardsTotal|default(0)|number_format }}</h4>
+                                                            <h4 style="margin-top: 0">传销收益 ─ ￥{{ userStatisticsTotal.userRewardsTotal|default(0)|number_format }}</h4>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -75,22 +75,22 @@
                                         <div class="box box-solid">
                                             <div class="box-body">
                                                 <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
-                                                    用户ID ─ {{ user.parentUser.id|default }}
+                                                    用户ID ─ {{ userStatistics.user.parentUser.id|default }}
                                                 </h4>
                                                 <div class="media">
                                                     <div class="media-left">
-                                                        {% if user.parentUser and user.parentUser.avatarUrl %}
-                                                            <img src="{{ user.parentUser.avatarUrl }}" alt="MaterialPro" class="media-object"
+                                                        {% if userStatistics.user.parentUser and userStatistics.user.parentUser.avatarUrl %}
+                                                            <img src="{{ userStatistics.user.parentUser.avatarUrl }}" alt="MaterialPro" class="media-object"
                                                                  style="width: 150px;height: auto;border-radius: 4px;box-shadow: 0 1px 3px rgba(0,0,0,.15);">
                                                         {% endif %}
                                                     </div>
                                                     <div class="media-body">
                                                         <div class="clearfix">
-                                                            <h4 style="margin-top: 0">用户ID ─ {{ user.parentUser.id|default }}</h4>
-                                                            <h4 style="margin-top: 0">昵称 ─ {{ user.parentUser.nickname|default }}</h4>
-                                                            <h4 style="margin-top: 0">总收益 ─ {{ user.parentUser.userStatistics.rewardsTotal|default(0)|number_format }}</h4>
-                                                            <h4 style="margin-top: 0">拼团订单收益 ─ {{ user.parentUser.userStatistics.orderRewardsTotal|default(0)|number_format }}</h4>
-                                                            <h4 style="margin-top: 0">传销收益 ─ {{ user.parentUser.userStatistics.userRewardsTotal|default(0)|number_format }}</h4>
+                                                            <h4 style="margin-top: 0">用户ID ─ {{ userStatistics.user.parentUser.id|default }}</h4>
+                                                            <h4 style="margin-top: 0">昵称 ─ {{ userStatistics.user.parentUser.nickname|default }}</h4>
+                                                            <h4 style="margin-top: 0">总收益 ─ ￥{{ parentUserStatisticsTotal.rewardsTotal|default(0)|number_format }}</h4>
+                                                            <h4 style="margin-top: 0">拼团订单收益 ─ ￥{{ parentUserStatisticsTotal.orderRewardsTotal|default(0)|number_format }}</h4>
+                                                            <h4 style="margin-top: 0">传销收益 ─ ￥{{ parentUserStatisticsTotal.userRewardsTotal|default(0)|number_format }}</h4>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -131,8 +131,8 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {% if user.groupUserOrderRewards.count %}
-                                                {% for item in user.groupUserOrderRewards %}
+                                            {% if userStatistics.user.groupUserOrderRewards.count %}
+                                                {% for item in userStatistics.user.groupUserOrderRewards %}
                                                     <tr>
                                                         <td>
                                                             <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {'id': item.groupUserOrder.id}) }}" target="_blank" title="查看详情">
@@ -200,8 +200,8 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {% if user.groupUserOrders.count %}
-                                                {% for item in user.groupUserOrders %}
+                                            {% if userStatistics.user.groupUserOrders.count %}
+                                                {% for item in userStatistics.user.groupUserOrders %}
                                                     <tr>
                                                         <td>
                                                             <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {'id': item.id}) }}" target="_blank" title="查看详情">

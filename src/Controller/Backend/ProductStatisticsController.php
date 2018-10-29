@@ -25,10 +25,15 @@ class ProductStatisticsController extends BackendController
             'title' => 'ProductStatistics 列表',
             'form' => [
                 'productId' => $request->query->getInt('productId', null),
+                'year' => $request->query->getInt('year', null),
+                'month' => $request->query->getInt('month', null),
+                'day' => $request->query->getInt('day', null),
                 'page' => $request->query->getInt('page', 1)
-            ]
+            ],
+            'yearStart' => 2018,
+            'yearEnd' => date('Y')
         ];
-        $data['data'] = $productStatisticsRepository->findProductStatisticsQueryBuilder($data['form']['productId']);
+        $data['data'] = $productStatisticsRepository->findProductStatisticsQueryBuilder($data['form']['productId'], $data['form']['year'], $data['form']['month'], $data['form']['day']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/product_statistics/index.html.twig', $data);
     }
@@ -36,11 +41,14 @@ class ProductStatisticsController extends BackendController
     /**
      * @Route("/product/statistics/info/{id}", name="product_statistics_info", methods="GET")
      */
-    public function info(GroupUserOrderRepository $groupUserOrderRepository, Request $request, ProductStatistics $productStatistics): Response
+    public function info(GroupUserOrderRepository $groupUserOrderRepository, Request $request, ProductStatistics $productStatistics, ProductStatisticsRepository $productStatisticsRepository): Response
     {
+        $queryBuilder = $productStatisticsRepository->findProductStatisticsQueryBuilder($productStatistics->getProduct()->getId());
+        $productStatisticsTotal = $queryBuilder->getQuery()->getOneOrNullResult();
         $data = [
             'title' => 'ProductStatistics 详情',
             'productStatistics' => $productStatistics,
+            'productStatisticsTotal' => $productStatisticsTotal,
         ];
         $data['data'] = $groupUserOrderRepository->findProductGroupUserOrdersQueryBuilder($productStatistics->getProduct()->getId());
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $request->query->getInt('page', 1), self::PAGE_LIMIT);

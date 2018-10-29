@@ -224,14 +224,14 @@
                                         {% for groupUserOrderReward in user.groupUserOrderRewards %}
                                             {% set totalUserRewards = totalUserRewards + groupUserOrderReward.userRewards %}
                                         {% endfor %}
-                                        总收益 ─ {{ user.userStatistics.rewardsTotal|default(0)|number_format }}
-                                        总拼团订单收益 ─ {{ user.userStatistics.orderRewardsTotal|default(0)|number_format }}
-                                        总传销收益 ─ {{ user.userStatistics.userRewardsTotal|default(0)|number_format }}
-                                        总下线用户数量({{ user.userStatistics.childrenNum|default(0) }})
+                                        总收益 ─ {{ user.totalRewards|default(0)|number_format }}
+                                        总拼团订单收益 ─ {{ userStatisticsTotal.orderRewardsTotal|default(0)|number_format }}
+                                        总传销收益 ─ {{ userStatisticsTotal.userRewardsTotal|default(0)|number_format }}
+                                        总下线用户数量({{ userStatisticsTotal.childrenNum|default(0) }})
                                     </h3>
 
                                     <div class="box-tools pull-right">
-                                        <a href="{{ path('user_rewards', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
+                                        <a href="{{ path('user_statistics_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
                                                     class="fa fa-minus"></i>
                                         </button>
@@ -293,10 +293,10 @@
                             <div class="box box-success">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">
-                                        总消费金额 ─ {{ user.userStatistics.spentTotal|default(0)|number_format }}
-                                        总拼团数量 ─ {{ user.groupUserOrders.count|default(0) }}
-                                        总开团数量 ─ {{ user.groupOrders.count|default(0) }}
-                                        总参团数量 ─ {{ 'TODO: ???' }}
+                                        总消费金额 ─ {{ userStatisticsTotal.spentTotal|default(0)|number_format }}
+                                        总拼团数量 ─ {{ userStatisticsTotal.groupOrderNum|default(0) + userStatisticsTotal.groupOrderJoinedNum|default(0)  }}
+                                        总开团数量 ─ {{ userStatisticsTotal.groupOrderNum|default(0) }}
+                                        总参团数量 ─ {{ userStatisticsTotal.groupOrderJoinedNum|default(0) }}
                                     </h3>
 
                                     <div class="box-tools pull-right">

@@ -61,6 +61,7 @@ class UserRepository extends ServiceEntityRepository
             ->addSelect('SUM(us.sharedNum) AS sharedNum')
             ->addSelect('SUM(us.childrenNum) AS childrenNum')
             ->leftJoin('u.userStatistics', 'us')
+            ->groupBy('u.id')
             // order by 拼团消费总额
             ->addOrderBy('spentTotal', 'DESC')
             // order by 总分享数量

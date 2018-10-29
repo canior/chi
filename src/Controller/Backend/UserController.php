@@ -7,6 +7,7 @@ use App\Form\UserRoleType;
 use App\Form\UserType;
 use App\Repository\ProductReviewRepository;
 use App\Repository\UserRepository;
+use App\Repository\UserStatisticsRepository;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,7 +45,7 @@ class UserController extends BackendController
     /**
      * @Route("/user/info/{id}", name="user_info", methods="GET|POST")
      */
-    public function info(Request $request, User $user, UserManagerInterface $userManager, ProductReviewRepository $productReviewRepository): Response
+    public function info(Request $request, User $user, UserManagerInterface $userManager, ProductReviewRepository $productReviewRepository, UserStatisticsRepository $userStatisticsRepository): Response
     {
         $form = $this->createForm(UserRoleType::class, $user);
         $form->get('roles')->setData($user->getRoles());
@@ -61,38 +62,10 @@ class UserController extends BackendController
 
         return $this->render('backend/user/info.html.twig', [
             'user' => $user,
+            'userStatisticsTotal' => $userStatisticsRepository->findUserStatisticsQueryBuilder($user->getId())->getQuery()->getOneOrNullResult(),
             'title' => 'User 详情',
             'form' => $form->createView(),
             'productReviews' => $productReviewRepository->findUserProductReviews($user->getId(), 1, 3)
-        ]);
-    }
-
-    /**
-     * @Route("/user/rewards/", name="user_rewards", methods="GET")
-     */
-    public function rewards(UserRepository $userRepository, Request $request): Response
-    {
-        $data = [
-            'title' => '用户收益列表',
-            'form' => [
-                'userId' => $request->query->getInt('userId', null),
-                'username' => $request->query->get('username', null),
-                'page' => $request->query->getInt('page', 1)
-            ]
-        ];
-        $data['data'] = $userRepository->findUsersQueryBuilder($data['form']['userId'], $data['form']['username']);
-        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
-        return $this->render('backend/user/rewards.html.twig', $data);
-    }
-
-    /**
-     * @Route("/user/rewards/info/{id}", name="user_rewards_info", methods="GET")
-     */
-    public function rewardsInfo(Request $request, User $user): Response
-    {
-        return $this->render('backend/user/rewards_info.html.twig', [
-            'user' => $user,
-            'title' => '用户收益详情'
         ]);
     }
 
