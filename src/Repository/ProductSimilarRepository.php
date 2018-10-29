@@ -19,32 +19,20 @@ class ProductSimilarRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductSimilar::class);
     }
 
-//    /**
-//     * @return ProductSimilar[] Returns an array of ProductSimilar objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param null $productId
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findProductSimilarsQueryBuilder($productId = null)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $query = $this->createQueryBuilder('p')
+            ->orderBy('p.id', 'DESC');
 
-    /*
-    public function findOneBySomeField($value): ?ProductSimilar
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ($productId) {
+            $query->where('p.product = :productId')
+                ->setParameter('productId', $productId);
+        }
+
+        return $query;
     }
-    */
 }

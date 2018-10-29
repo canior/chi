@@ -102,6 +102,17 @@ class BackendController extends DefaultController
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
+                [
+                    'path' => [
+                        'product_similar_index',
+                        'product_review_new',
+                        'product_review_edit',
+                    ],
+                    'name' => '产品推荐',
+                    'icon' => 'fa fa-retweet',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
             ]
         ],
         [

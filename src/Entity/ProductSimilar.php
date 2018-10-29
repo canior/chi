@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductSimilarRepository")
  */
-class ProductSimilar
+class ProductSimilar implements Dao
 {
     use IdTrait,
         CreatedAtTrait;
