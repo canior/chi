@@ -20,7 +20,7 @@ class User extends BaseUser implements Dao
     const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
     public static $roleTexts = [
-        self::ROLE_CUSTOMER_SERVICE => '客户',
+        self::ROLE_CUSTOMER => '客户',
         self::ROLE_CUSTOMER_SERVICE => '客服',
         self::ROLE_ADMIN => '管理员',
         self::ROLE_SUPER_ADMIN => '超级管理员'

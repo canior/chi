@@ -75,8 +75,16 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>{{ item.id }}</td>
-                                        <td>{{ item.groupOrder.id }}</td>
-                                        <td>{{ item.user.id }}</td>
+                                        <td>
+                                            <a class="btn btn-info btn-xs" href="{{ path('group_order_info', {'id': item.groupOrder.id}) }}" target="_blank" title="查看详情">
+                                                {{ item.groupOrder.id }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                                {{ item.user.id }}
+                                            </a>
+                                        </td>
                                         <td>
                                             {% if item.user.avatarUrl %}
                                                 <img src="{{ item.user.avatarUrl }}" width="40" height="40"/>

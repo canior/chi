@@ -173,10 +173,26 @@
                                                 {% for item in group_order.groupUserOrders %}
                                                     <tr>
                                                         <td>{{ item.id }}</td>
-                                                        <td>{{ item.user.id }}</td>
+                                                        <td>
+                                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.user.id }}
+                                                            </a>
+                                                        </td>
                                                         <td>{{ item.role }}</td>
-                                                        <td>{{ item.groupOrder.product.id|default }}</td>
-                                                        <td>{{ item.groupOrder.product.title|default }}</td>
+                                                        <td>
+                                                            {% if item.groupOrder.product %}
+                                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.groupOrder.product.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.groupOrder.product.id }}
+                                                                </a>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if item.groupOrder.product %}
+                                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.groupOrder.product.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.groupOrder.product.title }}
+                                                                </a>
+                                                            {% endif %}
+                                                        </td>
                                                         <td>{{ item.groupOrder.product.price|number_format }}</td>
                                                         <td>{{ item.statusText }}</td>
                                                         <td>{{ item.paymentStatusText }}</td>
@@ -223,33 +239,49 @@
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                             <tr>
-                                                <th width="10%">用户ID</th>
-                                                <th width="10%">分享源</th>
-                                                <th width="10%">打开时间</th>
+                                                <th width="10%">分享源ID</th>
+                                                <th width="10%">分享源类型</th>
+                                                <th width="10%">产品ID</th>
+                                                <th width="10%">产品名</th>
+                                                <th width="10%">分享页</th>
+                                                <th width="10%">分享源创建时间</th>
                                                 <th width="10%" class="text-center hidden-xs">操作</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {% if group_order.userShares is defined %}
-                                                {% for item in group_order.userShares %}
+                                            {# TODO: 这里拿用户分享的逻辑是什么？ #}
+                                            {% if group_order.user.shareSources is defined %}
+                                                {% for item in group_order.user.shareSources.slice(0, 5) %}
                                                     <tr>
-                                                        <td>{{ item.user.id }}</td>
-                                                        <td>{{ item.parentUser.id|default }}</td>
+                                                        <td>{{ item.id }}</td>
+                                                        <td>{{ item.typeText|default }}</td>
+                                                        <td>
+                                                            {% if item.product %}
+                                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.product.id }}
+                                                                </a>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if item.product %}
+                                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.product.title }}
+                                                                </a>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ item.page }}</td>
                                                         <td>{{ item.createdAt }}</td>
                                                         <td class="text-center">
                                                             <div class="btn-group">
-                                                                {#<a href="{{ path('product_review_edit', {id: item.id, productId: app.request.attributes.get('id')}) }}"#}
-                                                                   {#title="修改">#}
-                                                                    {#<span class="glyphicon glyphicon-edit"></span>#}
-                                                                {#</a>#}
+                                                                <a href="{{ path('share_source_info', {id: item.id}) }}"
+                                                                   title="查看详情">
+                                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                                </a>
                                                             </div>
                                                         </td>
                                                     </tr>
                                                 {% endfor %}
                                             {% else %}
-                                                <tr>
-                                                    <td colspan="4" class="alert alert-danger">TODO: 如何获取用户分享？</td>
-                                                </tr>
                                                 <tr>
                                                     <td colspan="4" class="alert alert-warning">no records found</td>
                                                 </tr>

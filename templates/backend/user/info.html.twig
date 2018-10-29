@@ -147,8 +147,7 @@
                                     <h3 class="box-title">上线用户 ─ {{ user.parentUser.nickname|default }} 总计分享({{ user.shareSources.count }})</h3>
 
                                     <div class="box-tools pull-right">
-                                        {# TODO: share_source_index ?#}
-                                        {#<a href="{{ path('', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>#}
+                                        <a href="{{ path('share_source_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
                                                     class="fa fa-minus"></i>
                                         </button>
@@ -159,11 +158,12 @@
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                             <tr>
-                                                <th width="10%">ID</th>
-                                                <th width="10%">分享用户ID</th>
-                                                <th width="10%">分享用户昵称</th>
-                                                <th width="10%">分享方式</th>
-                                                <th width="10%">是否点开</th>
+                                                <th width="10%">分享源ID</th>
+                                                <th width="10%">分享源类型</th>
+                                                <th width="10%">产品ID</th>
+                                                <th width="10%">产品名</th>
+                                                <th width="10%">分享页</th>
+                                                <th width="10%">分享源创建时间</th>
                                                 <th width="10%" class="text-center hidden-xs">操作</th>
                                             </tr>
                                             </thead>
@@ -172,32 +172,36 @@
                                                 {% for item in user.shareSources.slice(0, 5) %}
                                                     <tr>
                                                         <td>{{ item.id }}</td>
+                                                        <td>{{ item.typeText|default }}</td>
                                                         <td>
-                                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.parentUser.id}) }}" target="_blank" title="查看详情">
-                                                                {{ item.parentUser.id }}
-                                                            </a>
+                                                            {% if item.product %}
+                                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.product.id }}
+                                                                </a>
+                                                            {% endif %}
                                                         </td>
                                                         <td>
-                                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.parentUser.id}) }}" target="_blank" title="查看详情">
-                                                                {{ item.parentUser.nickname }}
-                                                            </a>
+                                                            {% if item.product %}
+                                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.product.title }}
+                                                                </a>
+                                                            {% endif %}
                                                         </td>
-                                                        <td>{{ 'TODO: ???' }}</td>
-                                                        <td>{{ item.statusText }}</td>
+                                                        <td>{{ item.page }}</td>
+                                                        <td>{{ item.createdAt }}</td>
                                                         <td class="text-center">
                                                             <div class="btn-group">
-                                                                {#TODO: change to share_source_info?#}
-                                                                {#<a href="{{ path('', {id: item.id}) }}"#}
-                                                                   {#title="查看详情">#}
-                                                                    {#<span class="fa fa-hand-o-right fa-2x"></span>#}
-                                                                {#</a>#}
+                                                                <a href="{{ path('share_source_info', {id: item.id}) }}"
+                                                                   title="查看详情">
+                                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                                </a>
                                                             </div>
                                                         </td>
                                                     </tr>
                                                 {% endfor %}
                                             {% else %}
                                                 <tr>
-                                                    <td colspan="6" class="alert alert-warning">no records found</td>
+                                                    <td colspan="7" class="alert alert-warning">no records found</td>
                                                 </tr>
                                             {% endif %}
                                             </tbody>
