@@ -27,10 +27,14 @@ class UserActivity implements Dao
 
     /**
      * UserActivity constructor.
+     * @param User $user
+     * @param string $page
      */
-    public function __construct()
+    public function __construct(User $user, string $page)
     {
-        $this->setCreatedAt(time());
+        $this->user = $user;
+        $this->page = $page;
+        $this->setCreatedAt();
     }
 
     public function getUser(): ?User

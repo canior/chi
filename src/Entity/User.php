@@ -577,6 +577,19 @@ class User extends BaseUser implements Dao
         return $this->userStatistics;
     }
 
+    /**
+     * @return UserStatistics
+     */
+    public function getOrCreateTodayUserStatistics() {
+        foreach ($this->getUserStatistics() as $userStatistics) {
+            if ($userStatistics->isToday()) {
+                return $userStatistics;
+            }
+        }
+        $userStatistics =  new UserStatistics($this);
+        return $userStatistics;
+    }
+
     public function addUserStatistic(UserStatistics $userStatistic): self
     {
         if (!$this->userStatistics->contains($userStatistic)) {
@@ -598,5 +611,47 @@ class User extends BaseUser implements Dao
         }
 
         return $this;
+    }
+
+    /**
+     * 返回所有有效下线列表
+     * TODO: 这里未来需要用SQL替换
+     *
+     * @return User[]
+     */
+    public function getSharedUsersArray() {
+        $childrenArray = [];
+        foreach ($this->getShareSources() as $shareSource) {
+            foreach ($shareSource->getShareSourceUsers() as $shareSourceUser) {
+                $child = $shareSourceUser->getUser();
+                $totalUserOrderNum = 0;
+                $totalUserOrderAmount = 0;
+                $totalUserRewards = 0;
+
+                $childArray = $child->getArray();
+
+                foreach($child->getGroupUserOrders() as $groupUserOrder) {
+                    foreach($groupUserOrder->getGroupUserOrderRewards() as $groupUserOrderRewards) {
+                        if ($groupUserOrderRewards->getUser()->getId() == $child->getId()) {
+                            $totalUserRewards += $groupUserOrderRewards;
+                        }
+                    }
+                    $totalUserOrderNum ++;
+                    $totalUserOrderAmount += $groupUserOrder->getTotal();
+                }
+                $childArray['totalUserOrderNum'] = $totalUserOrderNum;
+                $childArray['totalUserOrderAmount'] = $totalUserOrderAmount;
+                $childArray['totalUserRewards'] = $totalUserRewards;
+
+                if ($child->getParentUser()->getId() == $this->getId()) {
+                    $childArray['valid'] = true;
+                } else {
+                    $childArray['valid'] = false;
+                }
+
+                $childrenArray[] = $childArray;
+            }
+        }
+        return $childrenArray;
     }
 }

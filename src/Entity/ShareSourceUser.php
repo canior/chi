@@ -28,9 +28,13 @@ class ShareSourceUser implements Dao
 
     /**
      * ShareSourceUser constructor.
+     * @param ShareSource $shareSource
+     * @param User $user
      */
-    public function __construct()
+    public function __construct(ShareSource $shareSource, User $user)
     {
+        $this->setShareSource($shareSource);
+        $this->setUser($user);
         $this->setCreatedAt();
     }
 

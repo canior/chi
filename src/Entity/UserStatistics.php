@@ -75,9 +75,11 @@ class UserStatistics
 
     /**
      * UserStatistics constructor.
+     * @param User $user
      */
-    public function __construct()
+    public function __construct(User $user)
     {
+        $this->setUser($user);
         $this->setChildrenNum(0);
         $this->setSharedNum(0);
         $this->setGroupOrderNum(0);
@@ -115,6 +117,15 @@ class UserStatistics
      */
     public function increaseGroupOrderNum($num) {
         $this->groupOrderNum += $num;
+        return $this;
+    }
+
+    /**
+     * @param $num
+     * @return UserStatistics
+     */
+    public function increaseGroupOrderJoinedNum($num) {
+        $this->groupOrderJoinedNum += $num;
         return $this;
     }
 
@@ -314,5 +325,14 @@ class UserStatistics
     public function getGroupOrderTotal(): ?int
     {
         return $this->groupOrderNum + $this->groupOrderJoinedNum;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isToday() {
+        return date('Y') == $this->getYear()
+            and date('m') == $this->getMonth()
+            and date('d') == $this->getDay();
     }
 }

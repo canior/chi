@@ -54,6 +54,9 @@ class GroupOrderController extends BaseController
         $groupOrder->setPending();
 
         //参团
+        /**
+         * @var User $joiner
+         */
         $joiner = $this->getEntityManager()->getRepository(User::class)->find(2);
         $joinerGroupUserOrder = new GroupUserOrder($groupOrder, $joiner);
         $groupOrder->addGroupUserOrder($joinerGroupUserOrder);
@@ -100,24 +103,8 @@ class GroupOrderController extends BaseController
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
-        //向微信提交支付信息
-        $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
-
-        $body = "create order"; //TODO 开团信息要怎么写
-        $wxPaymentApi = new WxPayment($this->getLog());
-        $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
-        $prePayId = $result['prepay_id'];
-        $prePayInfo = $wxPaymentApi->getOrderDataToWxApp($prePayId);
-
-        $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
-        $groupUserOrder->setPrePayId($prePayId);
-        $this->getEntityManager()->persist($groupUserOrder);
-        $this->getEntityManager()->flush();
-
-
         $data = [
-            'payment' => $prePayInfo,
-            'groupOrder' => $groupOrder->getArray()
+            'groupUserOrder' => $groupOrder->getMasterGroupUserOrder()->getArray()
         ];
 
         return $this->responseJson('success', 200, $data);
@@ -151,97 +138,14 @@ class GroupOrderController extends BaseController
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
-        //微信提交支付
-        $body = "create order"; //TODO 参团信息要怎么写
-        $wxPaymentApi = new WxPayment($this->getLog());
-        $this->getLog()->info("join group user order: id=" . $groupUserOrder->getId() .  ' total=' . $groupUserOrder->getTotal());
-        $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
-        $prePayId = $result['prepay_id'];
-        $prePayInfo = $wxPaymentApi->getOrderDataToWxApp($prePayId);
-
-        $groupUserOrder->setPrePayId($prePayId);
-        $this->getEntityManager()->persist($groupUserOrder);
-        $this->getEntityManager()->flush();
-
 
         $data = [
-            'payment' => $prePayInfo,
-            'groupOrder' => $groupOrder->getArray()
+            'groupUserOrder' => $groupOrder->getArray()
         ];
         return $this->responseJson('success', 200, $data);
     }
 
-    /**
-     * 支付开团订单成功
-     * 1. 更新拼团订单状态pending（拼团中）
-     * 2. 微信支付通知
-     *
-     * 团员支付参团订单成功
-     * 1. 微信支付通知
-     * 2. 拼团的状态改为completed（拼团成功）
-     * 3. 团长小程序通知拼团成功
-     *
-     * 返回拼团详情页
-     *
-     * @Route("/groupOrder/notifyPayment", name="notifyGroupOrderPayment", methods="POST")
-     * @param Request $request
-     * @param GroupOrderRepository $groupOrderRepository
-     * @param UserRepository $userRepository
-     * @return Response
-     */
-    public function notifyPaymentAction(Request $request, GroupOrderRepository $groupOrderRepository, UserRepository $userRepository) : Response {
-        $data = json_decode($request->getContent(), true);
-        $isPaid =  isset($data['isPaid']) ? $data['isPaid'] : false;
-        $groupOrderId =  isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
-        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
 
-        $user = $this->getWxUser($thirdSession);
-        $groupOrder = $groupOrderRepository->find($groupOrderId);
-
-        if (!$isPaid) {
-            return $this->responseJson('group_order_created_fail', 200, $data);
-        }
-
-
-        if ($groupOrder->getUser()->getId() == $user->getId()) {
-            $groupOrder->setPending();
-        } else {
-            $groupOrder->setCompleted($user);
-        }
-
-        $this->getEntityManager()->persist($groupOrder);
-        $this->getEntityManager()->flush();
-
-        if ($groupOrder->isPending()) {
-
-            $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
-
-            $formId = $groupUserOrder->getPrePayId();
-            $templateId = "9RLVQOC7gP3qJipiFX2efKvz2oSYuJRs0dDaY2UeDIA";
-            $page = "pages/group/index?id=" . $groupOrderId;
-            $toUser = $groupUserOrder->getUser()->getWxOpenId();
-            $data = ['keyword1' => ['value' => $groupOrder->getProduct()->getTitle()],
-                'keyword2' => ['value' => $groupOrder->getProduct()->getPrice()],
-                'keyword3' => ['value' => 1],
-                'keyword4' => ['value' => '2019-01-01 12:12:12']];
-            $emphasisKeyword = "keyword3.DATA";
-
-            $wxApi = new WxCommon($this->getLog());
-            $wxApi->sendMessage($toUser, $templateId, $page, $formId, $data, $emphasisKeyword);
-
-            //$command = new NotifyPendingGroupOrderCommand($groupOrder->getId());
-            //$this->getCommandBus()->handle($command);
-        } else if ($groupOrder->isCompleted()) {
-            $command = new NotifyCompletedGroupOrderCommand($groupOrder->getId());
-            //$this->getCommandBus()->handle($command);
-        }
-
-        $data = [
-            'groupOrder' => $groupOrder->getArray()
-        ];
-        return $this->responseJson('group_order_created_success', 200, $data);
-
-    }
 
     /**
      * 查看拼团详情

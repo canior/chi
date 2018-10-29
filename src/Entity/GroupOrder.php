@@ -162,7 +162,7 @@ class GroupOrder implements Dao
         $masterUserOrder = $this->getMasterGroupUserOrder();
         $masterUserOrder->setPaid();
 
-        $this->getUser()->getUserStatistics()->increaseGroupOrderNum(1);
+        $this->getUser()->getOrCreateTodayUserStatistics()->increaseGroupOrderNum(1);
 
         $this->setUpdatedAt();
         return $this;
@@ -200,6 +200,8 @@ class GroupOrder implements Dao
         $masterGroupUserOrder = $this->getMasterGroupUserOrder();
         $masterGroupUserOrder->setPending();
         $masterGroupUserOrder->setUpdatedAt();
+
+        $this->getUser()->getOrCreateTodayUserStatistics()->increaseGroupOrderJoinedNum(1);
 
         $this->setUpdatedAt();
         return $this;

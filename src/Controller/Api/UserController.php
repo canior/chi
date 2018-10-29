@@ -8,6 +8,7 @@ use App\Entity\Region;
 use App\Entity\ShareSource;
 use App\Entity\ShareSourceUser;
 use App\Entity\User;
+use App\Entity\UserActivity;
 use App\Entity\UserAddress;
 use App\Entity\UserStatistics;
 use App\Repository\FileRepository;
@@ -17,6 +18,7 @@ use App\Repository\ProductRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ShareSourceRepository;
 use App\Repository\ShareSourceUserRepository;
+use App\Repository\UserActivityRepository;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
 use App\Service\Wx\WxCommon;
@@ -86,8 +88,8 @@ class UserController extends BaseController
                     $user->setPassword("IamCustomer");
                     $user->setWxOpenId($openId);
 
-                    $userStatistics = new UserStatistics();
-                    $user->setUserStatistics($userStatistics);
+                    $userStatistics = new UserStatistics($user);
+                    $user->addUserStatistic($userStatistics);
                 }
                 $user->setNickname($nickName);
                 $user->setAvatarUrl($avatarUrl);
@@ -452,6 +454,8 @@ class UserController extends BaseController
     }
 
     /**
+     * 创建用户分享源
+     *
      * @Route("/user/shareSource/create", name="createShareSource", methods="POST")
      * @param Request $request
      * @param ProductRepository $productRepository
@@ -509,7 +513,7 @@ class UserController extends BaseController
         $shareSource->setBannerFile($bannerFile);
         $shareSource->setType($shareSourceType);
 
-        $user->getUserStatistics()->increaseShareNum(1);
+        $user->getOrCreateTodayUserStatistics()->increaseShareNum(1);
         $user->addShareSource($shareSource);
 
         $this->getEntityManager()->persist($user);
@@ -540,17 +544,13 @@ class UserController extends BaseController
 
         $sharedUser = $shareSourceUserRepository->findOneBy(['user' => $user, 'shareSource' => $shareSource]);
         if ($sharedUser == null) {
-            $user->getUserStatistics()->increaseChildrenNum(1);
+            $user->getOrCreateTodayUserStatistics()->increaseChildrenNum(1);
             $this->getEntityManager()->persist($user);
         }
 
-        $shareSourceUser = new ShareSourceUser();
-        $shareSourceUser->setUser($user);
-        $shareSourceUser->setShareSource($shareSource);
+        $shareSourceUser = new ShareSourceUser($shareSource, $user);
         $shareSource->addShareSourceUser($shareSourceUser);
         $this->getEntityManager()->persist($shareSource);
-
-
 
         $this->getEntityManager()->flush();
 
@@ -588,6 +588,46 @@ class UserController extends BaseController
         }
 
         return $this->responseJson('success', 200, ['fileId' => $fileId]);
+    }
+
+    /**
+     * 用户收益列表
+     *
+     * @Route("/user/rewards/list", name="userRewardsList", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function listUserRewardsAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        return $this->responseJson('success', 200, [
+            'children' => $user->getSharedUsersArray()
+        ]);
+    }
+
+
+    /**
+     * 添加用户访问记录
+     *
+     * @Route("/user/activity/add", name="addUserActivity", methods="POST")
+     * @param Request $request
+     * @param UserActivityRepository $userActivityRepository
+     * @return Response
+     */
+    public function addUserActivity(Request $request, UserActivityRepository $userActivityRepository) {
+        $data = json_decode($request->getContent(), true);
+        $page = isset($data['page']) ? $data['page'] : null;
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+
+        $user = $this->getWxUser($thirdSession);
+        $userActivity = new UserActivity($user, $page);
+        $user->addUserActivity($userActivity);
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, []);
     }
 
 }

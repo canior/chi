@@ -171,7 +171,7 @@ class GroupUserOrder implements Dao
         $this->addGroupUserOrderLog($log);
 
         //拼团成功后订单状态变为待发货，此时给订单返现
-        $this->getUser()->getUserStatistics()->increaseOrderRewardsTotal($this->getOrderRewards());
+        $this->getUser()->getOrCreateTodayUserStatistics()->increaseOrderRewardsTotal($this->getOrderRewards());
 
         return $this;
     }
@@ -241,7 +241,7 @@ class GroupUserOrder implements Dao
             $userRewards->setUserRewards($this->getGroupOrder()->getProduct()->getUserRewards());
             $this->addGroupUserOrderReward($userRewards);
 
-            $this->getUser()->getParentUser()->getUserStatistics()->increaseUserRewardsTotal($this->getOrderRewards());
+            $this->getUser()->getParentUser()->getOrCreateTodayUserStatistics()->increaseUserRewardsTotal($this->getOrderRewards());
         }
 
         return $this;
@@ -252,11 +252,6 @@ class GroupUserOrder implements Dao
     }
 
     public function setReturning() : self {
-        $this->status = self::RETURNING;
-        return $this;
-    }
-
-    public function isReturning() : bool {
         $oldStatus = $this->status;
         $newStatus = $this->status = self::RETURNING;
 
@@ -272,6 +267,10 @@ class GroupUserOrder implements Dao
         return $this;
     }
 
+    public function isReturning() : bool {
+        return $this->status == self::RETURNING;
+    }
+
     public function setRmaReceived() : self {
         $oldStatus = $this->status;
         $newStatus = $this->status = self::RMA_RECEIVED;
@@ -285,7 +284,7 @@ class GroupUserOrder implements Dao
         $log->setToStatus($newStatus);
         $this->addGroupUserOrderLog($log);
 
-        $this->getUser()->getUserStatistics()->increaseGroupUserOrderNum(-1);
+        $this->getUser()->getOrCreateTodayUserStatistics()->increaseGroupUserOrderNum(-1);
 
         return $this;
     }
@@ -307,8 +306,8 @@ class GroupUserOrder implements Dao
         $log->setToPaymentStatus($newStatus);
         $this->addGroupUserOrderLog($log);
 
-        $this->getUser()->getUserStatistics()->increaseSpentTotal($this->getTotal());
-        $this->getUser()->getUserStatistics()->increaseGroupUserOrderNum(1);
+        $this->getUser()->getOrCreateTodayUserStatistics()->increaseSpentTotal($this->getTotal());
+        $this->getUser()->getOrCreateTodayUserStatistics()->increaseGroupUserOrderNum(1);
 
         return $this;
     }
@@ -382,7 +381,7 @@ class GroupUserOrder implements Dao
         $log->setToPaymentStatus($newStatus);
         $this->addGroupUserOrderLog($log);
 
-        $this->getUser()->getUserStatistics()->increaseSpentTotal(-$this->getTotal());
+        $this->getUser()->getOrCreateTodayUserStatistics()->increaseSpentTotal(-$this->getTotal());
 
         return $this;
     }
@@ -604,6 +603,13 @@ class GroupUserOrder implements Dao
     }
 
     /**
+     * @return bool
+     */
+    public function isGroupOrder() {
+        return $this->getGroupOrder() != null;
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {
@@ -615,6 +621,7 @@ class GroupUserOrder implements Dao
 
         return [
             'id' => $this->getId(),
+            'groupOrderId' => $this->isGroupOrder() ? $this->getGroupOrder()->getId() : null,
             'status' => $this->getStatus(),
             'statusText' => $this->getStatusText(),
             'paymentStatus' => $this->getPaymentStatusText(),

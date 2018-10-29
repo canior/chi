@@ -373,6 +373,11 @@ class Product implements Dao
             $productSpecImagesArray[] = $productSpecImage->getArray();
         }
 
+        $similarProductsArray = [];
+        foreach ($this->getProductSimilars() as $similarProduct) {
+            $similarProductArray[] = $similarProduct->getProduct()->getArray();
+        }
+
         return [
             'id' => $this->getId(),
             'title' => $this->getTitle(),
@@ -384,6 +389,7 @@ class Product implements Dao
             'productImages' => $productImageArray,
             'productSpecImages' => $productSpecImagesArray,
             'stock' => $this->getStock(),
+            'similarProducts' => $similarProductsArray
         ];
     }
 
