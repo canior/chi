@@ -72,11 +72,6 @@ class User extends BaseUser implements Dao
     private $location;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\UserStatistics", mappedBy="user", cascade={"persist", "remove"})
-     */
-    private $userStatistics;
-
-    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Region", cascade={"persist", "remove"})
      */
     private $region;
@@ -135,6 +130,12 @@ class User extends BaseUser implements Dao
      */
     private $shareSources;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserStatistics", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $userStatistics;
+
     public function __construct()
     {
         parent::__construct();
@@ -152,6 +153,7 @@ class User extends BaseUser implements Dao
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->shareSources = new ArrayCollection();
         $this->setUpdatedAt();
+        $this->userStatistics = new ArrayCollection();
     }
 
     public function getId()
@@ -511,23 +513,6 @@ class User extends BaseUser implements Dao
         ];
     }
 
-    public function getUserStatistics(): ?UserStatistics
-    {
-        return $this->userStatistics;
-    }
-
-    public function setUserStatistics(UserStatistics $userStatistics): self
-    {
-        $this->userStatistics = $userStatistics;
-
-        // set the owning side of the relation if necessary
-        if ($this !== $userStatistics->getUser()) {
-            $userStatistics->setUser($this);
-        }
-
-        return $this;
-    }
-
     /**
      * @return null|GroupOrder
      */
@@ -584,4 +569,34 @@ class User extends BaseUser implements Dao
         return $this;
     }
 
+    /**
+     * @return Collection|UserStatistics[]
+     */
+    public function getUserStatistics(): Collection
+    {
+        return $this->userStatistics;
+    }
+
+    public function addUserStatistic(UserStatistics $userStatistic): self
+    {
+        if (!$this->userStatistics->contains($userStatistic)) {
+            $this->userStatistics[] = $userStatistic;
+            $userStatistic->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserStatistic(UserStatistics $userStatistic): self
+    {
+        if ($this->userStatistics->contains($userStatistic)) {
+            $this->userStatistics->removeElement($userStatistic);
+            // set the owning side to null (unless already changed)
+            if ($userStatistic->getUser() === $this) {
+                $userStatistic->setUser(null);
+            }
+        }
+
+        return $this;
+    }
 }

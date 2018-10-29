@@ -13,12 +13,6 @@ class UserStatistics
     use IdTrait;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="userStatistics", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $user;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $childrenNum;
@@ -54,6 +48,32 @@ class UserStatistics
     private $userRewardsTotal;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $year;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $month;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $day;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="userStatistics", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $groupOrderJoinedNum;
+
+    /**
      * UserStatistics constructor.
      */
     public function __construct()
@@ -61,10 +81,14 @@ class UserStatistics
         $this->setChildrenNum(0);
         $this->setSharedNum(0);
         $this->setGroupOrderNum(0);
+        $this->setGroupOrderJoinedNum(0);
         $this->setGroupUserOrderNum(0);
         $this->setSpentTotal(0);
         $this->setOrderRewardsTotal(0);
         $this->setUserRewardsTotal(0);
+        $this->setYear(date('Y'));
+        $this->setMonth(date('m'));
+        $this->setDay(date('d'));
     }
 
     /**
@@ -123,18 +147,6 @@ class UserStatistics
 
     public function increaseUserRewardsTotal($amount) {
         $this->userRewardsTotal += $amount;
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(User $user): self
-    {
-        $this->user = $user;
-
         return $this;
     }
 
@@ -229,5 +241,65 @@ class UserStatistics
     public function getRewardsTotal()
     {
         return $this->orderRewardsTotal + $this->userRewardsTotal;
+    }
+
+    public function getYear(): ?int
+    {
+        return $this->year;
+    }
+
+    public function setYear(int $year): self
+    {
+        $this->year = $year;
+
+        return $this;
+    }
+
+    public function getMonth(): ?int
+    {
+        return $this->month;
+    }
+
+    public function setMonth(int $month): self
+    {
+        $this->month = $month;
+
+        return $this;
+    }
+
+    public function getDay(): ?int
+    {
+        return $this->day;
+    }
+
+    public function setDay(int $day): self
+    {
+        $this->day = $day;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getGroupOrderJoinedNum(): ?int
+    {
+        return $this->groupOrderJoinedNum;
+    }
+
+    public function setGroupOrderJoinedNum(int $groupOrderJoinedNum): self
+    {
+        $this->groupOrderJoinedNum = $groupOrderJoinedNum;
+
+        return $this;
     }
 }

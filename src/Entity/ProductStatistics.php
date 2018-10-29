@@ -13,12 +13,6 @@ class ProductStatistics implements Dao
     use IdTrait;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Product", inversedBy="productStatistics", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $product;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $reviewsNum;
@@ -49,6 +43,27 @@ class ProductStatistics implements Dao
     private $returnUsersRate;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $year;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $month;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $day;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="productStatistics")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $product;
+
+    /**
      * ProductStatistics constructor.
      */
     public function __construct()
@@ -59,18 +74,9 @@ class ProductStatistics implements Dao
         $this->setReturnUsersNum(0);
         $this->setOrderAmountTotal(0);
         $this->setReturnUsersRate(0);
-    }
-
-    public function getProduct(): ?Product
-    {
-        return $this->product;
-    }
-
-    public function setProduct(Product $product): self
-    {
-        $this->product = $product;
-
-        return $this;
+        $this->setYear(date('Y'));
+        $this->setMonth(date('m'));
+        $this->setDay(date('d'));
     }
 
     public function getReviewsNum(): ?int
@@ -141,6 +147,54 @@ class ProductStatistics implements Dao
     public function setReturnUsersRate($returnUsersRate): self
     {
         $this->returnUsersRate = $returnUsersRate;
+
+        return $this;
+    }
+
+    public function getYear(): ?int
+    {
+        return $this->year;
+    }
+
+    public function setYear(int $year): self
+    {
+        $this->year = $year;
+
+        return $this;
+    }
+
+    public function getMonth(): ?int
+    {
+        return $this->month;
+    }
+
+    public function setMonth(int $month): self
+    {
+        $this->month = $month;
+
+        return $this;
+    }
+
+    public function getDay(): ?int
+    {
+        return $this->day;
+    }
+
+    public function setDay(int $day): self
+    {
+        $this->day = $day;
+
+        return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
 
         return $this;
     }

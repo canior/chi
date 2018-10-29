@@ -86,14 +86,21 @@ class Product implements Dao
     private $productReviews;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\ProductStatistics", mappedBy="product", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="product")
+     */
+    private $shareSources;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductStatistics", mappedBy="product", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $productStatistics;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductSimilar", mappedBy="product", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
-    private $shareSources;
+    private $productSimilars;
 
     /**
      * Product constructor.
@@ -109,6 +116,7 @@ class Product implements Dao
         $this->productReviews = new ArrayCollection();
         $this->shareSources = new ArrayCollection();
         $this->productStatistics = new ProductStatistics();
+        $this->productSimilars = new ArrayCollection();
     }
 
     public function getSku(): ?string
@@ -395,23 +403,6 @@ class Product implements Dao
         $this->stock += $num;
     }
 
-    public function getProductStatistics(): ?ProductStatistics
-    {
-        return $this->productStatistics;
-    }
-
-    public function setProductStatistics(ProductStatistics $productStatistics): self
-    {
-        $this->productStatistics = $productStatistics;
-
-        // set the owning side of the relation if necessary
-        if ($this !== $productStatistics->getProduct()) {
-            $productStatistics->setProduct($this);
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection|ShareSource[]
      */
@@ -437,6 +428,68 @@ class Product implements Dao
             // set the owning side to null (unless already changed)
             if ($shareSource->getProduct() === $this) {
                 $shareSource->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ProductStatistics[]
+     */
+    public function getProductStatistics(): Collection
+    {
+        return $this->productStatistics;
+    }
+
+    public function addProductStatistic(ProductStatistics $productStatistic): self
+    {
+        if (!$this->productStatistics->contains($productStatistic)) {
+            $this->productStatistics[] = $productStatistic;
+            $productStatistic->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductStatistic(ProductStatistics $productStatistic): self
+    {
+        if ($this->productStatistics->contains($productStatistic)) {
+            $this->productStatistics->removeElement($productStatistic);
+            // set the owning side to null (unless already changed)
+            if ($productStatistic->getProduct() === $this) {
+                $productStatistic->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ProductSimilar[]
+     */
+    public function getProductSimilars(): Collection
+    {
+        return $this->productSimilars;
+    }
+
+    public function addProductSimilar(ProductSimilar $productSimilar): self
+    {
+        if (!$this->productSimilars->contains($productSimilar)) {
+            $this->productSimilars[] = $productSimilar;
+            $productSimilar->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductSimilar(ProductSimilar $productSimilar): self
+    {
+        if ($this->productSimilars->contains($productSimilar)) {
+            $this->productSimilars->removeElement($productSimilar);
+            // set the owning side to null (unless already changed)
+            if ($productSimilar->getProduct() === $this) {
+                $productSimilar->setProduct(null);
             }
         }
 
