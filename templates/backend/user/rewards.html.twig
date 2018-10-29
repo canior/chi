@@ -53,36 +53,36 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>
-                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.id }}
+                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                                {{ item.user.id }}
                                             </a>
                                         </td>
                                         <td>
-                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.nickname }}
+                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                                {{ item.user.nickname }}
                                             </a>
                                         </td>
-                                        <td>{{ item.userStatistics.rewardsTotal|default(0)|number_format }}</td>
-                                        <td>{{ item.userStatistics.orderRewardsTotal|default(0)|number_format }}</td>
-                                        <td>{{ item.userStatistics.userRewardsTotal|default(0)|number_format }}</td>
+                                        <td>{{ item.rewardsTotal|default(0)|number_format }}</td>
+                                        <td>{{ item.orderRewardsTotal|default(0)|number_format }}</td>
+                                        <td>{{ item.userRewardsTotal|default(0)|number_format }}</td>
                                         <td>
-                                            {% if item.lastRewardsGroupOrder %}
-                                                <a class="btn btn-info btn-xs" href="{{ path('group_order_info', {'id': item.lastRewardsGroupOrder.id}) }}" target="_blank" title="查看详情">
-                                                    {{ item.lastRewardsGroupOrder.id|default }}
+                                            {% if item.user.lastRewardsGroupOrder %}
+                                                <a class="btn btn-info btn-xs" href="{{ path('group_order_info', {'id': item.user.lastRewardsGroupOrder.id}) }}" target="_blank" title="查看详情">
+                                                    {{ item.user.lastRewardsGroupOrder.id|default }}
                                                 </a>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            {% if item.lastRewardsGroupOrder %}
-                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.lastRewardsGroupOrder.product.id}) }}" target="_blank" title="查看详情">
-                                                    {{ item.lastRewardsGroupOrder.product.title|default }}
+                                            {% if item.user.lastRewardsGroupOrder %}
+                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.user.lastRewardsGroupOrder.product.id}) }}" target="_blank" title="查看详情">
+                                                    {{ item.user.lastRewardsGroupOrder.product.title|default }}
                                                 </a>
                                             {% endif %}
                                         </td>
-                                        <td>{{ item.lastRewardsGroupOrder.createdAt|default }}</td>
+                                        <td>{{ item.user.lastRewardsGroupOrder.createdAt|default }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{ path('user_rewards_info', {id: item.id}) }}"
+                                                <a href="{{ path('user_rewards_info', {id: item.user.id}) }}"
                                                    title="查看详情">
                                                     <span class="fa fa-hand-o-right fa-2x"></span>
                                                 </a>

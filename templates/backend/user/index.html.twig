@@ -82,23 +82,23 @@
                             {% if pagination.getTotalItemCount %}
                                 {% for item in pagination %}
                                     <tr>
-                                        <td>{{ item.id }}</td>
+                                        <td>{{ item.user.id }}</td>
                                         {#<td>{{ item.username }}</td>#}
                                         {#<td>{{ item.nickname }}</td>#}
                                         <td>
-                                            {% if item.avatarUrl %}
-                                                <img src="{{ item.avatarUrl }}" width="40" height="40"/>
+                                            {% if item.user.avatarUrl %}
+                                                <img src="{{ item.user.avatarUrl }}" width="40" height="40"/>
                                             {% endif %}
                                         </td>
-                                        <td>{{ item.userStatistics.spentTotal|default(0)|number_format }}</td>
-                                        <td>{{ item.userStatistics.sharedNum|default(0) }}</td>
-                                        <td>{{ item.userStatistics.childrenNum|default(0) }}</td>
-                                        <td>{{ item.totalRewards|number_format }}</td>
-                                        <td>{{ item.lastLogin ? item.lastLogin|date : '' }}</td>
-                                        <td>{{ item.createdAt }}</td>
+                                        <td>{{ item.spentTotal|default(0)|number_format }}</td>
+                                        <td>{{ item.sharedNum|default(0) }}</td>
+                                        <td>{{ item.childrenNum|default(0) }}</td>
+                                        <td>{{ item.user.totalRewards|number_format }}</td>
+                                        <td>{{ item.user.lastLogin ? item.user.lastLogin|date : '' }}</td>
+                                        <td>{{ item.user.createdAt }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{ path('user_info', {'id': item.id}) }}" title="查看详情">
+                                                <a href="{{ path('user_info', {'id': item.user.id}) }}" title="查看详情">
                                                     <span class="fa fa-hand-o-right fa-2x"></span>
                                                 </a>
                                                 {#

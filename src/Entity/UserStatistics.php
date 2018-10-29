@@ -291,6 +291,10 @@ class UserStatistics
         return $this;
     }
 
+    /**
+     * 返回参团数量
+     * @return int|null
+     */
     public function getGroupOrderJoinedNum(): ?int
     {
         return $this->groupOrderJoinedNum;
@@ -301,5 +305,14 @@ class UserStatistics
         $this->groupOrderJoinedNum = $groupOrderJoinedNum;
 
         return $this;
+    }
+
+    /**
+     * 返回拼团数量
+     * @return int|null
+     */
+    public function getGroupOrderTotal(): ?int
+    {
+        return $this->groupOrderNum + $this->groupOrderJoinedNum;
     }
 }

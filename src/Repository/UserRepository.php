@@ -27,7 +27,8 @@ class UserRepository extends ServiceEntityRepository
      * @param $userId
      * @return User|null
      */
-    public function findLatestShareSourceParentUser($userId) : ?User {
+    public function findLatestShareSourceParentUser($userId): ?User
+    {
         $users = $shareSourceUserRepository = $this->getEntityManager()
             ->getRepository(ShareSourceUser::class)
             ->findBy(['user' => $userId], ['id' => 'DESC'], 1);
@@ -53,7 +54,21 @@ class UserRepository extends ServiceEntityRepository
         /**
          * @var QueryBuilder $query
          */
-        $query = $this->createQueryBuilder('u');
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('u AS user')
+            ->from('App:User', 'u')
+            ->addSelect('SUM(us.spentTotal) AS spentTotal')
+            ->addSelect('SUM(us.sharedNum) AS sharedNum')
+            ->addSelect('SUM(us.childrenNum) AS childrenNum')
+            ->leftJoin('u.userStatistics', 'us')
+            // order by 拼团消费总额
+            ->addOrderBy('spentTotal', 'DESC')
+            // order by 总分享数量
+            ->addOrderBy('sharedNum', 'DESC')
+            // order by 有效下线用户数量
+            ->addOrderBy('childrenNum', 'DESC')
+            // order by 总收益
+            ->addOrderBy('u.totalRewards', 'DESC');
 
         if ($userId) {
             $query->where('u.id = :userId')
@@ -93,16 +108,6 @@ class UserRepository extends ServiceEntityRepository
             $query->andWhere('u.createdAt <= :createdAtEnd')
                 ->setParameter('createdAtEnd', $createdAtEnd);
         }
-
-        $query->leftJoin('u.userStatistics', 'us');
-        // order by 拼团消费总额
-        $query->addOrderBy('us.spentTotal', 'DESC');
-        // order by 总分享数量
-        $query->addOrderBy('us.sharedNum', 'DESC');
-        // order by 有效下线用户数量
-        $query->addOrderBy('us.childrenNum', 'DESC');
-        // order by 总收益
-        $query->addOrderBy('u.totalRewards', 'DESC');
 
         return $query;
     }

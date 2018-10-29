@@ -33,6 +33,7 @@ class BackendController extends DefaultController
                 [
                     'path' => [
                         'user_index',
+                        'user_info',
                     ],
                     'name' => '注册用户',
                     'icon' => 'fa fa-user',
