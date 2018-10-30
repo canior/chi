@@ -7,7 +7,7 @@
         <view class="line">
           <view class="name">{{item.name}}</view>
           <view class="phone">{{item.phone}}</view>
-          <!--<view class="default"><text wx:if="{{item.isDefault}}" decode="true">&nbsp;默认&nbsp;</text></view>-->
+          <view class="default"><text wx:if="{{item.isDefault}}" decode="true">&nbsp;默认&nbsp;</text></view>
         </view>
         <view class="line">
           <view class="addr">{{item.region.fullname}} {{item.address}}</view>

@@ -65,7 +65,6 @@
   line-height: 80px;
   padding: 0 40rpx;
 }
-
 .bottom {
   display: flex;
   align-items: center;

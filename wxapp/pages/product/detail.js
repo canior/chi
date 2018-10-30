@@ -100,7 +100,7 @@ Page({
       success: (res) => {
         wx.hideLoading();
         if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
+          //console.log(res.data.data)
           wx.redirectTo({
             url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
           })
@@ -143,7 +143,7 @@ Page({
       success: (res) => {
         wx.hideLoading();
         if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
+          //console.log(res.data.data)
           wx.redirectTo({
             url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
           })

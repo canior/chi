@@ -15,7 +15,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const orderId = options.orderId ? options.orderId : 100144
+    const orderId = options.orderId ? options.orderId : 100161
     this.getGroupUserOrder(orderId)
   },
 
@@ -42,9 +42,19 @@ Page({
         wx.hideLoading();
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
+          const groupUserOrder = res.data.data.groupUserOrder;
+          if (!groupUserOrder.user.defaultAddress) {
+            // 用户无地址,转新建地址页
+            wx.navigateTo({
+              url: '/pages/user/address/edit?orderId=' + groupUserOrder.id,
+            })
+          } else if (!groupUserOrder.address) {
+            // 用户有地址,订单无地址,则用默认地址
+            groupUserOrder.address = groupUserOrder.user.defaultAddress
+          }
           that.setData({
-            groupUserOrder: res.data.data.groupUserOrder
-          })
+            groupUserOrder: groupUserOrder
+          })          
         } else {
           console.log('wx.request return error', res.statusCode);
         }
@@ -56,17 +66,11 @@ Page({
     })
   },
 
-  // 转地址管理或新建地址
+  // 转地址管理
   toUserAddress: function(e) {
-    if (this.data.groupUserOrder.user.defaultAddress) {//地址管理
-      wx.redirectTo({
-        url: '/pages/user/address/index?orderId=' + this.data.groupUserOrder.id,
-      })
-    } else {//新建地址
-      wx.redirectTo({
-        url: '/pages/user/address/edit?orderId=' + this.data.groupUserOrder.id,
-      })
-    }
+    wx.navigateTo({
+      url: '/pages/user/address/index?orderId=' + this.data.groupUserOrder.id,
+    })
   },
 
   // 付款
@@ -114,7 +118,9 @@ Page({
                         url: '/pages/group/index?id=' + groupOrderId,
                       })
                     } else {//转订单详情页
-
+                      wx.redirectTo({
+                        url: '/pages/user/order/detail?id=' + groupUserOrderId,
+                      })
                     }
                   } else {
                     console.log('wx.request return error', res.statusCode);

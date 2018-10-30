@@ -14,13 +14,17 @@
   <view class="row">
     <input placeholder="详细地址" value="{{address}}" bindblur="inputAddress"/>
   </view>
-  <!--<view class="row">
+  <view class="row" wx:if="{{!isDefault}}">
     <checkbox-group bindchange="setDefault" data-isdefault="{{isDefault}}">
       <checkbox checked="{{isDefault}}"/>设为默认地址
     </checkbox-group>
-  </view>-->
+  </view>
 </view>
 
 <view class="bottom" bindtap="save">
   <view class="btn">保存</view>
+</view>
+<view class="bottom">
+  <view class="left" bindtap="save">保存地址</view>
+  <view class="right" bindtap="import"><image src="/images/wx.png"/>微信导入地址</view>
 </view>

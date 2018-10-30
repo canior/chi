@@ -15,7 +15,7 @@ Page({
     customItem: '',
     address: '',
     isDefault: false,
-    groupUserOrderId: null, //从支付页选地址过来的
+    groupUserOrderId: null, //从支付页无地址过来的
     user: null,
   },
 
@@ -120,6 +120,27 @@ Page({
     }
   },
 
+  // 导入
+  import: function (e) {
+    const that = this;
+    app.unifiedAuth(
+      'scope.address',
+      '需要使用您的通讯地址，是否允许？',
+      function () {
+        wx.chooseAddress({
+          success: (res) => {
+            console.log(res);
+            app.globalData.addressInfo = res;
+            that.importAddress()
+          },
+          fail: function (err) {
+            console.log('wx.chooseAddress fail', err)
+          }
+        })
+      }
+    )
+  },
+
   // 保存
   save: function (e) {
     const that = this;
@@ -134,7 +155,7 @@ Page({
         city: that.data.region[1],
         county: that.data.region[2],
         address: that.data.address,
-        isDefault: (that.data.user && !that.data.user.defaultAddress) ? true : that.data.isDefault,
+        isDefault: (that.data.user && !that.data.user.defaultAddress) ? true : that.data.isDefault, //首次地址强制默认
         thirdSession: wx.getStorageSync('thirdSession'),
       },
       method: 'POST',
