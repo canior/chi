@@ -35,13 +35,11 @@ class ProductStatisticsRepository extends ServiceEntityRepository
             ->addSelect('SUM(ps.orderNum) AS orderNum')
             ->addSelect('SUM(ps.buyersNum) AS buyersNum')
             ->addSelect('SUM(ps.returnUsersNum) AS returnUsersNum')
-            ->addSelect('SUM(ps.returnUsersRate) AS returnUsersRate')
             ->from('App:ProductStatistics', 'ps')
             ->groupBy('ps.product')
             ->addOrderBy('orderNum', 'DESC')
             ->addOrderBy('buyersNum', 'DESC')
-            ->addOrderBy('returnUsersNum', 'DESC')
-            ->addOrderBy('returnUsersRate', 'DESC');
+            ->addOrderBy('returnUsersNum', 'DESC');
 
         if ($productId) {
             $query->where('ps.product = :productId')

@@ -70,7 +70,6 @@ class ProductStatistics implements Dao
         $this->setBuyersNum(0);
         $this->setReturnUsersNum(0);
         $this->setOrderAmountTotal(0);
-        $this->setReturnUsersRate(0);
         $this->setYear(date('Y'));
         $this->setMonth(date('m'));
         $this->setDay(date('d'));
@@ -132,18 +131,6 @@ class ProductStatistics implements Dao
     public function setReturnUsersNum(int $returnUsersNum): self
     {
         $this->returnUsersNum = $returnUsersNum;
-
-        return $this;
-    }
-
-    public function getReturnUsersRate()
-    {
-        return $this->returnUsersRate;
-    }
-
-    public function setReturnUsersRate($returnUsersRate): self
-    {
-        $this->returnUsersRate = $returnUsersRate;
 
         return $this;
     }
