@@ -30,6 +30,7 @@
                             <div class="col-md-2 form-group">
                                 <label>角色</label>
                                 <select name="role" class="form-control chosen">
+                                    <option value="">全部</option>
                                     {% for role, text in roles %}
                                         <option value="{{ role }}"{% if role == form.role %} selected{% endif %}>{{ text }}</option>
                                     {% endfor %}
