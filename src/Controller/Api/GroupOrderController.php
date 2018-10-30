@@ -42,7 +42,7 @@ class GroupOrderController extends BaseController
      */
     public function testAction(Request $request, ProductRepository $productRepository) {
         if ($this->getEnvironment() != 'dev') exit;
-
+echo $this->getParameter("test");exit;
         $data = json_decode($request->getContent(), true);
         $productId =  isset($data['productId']) ? $data['productId'] : null;
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;

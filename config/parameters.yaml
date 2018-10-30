@@ -1,0 +1,17 @@
+parameters:
+
+  #微信小程序
+  wxAppId: "test"
+  wxAppSecret:
+
+  #微信支付
+  wxAppKey:
+  wxAppMchId:
+
+  wxCertPath:
+  wxSslKeyPath:
+  wxCaInfoPath:
+
+  wxPayNotifyUrl:
+  wxRefundNotifyUrl:
+
