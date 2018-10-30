@@ -172,86 +172,6 @@
                             </div>
                             <!-- /.box -->
                         </div>
-                        <div class="col-sm-12 col-md-12">
-                            <!-- BAR CHART -->
-                            <div class="box box-warning">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">产品推荐</h3>
-
-                                    <div class="box-tools pull-right">
-                                        <a href="{{ path('product_similar_new', {productId: productStatistics.product.id}) }}" type="button" class="btn btn-info btn-sm pull-left">添加</a>
-                                        <a href="{{ path('product_similar_index', {productId: productStatistics.product.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
-                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                                    class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="box-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped">
-                                            <thead>
-                                            <tr>
-                                                <th width="10%">Id</th>
-                                                <th width="10%">产品ID</th>
-                                                <th width="10%">产品名</th>
-                                                <th width="10%">产品图片</th>
-                                                <th width="10%">推荐产品ID</th>
-                                                <th width="10%">推荐产品名</th>
-                                                <th width="10%">推荐产品图片</th>
-                                                <th width="10%">创建日期</th>
-                                                <th width="10%" class="text-center hidden-xs">操作</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {% if productStatistics.product.productSimilars.count %}
-                                                {% for item in productStatistics.product.productSimilars.slice(0, 5) %}
-                                                    <tr>
-                                                        <td>{{ item.id }}</td>
-                                                        <td>{{ item.product.id }}</td>
-                                                        <td>{{ item.product.title }}</td>
-                                                        <td>
-                                                            {% if item.product.productImages.count %}
-                                                                {% for productImage in item.product.productImages %}
-                                                                    <img src="{{ path('imagePreview', {fileId: productImage.file.id}) }}" width="40" height="40"/>
-                                                                    {% if not loop.last %}<br />{% endif %}
-                                                                {% endfor %}
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>{{ item.similarProduct.id }}</td>
-                                                        <td>{{ item.similarProduct.title }}</td>
-                                                        <td>
-                                                            {% if item.similarProduct.productImages.count %}
-                                                                {% for productImage in item.similarProduct.productImages %}
-                                                                    <img src="{{ path('imagePreview', {fileId: productImage.file.id}) }}" width="40" height="40"/>
-                                                                    {% if not loop.last %}<br />{% endif %}
-                                                                {% endfor %}
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>{{ item.createdAt }}</td>
-                                                        <td class="text-center">
-                                                            <div class="btn-group">
-                                                                <a href="{{ path('product_similar_edit', {'id': item.id}) }}"
-                                                                   title="修改">
-                                                                    <span class="glyphicon glyphicon-edit"></span>
-                                                                </a>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                            {% else %}
-                                                <tr>
-                                                    <td colspan="9" class="alert">no records found</td>
-                                                </tr>
-                                            {% endif %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!-- /table -->
-                                </div>
-                                <!-- /.box-body -->
-                            </div>
-                            <!-- /.box -->
-                        </div>
                     </div>
                     <!-- /row -->
                 </div>
@@ -262,7 +182,6 @@
         <!-- /.col -->
     </div>
     <!-- /.row -->
-
 {% endblock %}
 
 {% block javascripts %}

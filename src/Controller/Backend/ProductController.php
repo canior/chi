@@ -22,7 +22,7 @@ class ProductController extends BackendController
     public function index(ProductRepository $productRepository, Request $request): Response
     {
         $data = [
-            'title' => 'Product 列表',
+            'title' => '产品管理',
             'form' => [
                 'keyword' => $request->query->get('keyword', null),
                 'page' => $request->query->getInt('page', 1)
