@@ -103,6 +103,12 @@ class Product implements Dao
     private $productSimilars;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrder", mappedBy="product", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $groupUserOrders;
+
+    /**
      * Product constructor.
      */
     public function __construct()
@@ -117,6 +123,7 @@ class Product implements Dao
         $this->shareSources = new ArrayCollection();
         $this->productStatistics = new ProductStatistics();
         $this->productSimilars = new ArrayCollection();
+        $this->groupUserOrders = new ArrayCollection();
     }
 
     public function getSku(): ?string
@@ -496,6 +503,37 @@ class Product implements Dao
             // set the owning side to null (unless already changed)
             if ($productSimilar->getProduct() === $this) {
                 $productSimilar->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GroupUserOrder[]
+     */
+    public function getGroupUserOrders(): Collection
+    {
+        return $this->groupUserOrders;
+    }
+
+    public function addGroupUserOrder(GroupUserOrder $groupUserOrder): self
+    {
+        if (!$this->groupUserOrders->contains($groupUserOrder)) {
+            $this->groupUserOrders[] = $groupUserOrder;
+            $groupUserOrder->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupUserOrder(GroupUserOrder $groupUserOrder): self
+    {
+        if ($this->groupUserOrders->contains($groupUserOrder)) {
+            $this->groupUserOrders->removeElement($groupUserOrder);
+            // set the owning side to null (unless already changed)
+            if ($groupUserOrder->getProduct() === $this) {
+                $groupUserOrder->setProduct(null);
             }
         }
 

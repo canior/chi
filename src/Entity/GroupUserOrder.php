@@ -58,7 +58,7 @@ class GroupUserOrder implements Dao
 
     /**
      * @ORM\ManyToOne(targetEntity="GroupOrder", inversedBy="groupUserOrders")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $groupOrder;
 
@@ -115,6 +115,11 @@ class GroupUserOrder implements Dao
      * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderLog", mappedBy="groupUserOrder", cascade={"persist"}, fetch="EXTRA_LAZY")
      */
     private $groupUserOrderLogs;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="groupUserOrders")
+     */
+    private $product;
 
     /**
      * GroupUserOrder constructor.
@@ -635,5 +640,17 @@ class GroupUserOrder implements Dao
             'paymentTotal' => $this->getTotal(),
             'address' => $this->getUserAddress() == null ? null : $this->getUserAddress()->getArray()
         ];
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
+
+        return $this;
     }
 }
