@@ -68,9 +68,9 @@
                                 <th width="10%">收益总额</th>
                                 <th width="10%">拼团收益总额</th>
                                 <th width="10%">传销收益总额</th>
-                                <th width="10%">最后收益来源 拼团订单ID</th>
-                                <th width="10%">最后收益来源 产品名</th>
-                                <th width="10%">最后收益来源 时间</th>
+                                <th width="10%">最后收益拼团订单ID</th>
+                                <th width="10%">最后收益产品名</th>
+                                <th width="10%">最后收益时间</th>
                                 <th width="10%" class="text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
@@ -92,20 +92,20 @@
                                         <td>{{ item.orderRewardsTotal|default(0)|number_format }}</td>
                                         <td>{{ item.userRewardsTotal|default(0)|number_format }}</td>
                                         <td>
-                                            {% if item.userStatistics.user.lastRewardsGroupOrder %}
-                                                <a class="btn btn-info btn-xs" href="{{ path('group_order_info', {'id': item.userStatistics.user.lastRewardsGroupOrder.id}) }}" target="_blank" title="查看详情">
-                                                    {{ item.userStatistics.user.lastRewardsGroupOrder.id|default }}
+                                            {% if item.userStatistics.user.lastRewardsGroupUserOrder %}
+                                                <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {'id': item.userStatistics.user.lastRewardsGroupUserOrder.id}) }}" target="_blank" title="查看详情">
+                                                    {{ item.userStatistics.user.lastRewardsGroupUserOrder.id|default }}
                                                 </a>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            {% if item.userStatistics.user.lastRewardsGroupOrder %}
-                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.userStatistics.user.lastRewardsGroupOrder.product.id}) }}" target="_blank" title="查看详情">
-                                                    {{ item.userStatistics.user.lastRewardsGroupOrder.product.title|default }}
+                                            {% if item.userStatistics.user.lastRewardsGroupUserOrder and item.userStatistics.user.lastRewardsGroupUserOrder.product %}
+                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.userStatistics.user.lastRewardsGroupUserOrder.product.id}) }}" target="_blank" title="查看详情">
+                                                    {{ item.userStatistics.user.lastRewardsGroupUserOrder.product.title|default }}
                                                 </a>
                                             {% endif %}
                                         </td>
-                                        <td>{{ item.userStatistics.user.lastRewardsGroupOrder.createdAt|default }}</td>
+                                        <td>{{ item.userStatistics.user.lastRewardsGroupUserOrder.createdAt|default }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
                                                 <a href="{{ path('user_statistics_info', {id: item.userStatistics.id}) }}"

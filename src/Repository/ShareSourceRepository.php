@@ -20,6 +20,33 @@ class ShareSourceRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param null $userId
+     * @param null $username
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findShareSourcesQueryBuilder($userId = null, $username = null)
+    {
+        $query = $this->createQueryBuilder('ss')
+            ->orderBy('ss.id', 'DESC');
+
+        if ($userId) {
+            $query->where('ss.user = :userId')
+                ->setParameter('userId', $userId);
+        }
+
+        if ($username) {
+            $orX = $query->expr()->orX();
+            $literal = $query->expr()->literal("%$username%");
+            $orX->add($query->expr()->like('u.username', $literal));
+            $orX->add($query->expr()->like('u.nickname', $literal));
+            $query->leftJoin('ss.user', 'u')
+                ->andWhere($orX);
+        }
+
+        return $query;
+    }
+
+    /**
      * @param $userId
      * @return
      *   [
