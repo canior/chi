@@ -21,6 +21,7 @@ use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
+use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
 use App\Service\Wx\WxCommon;
 use App\Service\Wx\WxPayment;
@@ -34,18 +35,119 @@ use Symfony\Component\Routing\Annotation\Route;
 class GroupUserOrderController extends BaseController
 {
     /**
-     * 选择订单地址
+     * 测试普通订单
+     * @Route("/groupUserOrder/test", name="testGroupUserOrder", methods="POST")
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function testAction(Request $request, ProductRepository $productRepository) {
+        if ($this->getEnvironment() != 'dev') exit;
+
+        $data = json_decode($request->getContent(), true);
+        $productId =  isset($data['productId']) ? $data['productId'] : null;
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+
+        $user = $this->getWxUser($thirdSession);
+        $product = $productRepository->find($productId);
+
+        //创建支付订单
+        $groupUserOrder = new GroupUserOrder($user, $product);
+        $groupUserOrder->setTotal($product->getPrice());
+
+        //完成支付
+        $groupUserOrder->setPending();
+        $groupUserOrder->setPaid();
+
+        $groupUserOrder->setDelivered();
+
+        $this->getEntityManager()->persist($groupUserOrder);
+        $this->getEntityManager()->flush();
+
+
+
+        $data = [
+            'groupUserOrder' => $groupUserOrder->getArray()
+        ];
+
+
+       return $this->responseJson('success', 200, $data);
+    }
+
+    /**
+     * 订单待支付页面
      *
-     * @Route("/groupUserOrder/chooseAddress", name="groupOrderChooseAddress", methods="POST")
+     * @Route("/groupUserOrder/view", name="viewGroupUserOrder", methods="POST")
      * @param Request $request
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
      */
-    public function chooseAddressAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
+    public function viewAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
         $data = json_decode($request->getContent(), true);
+        $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
 
-        $groupOrderId =  isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
+        /**
+         * @var GroupUserOrder $groupUserOrder
+         */
+        $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+        $data = [
+            'groupUserOrder' => $groupUserOrder->getArray()
+        ];
+
+        return $this->responseJson('success', 200, $data);
+    }
+
+    /**
+     * 选择订单地址
+     *
+     * @Route("/groupUserOrder/confirmAddress", name="groupUserOrderConfirmAddress", methods="POST")
+     * @param Request $request
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @param UserAddressRepository $userAddressRepository
+     * @return Response
+     */
+    public function confirmAddressAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository, UserAddressRepository $userAddressRepository) {
+        $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $addressId = isset($data['addressId']) ? $data['addressId'] : null;
+        $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
+
+        $userAddress = $userAddressRepository->find($addressId);
+        $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+        $groupUserOrder->setUserAddress($userAddress);
+        $this->getEntityManager()->persist($groupUserOrder);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, [
+            'groupUserOrder' => $groupUserOrder->getArray()
+        ]);
+
+    }
+
+    /**
+     * 普通购买创建用户订单
+     * @Route("/groupUserOrder/create", name="createGroupUserOrder", methods="POST")
+     * @param Request $request
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @param ProductRepository $productRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function createAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository, ProductRepository $productRepository) {
+        $data = json_decode($request->getContent(), true);
+        $productId =  isset($data['productId']) ? $data['productId'] : null;
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+
+        $user = $this->getWxUser($thirdSession);
+        $product = $productRepository->find($productId);
+
+        $groupUserOrder = new GroupUserOrder($user, $product);
+        $groupUserOrder->setTotal($product->getPrice());
+        $this->getEntityManager()->persist($groupUserOrder);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, [
+            'groupUserOrder' => $groupUserOrder->getArray()
+        ]);
     }
 
     /**
@@ -94,8 +196,8 @@ class GroupUserOrderController extends BaseController
      * 3. 团长小程序通知拼团成功
      *
      * 支付普通订单成功
-     *
-     * 返回拼团详情页
+     * 1. 微信支付通知
+     * 2. 普通购买完成
      *
      * @Route("/groupUserOrder/notifyPayment", name="notifyGroupUserOrderPayment", methods="POST")
      * @param Request $request

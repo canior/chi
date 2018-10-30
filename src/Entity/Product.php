@@ -51,6 +51,11 @@ class Product implements Dao
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      */
+    private $groupPrice;
+
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
     private $originalPrice;
 
     /**
@@ -136,6 +141,14 @@ class Product implements Dao
         $this->sku = $sku;
 
         return $this;
+    }
+
+    public function setGroupPrice($amount) {
+        $this->groupPrice = $amount;
+    }
+
+    public function getGroupPrice() {
+        return $this->groupPrice;
     }
 
     public function getTitle(): ?string
@@ -389,6 +402,7 @@ class Product implements Dao
             'id' => $this->getId(),
             'title' => $this->getTitle(),
             'price' => $this->getPrice(),
+            'groupPrice' => $this->getGroupPrice(),
             'originalPrice' => $this->getOriginalPrice(),
             'freight' => $this->getFreight(),
             'shortDescription' => $this->getShortDescription(),
@@ -538,5 +552,19 @@ class Product implements Dao
         }
 
         return $this;
+    }
+
+    /**
+     * @return ProductStatistics
+     */
+    public function getOrCreateTodayProductStatistics() {
+        foreach ($this->getProductStatistics() as $productStatistic) {
+            if ($productStatistic->isToday()) {
+                return $productStatistic;
+            }
+        }
+        $productStatistic =  new ProductStatistics($this);
+        $this->addProductStatistic($productStatistic);
+        return $productStatistic;
     }
 }

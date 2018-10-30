@@ -510,6 +510,7 @@ class User extends BaseUser implements Dao
             'nickname' => $this->getNickname(),
             'avatarUrl' => $this->getAvatarUrl(),
             'totalRewards' => $this->getTotalRewards(),
+            'defaultAddress' => $this->getDefaultUserAddress() != null ? $this->getDefaultUserAddress()->getArray() : null
         ];
     }
 
@@ -587,6 +588,7 @@ class User extends BaseUser implements Dao
             }
         }
         $userStatistics =  new UserStatistics($this);
+        $this->addUserStatistic($userStatistics);
         return $userStatistics;
     }
 

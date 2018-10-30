@@ -55,6 +55,7 @@ class GroupUserOrder implements Dao
 
     const GROUP_MASTER = '团长';
     const GROUP_MEMBER = '团员';
+    const REGULAR = '普通';
 
     /**
      * @ORM\ManyToOne(targetEntity="GroupOrder", inversedBy="groupUserOrders")
@@ -123,23 +124,21 @@ class GroupUserOrder implements Dao
 
     /**
      * GroupUserOrder constructor.
-     * @param GroupOrder $groupOrder
      * @param User $user
+     * @param Product $product
      */
-    public function __construct(GroupOrder $groupOrder, User $user)
+    public function __construct(User $user, Product $product)
     {
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
         $this->groupUserOrderLogs = new ArrayCollection();
-
-        $this->setGroupOrder($groupOrder);
         $this->setUser($user);
+        $this->setProduct($product);
         $this->setCreatedAt();
         $this->setUpdatedAt();
         $this->setCreated();
         $this->setUnPaid();
-        $this->setTotal($groupOrder->getProduct()->getPrice());
-        $this->setOrderRewards($groupOrder->getProduct()->getOrderRewards());
+        $this->setOrderRewards($product->getOrderRewards());
     }
 
     public function setCreated() : self {
@@ -154,6 +153,8 @@ class GroupUserOrder implements Dao
         $log->setFromStatus($oldStatus);
         $log->setToStatus($newStatus);
         $this->addGroupUserOrderLog($log);
+
+        $this->getProduct()->getOrCreateTodayProductStatistics()->increaseOrderNum(1);
 
         return $this;
     }
@@ -243,7 +244,7 @@ class GroupUserOrder implements Dao
             $userRewards = new GroupUserOrderRewards();
             $userRewards->setUser($this->getUser()->getParentUser());
             $userRewards->setGroupUserOrder($this);
-            $userRewards->setUserRewards($this->getGroupOrder()->getProduct()->getUserRewards());
+            $userRewards->setUserRewards($this->getProduct()->getUserRewards());
             $this->addGroupUserOrderReward($userRewards);
 
             $this->getUser()->getParentUser()->getOrCreateTodayUserStatistics()->increaseUserRewardsTotal($this->getOrderRewards());
@@ -290,6 +291,7 @@ class GroupUserOrder implements Dao
         $this->addGroupUserOrderLog($log);
 
         $this->getUser()->getOrCreateTodayUserStatistics()->increaseGroupUserOrderNum(-1);
+        $this->getProduct()->getOrCreateTodayProductStatistics()->increaseRmaUsers(1);
 
         return $this;
     }
@@ -313,6 +315,9 @@ class GroupUserOrder implements Dao
 
         $this->getUser()->getOrCreateTodayUserStatistics()->increaseSpentTotal($this->getTotal());
         $this->getUser()->getOrCreateTodayUserStatistics()->increaseGroupUserOrderNum(1);
+
+        $this->getProduct()->getOrCreateTodayProductStatistics()->increaseBuyersNum(1);
+        $this->getProduct()->getOrCreateTodayProductStatistics()->increaseTotalOrderAmount($this->getTotal());
 
         return $this;
     }
@@ -403,7 +408,6 @@ class GroupUserOrder implements Dao
     public function setGroupOrder(?GroupOrder $groupOrder): self
     {
         $this->groupOrder = $groupOrder;
-
         return $this;
     }
 
@@ -597,7 +601,9 @@ class GroupUserOrder implements Dao
      * @return bool
      */
     public function isMasterOrder() : bool {
-        return $this->getUser()->getId() == $this->getGroupOrder()->getUser()->getId();
+        if ($this->isGroupOrder())
+            return $this->getUser()->getId() == $this->getGroupOrder()->getUser()->getId();
+        return false;
     }
 
     /**
@@ -630,7 +636,7 @@ class GroupUserOrder implements Dao
             'status' => $this->getStatus(),
             'statusText' => $this->getStatusText(),
             'paymentStatus' => $this->getPaymentStatusText(),
-            'product' => $this->getGroupOrder()->getProduct()->getArray(),
+            'product' => $this->getProduct()->getArray(),
             'rewards' => $this->getOrderRewards(),
             'isMasterOrder'=> $this->isMasterOrder(),
             'wxPrePayId' => $this->getPrePayId(),
@@ -638,7 +644,7 @@ class GroupUserOrder implements Dao
             'productReviews' => $productReviewsArray,
             'createdAt' => $this->getCreatedAt(true),
             'paymentTotal' => $this->getTotal(),
-            'address' => $this->getUserAddress() == null ? null : $this->getUserAddress()->getArray()
+            'address' => $this->getUserAddress() == null ? null : $this->getUserAddress()->getArray(),
         ];
     }
 

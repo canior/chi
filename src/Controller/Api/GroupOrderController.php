@@ -34,20 +34,22 @@ use Symfony\Component\Routing\Annotation\Route;
 class GroupOrderController extends BaseController
 {
     /**
-     * 测试
+     * 测试拼团订单
      * @Route("/groupOrder/test", name="testGroupOrder", methods="POST")
      * @param Request $request
+     * @param ProductRepository $productRepository
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function testAction(Request $request) {
+    public function testAction(Request $request, ProductRepository $productRepository) {
         if ($this->getEnvironment() != 'dev') exit;
 
         $data = json_decode($request->getContent(), true);
         $productId =  isset($data['productId']) ? $data['productId'] : null;
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $joinerId = isset($data['joinerId']) ? $data['joinerId'] : null;
 
         $user = $this->getWxUser($thirdSession);
-        $product = $this->getEntityManager()->getRepository(Product::class)->find($productId);
+        $product = $productRepository->find($productId);
 
         //开团
         $groupOrder = new GroupOrder($user, $product);
@@ -57,8 +59,10 @@ class GroupOrderController extends BaseController
         /**
          * @var User $joiner
          */
-        $joiner = $this->getEntityManager()->getRepository(User::class)->find(2);
-        $joinerGroupUserOrder = new GroupUserOrder($groupOrder, $joiner);
+        $joiner = $this->getEntityManager()->getRepository(User::class)->find($joinerId);
+        $joinerGroupUserOrder = new GroupUserOrder($joiner, $product);
+        $joinerGroupUserOrder->setTotal($product->getGroupPrice());
+        $joinerGroupUserOrder->setGroupOrder($groupOrder);
         $groupOrder->addGroupUserOrder($joinerGroupUserOrder);
 
         //完成拼团
@@ -129,10 +133,10 @@ class GroupOrderController extends BaseController
 
         $groupOrder = $groupOrderRepository->find($groupOrderId);
 
-
         $groupUserOrder = $groupOrder->getSlaveGroupUserOrder($user);
         if ($groupUserOrder == null) {
-            $groupUserOrder = new GroupUserOrder($groupOrder, $user);
+            $groupUserOrder = new GroupUserOrder($user, $groupOrder->getProduct());
+            $groupUserOrder->setGroupOrder($groupOrder);
             $groupOrder->addGroupUserOrder($groupUserOrder);
         }
         $this->getEntityManager()->persist($groupOrder);
@@ -157,6 +161,7 @@ class GroupOrderController extends BaseController
      */
     public function viewAction(Request $request, GroupOrderRepository $groupOrderRepository) {
         $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $groupOrderId = isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
 
         /**

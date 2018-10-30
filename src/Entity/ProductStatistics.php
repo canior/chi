@@ -38,11 +38,6 @@ class ProductStatistics implements Dao
     private $returnUsersNum;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2)
-     */
-    private $returnUsersRate;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $year;
@@ -65,9 +60,11 @@ class ProductStatistics implements Dao
 
     /**
      * ProductStatistics constructor.
+     * @param Product $product
      */
-    public function __construct()
+    public function __construct(Product $product)
     {
+        $this->setProduct($product);
         $this->setReviewsNum(0);
         $this->setOrderNum(0);
         $this->setBuyersNum(0);
@@ -197,5 +194,34 @@ class ProductStatistics implements Dao
         $this->product = $product;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isToday() {
+        return date('Y') == $this->getYear()
+            and date('m') == $this->getMonth()
+            and date('d') == $this->getDay();
+    }
+
+    public function increaseReviewNum($num) {
+        $this->reviewsNum += $num;
+    }
+
+    public function increaseTotalOrderAmount($amount) {
+        $this->orderAmountTotal += $amount;
+    }
+
+    public function increaseOrderNum($num) {
+        $this->orderNum += $num;
+    }
+
+    public function increaseBuyersNum($num) {
+        $this->buyersNum += $num;
+    }
+
+    public function increaseRmaUsers($num) {
+        $this->buyersNum += $num;
     }
 }
