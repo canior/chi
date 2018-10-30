@@ -25,12 +25,13 @@ class ProductReviewController extends BackendController
         $data = [
             'title' => '评价产品列表',
             'form' => [
+                'userId' => $request->query->get('userId', null),
                 'productId' => $request->query->get('productId', null),
                 'keyword' => $request->query->get('keyword', null),
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
-        $data['data'] = $productReviewRepository->findReviewedProductsQueryBuilder($data['form']['productId'], $data['form']['keyword']);
+        $data['data'] = $productReviewRepository->findReviewedProductsQueryBuilder($data['form']['userId'], $data['form']['productId'], $data['form']['keyword']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/product_review/index.html.twig', $data);
     }

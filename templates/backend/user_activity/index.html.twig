@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'backend/base.html.twig' %}
 
 {% block title %}UserActivity{% endblock %}
 
@@ -17,6 +17,11 @@
                 <div class="box-body">
                     <div class="row">
                         <form class="cmxform" id="myForm">
+                            <div class="col-md-3 form-group">
+                                <label>用户ID</label>
+                                <input type="number" name="userId" class="form-control" value="{{ form.userId }}"
+                                       placeholder="按 用户ID 查询">
+                            </div>
                             <div class="col-md-3 form-group">
                                 <label>关键词</label>
                                 <input type="text" name="keyword" class="form-control" value="{{ form.keyword }}"
@@ -63,7 +68,7 @@
                             {% endfor %}
                             {% else %}
                             <tr>
-                                <td colspan="4" class="alert alert-warning">no records found</td>
+                                <td colspan="4" class="alert">no records found</td>
                             </tr>
                             {% endif %}
                             </tbody>

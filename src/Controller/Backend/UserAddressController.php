@@ -6,6 +6,7 @@ use App\Entity\UserAddress;
 use App\Form\UserAddressType;
 use App\Repository\RegionRepository;
 use App\Repository\UserAddressRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,18 +36,38 @@ class UserAddressController extends BackendController
     /**
      * @Route("/user/address/new", name="user_address_new", methods="GET|POST")
      */
-    public function new(Request $request): Response
+    public function new(Request $request, UserRepository $userRepository, RegionRepository $regionRepository): Response
     {
         $userAddress = new UserAddress();
         $form = $this->createForm(UserAddressType::class, $userAddress);
+        if ($request->query->getInt('userId')) {
+            $form->get('user')->setData($userRepository->find($request->query->getInt('userId')));
+        }
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $provinceId = $form->get('provinceId')->getData();
+            $cityId = $form->get('cityId')->getData();
+            $countyId = $form->get('countyId')->getData();
+            $regionId = $countyId ? $countyId : ($cityId ? $cityId : $provinceId);
+            if ($regionId) {
+                $region = $regionRepository->find($regionId);
+                $userAddress->setRegion($region);
+            }
             $em = $this->getDoctrine()->getManager();
             $em->persist($userAddress);
             $em->flush();
+            // reset other default address
+            if ($userAddress->getIsDefault()) {
+                foreach ($userAddress->getUser()->getUserAddresses() as $address) {
+                    if ($address->getIsDefault() && $address->getId() != $userAddress->getId()) {
+                        $address->setIsDefault(false);
+                    }
+                }
+                $em->flush();
+            }
             $this->addFlash('notice', '添加成功');
-            return $this->redirectToRoute('user_address_index');
+            return $this->redirectToRoute('user_info', ['id' => $userAddress->getUser()->getId()]);
         }
 
         return $this->render('backend/user_address/new.html.twig', [
@@ -79,9 +100,17 @@ class UserAddressController extends BackendController
                 $region = $regionRepository->find($regionId);
                 $userAddress->setRegion($region);
             }
+            // reset other default address
+            if ($userAddress->getIsDefault()) {
+                foreach ($userAddress->getUser()->getUserAddresses() as $address) {
+                    if ($address->getIsDefault() && $address->getId() != $userAddress->getId()) {
+                        $address->setIsDefault(false);
+                    }
+                }
+            }
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');
-            return $this->redirectToRoute('user_address_edit', ['id' => $userAddress->getId()]);
+            return $this->redirectToRoute('user_info', ['id' => $userAddress->getUser()->getId()]);
         }
 
         return $this->render('backend/user_address/edit.html.twig', [

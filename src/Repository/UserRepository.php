@@ -43,13 +43,12 @@ class UserRepository extends ServiceEntityRepository
     /**
      * @param null $userId
      * @param null $username
-     * @param null $loginTimeStart
-     * @param null $loginTimeEnd
+     * @param null $role
      * @param null $createdAtStart
      * @param null $createdAtEnd
      * @return QueryBuilder
      */
-    public function findUsersQueryBuilder($userId = null, $username = null, $loginTimeStart = null, $loginTimeEnd = null, $createdAtStart = null, $createdAtEnd = null)
+    public function findUsersQueryBuilder($userId = null, $username = null, $role = null, $createdAtStart = null, $createdAtEnd = null)
     {
         /**
          * @var QueryBuilder $query
@@ -84,14 +83,9 @@ class UserRepository extends ServiceEntityRepository
             $query->andWhere($orX);
         }
 
-        if ($loginTimeStart) {
-            $query->andWhere('u.lastLogin >= :loginTimeStart')
-                ->setParameter('loginTimeStart', $loginTimeStart);
-        }
-
-        if ($loginTimeEnd) {
-            $query->andWhere('u.lastLogin <= :loginTimeEnd')
-                ->setParameter('loginTimeEnd', $loginTimeEnd);
+        if ($role) {
+            $literal = $query->expr()->literal("%$role%");
+            $query->andWhere($query->expr()->like('u.roles', $literal));
         }
 
         if ($createdAtStart) {

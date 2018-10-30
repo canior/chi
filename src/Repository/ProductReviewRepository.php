@@ -28,7 +28,8 @@ class ProductReviewRepository extends ServiceEntityRepository
      * @param int $pageLimit
      * @return ProductReview[]
      */
-    public function findActiveProductReviews($productId, $page=1, $pageLimit=5) {
+    public function findActiveProductReviews($productId, $page = 1, $pageLimit = 5)
+    {
         $query = $this->getEntityManager()->createQueryBuilder();
         $query->select('pr')
             ->from(ProductReview::class, 'pr')
@@ -38,7 +39,7 @@ class ProductReviewRepository extends ServiceEntityRepository
             ->andWhere('p.id = :productId')
             ->setParameter('productId', $productId)
             ->orderBy('pr.id', 'desc')
-            ->setFirstResult(($page-1) * $pageLimit)
+            ->setFirstResult(($page - 1) * $pageLimit)
             ->setMaxResults($pageLimit);
         return $query->getQuery()->getResult();
     }
@@ -49,7 +50,8 @@ class ProductReviewRepository extends ServiceEntityRepository
      * @param int $pageLimit
      * @return ProductReview[]
      */
-    public function findUserProductReviews($userId, $page = 1, $pageLimit = 5) {
+    public function findUserProductReviews($userId, $page = 1, $pageLimit = 5)
+    {
         $query = $this->createQueryBuilder('pr');
         $query->leftJoin('pr.groupUserOrder', 'guo')
             ->where('guo.user = :userId')
@@ -61,6 +63,23 @@ class ProductReviewRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param $userId
+     * @return mixed
+     * @throws NonUniqueResultException
+     */
+    public function findUserProductReviewsTotal($userId)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('COUNT(pr.id) AS total')
+            ->from('App:ProductReview', 'pr')
+            ->leftJoin('pr.groupUserOrder', 'guo')
+            ->where('guo.user = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @param null $userId
      * @param null $productId
      * @param null $keyword
      * @return \Doctrine\ORM\QueryBuilder
@@ -71,7 +90,7 @@ class ProductReviewRepository extends ServiceEntityRepository
      *      'lastReviewedAt' => int
      *  ]
      */
-    public function findReviewedProductsQueryBuilder($productId = null, $keyword = null)
+    public function findReviewedProductsQueryBuilder($userId = null, $productId = null, $keyword = null)
     {
         $query = $this->getEntityManager()->createQueryBuilder();
         $query->select('p AS product')
@@ -84,6 +103,12 @@ class ProductReviewRepository extends ServiceEntityRepository
             ->addSelect('MAX(pr.createdAt) AS lastReviewedAt')
             ->groupBy('p.id')
             ->orderBy('p.id', 'DESC');
+
+        if ($userId) {
+            $query->leftJoin('pr.groupUserOrder', 'guo')
+                ->andWhere('guo.user = :userId')
+                ->setParameter('userId', $userId);
+        }
 
         if ($productId) {
             $query->andWhere('p.id = :productId')

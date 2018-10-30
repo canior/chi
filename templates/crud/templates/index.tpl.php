@@ -61,7 +61,7 @@
                             {% endfor %}
                             {% else %}
                             <tr>
-                                <td colspan="<?= (count($entity_fields) + 1) ?>" class="alert alert-warning">no records found</td>
+                                <td colspan="<?= (count($entity_fields) + 1) ?>" class="alert">no records found</td>
                             </tr>
                             {% endif %}
                             </tbody>

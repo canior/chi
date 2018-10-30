@@ -25,7 +25,7 @@ class BackendController extends DefaultController
         ],
         [
             'path' => 'user_index',
-            'name' => '用户管理',
+            'name' => '用户中心',
             'icon' => 'fa fa-users',
             'active' => false,
             'role' => 'ROLE_ADMIN',
@@ -35,7 +35,7 @@ class BackendController extends DefaultController
                         'user_index',
                         'user_info',
                     ],
-                    'name' => '注册用户',
+                    'name' => '用户管理',
                     'icon' => 'fa fa-user',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',

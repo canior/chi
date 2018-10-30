@@ -14,7 +14,7 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-sm-12 col-md-4">
+                        <div class="col-sm-12 col-md-2">
                             <!-- BAR CHART -->
                             <div class="box box-info">
                                 <div class="box-header with-border">
@@ -30,9 +30,6 @@
                                     <div class="chart" style="height: 200px;">
                                         <div class="box box-solid">
                                             <div class="box-body">
-                                                <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
-                                                    用户ID ─ {{ user.id }}
-                                                </h4>
                                                 <div class="media">
                                                     <div class="media-left">
                                                         {% if user.avatarUrl %}
@@ -42,9 +39,9 @@
                                                     </div>
                                                     <div class="media-body">
                                                         <div class="clearfix">
-                                                            <h4 style="margin-top: 0">昵称 ─ {{ user.nickname }}</h4>
-                                                            <h4 style="margin-top: 0">性别 ─ {{ user.gender }}</h4>
-                                                            <h4 style="margin-top: 0">城市 ─ {{ user.location }}</h4>
+                                                            <h5>昵称: {{ user.nickname }}</h5>
+                                                            <h5>性别: {{ user.gender }}</h5>
+                                                            <h5>城市: {{ user.location }}</h5>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -57,7 +54,7 @@
                             <!-- /.box -->
                         </div>
                         {{ form_start(form) }}
-                        <div class="col-sm-12 col-md-4">
+                        <div class="col-sm-12 col-md-2">
                             <!-- BAR CHART -->
                             <div class="box box-info">
                                 <div class="box-header with-border">
@@ -80,27 +77,31 @@
                             <!-- /.box -->
                         </div>
                         {{ form_end(form) }}
-                        <div class="col-sm-12 col-md-4">
+                        <div class="col-sm-12 col-md-8">
                             <!-- BAR CHART -->
                             <div class="box box-info">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">收货地址</h3>
 
                                     <div class="box-tools pull-right">
+                                        <a href="{{ path('user_address_new', {userId: user.id}) }}" type="button" class="btn btn-info btn-sm pull-left">添加</a>
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
                                                     class="fa fa-minus"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="box-body">
-                                    <div class="chart" style="height: 200px;">
+                                    <div class="chart" style="height: 200px; overflow-y: scroll;">
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-striped">
                                                 <thead>
                                                 <tr>
                                                     <th width="10%">地址ID</th>
                                                     <th width="10%">地址</th>
+                                                    <th width="10%">姓名</th>
+                                                    <th width="10%">电话</th>
                                                     <th width="10%">默认</th>
+                                                    <th width="10%">删除</th>
                                                     <th width="10%" class="text-center hidden-xs">操作</th>
                                                 </tr>
                                                 </thead>
@@ -111,11 +112,14 @@
                                                             <tr>
                                                                 <td>{{ item.id }}</td>
                                                                 <td>{{ item.address }}</td>
+                                                                <td>{{ item.name }}</td>
+                                                                <td>{{ item.phone }}</td>
                                                                 <td>{{ item.isDefault }}</td>
+                                                                <td>{{ item.isDeleted }}</td>
                                                                 <td class="text-center">
                                                                     <div class="btn-group">
                                                                         <a href="{{ path('user_address_edit', {id: item.id}) }}"
-                                                                           target="_blank" title="编辑">
+                                                                           title="编辑">
                                                                             <span class="fa fa-edit"></span>
                                                                         </a>
                                                                     </div>
@@ -125,7 +129,7 @@
                                                     {% endfor %}
                                                 {% else %}
                                                     <tr>
-                                                        <td colspan="4" class="alert alert-warning">no records found</td>
+                                                        <td colspan="4" class="alert">no records found</td>
                                                     </tr>
                                                 {% endif %}
                                                 </tbody>
@@ -144,7 +148,7 @@
                             <!-- BAR CHART -->
                             <div class="box box-warning">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">上线用户 ─ {{ user.parentUser.nickname|default }} 总计分享({{ user.shareSources.count }})</h3>
+                                    <h3 class="box-title">最近5次分享</h3>
 
                                     <div class="box-tools pull-right">
                                         <a href="{{ path('share_source_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
@@ -193,7 +197,7 @@
                                                             <div class="btn-group">
                                                                 <a href="{{ path('share_source_info', {id: item.id}) }}"
                                                                    title="查看详情">
-                                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                                    <span class="fa fa-arrow-circle-right"></span>
                                                                 </a>
                                                             </div>
                                                         </td>
@@ -201,10 +205,15 @@
                                                 {% endfor %}
                                             {% else %}
                                                 <tr>
-                                                    <td colspan="7" class="alert alert-warning">no records found</td>
+                                                    <td colspan="7" class="alert">no records found</td>
                                                 </tr>
                                             {% endif %}
                                             </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="7">总计分享({{ user.shareSources.count }})</th>
+                                            </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                     <!-- /table -->
@@ -213,22 +222,11 @@
                             </div>
                             <!-- /.box -->
                         </div>
-                        <div class="col-sm-12 col-md-12">
+                        <div class="col-sm-12 col-md-6">
                             <!-- BAR CHART -->
-                            <div class="box box-warning">
+                            <div class="box box-success">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">
-                                        上线用户ID ─ {{ user.parentUser.id|default }}
-                                        上线用户名 ─ {{ user.parentUser.nickname|default }}
-                                        {% set totalUserRewards = 0 %}
-                                        {% for groupUserOrderReward in user.groupUserOrderRewards %}
-                                            {% set totalUserRewards = totalUserRewards + groupUserOrderReward.userRewards %}
-                                        {% endfor %}
-                                        总收益 ─ {{ user.totalRewards|default(0)|number_format }}
-                                        总拼团订单收益 ─ {{ userStatisticsTotal.orderRewardsTotal|default(0)|number_format }}
-                                        总传销收益 ─ {{ userStatisticsTotal.userRewardsTotal|default(0)|number_format }}
-                                        总下线用户数量({{ userStatisticsTotal.childrenNum|default(0) }})
-                                    </h3>
+                                    <h3 class="box-title">最近5次订单收益</h3>
 
                                     <div class="box-tools pull-right">
                                         <a href="{{ path('user_statistics_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
@@ -242,44 +240,104 @@
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                             <tr>
-                                                <th width="10%">拼团ID</th>
                                                 <th width="10%">订单ID</th>
+                                                <th width="10%">收益金额</th>
+                                                <th width="10%">创建时间</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% if user.groupUserOrders.count %}
+                                                {% for item in user.groupUserOrders.slice(0, 5) %}
+                                                    <tr>
+                                                        <td>
+                                                            <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {'id': item.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.id }}
+                                                            </a>
+                                                        </td>
+                                                        <td>{{ item.orderRewards|default(0)|number_format }}</td>
+                                                        <td>{{ item.createdAt }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="3" class="alert">no records found</td>
+                                                </tr>
+                                            {% endif %}
+                                            </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="3">总订单收益({{ userStatisticsTotal.orderRewardsTotal|default(0)|number_format }})</th>
+                                            </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                    <!-- /table -->
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <!-- BAR CHART -->
+                            <div class="box box-success">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">最近5次传销收益</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <a href="{{ path('user_statistics_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th width="10%">订单ID</th>
+                                                <th width="10%">拼团ID</th>
                                                 <th width="10%">用户ID</th>
                                                 <th width="10%">收益金额</th>
-                                                <th width="10%">收益时间</th>
-                                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                                <th width="10%">创建时间</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             {% if user.groupUserOrderRewards.count %}
                                                 {% for item in user.groupUserOrderRewards.slice(0, 5) %}
                                                     <tr>
-                                                        <td>{{ item.groupUserOrder.groupOrder.id }}</td>
-                                                        <td>{{ item.groupUserOrder.id }}</td>
+                                                        <td>
+                                                            <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {'id': item.groupUserOrder.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.groupUserOrder.id }}
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            {% if item.groupUserOrder.groupOrder %}
+                                                                <a class="btn btn-info btn-xs" href="{{ path('group_order_info', {'id': item.groupUserOrder.groupOrder.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.groupUserOrder.groupOrder.id|default }}
+                                                                </a>
+                                                            {% endif %}
+                                                        </td>
                                                         <td>
                                                             <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
                                                                 {{ item.user.id }}
                                                             </a>
                                                         </td>
-                                                        <td>{{ item.userRewards|number_format }}</td>
+                                                        <td>{{ item.userRewards|default(0)|number_format }}</td>
                                                         <td>{{ item.createdAt }}</td>
-                                                        <td class="text-center">
-                                                            <div class="btn-group">
-                                                                {#TODO: change to group_user_order_rewards_info#}
-                                                                <a href="{{ path('group_user_order_rewards_edit', {id: item.id}) }}"
-                                                                   title="查看详情">
-                                                                    <span class="fa fa-hand-o-right fa-2x"></span>
-                                                                </a>
-                                                            </div>
-                                                        </td>
                                                     </tr>
                                                 {% endfor %}
                                             {% else %}
                                                 <tr>
-                                                    <td colspan="6" class="alert alert-warning">no records found</td>
+                                                    <td colspan="5" class="alert">no records found</td>
                                                 </tr>
                                             {% endif %}
                                             </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="5">总传销收益({{ userStatisticsTotal.userRewardsTotal|default(0)|number_format }})</th>
+                                            </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                     <!-- /table -->
@@ -290,14 +348,9 @@
                         </div>
                         <div class="col-sm-12 col-md-12">
                             <!-- BAR CHART -->
-                            <div class="box box-success">
+                            <div class="box box-warning">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">
-                                        总消费金额 ─ {{ userStatisticsTotal.spentTotal|default(0)|number_format }}
-                                        总拼团数量 ─ {{ userStatisticsTotal.groupOrderNum|default(0) + userStatisticsTotal.groupOrderJoinedNum|default(0)  }}
-                                        总开团数量 ─ {{ userStatisticsTotal.groupOrderNum|default(0) }}
-                                        总参团数量 ─ {{ userStatisticsTotal.groupOrderJoinedNum|default(0) }}
-                                    </h3>
+                                    <h3 class="box-title">最近5张订单</h3>
 
                                     <div class="box-tools pull-right">
                                         <a href="{{ path('group_user_order_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
@@ -311,52 +364,63 @@
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                             <tr>
-                                                <th width="10%">拼团ID</th>
                                                 <th width="10%">订单ID</th>
-                                                <th width="10%">产品图片</th>
+                                                <th width="10%">拼团ID</th>
+                                                <th width="10%">产品ID</th>
                                                 <th width="10%">产品名</th>
-                                                <th width="10%">产品价格</th>
-                                                <th width="10%">拼团状态</th>
-                                                <th width="10%">开始时间</th>
-                                                <th width="10%">结束时间</th>
-                                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                                <th width="10%">支付金额</th>
+                                                <th width="10%">订单状态</th>
+                                                <th width="10%">支付状态</th>
+                                                <th width="10%">创建时间</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             {% if user.groupUserOrders.count %}
-                                                {% for item in user.groupUserOrders %}
+                                                {% for item in user.groupUserOrders.slice(0, 5) %}
                                                     <tr>
-                                                        <td>{{ item.groupOrder.id }}</td>
-                                                        <td>{{ item.id }}</td>
                                                         <td>
-                                                            {% if item.groupOrder.product.productImages.count %}
-                                                                {% for productImage in item.groupOrder.product.productImages %}
-                                                                    <img src="{{ path('imagePreview', {fileId: productImage.file.id}) }}" width="40" height="40"/>
-                                                                    {% if not loop.last %}<br />{% endif %}
-                                                                {% endfor %}
+                                                            <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {'id': item.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.id }}
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            {% if item.groupOrder %}
+                                                                <a class="btn btn-info btn-xs" href="{{ path('group_order_info', {'id': item.groupOrder.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.groupOrder.id|default }}
+                                                                </a>
                                                             {% endif %}
                                                         </td>
-                                                        <td>{{ item.groupOrder.product.title }}</td>
-                                                        <td>{{ item.groupOrder.product.price|number_format }}</td>
-                                                        <td>{{ item.groupOrder.statusText }}</td>
-                                                        <td>{{ item.createdAt }}</td>
-                                                        <td>{{ item.completedAt }}</td>
-                                                        <td class="text-center">
-                                                            <div class="btn-group">
-                                                                <a href="{{ path('group_user_order_info', {id: item.id}) }}"
-                                                                   title="查看详情">
-                                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                        <td>
+                                                            {% if item.product %}
+                                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.product.id }}
                                                                 </a>
-                                                            </div>
+                                                            {% endif %}
                                                         </td>
+                                                        <td>
+                                                            {% if item.product %}
+                                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.product.title }}
+                                                                </a>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ item.total|default(0)|number_format }}</td>
+                                                        <td>{{ item.statusText }}</td>
+                                                        <td>{{ item.paymentStatusText }}</td>
+                                                        <td>{{ item.createdAt }}</td>
                                                     </tr>
                                                 {% endfor %}
                                             {% else %}
                                                 <tr>
-                                                    <td colspan="9" class="alert alert-warning">no records found</td>
+                                                    <td colspan="8" class="alert">no records found</td>
                                                 </tr>
                                             {% endif %}
                                             </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="8">总订单数({{ user.groupUserOrders.count }})</th>
+                                            </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                     <!-- /table -->
@@ -372,7 +436,7 @@
                             <!-- BAR CHART -->
                             <div class="box box-success">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">用户行为</h3>
+                                    <h3 class="box-title">最近5个用户行为</h3>
 
                                     <div class="box-tools pull-right">
                                         <a href="{{ path('user_activity_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
@@ -386,24 +450,29 @@
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                             <tr>
-                                                <th width="10%">页面</th>
                                                 <th width="10%">访问时间</th>
+                                                <th width="10%">页面</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             {% if user.userActivities.count %}
-                                                {% for item in user.userActivities %}
+                                                {% for item in user.userActivities.slice(0, 5) %}
                                                     <tr>
-                                                        <td>{{ item.page }}</td>
                                                         <td>{{ item.createdAt }}</td>
+                                                        <td>{{ item.page }}</td>
                                                     </tr>
                                                 {% endfor %}
                                             {% else %}
                                                 <tr>
-                                                    <td colspan="2" class="alert alert-warning">no records found</td>
+                                                    <td colspan="2" class="alert">no records found</td>
                                                 </tr>
                                             {% endif %}
                                             </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="2">总行为数({{ user.userActivities.count }})</th>
+                                            </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                     <!-- /table -->
@@ -416,7 +485,7 @@
                             <!-- BAR CHART -->
                             <div class="box box-success">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">产品评价</h3>
+                                    <h3 class="box-title">最近5个产品评价</h3>
 
                                     <div class="box-tools pull-right">
                                         <a href="{{ path('product_review_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
@@ -431,12 +500,11 @@
                                             <thead>
                                             <tr>
                                                 <th width="10%">订单ID</th>
-                                                <th width="10%">产品图片</th>
+                                                <th width="10%">产品ID</th>
                                                 <th width="10%">产品名</th>
                                                 <th width="10%">评分</th>
                                                 <th width="10%">评价</th>
-                                                <th width="10%">评价图片</th>
-                                                <th width="10%">评价时间</th>
+                                                <th width="10%">创建时间</th>
                                                 <th width="10%" class="text-center hidden-xs">操作</th>
                                             </tr>
                                             </thead>
@@ -444,26 +512,23 @@
                                             {% if productReviews is not empty %}
                                                 {% for item in productReviews %}
                                                     <tr>
-                                                        <td>{{ item.groupUserOrder.id }}</td>
                                                         <td>
-                                                            {% if item.product.productImages.count %}
-                                                                {% for productImage in item.product.productImages %}
-                                                                    <img src="{{ path('imagePreview', {fileId: productImage.file.id}) }}" width="40" height="40"/>
-                                                                    {% if not loop.last %}<br />{% endif %}
-                                                                {% endfor %}
-                                                            {% endif %}
+                                                            <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {'id': item.groupUserOrder.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.groupUserOrder.id }}
+                                                            </a>
                                                         </td>
-                                                        <td>{{ item.product.title }}</td>
+                                                        <td>
+                                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.product.id }}
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.product.title }}
+                                                            </a>
+                                                        </td>
                                                         <td>{{ item.rate }}</td>
                                                         <td>{{ item.review }}</td>
-                                                        <td>
-                                                            {% if item.productReviewImages.count %}
-                                                                {% for productReviewImage in item.productReviewImages %}
-                                                                    <img src="{{ path('imagePreview', {fileId: productReviewImage.imageFile.id}) }}" width="40" height="40"/>
-                                                                    {% if not loop.last %}<br />{% endif %}
-                                                                {% endfor %}
-                                                            {% endif %}
-                                                        </td>
                                                         <td>{{ item.createdAt }}</td>
                                                         <td class="text-center">
                                                             <div class="btn-group">
@@ -477,10 +542,15 @@
                                                 {% endfor %}
                                             {% else %}
                                                 <tr>
-                                                    <td colspan="8" class="alert alert-warning">no records found</td>
+                                                    <td colspan="7" class="alert">no records found</td>
                                                 </tr>
                                             {% endif %}
                                             </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="7">总产品评价数({{ productReviewsTotal.total }})</th>
+                                            </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                     <!-- /table -->

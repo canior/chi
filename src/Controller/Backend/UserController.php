@@ -28,16 +28,14 @@ class UserController extends BackendController
             'form' => [
                 'userId' => $request->query->getInt('userId', null),
                 'username' => $request->query->get('username', null),
-//                'loginTimeStart' => $request->query->get('loginTimeStart', date('Y-m-d') . ' 00:00:00'),
-                'loginTimeStart' => $request->query->get('loginTimeStart', null),
-//                'loginTimeEnd' => $request->query->get('loginTimeEnd', date('Y-m-d') . ' 23:59:59'),
-                'loginTimeEnd' => $request->query->get('loginTimeEnd', null),
+                'role' => $request->query->get('role', User::ROLE_CUSTOMER),
                 'createdAtStart' => $request->query->get('createdAtStart', null),
                 'createdAtEnd' => $request->query->get('createdAtEnd', null),
                 'page' => $request->query->getInt('page', 1)
-            ]
+            ],
+            'roles' => User::$roleTexts
         ];
-        $data['data'] = $userRepository->findUsersQueryBuilder($data['form']['userId'], $data['form']['username'], $data['form']['loginTimeStart'], $data['form']['loginTimeEnd'], $data['form']['createdAtStart'], $data['form']['createdAtEnd']);
+        $data['data'] = $userRepository->findUsersQueryBuilder($data['form']['userId'], $data['form']['username'], $data['form']['role'], $data['form']['createdAtStart'], $data['form']['createdAtEnd']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/user/index.html.twig', $data);
     }
@@ -65,7 +63,8 @@ class UserController extends BackendController
             'userStatisticsTotal' => $userStatisticsRepository->findUserStatisticsQueryBuilder($user->getId())->getQuery()->getOneOrNullResult(),
             'title' => 'User 详情',
             'form' => $form->createView(),
-            'productReviews' => $productReviewRepository->findUserProductReviews($user->getId(), 1, 3)
+            'productReviews' => $productReviewRepository->findUserProductReviews($user->getId(), 1, 5),
+            'productReviewsTotal' => $productReviewRepository->findUserProductReviewsTotal($user->getId())
         ]);
     }
 

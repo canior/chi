@@ -17,6 +17,11 @@
                     <div class="row">
                         <form class="cmxform" id="myForm">
                             <div class="col-md-3 form-group">
+                                <label>用户ID</label>
+                                <input type="number" name="userId" class="form-control" value="{{ form.userId }}"
+                                       placeholder="按 用户ID 查询">
+                            </div>
+                            <div class="col-md-3 form-group">
                                 <label>产品ID</label>
                                 <input type="number" name="productId" class="form-control" value="{{ form.productId }}"
                                        placeholder="按 产品ID 查询">
@@ -56,7 +61,7 @@
                                         <td class="text-center">
                                             <div class="btn-group">
                                                 <a href="{{ path('product_review_info', {'id': item.product.id}) }}" title="查看详情">
-                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                    <span class="fa fa-arrow-circle-right"></span>
                                                 </a>
                                             </div>
                                         </td>
@@ -64,7 +69,7 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="6" class="alert alert-warning">no records found</td>
+                                    <td colspan="6" class="alert">no records found</td>
                                 </tr>
                             {% endif %}
                             </tbody>

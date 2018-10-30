@@ -22,11 +22,12 @@ class UserActivityController extends BackendController
         $data = [
             'title' => 'UserActivity 列表',
             'form' => [
+                'userId' => $request->query->getInt('userId', null),
                 'keyword' => $request->query->get('keyword', null),
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
-        $data['data'] = $userActivityRepository->findByKeyword($data['form']['keyword']);
+        $data['data'] = $userActivityRepository->findBy(['user' => $data['form']['userId']]);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/user_activity/index.html.twig', $data);
     }

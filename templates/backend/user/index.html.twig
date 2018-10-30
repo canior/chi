@@ -17,7 +17,7 @@
                 <div class="box-body">
                     <div class="row">
                         <form class="cmxform" id="myForm">
-                            <div class="col-md-1 form-group">
+                            <div class="col-md-2 form-group">
                                 <label>用户ID</label>
                                 <input type="number" name="userId" class="form-control" value="{{ form.userId }}"
                                        placeholder="按 用户ID 查询">
@@ -27,19 +27,13 @@
                                 <input type="text" name="username" class="form-control" value="{{ form.username }}"
                                        placeholder="按 用户名 查询">
                             </div>
-                            <div class="col-md-4 form-group">
-                                <label>登录时间</label>
-                                <div class="row">
-                                    <div class="col-xs-5">
-                                        <input type="text" name="loginTimeStart" class="form-control" value="{{ form.loginTimeStart }}"
-                                               placeholder="开始时间">
-                                    </div>
-                                    <div class="col-xs-1"> ~ </div>
-                                    <div class="col-xs-5">
-                                        <input type="text" name="loginTimeEnd" class="form-control" value="{{ form.loginTimeEnd }}"
-                                               placeholder="结束时间">
-                                    </div>
-                                </div>
+                            <div class="col-md-2 form-group">
+                                <label>角色</label>
+                                <select name="role" class="form-control chosen">
+                                    {% for role, text in roles %}
+                                        <option value="{{ role }}"{% if role == form.role %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="col-md-4 form-group">
                                 <label>创建时间</label>
@@ -55,7 +49,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-1 form-group">
+                            <div class="col-md-2 form-group">
                                 <label>&nbsp;</label>
                                 <input class="form-control btn btn-primary" type="submit" value="搜索"/>
                             </div>
@@ -66,12 +60,10 @@
                             <thead>
                             <tr>
                                 <th width="10%">用户ID</th>
-                                {#<th width="10%">用户名</th>#}
-                                {#<th width="10%">昵称</th>#}
                                 <th width="10%">用户头像</th>
-                                <th width="10%">拼团消费总额</th>
+                                <th width="10%">消费总额</th>
                                 <th width="10%">总分享数量</th>
-                                <th width="10%">有效下线用户数量</th>
+                                <th width="10%">有效下线</th>
                                 <th width="10%">总收益</th>
                                 <th width="10%">上次登录时间</th>
                                 <th width="10%">创建时间</th>
@@ -83,8 +75,6 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>{{ item.user.id }}</td>
-                                        {#<td>{{ item.username }}</td>#}
-                                        {#<td>{{ item.nickname }}</td>#}
                                         <td>
                                             {% if item.user.avatarUrl %}
                                                 <img src="{{ item.user.avatarUrl }}" width="40" height="40"/>
@@ -99,7 +89,7 @@
                                         <td class="text-center">
                                             <div class="btn-group">
                                                 <a href="{{ path('user_info', {'id': item.user.id}) }}" title="查看详情">
-                                                    <span class="fa fa-hand-o-right fa-2x"></span>
+                                                    <span class="fa fa-arrow-circle-right"></span>
                                                 </a>
                                                 {#
                                                 <a href="{{ path('user_edit', {'id': item.id}) }}" title="修改">
@@ -119,7 +109,7 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="11" class="alert alert-warning">no records found</td>
+                                    <td colspan="11" class="alert">no records found</td>
                                 </tr>
                             {% endif %}
                             </tbody>
