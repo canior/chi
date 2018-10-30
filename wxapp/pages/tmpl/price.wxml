@@ -1,6 +1,6 @@
 <template name="price">
     <view class="chi-price-container">
-      <view class="price">拼团价￥<text>{{product.price}}</text></view>
+      <view class="price">拼团价￥<text>{{product.groupPrice}}</text></view>
       <view class="ori-price">￥{{product.originalPrice}}</view>
       <view class="freight">包邮</view>
     </view>

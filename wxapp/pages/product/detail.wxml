@@ -14,7 +14,7 @@
 
   <view class="line">
     <template is="price" data="{{product}}"/>
-    <view class="sold">已售1234份</view>
+    <view class="sold">已售{{product.soldNum}}份</view>
   </view>
 
   <view class="name">{{product.title}}</view>
@@ -55,8 +55,8 @@
       <image src="/images/service.png"/>
       <text>客服</text>
     </button>-->
-    <button class="item btn order" bindtap="showModal" disabled="{{btnDisabled}}"><text>￥{{product.originalPrice}}</text><text>单独购买</text></button>    
-    <button class="item btn group" bindtap="tpaCreateGroup" disabled="{{btnDisabled}}"><text>￥{{product.price}}</text><text>发起拼团</text></button>
+    <button class="item btn order" bindtap="showModal" disabled="{{btnDisabled}}"><text>￥{{product.price}}</text><text>单独购买</text></button>    
+    <button class="item btn group" bindtap="tpaCreateGroup" disabled="{{btnDisabled}}"><text>￥{{product.groupPrice}}</text><text>发起拼团</text></button>
 </view>
 
 <!--单独购买弹窗-->
