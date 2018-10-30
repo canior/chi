@@ -15,6 +15,7 @@ Page({
     customItem: '',
     address: '',
     isDefault: false,
+    setDefault: false,
     groupUserOrderId: null, //从支付页无地址过来的
     user: null,
   },
@@ -63,7 +64,8 @@ Page({
             region: [userAddress.region.province, userAddress.region.city, userAddress.region.county],
             regionText: userAddress.region.province+' '+userAddress.region.city+' '+userAddress.region.county,
             address: userAddress.address,
-            isDefault: userAddress.isDefault
+            isDefault: userAddress.isDefault,
+            setDefault: userAddress.isDefault
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -103,7 +105,7 @@ Page({
 
   setDefault: function(e) {
     this.setData({
-      isDefault: !e.currentTarget.dataset.isdefault
+      setDefault: !e.currentTarget.dataset.setdefault
     })
   },
 
@@ -155,7 +157,7 @@ Page({
         city: that.data.region[1],
         county: that.data.region[2],
         address: that.data.address,
-        isDefault: (that.data.user && !that.data.user.defaultAddress) ? true : that.data.isDefault, //首次地址强制默认
+        isDefault: (that.data.user && !that.data.user.defaultAddress) ? true : that.data.setDefault, //首次地址强制默认
         thirdSession: wx.getStorageSync('thirdSession'),
       },
       method: 'POST',

@@ -15,8 +15,8 @@
     <input placeholder="详细地址" value="{{address}}" bindblur="inputAddress"/>
   </view>
   <view class="row" wx:if="{{!isDefault}}">
-    <checkbox-group bindchange="setDefault" data-isdefault="{{isDefault}}">
-      <checkbox checked="{{isDefault}}"/>设为默认地址
+    <checkbox-group bindchange="setDefault" data-setdefault="{{setDefault}}">
+      <checkbox checked="{{setDefault}}"/>设为默认地址
     </checkbox-group>
   </view>
 </view>
