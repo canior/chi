@@ -423,7 +423,7 @@ class UserController extends BaseController
 
 
         return $this->responseJson('success', 200, [
-            'userAddresses' => $userAddress->getArray()
+            'userAddress' => $userAddress->getArray()
         ]);
     }
 
