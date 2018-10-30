@@ -126,7 +126,7 @@ class Product implements Dao
         $this->productSpecImages = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
         $this->shareSources = new ArrayCollection();
-        $this->productStatistics = new ProductStatistics();
+        $this->productStatistics = new ProductStatistics($this);
         $this->productSimilars = new ArrayCollection();
         $this->groupUserOrders = new ArrayCollection();
     }

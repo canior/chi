@@ -2,6 +2,8 @@
 
 {% block title %}Product{% endblock %}
 
+{% import 'form/macros.html.twig' as macros %}
+
 {% block body %}
     <div class="row">
         <div class="col-xs-12">
@@ -20,6 +22,93 @@
             <!-- /.box -->
         </div>
         <!--/.col (right) -->
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">推荐产品</h3>
+                    <a href="{{ path('product_similar_new', {productId: product.id}) }}" type="button" class="btn btn-info btn-sm pull-right">添加</a>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th width="10%">Id</th>
+                                <th width="10%">推荐产品ID</th>
+                                <th width="10%">推荐产品名</th>
+                                <th width="10%">推荐产品图片</th>
+                                <th width="10%">创建日期</th>
+                                <th width="10%" class="text-center hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if product.productSimilars.count %}
+                                {% for item in product.productSimilars %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>
+                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.similarProduct.id}) }}" target="_blank" title="查看详情">
+                                                {{ item.similarProduct.id }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.similarProduct.id}) }}" target="_blank" title="查看详情">
+                                                {{ item.similarProduct.title }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {% if item.similarProduct.productImages.count %}
+                                                {% for productImage in item.similarProduct.productImages %}
+                                                    <img src="{{ path('imagePreview', {fileId: productImage.file.id}) }}" width="40" height="40"/>
+                                                    {% if not loop.last %}<br />{% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ item.createdAt }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('product_similar_edit', {'id': item.id}) }}"
+                                                   title="修改">
+                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                </a>&nbsp;
+                                                <a class="delete" data-toggle="modal" data-target="#modal-delete"
+                                                   data-url="{{ path('product_similar_delete', {'id': item.id}) }}"
+                                                   data-item='{"name": "{{ macros.cut(item.id, 30) }}"}'
+                                                   data-token="{{ csrf_token('delete' ~ item.id) }}"
+                                                   title="删除">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="alert">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th colspan="6">总计({{ product.productSimilars.count }})</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!--/.col (right) -->
     </div>
     <!-- /.row -->
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: 'ProductSimilar'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include '/backend/includes/delete.js.html.twig' with {title: 'ProductSimilar'} %}
 {% endblock %}

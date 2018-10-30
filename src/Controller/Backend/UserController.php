@@ -24,7 +24,7 @@ class UserController extends BackendController
     public function index(UserRepository $userRepository, Request $request): Response
     {
         $data = [
-            'title' => 'User 列表',
+            'title' => '用户管理',
             'form' => [
                 'userId' => $request->query->getInt('userId', null),
                 'username' => $request->query->get('username', null),
@@ -61,7 +61,7 @@ class UserController extends BackendController
         return $this->render('backend/user/info.html.twig', [
             'user' => $user,
             'userStatisticsTotal' => $userStatisticsRepository->findUserStatisticsQueryBuilder($user->getId())->getQuery()->getOneOrNullResult(),
-            'title' => 'User 详情',
+            'title' => '用户详情',
             'form' => $form->createView(),
             'productReviews' => $productReviewRepository->findUserProductReviews($user->getId(), 1, 5),
             'productReviewsTotal' => $productReviewRepository->findUserProductReviewsTotal($user->getId())

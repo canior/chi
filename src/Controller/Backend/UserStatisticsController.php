@@ -20,7 +20,7 @@ class UserStatisticsController extends BackendController
     public function index(UserStatisticsRepository $userStatisticsRepository, Request $request): Response
     {
         $data = [
-            'title' => 'UserStatistics 列表',
+            'title' => '用户收益',
             'form' => [
                 'userId' => $request->query->getInt('userId', null),
                 'username' => $request->query->get('username', null),
@@ -50,7 +50,7 @@ class UserStatisticsController extends BackendController
             $parentUserStatisticsTotal = $queryBuilder->getQuery()->getOneOrNullResult();
         }
         $data = [
-            'title' => 'UserStatistics 详情',
+            'title' => '收益详情',
             'userStatistics' => $userStatistics,
             'userStatisticsTotal' => $userStatisticsTotal,
             'parentUserStatisticsTotal' => $parentUserStatisticsTotal,

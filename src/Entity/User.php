@@ -515,9 +515,9 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @return null|GroupOrder
+     * @return null|GroupUserOrder
      */
-    public function getLastRewardsGroupOrder()
+    public function getLastRewardsGroupUserOrder()
     {
         /**
          * @var GroupUserOrder $lastGroupUserOrder
@@ -528,13 +528,13 @@ class User extends BaseUser implements Dao
          */
         $lastGroupUserOrderReward = $this->groupUserOrderRewards->isEmpty() ? null : $this->groupUserOrderRewards->first();
         if ($lastGroupUserOrder && $lastGroupUserOrderReward) {
-            return $lastGroupUserOrder->getGroupOrder()->getCreatedAt(false) > $lastGroupUserOrderReward->getGroupUserOrder()->getGroupOrder()->getCreatedAt(false)
-                ? $lastGroupUserOrder->getGroupOrder()
-                : $lastGroupUserOrderReward->getGroupUserOrder()->getGroupOrder();
+            return $lastGroupUserOrder->getCreatedAt(false) > $lastGroupUserOrderReward->getGroupUserOrder()->getCreatedAt(false)
+                ? $lastGroupUserOrder
+                : $lastGroupUserOrderReward->getGroupUserOrder();
         } elseif ($lastGroupUserOrder) {
-            return $lastGroupUserOrder->getGroupOrder();
+            return $lastGroupUserOrder;
         } elseif ($lastGroupUserOrderReward) {
-            return $lastGroupUserOrderReward->getGroupUserOrder()->getGroupOrder();
+            return $lastGroupUserOrderReward->getGroupUserOrder();
         }
         return null;
     }

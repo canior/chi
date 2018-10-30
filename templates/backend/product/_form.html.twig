@@ -1,14 +1,40 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <div class="form-group">
+    <div class="form-group col-md-3">
+        {{ form_row(form.title) }}
+    </div>
+    <div class="form-group col-md-3">
+        {{ form_row(form.price) }}
+    </div>
+    <div class="form-group col-md-3">
+        {{ form_row(form.originalPrice) }}
+    </div>
+    <div class="form-group col-md-3">
+        {{ form_row(form.rewards) }}
+    </div>
+    <div class="form-group col-md-3">
+        {{ form_row(form.sku) }}
+    </div>
+    <div class="form-group col-md-3">
+        {{ form_row(form.stock) }}
+    </div>
+    <div class="form-group col-md-3">
+        {{ form_row(form.freight) }}
+    </div>
+    <div class="form-group col-md-3">
+        {{ form_row(form.shortDescription) }}
+    </div>
+    <div class="form-group col-md-3">
         <label class="control-label required" for="product_status">状态: <span class="label-info">{{ product.statusText }}</span></label>
     </div>
-    <div class="form-group">
+    <div class="form-group col-md-3">
         <label class="control-label required" for="product_status">创建时间: <span class="label-info">{{ product.createdAt }}</span></label>
     </div>
-    <div class="form-group">
+    <div class="form-group col-md-3">
         <label class="control-label required" for="product_status">更新时间: <span class="label-info">{{ product.updatedAt }}</span></label>
     </div>
-    <a class="btn btn-danger" href="{{ path('product_index') }}">{{ 'Back to list'|trans }}</a>
-    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    {{ form_widget(form, {'attr': {'class': 'col-md-12'}}) }}
+    <div class="col-md-12">
+        <a class="btn btn-danger" href="{{ path('product_index') }}">{{ 'Back to list'|trans }}</a>
+        <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    </div>
 {{ form_end(form) }}

@@ -3,12 +3,8 @@
 namespace App\Controller\Backend;
 
 use App\Entity\ShareSource;
-use App\Entity\User;
 use App\Form\ShareSourceType;
 use App\Repository\ShareSourceRepository;
-use App\Repository\ShareSourceUserRepository;
-use App\Repository\UserRepository;
-use App\Repository\UserStatisticsRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,17 +17,17 @@ class ShareSourceController extends BackendController
     /**
      * @Route("/share/source/", name="share_source_index", methods="GET")
      */
-    public function index(UserRepository $userRepository, Request $request): Response
+    public function index(ShareSourceRepository $shareSourceRepository, Request $request): Response
     {
         $data = [
-            'title' => 'ShareSource 列表',
+            'title' => '用户分享',
             'form' => [
                 'userId' => $request->query->get('userId', null),
                 'username' => $request->query->get('username', null),
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
-        $data['data'] = $userRepository->findUsersQueryBuilder($data['form']['userId'], $data['form']['username']);
+        $data['data'] = $shareSourceRepository->findShareSourcesQueryBuilder($data['form']['userId'], $data['form']['username']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/share_source/index.html.twig', $data);
     }
@@ -39,22 +35,11 @@ class ShareSourceController extends BackendController
     /**
      * @Route("/share/source/info/{id}", name="share_source_info", methods="GET")
      */
-    public function info(Request $request, User $user, ShareSourceUserRepository $shareSourceUserRepository, ShareSourceRepository $shareSourceRepository, UserStatisticsRepository $userStatisticsRepository): Response
+    public function info(Request $request, ShareSource $shareSource): Response
     {
-        $queryBuilder = $userStatisticsRepository->findUserStatisticsQueryBuilder($user->getId());
-        $userStatisticsTotal = $queryBuilder->getQuery()->getOneOrNullResult();
-        $parentUserStatisticsTotal = null;
-        if ($user->getParentUser()) {
-            $queryBuilder = $userStatisticsRepository->findUserStatisticsQueryBuilder($user->getParentUser()->getId());
-            $parentUserStatisticsTotal = $queryBuilder->getQuery()->getOneOrNullResult();
-        }
         $data = [
-            'title' => 'ShareSource 详情',
-            'user' => $user,
-            'userStatisticsTotal' => $userStatisticsTotal,
-            'parentUserStatisticsTotal' => $parentUserStatisticsTotal,
-            'underlingUsers' => $shareSourceUserRepository->findUnderlingUsers($user->getId()),
-            'shareSources' => $shareSourceRepository->findShareSources($user->getId())
+            'title' => '分享详情',
+            'shareSource' => $shareSource
         ];
 
         return $this->render('backend/share_source/info.html.twig', $data);

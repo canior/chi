@@ -49,7 +49,7 @@ class ProductSimilarController extends BackendController
             $em->persist($productSimilar);
             $em->flush();
             $this->addFlash('notice', '添加成功');
-            return $this->redirectToRoute('product_similar_index');
+            return $this->redirectToRoute('product_edit', ['id' => $productSimilar->getProduct()->getId()]);
         }
 
         return $this->render('backend/product_similar/new.html.twig', [
@@ -70,7 +70,7 @@ class ProductSimilarController extends BackendController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');
-            return $this->redirectToRoute('product_similar_edit', ['id' => $productSimilar->getId()]);
+            return $this->redirectToRoute('product_edit', ['id' => $productSimilar->getProduct()->getId()]);
         }
 
         return $this->render('backend/product_similar/edit.html.twig', [
@@ -90,6 +90,8 @@ class ProductSimilarController extends BackendController
             $em->remove($productSimilar);
             $em->flush();
             $this->addFlash('notice', '删除成功');
+
+            return $this->redirectToRoute('product_edit', ['id' => $productSimilar->getProduct()->getId()]);
         }
 
         return $this->redirectToRoute('product_similar_index');
