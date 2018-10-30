@@ -1,7 +1,7 @@
 // pages/product/detail.js
 const app = getApp()
+const productReview = require('../tmpl/productReview.js');
 Page({
-
   /**
    * 页面的初始数据
    */
@@ -9,9 +9,7 @@ Page({
     isLogin: false,
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
     product: [],
-    productReviews: [],
-    page: 1,
-    hasMore: false,
+    productReviewData: {},
     btnDisabled: false //防止连击button
   },
 
@@ -21,7 +19,8 @@ Page({
   onLoad: function (options) {
     const productId = options.id ? options.id : 1;
     this.getProduct(productId);
-    this.getProductReview(productId, this.data.page);
+    const url = app.globalData.baseUrl + '/products/' + productId + '/reviews'
+    productReview.init(this, url);
     this.setData({
       isLogin: app.globalData.isLogin
     })
@@ -49,38 +48,8 @@ Page({
     })
   },
 
-  getProductReview: function (id, page) {
-    const that = this;
-    wx.showLoading({
-      title: '玩命加载中',
-    })    
-    wx.request({
-      url: app.globalData.baseUrl + '/products/' + id + '/reviews',
-      data: {
-        page: page
-      },
-      success: (res) => {
-        if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
-          var productReviews = this.data.productReviews;
-          productReviews.push(...res.data.data);
-          var hasMore = res.data.data.length < 5 ? false : true;
-          var nextPage = hasMore ? page + 1 : page;
-          that.setData({
-            productReviews: productReviews,
-            page: nextPage,
-            hasMore: hasMore
-          })
-        } else {
-          console.log('wx.request return error', res.statusCode);
-        }
-      },
-      fail(e) {
-      },
-      complete(e) {
-        wx.hideLoading()
-      }
-    })
+  wxPreviewImage (e) {
+    productReview.previewImage(e, this)
   },
 
   toHome: function(e) {
@@ -212,9 +181,7 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-    if (this.data.hasMore) {
-      this.getProductReview(this.data.product.id, this.data.page)
-    }
+    productReview.getNextPage(this)
   },
 
   /**

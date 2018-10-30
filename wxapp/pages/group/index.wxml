@@ -184,14 +184,26 @@
       <view class="user">
         <view class="avatar"><image src="{{productReview.user.avatarUrl}}"/></view>
         <view class="info">
-          <view class="nickname">{{productReview.user.nickname}}</view>
+          <view class="rate-small-container">
+            <view class="nickname">{{productReview.user.nickname}}</view>
+            <image wx:if="{{productReview.rate < 1}}" src="/images/star.png"/>
+            <image wx:if="{{productReview.rate > 0}}" src="/images/star-selected.png"/>
+            <image wx:if="{{productReview.rate < 2}}" src="/images/star.png"/>
+            <image wx:if="{{productReview.rate > 1}}" src="/images/star-selected.png"/>
+            <image wx:if="{{productReview.rate < 3}}" src="/images/star.png"/>
+            <image wx:if="{{productReview.rate > 2}}" src="/images/star-selected.png"/>
+            <image wx:if="{{productReview.rate < 4}}" src="/images/star.png"/>
+            <image wx:if="{{productReview.rate > 3}}" src="/images/star-selected.png"/>
+            <image wx:if="{{productReview.rate < 5}}" src="/images/star.png"/>
+            <image wx:if="{{productReview.rate > 4}}" src="/images/star-selected.png"/>
+          </view>
           <view class="date">{{productReview.createdAt}}</view>
         </view>
       </view>
       <view class="review-text">{{productReview.review}}</view>
       <view class="imgs">
         <block wx:for="{{productReview.productReviewImages}}" wx:key="index" wx:for-item="productReviewImage">
-          <image src="{{imgUrlPrefix + '/' + productReviewImage.fileId}}"/>
+          <image src="{{imgUrlPrefix + '/' + productReviewImage.fileId}}" bindtap="previewImage" data-id="{{productReview.id}}" data-current="{{imgUrlPrefix + '/' + productReviewImage.fileId}}"/>
         </block>
       </view>
       <view class="split-line"/>

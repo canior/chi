@@ -39,6 +39,16 @@
 }.rate-container image:last-child {
     margin-right: 0;
 }
+.rate-small-container {
+    display: flex;
+    align-items: center;
+}.rate-small-container image {
+    width: 30rpx;
+    height: 30rpx;
+    margin-right: 10rpx;
+}.rate-small-container image:last-child {
+    margin-right: 0;
+}
 .chi-arrow-right {
   position: absolute;
   top: 0;
@@ -66,7 +76,7 @@
 .chi-item .right {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   margin-left: 20rpx;
   width: 100%;
   min-height: 161rpx;
@@ -95,10 +105,12 @@
   color: #b2b2b2;
 }
 .chi-price-container {
+  display: flex;
   align-items: baseline !important;
 }
 .chi-price-container .price {
   font-size: 24rpx;
+  font-weight: bold;
   color: #ff4d42;
 }
 .chi-price-container .price text {
@@ -106,29 +118,82 @@
   font-weight: bold;
 }
 .chi-price-container .freight {
-  font-size: 30rpx;
+  font-size: 24rpx;
+  font-weight: bold;
   color: #ff4d42;
-  margin: 0 20rpx 0 10rpx;
+  margin-left: 20rpx;
 }
 .chi-price-container .ori-price {
   font-size: 24rpx;
   color: #888;
   text-decoration: line-through;
+  margin-left: 20rpx;
 }
 .chi-reward-container {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ffdf00;
-  width: 85%;
+  padding: 20rpx 0;
+}
+.chi-reward-container .line {
+  display: inline-block;
+  height: 60rpx;
+  line-height: 60rpx;
+  padding: 0 20rpx;
 }
 .chi-reward-container .reward {
   font-size: 28rpx;
   font-weight: bold;
   background-color: #ffdf00;
-  padding: 5rpx 20rpx;  
 }
-.chi-reward-container .detail {
+.chi-reward-container .btn {
   font-size: 24rpx;
   color: #353535;
-  padding: 5rpx 20rpx;  
+  border: 1px solid #ffdf00;
+  box-sizing: border-box;  
+}
+.chi-review {
+  padding-top: 30rpx;
+}
+.chi-review .user {
+  display: flex;
+  align-items: center;
+}
+.chi-review .user .avatar image {
+  width: 82rpx;
+  height: 82rpx;
+  border-radius: 50%;
+  border: 1px solid #f0f0f0;
+}
+.chi-review .user .nickname {
+  font-size: 24rpx;
+  color: #353535;
+  margin-right: 20rpx;
+}
+.chi-review .user .date {
+  font-size: 24rpx;
+  color: #888;
+}
+.chi-review .user .info {
+  margin-left: 20rpx;
+}
+.chi-review .imgs image {
+  width: 120rpx;
+  height: 120rpx;
+  margin: 10rpx 10rpx 0 0;
+}
+.chi-review .review-text {
+  font-size: 24rpx;
+  color: #353535;  
+}
+.chi-review-container .title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #353535;
+  margin: 20rpx 0;
+}
+.chi-review-container .nomore {
+  font-size: 24rpx;
+  color: #888;
+  text-align: center;
+}
+.chi-review-container {
+  padding-bottom: 100px;
 }

@@ -25,48 +25,14 @@
   top: 0rpx;
   left: 30rpx;
 }
-.stock {
-  font-size: 24rpx;
-  background-color: #ffdf00;
-  padding: 10rpx 20rpx;
+.line {
   display: flex;
-  position: relative;
-}
-.stock .count-down {
-  position: absolute;
-  right: 20rpx;
-}
-.price-container {
-  display: flex;
+  justify-content: space-between;
   align-items: baseline;
-  position: relative;
-  margin: 10rpx 0;
 }
-.price-container .sold {
+.line .sold {
   font-size: 20rpx;
   color: #353535;
-  position: absolute;
-  right: 10rpx;
-  bottom: 20%;
-}
-.price-container .price {
-  font-size: 24rpx;
-  color: #ff4d42;
-  font-weight: bold;
-}
-.price-container .price text {
-  font-size: 36rpx;
-}
-.price-container .freight {
-  font-size: 30rpx;
-  color: #ff4d42;
-  font-weight: bold;
-  padding: 0 20rpx;
-}
-.price-container .ori-price {
-  font-size: 24rpx;
-  color: #888;
-  text-decoration: line-through;
 }
 .name {
   font-size: 30rpx;
@@ -76,35 +42,15 @@
 .desc {
   font-size: 24rpx;
   color: #b2b2b2;
-  padding: 20rpx 0;
 }
 .chi-reward-container {
   margin-bottom: 20rpx;
 }
-.feature .title, .specs .title, .review-container .title {
+.specs .title {
   font-size: 30rpx;
   font-weight: bold;
   color: #353535;
   margin: 20rpx 0;
-}
-.feature .tags {
-  display: flex;
-  flex-wrap: wrap;
-}
-.feature .tag {
-  border: 1px solid #d0cfcb;
-  border-radius: 30rpx;
-  margin: 10rpx;
-  padding: 0 15rpx;
-}
-.feature .tag .name {
-  font-size: 24rpx;
-  color: #353535;
-}
-.feature .tag .count {
-  font-size: 24rpx;
-  color: #ffc018;
-  margin-left: 10rpx;
 }
 .specs .img {
   text-align: center;
@@ -112,47 +58,6 @@
 .specs image {
   width: 690rpx;
   height: 450rpx;
-}
-.review-container .nomore {
-  font-size: 24rpx;
-  color: #888;
-  text-align: center;
-}
-.review-container {
-  padding-bottom: 100px;
-}
-.review {
-  padding-top: 30rpx;
-}
-.review .user {
-  display: flex;
-  align-items: center;
-}
-.review .user image {
-  width: 82rpx;
-  height: 82rpx;
-  border-radius: 50%;
-  border: 1px solid #f0f0f0;
-}
-.review .user .nickname {
-  font-size: 24rpx;
-  color: #353535;
-}
-.review .user .date {
-  font-size: 24rpx;
-  color: #888;
-}
-.review .user .info {
-  margin-left: 20rpx;
-}
-.review .imgs image {
-  width: 120rpx;
-  height: 120rpx;
-  margin: 10rpx 10rpx 0 0;
-}
-.review .review-text {
-  font-size: 24rpx;
-  color: #353535;  
 }
 .bottom {
   display: flex;

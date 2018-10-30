@@ -420,7 +420,7 @@
   display: flex;
   align-items: center;
 }
-.review .user image {
+.review .user .avatar image {
   width: 82rpx;
   height: 82rpx;
   border-radius: 50%;
@@ -429,6 +429,7 @@
 .review .user .nickname {
   font-size: 24rpx;
   color: #353535;
+  margin-right: 20rpx;  
 }
 .review .user .date {
   font-size: 24rpx;

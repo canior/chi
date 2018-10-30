@@ -1,0 +1,41 @@
+<!--pages/group/pay.wxml-->
+<wxs src="../tmpl/phone.wxs" module="phone"/>
+<view class="top" bindtap="">
+  <view class="left">
+    <view class="line name">
+      <image src="/images/addr-white.png"/>
+      <text>唐亚迪 {{phone.encode('13687355688')}}</text>
+    </view>
+    <view class="line addr">
+      <text>上海松江区莘砖公路668号A座1501室</text>
+    </view>
+  </view>
+  <view class="right">
+    <view class="arrow-right"/>
+  </view>
+</view>
+
+<view class="total">
+  <view>总计付费</view><view>￥100.00</view>
+</view>
+
+<view class="container">
+  <view class="chi-item">
+    <view class="left"><image src="/images/demo/product-thumb.png"/></view>
+    <view class="right">
+      <view class="line title"><view>【麦摄氏度】5瓶装 代餐 330毫升</view><text>X1</text></view>
+      <view class="line chi-price-container">
+        <view class="price">拼团价￥<text>{{'100.00'}}</text></view>
+        <view class="ori-price">￥{{'200.00'}}</view>
+        <view class="freight">包邮</view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="bottom">
+  <view>总计付费：<text>￥100.00</text></view>
+  <view class="btn">付款</view>
+</view>
+
+

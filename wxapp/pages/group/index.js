@@ -149,6 +149,21 @@ Page({
     })
   },
 
+  // copy from /pages/product/detail.js
+  previewImage(e) {
+    const current = e.currentTarget.dataset.current
+    const productReview = this.data.productReviews.find(item => {
+      return item.id = e.currentTarget.dataset.id
+    })
+    const urls = productReview.productReviewImages.map(item => {
+      return this.data.imgUrlPrefix + '/' + item.fileId;
+    });
+    wx.previewImage({
+      current: current,
+      urls: urls
+    })
+  },  
+
   joinGroup: function (e) {
     if (this.data.isLogin) {
       this.createGroupOrder();

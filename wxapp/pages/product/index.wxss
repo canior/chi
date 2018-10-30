@@ -6,7 +6,8 @@
   height: 340rpx;
 }
 .banner swiper image {
-  width: 690rpx;
+  width: 100%;
+  /*width: 690rpx;*/
   height: 340rpx;
 }
 .product {
@@ -18,8 +19,12 @@
 .product:last-child {
   margin-bottom: 80rpx;
 }
+.product swiper {
+  height: 381rpx;  
+}
 .product image {
-  width: 692rpx;
+  width: 100%;
+  /*width: 692rpx;*/
   height: 381rpx;
 }
 .product .img {
@@ -52,51 +57,30 @@
   left: 0;
   bottom: 40rpx;
 }
-.product .name {
+.product .line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.product .line .name {
   font-size: 30rpx;
   font-weight: bold;
   color: #333;
-  display: flex;
-  align-items: center;
-  position: relative;
-  line-height: 60rpx;
 }
-.product .name .pull-right {
+.product .line .reward {
   font-size: 22rpx;
   color: #ff4d42;
-  position: absolute;
-  right: 10rpx;
 }
-.product .price-container {
-  display: flex;
-  align-items: baseline;
-  position: relative;
-}
-.product .price-container .price {
+.product .line .desc {
   font-size: 24rpx;
-  color: #ff4d42;
-  font-weight: bold;
+  color: #b2b2b2;
+  width: 250px;
+  line-height: 30rpx;
 }
-.product .price-container .price text {
-  font-size: 36rpx;
-}
-.product .price-container .freight {
-  font-size: 30rpx;
-  color: #ff4d42;
-  font-weight: bold;
-  padding: 0 20rpx;
-}
-.product .price-container .ori-price {
-  font-size: 24rpx;
-  color: #888;
-  text-decoration: line-through;
-}
-.product .btn {
+.product .line .btn {
   font-size: 30rpx;
   font-weight: bold;
   background-color: #ffdf00;
   border-radius: 30rpx;
   padding: 15rpx 40rpx;
-  position: absolute;
-  right: 0;
 }
