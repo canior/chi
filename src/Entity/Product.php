@@ -412,6 +412,7 @@ class Product implements Dao
             'stock' => $this->getStock(),
             'similarProducts' => $similarProductsArray,
             'soldNum' => 1000, //TODO 需要从product statistics里拿
+            'reviewsNum' => 500, //TODO 需要从product statistics里拿
         ];
     }
 
