@@ -70,9 +70,11 @@ page {
   bottom: 0;
   left: 0;
   right: 0;
+  height: 110rpx;
 }
 .bottom view {
   padding: 30rpx;
+  width: 60%;
 }
 .bottom text {
   color: #ff4d42;  
@@ -80,6 +82,8 @@ page {
 .bottom .btn {
   color: #000;
   background-color: #ffdf00;
-  width: 240rpx;
   text-align: center;
+  width: 40%;
+  height: 110rpx;
+  line-height: 110rpx;
 }

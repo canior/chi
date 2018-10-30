@@ -197,3 +197,56 @@
 .chi-review-container {
   padding-bottom: 100px;
 }
+.chi-mask{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #000;
+  opacity: 0.5;
+  overflow: hidden;
+  z-index: 98;
+  color: #fff;
+}
+.chi-modal {
+  text-align: center;
+  background-color: #fff;
+  z-index: 99;
+  position: fixed;
+  bottom: 40%;
+  left: 50rpx;
+  right: 50rpx;
+  border-radius: 20rpx;
+}.chi-modal .bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.chi-modal .title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #353535;
+  padding: 20rpx 0;
+}
+.chi-modal .body {
+  font-size: 30rpx;
+  color: #353535;
+  padding: 30rpx;
+}
+.chi-modal .foot {
+  display: flex;
+  border-top: 1px solid #ececec;
+}
+.chi-modal .foot .btn {
+  font-size: 36rpx;
+  color: #353535;
+  background-color: #fff;
+  width: 50%;
+}.chi-modal .foot .btn:after{
+  border: none;
+}.chi-modal .foot .btn:first-child{
+  border-right: 1px solid #ececec;
+}.chi-modal .foot .btn.group{
+  color: #ff4d42;
+}
