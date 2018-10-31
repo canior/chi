@@ -27,7 +27,7 @@
                                     </div>
                                 </div>
                                 <div class="box-body">
-                                    <div class="chart" style="height: 200px;">
+                                    <div class="chart" style="min-height: 200px;">
                                         <div class="box box-solid">
                                             <div class="box-body">
                                                 <div class="media">
@@ -46,13 +46,23 @@
                                                                 </a>
                                                             </h5>
                                                             <h5>用户昵称: {{ shareSource.user.nickname }}</h5>
-                                                            <h5>
-                                                                产品ID:
-                                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': shareSource.product.id}) }}" target="_blank" title="查看详情">
-                                                                    {{ shareSource.product.id }}
-                                                                </a>
-                                                            </h5>
-                                                            <h5>产品名: {{ shareSource.product.title }}</h5>
+                                                            {% if shareSource.product %}
+                                                                <h5>
+                                                                    产品ID:
+                                                                    <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': shareSource.product.id}) }}" target="_blank" title="查看详情">
+                                                                        {{ shareSource.product.id }}
+                                                                    </a>
+                                                                </h5>
+                                                                <h5>产品名: {{ shareSource.product.title }}</h5>
+                                                            {% endif %}
+                                                            {% if shareSource.groupOrder %}
+                                                                <h5>
+                                                                    拼团订单ID:
+                                                                    <a class="btn btn-info btn-xs" href="{{ path('group_order_info', {'id': shareSource.groupOrder.id}) }}" target="_blank" title="查看详情">
+                                                                        {{ shareSource.groupOrder.id }}
+                                                                    </a>
+                                                                </h5>
+                                                            {% endif %}
                                                             <h5>分享类型: {{ shareSource.typeText }}</h5>
                                                             <h5>分享名称: {{ shareSource.title }}</h5>
                                                             <h5>跳转页面: {{ shareSource.page }}</h5>

@@ -523,7 +523,8 @@ class User extends BaseUser implements Dao
             'nickname' => $this->getNickname(),
             'avatarUrl' => $this->getAvatarUrl(),
             'totalRewards' => $this->getTotalRewards(),
-            'defaultAddress' => $this->getDefaultUserAddress() != null ? $this->getDefaultUserAddress()->getArray() : null
+            'defaultAddress' => $this->getDefaultUserAddress() != null ? $this->getDefaultUserAddress()->getArray() : null,
+            'lastLogin' => $this->getLastLogin()
         ];
     }
 
@@ -658,7 +659,7 @@ class User extends BaseUser implements Dao
                 $childArray['totalUserOrderAmount'] = $totalUserOrderAmount;
                 $childArray['totalUserRewards'] = $totalUserRewards;
 
-                if ($child->getParentUser()->getId() == $this->getId()) {
+                if ($child->getParentUser() && $child->getParentUser()->getId() == $this->getId()) {
                     $childArray['valid'] = true;
                 } else {
                     $childArray['valid'] = false;
