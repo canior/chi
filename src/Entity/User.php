@@ -136,6 +136,13 @@ class User extends BaseUser implements Dao
      */
     private $userStatistics;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSourceUser", mappedBy="user", fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     * @var ArrayCollection $shareSourceUsers
+     */
+    private $shareSourceUsers;
+
     public function __construct()
     {
         parent::__construct();
@@ -669,5 +676,22 @@ class User extends BaseUser implements Dao
             }
             $this->addUserAddress($userAddress);
         }
+    }
+
+    /**
+     * 返回最近的一个ShareSource
+     *
+     * @return ShareSource
+     */
+    public function getLatestFromShareSource() {
+        /**
+         * @var ShareSourceUser[] $fromShareSources
+         */
+        $fromShareSourceUsers = $this->shareSourceUsers;
+
+        if (!$fromShareSourceUsers->isEmpty())
+            return $fromShareSourceUsers[0]->getShareSource();
+
+        return null;
     }
 }

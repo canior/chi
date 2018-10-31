@@ -21,7 +21,7 @@ class ShareSource implements Dao
     /**
      * @var string
      * @ORM\Id
-     * @ORM\Column(type="guid")
+     * @ORM\Column(type="string")
      */
     private $id;
 

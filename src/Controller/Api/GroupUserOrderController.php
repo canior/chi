@@ -59,11 +59,11 @@ class GroupUserOrderController extends BaseController
         $groupUserOrder->setPending();
         $groupUserOrder->setPaid();
 
+        //确认收货
         $groupUserOrder->setDelivered();
 
         $this->getEntityManager()->persist($groupUserOrder);
         $this->getEntityManager()->flush();
-
 
 
         $data = [

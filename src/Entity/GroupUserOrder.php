@@ -70,7 +70,7 @@ class GroupUserOrder implements Dao
     private $userAddress;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="groupUserOrders", cascade="persist")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="groupUserOrders", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -307,6 +307,34 @@ class GroupUserOrder implements Dao
         if ($oldStatus == $newStatus) {
             return $this;
         }
+
+        /*
+         * 支付订单成功后确认用户上线
+         *
+         * 拼团订单-团长： 找到团长的最近分享源用户更新上线
+         * 拼团订单-团员： 团长就是上线
+         * 普通订单：最近的分享源用户，更新上线
+         *
+         */
+        $parentUser = null;
+        if ($this->isGroupOrder()) {
+            if ($this->isMasterOrder()) {
+                $fromShareSource = $this->getUser()->getLatestFromShareSource();
+                if ($fromShareSource != null) {
+                    $parentUser = $fromShareSource->getUser();
+                }
+            } else {
+                $parentUser = $this->getGroupOrder()->getUser();
+            }
+        } else {
+            $fromShareSource = $this->getUser()->getLatestFromShareSource();
+            if ($fromShareSource != null) {
+                $parentUser = $fromShareSource->getUser();
+            }
+        }
+
+        $this->getUser()->setParentUser($parentUser);
+        $this->getUser()->addGroupUserOrder($this);
 
         $log = new GroupUserOrderLog($this);
         $log->setFromPaymentStatus($oldStatus);
