@@ -16,23 +16,23 @@
   <view class="split-brand"/>
 </block>
 
-<block wx:for="1234" wx:key="index" wx:if="{{isLogin && user.totalRewards > 0}}">
+<block wx:for="{{rewardList}}" wx:key="index" wx:if="{{isLogin && user.totalRewards > 0}}">
 <view class="section">
   <view class="row">
-    <view class="left">唐亚迪tandy</view>
+    <view class="left">{{item.nickname}}</view>
     <view class="right active">活跌用户</view>
   </view>
   <view class="row">
     <view class="left">
-      <image src="/images/demo/user-thumb.png"/>
+      <image src="{{item.avatarUrl}}"/>
       <view>
-        <view class="line">消费订单：1</view>
-        <view class="line">消费金额：￥50.00</view>
-        <view class="line">上次登录：2018-08-24</view>
+        <view class="line">消费订单：{{item.totalUserOrderNum}}</view>
+        <view class="line">消费金额：￥{{item.totalUserOrderAmount}}</view>
+        <view class="line">上次登录：2018-01-01</view>
       </view>
     </view>
     <view class="right">
-      <view class="reward">￥5.00</view>
+      <view class="reward">￥{{item.totalUserRewards}}</view>
       <view class="btn">喂点食</view>
     </view>
   </view>
@@ -83,6 +83,9 @@
 
 <block wx:if="{{isLogin && user.totalRewards > 0}}">
   <view class="bottom" bindtap="">查看好友咖位排行榜</view>
+</block>
+<block wx:if="{{isLogin && user.totalRewards == 0}}">
+  <view class="bottom" bindtap="">快去邀请好友一起下单吧</view>
 </block>
 <block wx:if="{{!isLogin}}">
   <view class="bottom" bindtap="">邀请好友</view>

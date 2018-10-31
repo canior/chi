@@ -1,4 +1,5 @@
 <!--pages/user/group/index.wxml-->
+<import src="/pages/tmpl/price.wxml"/>
 <view class="navbar">
   <block wx:for="{{menu}}" wx:key="index">
     <view class="nav{{curIndex==index ? ' active' : ''}}" data-index="{{index}}"bindtap="tapMenu">{{item}}</view>
@@ -17,11 +18,7 @@
         <image src="{{imgUrlPrefix + '/' + item.product.productImages[0].fileId}}"/>
         <view>
           <view class="line name">{{item.product.title}}</view>
-          <view class="line chi-price-container">
-            <view class="price">拼团价￥<text>{{item.product.price}}</text></view>
-            <view class="freight">包邮</view>
-            <view class="ori-price">￥{{item.product.originalPrice}}</view>
-          </view>
+          <template is="price" data="{{...item}}"/>
         </view>
       </view>
     </view>

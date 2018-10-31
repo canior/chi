@@ -19,21 +19,21 @@
   </view>
   <view class="row">
     <view class="left">我的订单</view>
-    <view class="right" bindtap="toUserOrder">查看全部<view class="arrow-right"/></view>
+    <view class="right" bindtap="toUserOrder" data-status="">查看全部<view class="arrow-right"/></view>
   </view>
   <view class="row">
-    <navigator class="step" url="/pages/user/order/index?status=created">
+    <view class="step" bindtap="toUserOrder" data-status="created">
       <image src="/images/my-review.png"/><text>待成团</text>
-    </navigator>
-    <navigator class="step" url="/pages/user/order/index?status=pending">
+    </view>
+    <view class="step" bindtap="toUserOrder" data-status="pending">
       <image src="/images/my-pending.png"/><text>待发货</text>
-    </navigator>
-    <navigator class="step" url="/pages/user/order/index?status=shipping">
+    </view>
+    <view class="step" bindtap="toUserOrder" data-status="shipping">
       <image src="/images/my-ship.png"/><text>已发货</text>
-    </navigator>
-    <navigator class="step" url="/pages/user/order/index?status=delivered">
+    </view>
+    <view class="step" bindtap="toUserOrder" data-status="delivered">
       <image src="/images/my-receive.png"/><text>已收货</text>
-    </navigator>
+    </view>
   </view>
 </view>
 <view class="split-brand"/>
