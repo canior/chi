@@ -377,7 +377,6 @@ class UserController extends BaseController
         $city = isset($data['city']) ? $data['city'] : null;
         $county = isset($data['county']) ? $data['county'] : null;
         $address = isset($data['address']) ? $data['address'] : null;
-        $isDefault = isset($data['isDefault']) ? $data['isDefault'] : null;
 
         // 查询或新建region
         $provinceDao = $regionRepository->findOneBy(['name' => $province, 'parentRegion' => null]);
@@ -410,14 +409,8 @@ class UserController extends BaseController
             $userAddress->setUser($user);
         }
 
-        // 若$isDefault=true则要检查其它地址中有无已设为默认的，有要去掉，不然就会有多个默认
-        $defaultUserAddress = $user->getDefaultUserAddress();
-        if ($defaultUserAddress) {
-            $defaultUserAddress->setIsDefault(false);
-            $this->getEntityManager()->persist($defaultUserAddress);
-        }
 
-        $userAddress->setName($name)->setPhone($phone)->setRegion($countyDao)->setAddress($address)->setIsDefault($isDefault)->setUpdatedAt(time());
+        $userAddress->setName($name)->setPhone($phone)->setRegion($countyDao)->setAddress($address)->setUpdatedAt(time());
         $this->getEntityManager()->persist($userAddress);
         $this->getEntityManager()->flush();
 
@@ -478,8 +471,8 @@ class UserController extends BaseController
         if ($productId == null) { //分享用户相关
             if ($shareSourceType == 'refer') { //转发用户相关小程序
                 //TODO
-                $title = "";
-                $bannerFile = "";
+                $title = $user->getNickname();
+                $bannerFile = 1;
             } else if ($shareSourceType == 'quan') { //用户相关朋友圈
                 //TODO
                 $title = "";

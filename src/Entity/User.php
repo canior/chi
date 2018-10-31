@@ -656,4 +656,18 @@ class User extends BaseUser implements Dao
         }
         return $childrenArray;
     }
+
+    /**
+     * @param UserAddress $userAddress
+     */
+    public function setDefaultAddress(UserAddress $userAddress) {
+        foreach ($this->getUserAddresses() as $userAddress) {
+            if ($userAddress->getId() == $userAddress->getId()) {
+                $userAddress->setIsDefault(true);
+            } else {
+                $userAddress->setIsDefault(false);
+            }
+            $this->addUserAddress($userAddress);
+        }
+    }
 }

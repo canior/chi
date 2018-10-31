@@ -112,7 +112,13 @@ class GroupUserOrderController extends BaseController
         $addressId = isset($data['addressId']) ? $data['addressId'] : null;
         $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
 
+        $user = $this->getWxUser($thirdSession);
         $userAddress = $userAddressRepository->find($addressId);
+
+        //每次订单的地址自动成为用户默认地址
+        $user->setDefaultAddress($userAddress);
+        $this->getEntityManager()->persist($user);
+
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
         $groupUserOrder->setUserAddress($userAddress);
         $this->getEntityManager()->persist($groupUserOrder);
