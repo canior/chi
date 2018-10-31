@@ -33,9 +33,6 @@
                                     <div class="chart" style="height: 250px;">
                                         <div class="box box-solid">
                                             <div class="box-body">
-                                                <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
-                                                    {{ product.title }}
-                                                </h4>
                                                 <div class="media">
                                                     <div class="media-left">
                                                         {% if product.productImages.count %}
@@ -49,12 +46,14 @@
                                                     </div>
                                                     <div class="media-body">
                                                         <div class="clearfix">
-                                                            <p class="pull-right">
+                                                            <h5>
+                                                                产品ID:
                                                                 <a href="{{ path('product_edit', {id: product.id}) }}"
-                                                                   class="btn btn-info btn-sm ad-click-event">查看详情</a>
-                                                            </p>
-
-                                                            <h4 style="margin-top: 0">产品ID ─ {{ product.id }}</h4>
+                                                                   target="_blank" class="btn btn-info btn-xs ad-click-event">
+                                                                    {{ product.id }}
+                                                                </a>
+                                                            </h5>
+                                                            <h5>产品名: {{ product.title }}</h5>
 
                                                             <p>{{ macros.cut(product.shortDescription, 50) }}</p>
                                                             <p style="margin-bottom: 0">
@@ -75,7 +74,7 @@
                             <!-- BAR CHART -->
                             <div class="box box-info">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">总评价数量 ─ {{ statistics.totalReviewed }}</h3>
+                                    <h3 class="box-title">总评价数量({{ statistics.totalReviewed }})</h3>
 
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
@@ -87,8 +86,7 @@
                                     <div class="chart" id="rate-chart" style="height: 200px;"></div>
 
                                     <div class="progress-group">
-                                        <span class="progress-text">好评率 ─ {{ (statistics.favorableRate * 100)|number_format(2, '.') }}
-                                            %</span>
+                                        <span class="progress-text">好评率({{ (statistics.favorableRate * 100)|number_format(2, '.') }}%)</span>
                                         <span class="progress-number"><b>{{ statistics.totalRate5 }}</b>/{{ statistics.totalReviewed }}</span>
 
                                         <div class="progress sm">
@@ -130,9 +128,27 @@
                                         {% for item in pagination %}
                                             <tr>
                                                 <td>{{ item.id }}</td>
-                                                <td>{{ item.groupUserOrder.user.id|default }}</td>
-                                                <td>{{ item.groupUserOrder.user.username|default }}</td>
-                                                <td>{{ item.groupUserOrder.id|default }}</td>
+                                                <td>
+                                                    {% if item.groupUserOrder %}
+                                                    <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.groupUserOrder.user.id}) }}" target="_blank" title="查看详情">
+                                                        {{ item.groupUserOrder.user.id }}
+                                                    </a>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if item.groupUserOrder %}
+                                                        <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.groupUserOrder.user.id}) }}" target="_blank" title="查看详情">
+                                                            {{ item.groupUserOrder.user.nickname }}
+                                                        </a>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if item.groupUserOrder %}
+                                                        <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {'id': item.groupUserOrder.id}) }}" target="_blank" title="查看详情">
+                                                            {{ item.groupUserOrder.id }}
+                                                        </a>
+                                                    {% endif %}
+                                                </td>
                                                 <td>{{ item.groupUserOrder.completedAt|default }}</td>
                                                 <td>{{ item.rate }}</td>
                                                 <td>{{ item.review }}</td>
@@ -162,6 +178,11 @@
                                         </tr>
                                     {% endif %}
                                     </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th colspan="10">总计({{ pagination.getTotalItemCount }})</th>
+                                    </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                             <div class="box-footer clearfix">

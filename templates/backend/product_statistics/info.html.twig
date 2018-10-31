@@ -30,9 +30,6 @@
                                     <div class="chart" style="height: 200px;">
                                         <div class="box box-solid">
                                             <div class="box-body">
-                                                <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
-                                                    {{ productStatistics.product.title }}
-                                                </h4>
                                                 <div class="media">
                                                     <div class="media-left">
                                                         {% if productStatistics.product.productImages.count %}
@@ -46,12 +43,14 @@
                                                     </div>
                                                     <div class="media-body">
                                                         <div class="clearfix">
-                                                            <p class="pull-right">
+                                                            <h5>
+                                                                产品ID:
                                                                 <a href="{{ path('product_edit', {id: productStatistics.product.id}) }}"
-                                                                   class="btn btn-info btn-sm ad-click-event">查看详情</a>
-                                                            </p>
-
-                                                            <h4 style="margin-top: 0">产品ID ─ {{ productStatistics.product.id }}</h4>
+                                                                   target="_blank" class="btn btn-info btn-xs ad-click-event">
+                                                                    {{ productStatistics.product.id }}
+                                                                </a>
+                                                            </h5>
+                                                            <h5>产品名: {{ productStatistics.product.title }}</h5>
 
                                                             <p>{{ macros.cut(productStatistics.product.shortDescription, 50) }}</p>
                                                             <p style="margin-bottom: 0">
@@ -89,11 +88,11 @@
                                                     </div>
                                                     <div class="media-body">
                                                         <div class="clearfix">
-                                                            <h4 style="margin-top: 0">销售总额 ─ ￥{{ productStatisticsTotal.orderAmountTotal|default(0)|number_format }}</h4>
-                                                            <h4 style="margin-top: 0">订单数量 ─ {{ productStatisticsTotal.orderNum|default(0) }}</h4>
-                                                            <h4 style="margin-top: 0">用户数量 ─ {{ productStatisticsTotal.buyersNum|default(0) }}</h4>
-                                                            <h4 style="margin-top: 0">复购用户数量 ─ {{ productStatisticsTotal.returnUsersNum|default(0) }}</h4>
-                                                            <h4 style="margin-top: 0">复购率 ─ {{ 'TODO: ???' }}%</h4>
+                                                            <h5>销售总额: ￥{{ productStatisticsTotal.orderAmountTotal|default(0)|number_format }}</h5>
+                                                            <h5>订单数量: {{ productStatisticsTotal.orderNum|default(0) }}</h5>
+                                                            <h5>用户数量: {{ productStatisticsTotal.buyersNum|default(0) }}</h5>
+                                                            <h5>复购用户数量: {{ productStatisticsTotal.returnUsersNum|default(0) }}</h5>
+                                                            <h5>复购率: {{ 'TODO: ???' }}%</h5>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -160,10 +159,15 @@
                                                 {% endfor %}
                                             {% else %}
                                                 <tr>
-                                                    <td colspan="8" class="alert">no records found</td>
+                                                    <td colspan="7" class="alert">no records found</td>
                                                 </tr>
                                             {% endif %}
                                             </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="8">总计({{ pagination.getTotalItemCount }})</th>
+                                            </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                     <!-- /table -->

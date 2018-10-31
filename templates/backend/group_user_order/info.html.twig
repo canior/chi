@@ -30,15 +30,12 @@
                                     <div class="chart" style="height: 200px;">
                                         <div class="box box-solid">
                                             <div class="box-body">
-                                                <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
-                                                    订单ID ─ {{ group_user_order.id }}
-                                                </h4>
                                                 <div class="media">
                                                     <div class="media-left">
-                                                        {% if group_user_order.groupOrder.product.productImages.count %}
-                                                            <a href="{{ path('product_edit', {id: group_user_order.groupOrder.product.id}) }}"
+                                                        {% if group_user_order.product and group_user_order.product.productImages.count %}
+                                                            <a href="{{ path('product_edit', {id: group_user_order.product.id}) }}"
                                                                class="ad-click-event">
-                                                                <img src="{{ path('imagePreview', {fileId: group_user_order.groupOrder.product.productImages.first.file.id}) }}"
+                                                                <img src="{{ path('imagePreview', {fileId: group_user_order.product.productImages.first.file.id}) }}"
                                                                      alt="MaterialPro" class="media-object"
                                                                      style="width: 150px;height: auto;border-radius: 4px;box-shadow: 0 1px 3px rgba(0,0,0,.15);">
                                                             </a>
@@ -47,14 +44,22 @@
                                                     <div class="media-body">
                                                         <div class="clearfix">
                                                             <p class="pull-right">
-                                                                <a href="{{ path('group_order_info', {id: group_user_order.groupOrder.id}) }}"
-                                                                   class="btn btn-info btn-sm ad-click-event">查看拼团</a>
                                                             </p>
 
-                                                            <h4 style="margin-top: 0">用户 ─ {{ group_user_order.user.username }}</h4>
-                                                            <h4 style="margin-top: 0">电话 ─ {{ group_user_order.userAddress.phone|default }}</h4>
-                                                            <h4 style="margin-top: 0">产品名 ─ {{ group_user_order.groupOrder.product.title }}</h4>
-                                                            <h4 style="margin-top: 0">产品价格 ─ {{ group_user_order.groupOrder.product.price|number_format }}</h4>
+                                                            <h5>订单ID: {{ group_user_order.id }}</h5>
+                                                            {% if group_user_order.groupOrder %}
+                                                                <h5>
+                                                                    拼团ID:
+                                                                    <a href="{{ path('group_order_info', {id: group_user_order.groupOrder.id}) }}"
+                                                                       target="_blank" class="btn btn-info btn-xs ad-click-event">
+                                                                        {{ group_user_order.groupOrder.id }}
+                                                                    </a>
+                                                                </h5>
+                                                            {% endif %}
+                                                            <h5>用户: {{ group_user_order.user.nickname }}</h5>
+                                                            <h5>电话: {{ group_user_order.userAddress.phone|default }}</h5>
+                                                            <h5>产品名: {{ group_user_order.groupOrder.product.title }}</h5>
+                                                            <h5>产品价格: {{ group_user_order.groupOrder.product.price|number_format }}</h5>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -71,7 +76,7 @@
                             <!-- BAR CHART -->
                             <div class="box box-info">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">订单状态 ─ <span class="label label-danger">{{ group_user_order.statusText }}</span></h3>
+                                    <h3 class="box-title">订单状态 <span class="label label-danger">{{ group_user_order.statusText }}</span></h3>
 
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
@@ -94,7 +99,7 @@
                             <!-- BAR CHART -->
                             <div class="box box-info">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">支付状态 ─ <span class="label label-danger">{{ group_user_order.paymentStatusText }}</span></h3>
+                                    <h3 class="box-title">支付状态 <span class="label label-danger">{{ group_user_order.paymentStatusText }}</span></h3>
 
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
@@ -117,7 +122,7 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-4">
                             <!-- BAR CHART -->
-                            <div class="box box-warning">
+                            <div class="box box-success">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">订单信息</h3>
 
@@ -143,9 +148,9 @@
                         </div>
                         <div class="col-sm-12 col-md-8">
                             <!-- BAR CHART -->
-                            <div class="box box-warning">
+                            <div class="box box-success">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">操作记录</h3>
+                                    <h3 class="box-title">最近5条操作记录</h3>
 
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
@@ -191,6 +196,11 @@
                                                 </tr>
                                             {% endif %}
                                             </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="5">总计({{ group_user_order.groupUserOrderLogs.count }})</th>
+                                            </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                     <!-- /table -->
@@ -230,13 +240,21 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {% if group_user_order.groupOrder.groupUserOrders.count > 1 %}
+                                            {% if group_user_order.groupOrder and group_user_order.groupOrder.groupUserOrders.count > 1 %}
                                                 {% for item in group_user_order.groupOrder.groupUserOrders %}
                                                     {% if item.id != group_user_order.id %}
                                                     <tr>
                                                         <td>{{ item.id }}</td>
-                                                        <td>{{ item.user.id }}</td>
-                                                        <td>{{ item.user.username }}</td>
+                                                        <td>
+                                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.user.id }}
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.user.nickname }}
+                                                            </a>
+                                                        </td>
                                                         <td>{{ item.role }}</td>
                                                         <td>{{ item.statusText }}</td>
                                                         <td>{{ item.paymentStatusText }}</td>
@@ -259,6 +277,11 @@
                                                 </tr>
                                             {% endif %}
                                             </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="9">总计({{ group_user_order.groupOrder.groupUserOrders.count|default(0) }})</th>
+                                            </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                     <!-- /table -->
@@ -269,7 +292,7 @@
                         </div>
                         <div class="col-sm-12 col-md-12">
                             <!-- BAR CHART -->
-                            <div class="box box-success">
+                            <div class="box box-warning">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">客户评价</h3>
 
@@ -324,6 +347,11 @@
                                                 </tr>
                                             {% endif %}
                                             </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="6">总计({{ group_user_order.productReviews.count }})</th>
+                                            </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                     <!-- /table -->

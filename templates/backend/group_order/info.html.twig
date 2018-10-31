@@ -30,22 +30,17 @@
                                     <div class="chart" style="height: 200px;">
                                         <div class="box box-solid">
                                             <div class="box-body">
-                                                <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
-                                                    {{ group_order.id }}
-                                                </h4>
                                                 <div class="media">
                                                     <div class="media-left">
                                                     </div>
                                                     <div class="media-body">
                                                         <div class="clearfix">
-                                                            <p class="pull-right">
-                                                                <a href="{{ path('group_order_index', {id: group_order.id}) }}"
-                                                                   class="btn btn-info btn-sm ad-click-event">查看</a>
-                                                            </p>
-
-                                                            <h4 style="margin-top: 0">拼团创建时间 ─ {{ group_order.createdAt }}</h4>
-                                                            <h4 style="margin-top: 0">拼团结束时间 ─ {{ group_order.completedAt }}</h4>
-                                                            <h4 style="margin-top: 0">拼团打开人数 ─ TODO:???</h4>
+                                                            <h5>
+                                                                拼团ID: {{ group_order.id }}
+                                                            </h5>
+                                                            <h5>拼团创建时间: {{ group_order.createdAt }}</h5>
+                                                            <h5>拼团结束时间: {{ group_order.completedAt }}</h5>
+                                                            <h5>拼团打开人数: TODO:???</h5>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -73,9 +68,6 @@
                                     <div class="chart" style="height: 200px;">
                                         <div class="box box-solid">
                                             <div class="box-body">
-                                                <h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">
-                                                    {{ group_order.product.title }}
-                                                </h4>
                                                 <div class="media">
                                                     <div class="media-left">
                                                         {% if group_order.product.productImages.count %}
@@ -89,13 +81,15 @@
                                                     </div>
                                                     <div class="media-body">
                                                         <div class="clearfix">
-                                                            <p class="pull-right">
+                                                            <h5>
+                                                                产品ID:
                                                                 <a href="{{ path('product_edit', {id: group_order.product.id}) }}"
-                                                                   class="btn btn-info btn-sm ad-click-event">查看详情</a>
-                                                            </p>
-
-                                                            <h4 style="margin-top: 0">产品ID ─ {{ group_order.product.id }}</h4>
-                                                            <h4 style="margin-top: 0">产品价格 ─ {{ group_order.product.price }}</h4>
+                                                                   target="_blank" class="btn btn-info btn-xs ad-click-event">
+                                                                    {{ group_order.product.id }}
+                                                                </a>
+                                                            </h5>
+                                                            <h5>产品名: {{ group_order.product.title }}</h5>
+                                                            <h5>产品价格: {{ group_order.product.price|number_format }}</h5>
 
                                                             <p>{{ macros.cut(group_order.product.shortDescription, 50) }}</p>
                                                             <p style="margin-bottom: 0">
@@ -214,6 +208,11 @@
                                                 </tr>
                                             {% endif %}
                                             </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="11">总计({{ group_order.groupUserOrders.count }})</th>
+                                            </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                     <!-- /table -->
@@ -283,10 +282,15 @@
                                                 {% endfor %}
                                             {% else %}
                                                 <tr>
-                                                    <td colspan="4" class="alert">no records found</td>
+                                                    <td colspan="7" class="alert">no records found</td>
                                                 </tr>
                                             {% endif %}
                                             </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="7">总计({{ group_order.user.shareSources.count|default(0) }})</th>
+                                            </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                     <!-- /table -->

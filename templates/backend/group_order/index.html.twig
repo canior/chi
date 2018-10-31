@@ -85,7 +85,11 @@
                                                 {% endfor %}
                                             {% endif %}
                                         </td>
-                                        <td>{{ item.product.title }}</td>
+                                        <td>
+                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
+                                                {{ item.product.title }}
+                                            </a>
+                                        </td>
                                         <td>{{ item.product.price }}</td>
                                         <td>{{ item.statusText }}</td>
                                         <td>{{ item.createdAt }}</td>

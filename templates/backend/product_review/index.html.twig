@@ -53,8 +53,16 @@
                             {% if pagination.getTotalItemCount %}
                                 {% for item in pagination %}
                                     <tr>
-                                        <td>{{ item.product.id }}</td>
-                                        <td>{{ item.product.title }}</td>
+                                        <td>
+                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
+                                                {{ item.product.id }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
+                                                {{ item.product.title }}
+                                            </a>
+                                        </td>
                                         <td>{{ item.totalReviewed }}</td>
                                         <td>{{ item.favorableRate|default(0) }}</td>
                                         <td>{{ item.lastReviewedAt }}</td>
