@@ -133,14 +133,18 @@
                                                             </a>
                                                         </td>
                                                         <td>
+                                                            {% if item.groupOrder %}
                                                             <a class="btn btn-info btn-xs" href="{{ path('group_order_info', {'id': item.groupOrder.id}) }}" target="_blank" title="查看详情">
                                                                 {{ item.groupOrder.id }}
                                                             </a>
+                                                            {% endif %}
                                                         </td>
                                                         <td>
+                                                            {% if item.groupOrder.product %}
                                                             <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.groupOrder.product.id}) }}" target="_blank" title="查看详情">
                                                                 {{ item.groupOrder.product.title }}
                                                             </a>
+                                                            {% endif %}
                                                         </td>
                                                         <td>
                                                             <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.groupOrder.user.id}) }}" target="_blank" title="查看详情">
@@ -205,13 +209,15 @@
                                                             </a>
                                                         </td>
                                                         <td>
+                                                            {% if item.groupUserOrder.groupOrder %}
                                                             <a class="btn btn-info btn-xs" href="{{ path('group_order_info', {'id': item.groupUserOrder.groupOrder.id}) }}" target="_blank" title="查看详情">
                                                                 {{ item.groupUserOrder.groupOrder.id }}
                                                             </a>
+                                                            {% endif %}
                                                         </td>
                                                         <td>
-                                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.groupUserOrder.groupOrder.product.id}) }}" target="_blank" title="查看详情">
-                                                                {{ item.groupUserOrder.groupOrder.product.title }}
+                                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.groupUserOrder.product.id}) }}" target="_blank" title="查看详情">
+                                                                {{ item.groupUserOrder.product.title }}
                                                             </a>
                                                         </td>
                                                         <td>

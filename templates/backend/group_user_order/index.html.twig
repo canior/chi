@@ -76,9 +76,11 @@
                                     <tr>
                                         <td>{{ item.id }}</td>
                                         <td>
+                                            {% if item.groupOrder %}
                                             <a class="btn btn-info btn-xs" href="{{ path('group_order_info', {'id': item.groupOrder.id}) }}" target="_blank" title="查看详情">
                                                 {{ item.groupOrder.id }}
                                             </a>
+                                            {% endif %}
                                         </td>
                                         <td>
                                             <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">

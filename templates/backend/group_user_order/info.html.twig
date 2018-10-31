@@ -50,16 +50,18 @@
                                                             {% if group_user_order.groupOrder %}
                                                                 <h5>
                                                                     拼团ID:
+                                                                    {% if group_user_order.groupOrder %}
                                                                     <a href="{{ path('group_order_info', {id: group_user_order.groupOrder.id}) }}"
                                                                        target="_blank" class="btn btn-info btn-xs ad-click-event">
                                                                         {{ group_user_order.groupOrder.id }}
                                                                     </a>
+                                                                    {% endif %}
                                                                 </h5>
                                                             {% endif %}
-                                                            <h5>用户: {{ group_user_order.user.nickname }}</h5>
+                                                            <h5>用户: {{ group_user_order.user.nickname|default }}</h5>
                                                             <h5>电话: {{ group_user_order.userAddress.phone|default }}</h5>
-                                                            <h5>产品名: {{ group_user_order.groupOrder.product.title }}</h5>
-                                                            <h5>产品价格: {{ group_user_order.groupOrder.product.price|number_format }}</h5>
+                                                            <h5>产品名: {{ group_user_order.product.title|default }}</h5>
+                                                            <h5>产品价格: {{ group_user_order.product.price|number_format }}</h5>
                                                         </div>
                                                     </div>
                                                 </div>
