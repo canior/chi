@@ -4,7 +4,7 @@
         <image src="/images/home2.png"/>
         <text>首页</text>
       </view>
-      <view class="item service" bindtap="">
+      <view class="item service" bindtap="wxShowShareModal">
         <image src="/images/share.png"/>
         <text>分享</text>
       </view>

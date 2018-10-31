@@ -129,6 +129,51 @@ App({
     })
   },
 
+  // 埋点请求函数
+  buriedPoint(options) {
+    var pages = getCurrentPages(); //页面栈
+    var currentPageUrl = pages[pages.length - 1].route; //加载的页面url
+    var that = this;
+    wx.request({
+      url: that.globalData.baseUrl + '/user/activity/add',
+      method: 'POST',
+      data: {
+        thirdSession: wx.getStorageSync('thirdSession'),
+        page: currentPageUrl,
+        version: '1.0'
+      },
+      success: function (res) {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          if (options && options.shareSourceId) {
+            that.addShareSource(options.shareSourceId)
+          }
+        }
+      },
+      fail(e) {},
+      complete(e) {}
+    });
+  },
+
+  // 记录用户来源
+  addShareSource(shareSourceId) {    
+    var that = this;
+    wx.request({
+      url: that.globalData.baseUrl + '/user/shareSource/addUser',
+      method: 'POST',
+      data: {
+        thirdSession: wx.getStorageSync('thirdSession'),
+        shareSourceId: shareSourceId
+      },
+      success: function (res) {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data.shareSourceUser)
+        }
+      },
+      fail(e) { },
+      complete(e) { }
+    });
+  },  
+
   // 请求后台记录错误日志
   debug: function (pageName, slug, log) {
     console.log('debug', pageName, slug, log);

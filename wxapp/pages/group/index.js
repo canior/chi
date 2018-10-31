@@ -1,6 +1,7 @@
 // pages/group/index.js
 const app = getApp()
 const productReview = require('../tmpl/productReview.js');
+const share = require('../tmpl/share.js');
 const bottom = require('../tmpl/bottom.js');
 Page({
 
@@ -17,8 +18,8 @@ Page({
     joinUserOrder: null, //参团人订单
     productReviewData: {},
     moreProducts: [],
+    shareData: {},
     bottomData: {},
-    showModal: false,
     btnDisabled: false, //防止连击button
   },
 
@@ -26,6 +27,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    app.buriedPoint(options);
     const id = options.id ? options.id : 10145;
     if (id) {
       this.getGroupOrder(id);      
@@ -217,16 +219,12 @@ Page({
     })
   },
 
-  // 邀请好友
-  showModal: function(e) {
-    this.setData({
-      showModal: true
-    })
+  // 分享:邀请好友
+  wxShowShareModal: function (e) {
+    share.showModal(this)
   },
-  hideModal: function (e) {
-    this.setData({
-      showModal: false
-    })
+  wxHideShareModal: function (e) {
+    share.hideModal(this)
   },
 
   // 转地址管理
@@ -284,6 +282,7 @@ Page({
       user: app.globalData.user
     })
     bottom.init(this)
+    share.init(this)
   },
 
   /**
