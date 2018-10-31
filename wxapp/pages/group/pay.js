@@ -1,5 +1,6 @@
 // pages/group/pay.js
 const app = getApp()
+const request = require('../tmpl/request.js')
 Page({
 
   /**
@@ -43,6 +44,9 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           const groupUserOrder = res.data.data.groupUserOrder;
+          that.setData({
+            groupUserOrder: groupUserOrder
+          })          
           if (!groupUserOrder.user.defaultAddress) {
             // 用户无地址,转新建地址页
             wx.navigateTo({
@@ -50,11 +54,9 @@ Page({
             })
           } else if (!groupUserOrder.address) {
             // 用户有地址,订单无地址,则用默认地址
-            groupUserOrder.address = groupUserOrder.user.defaultAddress
+            const url = app.globalData.baseUrl + '/groupUserOrder/confirmAddress';
+            request.confirmAddress(that, url, groupUserOrder.user.defaultAddress.id)
           }
-          that.setData({
-            groupUserOrder: groupUserOrder
-          })          
         } else {
           console.log('wx.request return error', res.statusCode);
         }
@@ -67,7 +69,7 @@ Page({
   },
 
   // 转地址管理
-  toUserAddress: function(e) {
+  wxUserAddress: function(e) {
     wx.navigateTo({
       url: '/pages/user/address/index?orderId=' + this.data.groupUserOrder.id,
     })

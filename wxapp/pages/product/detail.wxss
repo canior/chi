@@ -1,4 +1,5 @@
 /* pages/product/detail.wxss */
+@import "/pages/tmpl/bottom.wxss";
 .banner {
   text-align: center;
   position: relative;
@@ -46,6 +47,7 @@
 .chi-reward-container {
   margin-bottom: 20rpx;
 }
+/*商品详情*/
 .specs .title {
   font-size: 30rpx;
   font-weight: bold;
@@ -58,58 +60,4 @@
 .specs image {
   width: 690rpx;
   height: 450rpx;
-}
-.bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #fff;
-  border-top: 1px solid #e8e8e8;
-  height: 110rpx;
-}
-.bottom image {
-  width: 41rpx;
-  height: 41rpx;
-  margin-bottom: 6rpx;
-}
-.bottom .item {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  line-height: 40rpx;
-}.bottom .item.home, .bottom .item.service {
-  width: 15%;
-}.bottom .item.btn {
-  width: 35%;
-}
-.bottom .home {
-  font-size: 24rpx;
-  color: #353535;
-  border-right: 1px solid #e8e8e8;  
-}
-.bottom .service {
-  font-size: 24rpx;
-  color: #353535;
-}
-.bottom .btn {
-  font-size: 30rpx;
-  font-weight: bold;
-  text-align: center;
-  height: 110rpx;
-  border-radius: 0;
-}.bottom .btn.order {
-  color: #fff;
-  background-color: #434343;
-}.bottom .btn.group {
-  background-color: #ffdf00;
-}
-.btn-clear {
-  background-color: transparent;
-}.btn-clear::after {
-  border: 0;
 }

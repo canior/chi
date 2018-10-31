@@ -1,17 +1,17 @@
 // pages/product/detail.js
 const app = getApp()
 const productReview = require('../tmpl/productReview.js');
+const bottom = require('../tmpl/bottom.js');
 Page({
   /**
    * 页面的初始数据
    */
   data: {
     isLogin: false,
-    imgUrlPrefix: app.globalData.imgUrlPrefix,    
+    imgUrlPrefix: app.globalData.imgUrlPrefix,
     product: [],
     productReviewData: {},
-    showModal: false,
-    btnDisabled: false //防止连击button
+    bottomData: {}
   },
 
   /**
@@ -55,108 +55,26 @@ Page({
   },
 
   // 转首页
-  toHome: function(e) {
+  wxHome: function(e) {
     wx.switchTab({
       url: '/pages/product/index',
     })
   },
 
   // 单独购买提醒弹窗
-  showModal: function (e) {
-    this.setData({
-      showModal: true
-    })
+  wxShowModal: function (e) {
+    bottom.showModal(this)
   },
-  hideModal: function (e) {
-    this.setData({
-      showModal: false
-    })
+  wxHideModal: function (e) {
+    bottom.hideModal(this)
   },
-
   // 单独购买
-  tapCreateOrder: function (e) {
-    if (this.data.isLogin) {
-      this.createOrder();
-    } else {
-      wx.navigateTo({
-        url: '/pages/user/login',
-      })
-    }
+  wxCreateOrder: function (e) {
+    bottom.createOrder(this, app.globalData.baseUrl + '/groupUserOrder/create', this.data.product.id)
   },
-  createOrder: function () {
-    const that = this;
-    wx.showLoading({
-      title: '载入中',
-      mask: true,
-    });
-    that.setData({ btnDisabled: true });
-    wx.request({
-      url: app.globalData.baseUrl + '/groupUserOrder/create',
-      data: {
-        productId: this.data.product.id,
-        thirdSession: wx.getStorageSync('thirdSession'),
-      },
-      method: 'POST',
-      success: (res) => {
-        wx.hideLoading();
-        if (res.statusCode == 200 && res.data.code == 200) {
-          //console.log(res.data.data)
-          wx.redirectTo({
-            url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
-          })
-        } else {
-          console.log('wx.request return error', res.statusCode);
-        }
-      },
-      fail(e) {
-        wx.hideLoading();
-        that.setData({ btnDisabled: false });
-      },
-      complete(e) { }
-    })
-  },  
-
   // 发起拼团
-  tpaCreateGroup: function(e) {
-    if (this.data.isLogin) {
-      this.createGroup();
-    } else {
-      wx.navigateTo({
-        url: '/pages/user/login',
-      })
-    }
-  },
-  createGroup: function() {
-    const that = this;
-    wx.showLoading({
-      title: '载入中',
-      mask: true,
-    });
-    that.setData({ btnDisabled: true });
-    wx.request({
-      url: app.globalData.baseUrl + '/groupOrder/create',
-      data: {
-        productId: this.data.product.id,
-        thirdSession: wx.getStorageSync('thirdSession'),
-      },
-      method: 'POST',
-      success: (res) => {
-        wx.hideLoading();
-        if (res.statusCode == 200 && res.data.code == 200) {
-          //console.log(res.data.data)
-          wx.redirectTo({
-            url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
-          })
-        } else {
-          console.log('wx.request return error', res.statusCode);
-        }
-      },
-      fail(e) {
-        wx.hideLoading();
-        that.setData({ btnDisabled: false });
-      },
-      complete(e) { }
-    })
+  wxCreateGroup: function(e) {
+    bottom.createGroup(this, app.globalData.baseUrl + '/groupOrder/create', this.data.product.id)
   },
 
   /**
@@ -171,9 +89,9 @@ Page({
    */
   onShow: function () {
     this.setData({
-      btnDisabled: false,
       isLogin: app.globalData.isLogin
     })
+    bottom.init(this)
   },
 
   /**
