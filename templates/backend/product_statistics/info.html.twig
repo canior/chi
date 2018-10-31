@@ -151,10 +151,10 @@
                                                                 {{ item.id }}
                                                             </a>
                                                         </td>
-                                                        <td>{{ item.groupOrder.product.price|default(0)|number_format }}</td>
+                                                        <td>{{ item.product.price|default(0)|number_format }}</td>
                                                         <td>{{ item.total|default(0)|number_format }}</td>
                                                         <td>{{ 'TODO: 拼团金额是什么???' }}</td>
-                                                        <td>{{ item.groupOrder.completedAt }}</td>
+                                                        <td>{{ item.groupOrder.completedAt|default }}</td>
                                                     </tr>
                                                 {% endfor %}
                                             {% else %}
