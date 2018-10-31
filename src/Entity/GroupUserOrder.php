@@ -249,7 +249,7 @@ class GroupUserOrder implements Dao
             $this->addGroupUserOrderReward($userRewards);
 
             //发放传销返现
-            $this->getUser()->getParentUser()->increaseTotalRewards($userRewards);
+            $this->getUser()->getParentUser()->increasePendingTotalRewards($userRewards);
             $this->getUser()->getParentUser()->getOrCreateTodayUserStatistics()->increaseUserRewardsTotal($this->getOrderRewards());
         }
 
@@ -340,7 +340,7 @@ class GroupUserOrder implements Dao
         $this->getUser()->addGroupUserOrder($this);
 
         //发放订单返现
-        $this->getUser()->increaseTotalRewards($this->getOrderRewards());
+        $this->getUser()->increasePendingTotalRewards($this->getOrderRewards());
 
         $log = new GroupUserOrderLog($this);
         $log->setFromPaymentStatus($oldStatus);

@@ -1,16 +1,7 @@
 /* pages/group/index.wxss */
-.top {
-  font-size: 30rpx;
-  color: white;
-  background-color: #ff5353;
-  padding: 30rpx;
-}
-.top image {
-  width: 29rpx;
-  height: 35rpx;
-  vertical-align: text-bottom;
-  margin-right: 20rpx;
-}
+@import "/pages/tmpl/address.wxss";
+@import "/pages/tmpl/bottom.wxss";
+/*拼团信息*/
 .group-user {
   display: flex;
   justify-content: center;
@@ -106,12 +97,15 @@
   color: #ff4d42;
   background-color: #fcd2d0;
 }
+/*拼团玩法*/
 .rule {
   padding: 40rpx 0;
 }
-.rule .title, .share .title {
+.rule .title {
   font-size: 30rpx;
+  font-weight: bold;
   color: #353535;
+  text-align: center;
   padding-bottom: 30rpx;
 }
 .rule .flow {
@@ -139,254 +133,7 @@
   transform: rotate(45deg);
   margin: 0 20rpx 0 10rpx;
 }
-.share .user image {
-  width: 64rpx;
-  height: 64rpx;
-}
-.share .user {
-  display: flex;
-  align-items: center;
-  position: relative;
-  padding: 20rpx 0;
-  border-bottom: 1px solid #ececec;
-}
-.share .user .nickname, .share .user .count {
-  font-size: 20rpx;
-}
-.share .user .nickname {
-  width: 100rpx;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 0 30rpx 0 20rpx;
-}
-.share .user .count text {
-  color: #ff4d42;
-}
-.share .user .btn {
-  font-size: 24rpx;
-  color: #ffc018;
-  border: 1px solid #ffc018;
-  border-radius: 20rpx;
-  position: absolute;
-  right: 0;
-  padding: 5rpx 30rpx 0 30rpx;
-}
-.bottom-space {
-  height: 100px;
-}
-.bottom {
-  font-size: 30rpx;
-  font-weight: bold;
-  text-align: center;
-  background-color: #ffdf00;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 30rpx 0;
-}
-.mask{
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background: #000;
-    opacity: 0.5;
-    overflow: hidden;
-    z-index: 98;
-    color: #fff;
-}
-.modal {
-  text-align: center;
-  background-color: #fff;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 99;
-}
-.modal .title {
-  font-size: 30rpx;
-  color: #353535;
-  padding: 20rpx 0;
-}
-.modal .body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-top: 1px solid #ececec;
-  border-bottom: 1px solid #ececec;
-  padding: 0 80rpx;
-}
-.modal .body .item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 30rpx 0;
-  background-color: #fff;
-}
-.modal .body .item::after{
-  border: none;
-}
-.modal .body image {
-  width: 118rpx;
-  height: 118rpx;
-}
-.modal .body text {
-  font-size: 28rpx;
-  color: #353535;
-}
-.modal .foot {
-  padding: 20rpx 0;
-}
-.bottom-join {
-  display: flex;
-  align-items: center;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #fff;
-  border-top: 1px solid #e8e8e8;
-  padding: 0;
-  height: 110rpx;
-}
-.bottom-join image {
-  width: 41rpx;
-  height: 41rpx;
-  margin-bottom: 6rpx;
-}
-.bottom-join .home, .bottom-join .service {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  font-size: 24rpx;
-  color: #353535;
-  width: 17%;
-}
-.bottom-join .home {
-  border-right: 1px solid #e8e8e8;  
-}
-.bottom-join .btn {
-  font-size: 30rpx;
-  font-weight: bold;
-  text-align: center;
-  background-color: #ffdf00;
-  width: 66%;
-  height: 110rpx;
-  line-height: 110rpx;
-}
-.btn-clear {
-  background-color: transparent;
-  border: 0;
-  margin: 0 !important;
-  padding: 0 !important;
-  width: 100%;
-  position: absolute;
-  border-radius: 0 !important;
-  line-height: inherit;
-}
-.btn-clear::after {
-  transform: inherit;
-  -webkit-transform: inherit;
-  top: inherit;
-  left: inherit;
-  border: 0;
-}
-.bottom-done {
-  display: flex;
-  align-items: center;
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-.bottom-done .left, .bottom-done .right {
-  font-size: 30rpx;
-  text-align: center;
-  width: 50%;
-  padding: 30rpx 0;
-}
-.bottom-done .left {
-  color: #fff;
-  background-color: #434343;
-}
-.bottom-done .right {
-  background-color: #ffdf00;
-}
-.addr-container {
-  border: 1px solid #ececec;
-  padding: 30rpx 20rpx;
-}
-.addr-container image {
-  width: 31rpx;
-  height: 31rpx;
-  margin-right: 10rpx;
-}
-.addr-container .no-addr {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-.addr-container .no-addr text {
-  font-size: 30rpx;
-  color: #ff4d42;
-}
-.addr-container .no-addr .edit {
-  position: absolute;
-  right: 0;
-  padding: 10rpx 10rpx 5rpx 60rpx;
-}
-.addr-container .default text {
-  font-size: 30rpx;
-}
-.addr-container .default .addr {
-  font-size: 24rpx;
-  color: #353535;
-  margin-left: 40rpx;
-}
-.addr-container .default .line {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-.addr-container .default .line .status {
-  font-size: 24rpx;
-  color: #ff4d42;
-  position: absolute;
-  right: 0;
-}
-.service-container {
-  display: flex;
-  justify-content: center;
-  padding: 30rpx;
-  font-size: 24rpx;
-  color: #353535;
-}
-.service-container image {
-  width: 30rpx;
-  height: 30rpx;
-  margin-right: 10rpx;
-}
-.service-container .service {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}.service-container .service button {
-  font-size: 24rpx;
-  color: #353535;  
-  background-color: transparent;  
-}.service-container .service button::after {
-  border: none;
-}.service-container .service button image {
-  vertical-align: text-bottom;
-}
-.service-container .service.space {
-  padding: 0 60rpx 0 40rpx;
-}
+/*恭喜返现*/
 .reward-in {
   font-size: 30rpx;
   text-align: center;
@@ -398,6 +145,13 @@
 .reward-in text {
   font-size: 24rpx;
 }
+/*商品详情*/
+.specs .title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #353535;
+  margin: 20rpx 0;
+}
 .specs .img {
   text-align: center;
 }
@@ -405,48 +159,7 @@
   width: 690rpx;
   height: 450rpx;
 }
-.review-container .nomore {
-  font-size: 24rpx;
-  color: #888;
-  text-align: center;
-}
-.review-container {
-  padding-bottom: 100px;
-}
-.review {
-  padding-top: 30rpx;
-}
-.review .user {
-  display: flex;
-  align-items: center;
-}
-.review .user .avatar image {
-  width: 82rpx;
-  height: 82rpx;
-  border-radius: 50%;
-  border: 1px solid #f0f0f0;
-}
-.review .user .nickname {
-  font-size: 24rpx;
-  color: #353535;
-  margin-right: 20rpx;  
-}
-.review .user .date {
-  font-size: 24rpx;
-  color: #888;
-}
-.review .user .info {
-  margin-left: 20rpx;
-}
-.review .imgs image {
-  width: 120rpx;
-  height: 120rpx;
-  margin: 10rpx 10rpx 0 0;
-}
-.review .review-text {
-  font-size: 24rpx;
-  color: #353535;  
-}
+/*更多精彩拼团*/
 .more-group {
   padding: 0 5rpx;
 }
@@ -547,4 +260,151 @@
 .more-group .product .btn-container .reward {
   font-size: 20rpx;
   color: #ff4d42;
+}
+/*分享弹窗*/
+.mask{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #000;
+    opacity: 0.5;
+    overflow: hidden;
+    z-index: 98;
+    color: #fff;
+}
+.modal {
+  text-align: center;
+  background-color: #fff;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+.modal .title {
+  font-size: 30rpx;
+  color: #353535;
+  padding: 20rpx 0;
+}
+.modal .body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #ececec;
+  border-bottom: 1px solid #ececec;
+  padding: 0 80rpx;
+}
+.modal .body .item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30rpx 0;
+  background-color: #fff;
+}
+.modal .body .item::after{
+  border: none;
+}
+.modal .body image {
+  width: 118rpx;
+  height: 118rpx;
+}
+.modal .body text {
+  font-size: 28rpx;
+  color: #353535;
+}
+.modal .foot {
+  padding: 20rpx 0;
+}
+/*底部按钮*/
+.bottom-space {
+  height: 100px;
+}
+.bottom {
+  font-size: 30rpx;
+  font-weight: bold;
+  text-align: center;
+  background-color: #ffdf00;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30rpx 0;
+}
+.bottom-join {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border-top: 1px solid #e8e8e8;
+  padding: 0;
+  height: 110rpx;
+}
+.bottom-join image {
+  width: 41rpx;
+  height: 41rpx;
+  margin-bottom: 6rpx;
+}
+.bottom-join .home, .bottom-join .service {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  font-size: 24rpx;
+  color: #353535;
+  width: 17%;
+}
+.bottom-join .home {
+  border-right: 1px solid #e8e8e8;  
+}
+.bottom-join .btn {
+  font-size: 30rpx;
+  font-weight: bold;
+  text-align: center;
+  background-color: #ffdf00;
+  width: 66%;
+  height: 110rpx;
+  line-height: 110rpx;
+}
+.btn-clear {
+  background-color: transparent;
+  border: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  position: absolute;
+  border-radius: 0 !important;
+  line-height: inherit;
+}
+.btn-clear::after {
+  transform: inherit;
+  -webkit-transform: inherit;
+  top: inherit;
+  left: inherit;
+  border: 0;
+}
+.bottom-done {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.bottom-done .left, .bottom-done .right {
+  font-size: 30rpx;
+  text-align: center;
+  width: 50%;
+  padding: 30rpx 0;
+}
+.bottom-done .left {
+  color: #fff;
+  background-color: #434343;
+}
+.bottom-done .right {
+  background-color: #ffdf00;
 }

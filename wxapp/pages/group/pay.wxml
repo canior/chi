@@ -1,27 +1,6 @@
 <!--pages/group/pay.wxml-->
-<wxs src="../tmpl/phone.wxs" module="phone"/>
-<view class="top">
-  <view class="left">
-    <block wx:if="{{groupUserOrder.address}}">
-      <view class="line name">
-        <image src="/images/addr-white.png"/>
-        <text>{{groupUserOrder.address.name}} {{phone.encode(groupUserOrder.address.phone)}}</text>
-      </view>
-      <view class="line addr">
-        <text>{{groupUserOrder.address.region.fullname}} {{groupUserOrder.address.address}}</text>
-      </view>
-    </block>
-    <block wx:else>
-      <view class="line name">
-        <image src="/images/addr-white.png"/>
-        <text>请选择或输入收货地址</text>
-      </view>
-    </block>
-  </view>
-  <view class="right" bindtap="toUserAddress">
-    <view class="arrow-right"/>
-  </view>
-</view>
+<import src="/pages/tmpl/address.wxml"/>
+<template is="address" data="{{address:groupUserOrder.address, unpaid:true}}"/>
 
 <view class="total">
   <view>总计付费</view><view>￥{{groupUserOrder.paymentTotal}}</view>
