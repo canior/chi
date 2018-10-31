@@ -18,7 +18,7 @@
                             <!-- BAR CHART -->
                             <div class="box box-info">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">拼团详情</h3>
+                                    <h3 class="box-title">拼团信息</h3>
 
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
@@ -40,7 +40,6 @@
                                                             </h5>
                                                             <h5>拼团创建时间: {{ group_order.createdAt }}</h5>
                                                             <h5>拼团结束时间: {{ group_order.completedAt }}</h5>
-                                                            <h5>拼团打开人数: TODO:???</h5>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -56,7 +55,7 @@
                             <!-- BAR CHART -->
                             <div class="box box-info">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">产品详情</h3>
+                                    <h3 class="box-title">产品信息</h3>
 
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
@@ -69,16 +68,6 @@
                                         <div class="box box-solid">
                                             <div class="box-body">
                                                 <div class="media">
-                                                    <div class="media-left">
-                                                        {% if group_order.product.productImages.count %}
-                                                            <a href="{{ path('product_edit', {id: group_order.product.id}) }}"
-                                                               class="ad-click-event">
-                                                                <img src="{{ path('imagePreview', {fileId: group_order.product.productImages.first.file.id}) }}"
-                                                                     alt="MaterialPro" class="media-object"
-                                                                     style="width: 150px;height: auto;border-radius: 4px;box-shadow: 0 1px 3px rgba(0,0,0,.15);">
-                                                            </a>
-                                                        {% endif %}
-                                                    </div>
                                                     <div class="media-body">
                                                         <div class="clearfix">
                                                             <h5>
@@ -90,12 +79,20 @@
                                                             </h5>
                                                             <h5>产品名: {{ group_order.product.title }}</h5>
                                                             <h5>产品价格: {{ group_order.product.price|number_format }}</h5>
+                                                            <h5>产品状态: {{ group_order.product.statusText }}</h5>
 
                                                             <p>{{ macros.cut(group_order.product.shortDescription, 50) }}</p>
-                                                            <p style="margin-bottom: 0">
-                                                                <i class="fa fa-spinner margin-r5"></i> {{ group_order.product.statusText }}
-                                                            </p>
                                                         </div>
+                                                    </div>
+                                                    <div class="media-right">
+                                                        {% if group_order.product.productImages.count %}
+                                                            <a href="{{ path('product_edit', {id: group_order.product.id}) }}"
+                                                               class="ad-click-event">
+                                                                <img src="{{ path('imagePreview', {fileId: group_order.product.productImages.first.file.id}) }}"
+                                                                     alt="MaterialPro" class="media-object"
+                                                                     style="width: 150px;height: auto;border-radius: 4px;box-shadow: 0 1px 3px rgba(0,0,0,.15);">
+                                                            </a>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             </div>
@@ -225,7 +222,7 @@
                             <!-- BAR CHART -->
                             <div class="box box-success">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">用户分享</h3>
+                                    <h3 class="box-title">打开分享用户</h3>
 
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
@@ -238,57 +235,41 @@
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                             <tr>
-                                                <th width="10%">分享源ID</th>
-                                                <th width="10%">分享源类型</th>
-                                                <th width="10%">产品ID</th>
-                                                <th width="10%">产品名</th>
-                                                <th width="10%">分享页</th>
-                                                <th width="10%">分享源创建时间</th>
-                                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                                <th width="10%">用户ID</th>
+                                                <th width="10%">用户昵称</th>
+                                                <th width="10%">打开时间</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {# TODO: 这里拿用户分享的逻辑是什么？ #}
-                                            {% if group_order.user.shareSources is defined %}
-                                                {% for item in group_order.user.shareSources.slice(0, 5) %}
-                                                    <tr>
-                                                        <td>{{ item.id }}</td>
-                                                        <td>{{ item.typeText|default }}</td>
-                                                        <td>
-                                                            {% if item.product %}
-                                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
-                                                                    {{ item.product.id }}
+                                            {% set shareSourceUsersTotal = 0 %}
+                                            {% if group_order.shareSources.count %}
+                                                {% for shareSource in group_order.shareSources %}
+                                                    {% for item in shareSource.shareSourceUsers %}
+                                                        {% set shareSourceUsersTotal = shareSourceUsersTotal + 1 %}
+                                                        <tr>
+                                                            <td>
+                                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.user.id }}
                                                                 </a>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>
-                                                            {% if item.product %}
-                                                                <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
-                                                                    {{ item.product.title }}
+                                                            </td>
+                                                            <td>
+                                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ item.user.nickname }}
                                                                 </a>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>{{ item.page }}</td>
-                                                        <td>{{ item.createdAt }}</td>
-                                                        <td class="text-center">
-                                                            <div class="btn-group">
-                                                                <a href="{{ path('share_source_info', {id: item.id}) }}"
-                                                                   title="查看详情">
-                                                                    <span class="fa fa-arrow-circle-right"></span>
-                                                                </a>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                            </td>
+                                                            <td>{{ item.createdAt }}</td>
+                                                        </tr>
+                                                    {% endfor %}
                                                 {% endfor %}
                                             {% else %}
                                                 <tr>
-                                                    <td colspan="7" class="alert">no records found</td>
+                                                    <td colspan="3" class="alert">no records found</td>
                                                 </tr>
                                             {% endif %}
                                             </tbody>
                                             <tfoot>
                                             <tr>
-                                                <th colspan="7">总计({{ group_order.user.shareSources.count|default(0) }})</th>
+                                                <th colspan="3">总计({{ shareSourceUsersTotal|default(0) }})</th>
                                             </tr>
                                             </tfoot>
                                         </table>

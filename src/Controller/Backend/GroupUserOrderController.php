@@ -15,30 +15,56 @@ use Symfony\Component\Routing\Annotation\Route;
 class GroupUserOrderController extends BackendController
 {
     /**
+     * @Route("/group/user/order/", name="group_user_order_index", methods="GET")
+     */
+    public function index(GroupUserOrderRepository $groupUserOrderRepository, Request $request): Response
+    {
+        $data = [
+            'title' => '用户订单',
+            'form' => [
+                'groupOrderId' => $request->query->getInt('groupOrderId', null),
+                'groupUserOrderId' => $request->query->getInt('groupUserOrderId', null),
+                'userId' => $request->query->getInt('userId', null),
+                'productName' => $request->query->get('productName', null),
+                'type' => $request->query->get('type', null),
+                'status' => $request->query->get('status', null),
+                'paymentStatus' => $request->query->get('paymentStatus', null),
+                'page' => $request->query->getInt('page', 1)
+            ],
+            'types' => ['NOT NULL' => '拼团订单', 'NULL' => '普通订单'],
+            'statuses' => GroupUserOrder::$statuses,
+            'paymentStatuses' => GroupUserOrder::$paymentStatuses,
+        ];
+        $data['data'] = $groupUserOrderRepository->findGroupUserOrdersQueryBuilder($data['form']['groupOrderId'], $data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['productName'], $data['form']['type'], $data['form']['status'], $data['form']['paymentStatus']);
+        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
+        return $this->render('backend/group_user_order/index.html.twig', $data);
+    }
+
+    /**
      * @Route("/group/user/order/info/{id}", name="group_user_order_info", methods="GET|POST")
      */
     public function info(Request $request, GroupUserOrder $groupUserOrder): Response
     {
         $form = $this->createForm(GroupUserOrderType::class, $groupUserOrder);
-//        $form->get('status')->setData(array_search($groupUserOrder->getStatusText(), GroupUserOrder::$statuses));
-//        $form->get('paymentStatus')->setData(array_search($groupUserOrder->getPaymentStatusText(), GroupUserOrder::$paymentStatuses));
+        $form->get('status')->setData(array_search($groupUserOrder->getStatusText(), GroupUserOrder::$statuses));
+        $form->get('paymentStatus')->setData(array_search($groupUserOrder->getPaymentStatusText(), GroupUserOrder::$paymentStatuses));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-//            $status = $request->request->get('group_user_order')['status'];
-//            $paymentStatus = $request->request->get('group_user_order')['paymentStatus'];
-//            $isStatusMethod = 'is' . ucwords($status);
-//            if (in_array($status, array_keys(GroupUserOrder::$statuses))
-//                && !$groupUserOrder->$isStatusMethod()) {
-//                $setStatusMethod = 'set' . ucwords($status);
-//                $groupUserOrder->$setStatusMethod();
-//            }
-//            $isPaymentStatusMethod = 'is' . ucwords($paymentStatus);
-//            if (in_array($status, array_keys(GroupUserOrder::$paymentStatuses))
-//                && !$groupUserOrder->$isPaymentStatusMethod()) {
-//                $setPaymentMethod = 'set' . ucwords($paymentStatus);
-//                $groupUserOrder->$setPaymentMethod();
-//            }
+            $status = $request->request->get('group_user_order')['status'];
+            $paymentStatus = $request->request->get('group_user_order')['paymentStatus'];
+            $isStatusMethod = 'is' . ucwords($status);
+            if (in_array($status, array_keys(GroupUserOrder::$statuses))
+                && !$groupUserOrder->$isStatusMethod()) {
+                $setStatusMethod = 'set' . ucwords($status);
+                $groupUserOrder->$setStatusMethod();
+            }
+            $isPaymentStatusMethod = 'is' . ucwords($paymentStatus);
+            if (in_array($status, array_keys(GroupUserOrder::$paymentStatuses))
+                && !$groupUserOrder->$isPaymentStatusMethod()) {
+                $setPaymentMethod = 'set' . ucwords($paymentStatus);
+                $groupUserOrder->$setPaymentMethod();
+            }
             $em = $this->getDoctrine()->getManager();
             $em->persist($groupUserOrder);
             $em->flush();
@@ -48,31 +74,9 @@ class GroupUserOrderController extends BackendController
 
         return $this->render('backend/group_user_order/info.html.twig', [
             'group_user_order' => $groupUserOrder,
-            'title' => 'GroupUserOrder 详情',
+            'title' => '用户订单详情',
             'form' => $form->createView(),
         ]);
-    }
-
-    /**
-     * @Route("/group/user/order/", name="group_user_order_index", methods="GET")
-     */
-    public function index(GroupUserOrderRepository $groupUserOrderRepository, Request $request): Response
-    {
-        $data = [
-            'title' => 'GroupUserOrder 列表',
-            'form' => [
-                'groupOrderId' => $request->query->getInt('groupOrderId', null),
-                'groupUserOrderId' => $request->query->getInt('groupUserOrderId', null),
-                'userId' => $request->query->getInt('userId', null),
-                'productName' => $request->query->get('productName', null),
-                'status' => $request->query->get('status', null),
-                'page' => $request->query->getInt('page', 1)
-            ],
-            'statuses' => GroupUserOrder::$statuses
-        ];
-        $data['data'] = $groupUserOrderRepository->findGroupUserOrdersQueryBuilder($data['form']['groupOrderId'], $data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['productName'], $data['form']['status']);
-        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
-        return $this->render('backend/group_user_order/index.html.twig', $data);
     }
 
     /**

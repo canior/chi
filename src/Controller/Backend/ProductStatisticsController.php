@@ -22,7 +22,7 @@ class ProductStatisticsController extends BackendController
     public function index(ProductStatisticsRepository $productStatisticsRepository, Request $request): Response
     {
         $data = [
-            'title' => 'ProductStatistics 列表',
+            'title' => '产品销售',
             'form' => [
                 'productId' => $request->query->getInt('productId', null),
                 'year' => $request->query->getInt('year', null),
@@ -46,7 +46,7 @@ class ProductStatisticsController extends BackendController
         $queryBuilder = $productStatisticsRepository->findProductStatisticsQueryBuilder($productStatistics->getProduct()->getId());
         $productStatisticsTotal = $queryBuilder->getQuery()->getOneOrNullResult();
         $data = [
-            'title' => 'ProductStatistics 详情',
+            'title' => '销售详情',
             'productStatistics' => $productStatistics,
             'productStatisticsTotal' => $productStatisticsTotal,
         ];

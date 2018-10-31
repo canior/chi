@@ -13,19 +13,21 @@ class GroupUserOrderType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('total', null, ['label' => '支付金额'])
+//            ->add('total', null, ['label' => '支付金额'])
 //            ->add('orderRewards')
             ->add('carrierName', null, ['label' => '物流商'])
-            ->add('trackingNo', null, ['label' => '快递单号'])
+            ->add('trackingNo', null, ['label' => '物流单号'])
 //            ->add('prePayId')
-//            ->add('status', ChoiceType::class, [
-//                'mapped' => false,
-//                'choices' => array_flip(GroupUserOrder::$statuses)
-//            ])
-//            ->add('paymentStatus', ChoiceType::class, [
-//                'mapped' => false,
-//                'choices' => array_flip(GroupUserOrder::$paymentStatuses)
-//            ])
+            ->add('status', ChoiceType::class, [
+                'label' => '订单状态',
+                'mapped' => false,
+                'choices' => array_flip(GroupUserOrder::$statuses)
+            ])
+            ->add('paymentStatus', ChoiceType::class, [
+                'label' => '支付状态',
+                'mapped' => false,
+                'choices' => array_flip(GroupUserOrder::$paymentStatuses)
+            ])
 //            ->add('createdAt')
 //            ->add('updatedAt')
 //            ->add('groupOrder')

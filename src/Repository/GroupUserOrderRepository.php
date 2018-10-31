@@ -24,12 +24,15 @@ class GroupUserOrderRepository extends ServiceEntityRepository
      * @param null $groupUserOrderId
      * @param null $userId
      * @param null $productName
+     * @param null $type
      * @param null $status
+     * @param null $paymentStatus
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findGroupUserOrdersQueryBuilder($groupOrderId = null, $groupUserOrderId = null, $userId = null, $productName = null, $status = null)
+    public function findGroupUserOrdersQueryBuilder($groupOrderId = null, $groupUserOrderId = null, $userId = null, $productName = null, $type = null, $status = null, $paymentStatus = null)
     {
-        $query = $this->createQueryBuilder('guo');
+        $query = $this->createQueryBuilder('guo')
+            ->orderBy('guo.id', 'DESC');
 
         if ($groupOrderId || $productName) {
             $query->leftJoin('guo.groupOrder', 'go');
@@ -55,12 +58,23 @@ class GroupUserOrderRepository extends ServiceEntityRepository
                 ->setParameter('userId', $userId);
         }
 
+        if ($type == 'NOT NULL') {
+            $query->andWhere('guo.groupOrder IS NOT NULL');
+        } elseif ($type == 'NULL') {
+            $query->andWhere('guo.groupOrder IS NULL');
+        }
+
         if ($status) {
             $query->andWhere('guo.status = :status')
                 ->setParameter('status', $status);
         }
 
-        return $query->orderBy('guo.id', 'DESC');
+        if ($paymentStatus) {
+            $query->andWhere('guo.paymentStatus = :paymentStatus')
+                ->setParameter('paymentStatus', $paymentStatus);
+        }
+
+        return $query;
     }
 
     /**

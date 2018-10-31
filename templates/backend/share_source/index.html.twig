@@ -65,14 +65,18 @@
                                             </a>
                                         </td>
                                         <td>
+                                            {% if item.product %}
                                             <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
                                                 {{ item.product.id }}
                                             </a>
+                                            {% endif %}
                                         </td>
                                         <td>
+                                            {% if item.product %}
                                             <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
                                                 {{ item.product.title }}
                                             </a>
+                                            {% endif %}
                                         </td>
                                         <td>{{ item.typeText }}</td>
                                         <td>{{ item.title }}</td>

@@ -15,7 +15,7 @@ class ShareSourceUser implements Dao
         CreatedAtTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="shareSourceUsers")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

@@ -20,7 +20,7 @@ class ProjectMetaController extends BackendController
     public function index(ProjectMetaRepository $projectMetaRepository, Request $request): Response
     {
         $data = [
-            'title' => 'ProjectMeta 列表',
+            'title' => '小程序配置',
             'form' => [
                 'keyword' => $request->query->get('keyword', null),
                 'page' => $request->query->getInt('page', 1)
