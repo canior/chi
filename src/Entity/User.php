@@ -701,17 +701,6 @@ class User extends BaseUser implements Dao
         return null;
     }
 
-    /**
-     * @param $amount
-     * @return User
-     */
-    public function increaseTotalRewards($amount) {
-        $this->totalRewards += $amount;
-        //触发返现动作
-
-        return $this;
-    }
-
     public function getPendingTotalRewards()
     {
         return $this->pendingTotalRewards;
@@ -721,6 +710,15 @@ class User extends BaseUser implements Dao
     {
         $this->pendingTotalRewards = $pendingTotalRewards;
 
+        return $this;
+    }
+
+    /**
+     * @param $amount
+     * @return User
+     */
+    public function increasePendingTotalRewards($amount) {
+        $this->pendingTotalRewards += $amount;
         return $this;
     }
 }

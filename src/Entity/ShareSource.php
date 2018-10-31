@@ -62,6 +62,14 @@ class ShareSource implements Dao
      */
     private $groupOrder;
 
+    const REFER = 'refer';
+    const QUAN = 'quan';
+
+    public static $statuses = [
+        self::REFER => '小程序转发',
+        self::QUAN => '朋友圈图片',
+    ];
+
     public function __construct()
     {
         $this->id = uniqid();

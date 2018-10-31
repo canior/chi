@@ -447,14 +447,16 @@ class UserController extends BaseController
     }
 
     /**
+     * TODO: 需要生产朋友圈图片
      * 创建用户分享源
      *
      * @Route("/user/shareSource/create", name="createShareSource", methods="POST")
      * @param Request $request
      * @param ProductRepository $productRepository
+     * @param GroupOrderRepository $groupOrderRepository
      * @return Response
      */
-    public function createShareSource(Request $request, ProductRepository $productRepository) : Response {
+    public function createShareSource(Request $request, ProductRepository $productRepository, GroupOrderRepository $groupOrderRepository) : Response {
 
         $data = json_decode($request->getContent(), true);
 
@@ -462,38 +464,50 @@ class UserController extends BaseController
         $productId = isset($data['productId']) ? $data['productId'] : null;
         $shareSourceType = isset($data['shareSourceType']) ? $data['shareSourceType'] : null;
         $page = isset($data['page']) ? $data['page'] : null;
+        $groupOrderId = isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
 
         $user = $this->getWxUser($thirdSession);
         $product = null;
+        $groupOrder = null;
         $bannerFile = null;
         $title = "";
 
-        if ($productId == null) { //分享用户相关
-            if ($shareSourceType == 'refer') { //转发用户相关小程序
-                //TODO
-                $title = $user->getNickname();
-                $bannerFile = 1;
-            } else if ($shareSourceType == 'quan') { //用户相关朋友圈
-                //TODO
-                $title = "";
+        if ($groupOrderId != null) { //邀请拼团
+            $groupOrder = $groupOrderRepository->find($groupOrderId);
+            $bannerFile = $groupOrder->getProduct()->getMainProductImage()->getFile();
+            if ($shareSourceType == ShareSource::REFER) { //转发用户相关小程序
+                $title = $groupOrder->getUser()->getNickname() . '邀请您参团'; //TODO
+
+            } else if ($shareSourceType == ShareSource::QUAN) { //用户相关朋友圈
                 $bannerFile = "";
             }
-        } else { //分享产品相关
-            $product = $productRepository->find($productId);
-            $title = $product->getTitle();
+        } else {
+            if ($productId != null) { //分享产品相关
+                $product = $productRepository->find($productId);
+                $title = $product->getTitle();
 
-            if ($shareSourceType == 'refer') { //转发产品相关小程序
+                if ($shareSourceType == ShareSource::REFER) { //转发产品相关小程序
                     $bannerFile = $product->getMainProductImage() == null ? null : $product->getMainProductImage()->getFile();
-            } else if ($shareSourceType == 'quan') { //转发产品相关朋友圈
-                $bannerFile = $product->getMainProductImage() == null ? null : $product->getMainProductImage()->getFile();
+                } else if ($shareSourceType == ShareSource::QUAN) { //转发产品相关朋友圈
+                    $bannerFile = $product->getMainProductImage() == null ? null : $product->getMainProductImage()->getFile();
+                }
+            } else { //分享用户相关
+                if ($shareSourceType == ShareSource::REFER) { //转发用户相关小程序
+                    //TODO
+                    $title = $user->getNickname();
+                    $bannerFile = 1;
+                } else if ($shareSourceType == ShareSource::QUAN) { //用户相关朋友圈
+                    //TODO
+                    $title = "";
+                    $bannerFile = "";
+                }
             }
         }
 
-
         $shareSource = new ShareSource();
-
         $shareSource->setUser($user);
         $shareSource->setProduct($product);
+        $shareSource->setGroupOrder($groupOrder);
 
         $shareSourceId = $shareSource->getId();
         if (strpos($page, '?') !== false) {
