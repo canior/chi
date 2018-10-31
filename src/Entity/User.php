@@ -143,6 +143,11 @@ class User extends BaseUser implements Dao
      */
     private $shareSourceUsers;
 
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2)
+     */
+    private $pendingTotalRewards;
+
     public function __construct()
     {
         parent::__construct();
@@ -150,6 +155,7 @@ class User extends BaseUser implements Dao
         $this->setCreatedAt();
         $this->setEnabled(true);
         $this->setTotalRewards(0);
+        $this->setPendingTotalRewards(0);
         $this->setRoles([self::ROLE_CUSTOMER]);
         $this->subUsers = new ArrayCollection();
         $this->userActivities = new ArrayCollection();
@@ -702,6 +708,18 @@ class User extends BaseUser implements Dao
     public function increaseTotalRewards($amount) {
         $this->totalRewards += $amount;
         //触发返现动作
+
+        return $this;
+    }
+
+    public function getPendingTotalRewards()
+    {
+        return $this->pendingTotalRewards;
+    }
+
+    public function setPendingTotalRewards($pendingTotalRewards): self
+    {
+        $this->pendingTotalRewards = $pendingTotalRewards;
 
         return $this;
     }

@@ -21,7 +21,7 @@ class ShareSource implements Dao
     /**
      * @var string
      * @ORM\Id
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="guid")
      */
     private $id;
 
@@ -56,6 +56,11 @@ class ShareSource implements Dao
      * @ORM\OneToMany(targetEntity="App\Entity\ShareSourceUser", mappedBy="shareSource", cascade="persist")
      */
     private $shareSourceUsers;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\GroupOrder", inversedBy="shareSources")
+     */
+    private $groupOrder;
 
     public function __construct()
     {
@@ -189,5 +194,17 @@ class ShareSource implements Dao
             'bannerFileId' => $this->getBannerFile()->getId(),
             'page' => $this->getPage(),
         ];
+    }
+
+    public function getGroupOrder(): ?GroupOrder
+    {
+        return $this->groupOrder;
+    }
+
+    public function setGroupOrder(?GroupOrder $groupOrder): self
+    {
+        $this->groupOrder = $groupOrder;
+
+        return $this;
     }
 }

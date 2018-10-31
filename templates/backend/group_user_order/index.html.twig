@@ -62,8 +62,9 @@
                                 <th width="10%">订单ID</th>
                                 <th width="10%">拼团ID</th>
                                 <th width="10%">用户ID</th>
-                                <th width="10%">头像</th>
+                                <th width="10%">用户昵称</th>
                                 <th width="10%">支付金额</th>
+                                <th width="10%">订单状态</th>
                                 <th width="10%">支付状态</th>
                                 <th width="10%">创建时间</th>
                                 <th width="10%">更新时间</th>
@@ -88,12 +89,13 @@
                                             </a>
                                         </td>
                                         <td>
-                                            {% if item.user.avatarUrl %}
-                                                <img src="{{ item.user.avatarUrl }}" width="40" height="40"/>
-                                            {% endif %}
+                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                                {{ item.user.nickname }}
+                                            </a>
                                         </td>
                                         <td>{{ item.total }}</td>
                                         <td>{{ item.statusText }}</td>
+                                        <td>{{ item.paymentStatusText }}</td>
                                         <td>{{ item.createdAt }}</td>
                                         <td>{{ item.updatedAt }}</td>
                                         <td class="text-center">
@@ -107,7 +109,7 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="9" class="alert">no records found</td>
+                                    <td colspan="10" class="alert">no records found</td>
                                 </tr>
                             {% endif %}
                             </tbody>

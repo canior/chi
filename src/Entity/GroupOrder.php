@@ -48,8 +48,15 @@ class GroupOrder implements Dao
 
     /**
      * @ORM\OneToMany(targetEntity="GroupUserOrder", mappedBy="groupOrder", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $groupUserOrders;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="groupOrder", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $shareSources;
 
     /**
      * Group constructor.
@@ -64,6 +71,7 @@ class GroupOrder implements Dao
         $this->setUpdatedAt();
         $this->setCreatedAt();
         $this->setCreated();
+        $this->shareSources = new ArrayCollection();
     }
 
     /**
@@ -316,5 +324,36 @@ class GroupOrder implements Dao
             'groupUserOrders' => $groupUserOrdersArray,
             'createdAt' => $this->getCreatedAt(true)
         ];
+    }
+
+    /**
+     * @return Collection|ShareSource[]
+     */
+    public function getShareSources(): Collection
+    {
+        return $this->shareSources;
+    }
+
+    public function addShareSource(ShareSource $shareSource): self
+    {
+        if (!$this->shareSources->contains($shareSource)) {
+            $this->shareSources[] = $shareSource;
+            $shareSource->setGroupOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShareSource(ShareSource $shareSource): self
+    {
+        if ($this->shareSources->contains($shareSource)) {
+            $this->shareSources->removeElement($shareSource);
+            // set the owning side to null (unless already changed)
+            if ($shareSource->getGroupOrder() === $this) {
+                $shareSource->setGroupOrder(null);
+            }
+        }
+
+        return $this;
     }
 }

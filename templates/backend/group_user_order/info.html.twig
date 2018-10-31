@@ -61,7 +61,7 @@
                                                             <h5>用户: {{ group_user_order.user.nickname|default }}</h5>
                                                             <h5>电话: {{ group_user_order.userAddress.phone|default }}</h5>
                                                             <h5>产品名: {{ group_user_order.product.title|default }}</h5>
-                                                            <h5>产品价格: {{ group_user_order.product.price|number_format }}</h5>
+                                                            <h5>产品价格: {{ group_user_order.product.price|default(0)|number_format }}</h5>
                                                         </div>
                                                     </div>
                                                 </div>
