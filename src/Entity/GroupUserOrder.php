@@ -241,12 +241,15 @@ class GroupUserOrder implements Dao
 
         //订单确认收货后，此时给上线传销返现
         if ($this->getUser()->getParentUser() != null) {
+            $userRewards = $this->getProduct()->getUserRewards();
             $userRewards = new GroupUserOrderRewards();
             $userRewards->setUser($this->getUser()->getParentUser());
             $userRewards->setGroupUserOrder($this);
-            $userRewards->setUserRewards($this->getProduct()->getUserRewards());
+            $userRewards->setUserRewards($userRewards);
             $this->addGroupUserOrderReward($userRewards);
 
+            //发放传销返现
+            $this->getUser()->getParentUser()->increaseTotalRewards($userRewards);
             $this->getUser()->getParentUser()->getOrCreateTodayUserStatistics()->increaseUserRewardsTotal($this->getOrderRewards());
         }
 
@@ -335,6 +338,9 @@ class GroupUserOrder implements Dao
 
         $this->getUser()->setParentUser($parentUser);
         $this->getUser()->addGroupUserOrder($this);
+
+        //发放订单返现
+        $this->getUser()->increaseTotalRewards($this->getOrderRewards());
 
         $log = new GroupUserOrderLog($this);
         $log->setFromPaymentStatus($oldStatus);

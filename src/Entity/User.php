@@ -694,4 +694,15 @@ class User extends BaseUser implements Dao
 
         return null;
     }
+
+    /**
+     * @param $amount
+     * @return User
+     */
+    public function increaseTotalRewards($amount) {
+        $this->totalRewards += $amount;
+        //触发返现动作
+
+        return $this;
+    }
 }
