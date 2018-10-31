@@ -1,6 +1,8 @@
 <?php
 namespace App\Controller\Api;
 
+use App\Command\EnqueueCommand;
+use App\Command\Notification\NotifyPendingGroupOrderCommand;
 use App\Entity\GroupUserOrder;
 use App\Entity\ProductReview;
 use App\Entity\ProductReviewImage;
@@ -32,6 +34,24 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class UserController extends BaseController
 {
+
+    /**
+     * 测试推送信息
+     * @Route("/user/test", name="testUser", methods="POST")
+     * @param Request $request
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function testAction(Request $request, GroupOrderRepository $groupOrderRepository) {
+        if ($this->getEnvironment() != 'dev') exit;
+        $data = json_decode($request->getContent(), true);
+        $groupOrderId =  isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
+
+        $command = new EnqueueCommand(new NotifyPendingGroupOrderCommand($groupOrderId), true);
+        $this->getCommandBus()->handle($command);
+
+        return $this->responseJson('success', 200, []);
+    }
 
     /**
      * 获取用户openId
@@ -610,6 +630,7 @@ class UserController extends BaseController
         $user = $this->getWxUser($thirdSession);
 
         return $this->responseJson('success', 200, [
+            'totalRewards' => $user->getTotalRewards(),
             'children' => $user->getSharedUsersArray()
         ]);
     }

@@ -10,13 +10,18 @@ namespace App\Command\Notification;
 use App\Command\CommandInterface;
 use App\Command\SerializableCommandInterface;
 
+/**
+ * 团长开团通知
+ * Class NotifyPendingGroupOrderCommand
+ * @package App\Command\Notification
+ */
 class NotifyPendingGroupOrderCommand implements SerializableCommandInterface
 {
     private $groupOrderId;
 
     /**
      * NotifyPendingGroupOrderCommand constructor.
-     * @param $groupOrderId
+     * @param int $groupOrderId
      */
     function __construct($groupOrderId)
     {
@@ -35,7 +40,7 @@ class NotifyPendingGroupOrderCommand implements SerializableCommandInterface
      */
     public function serialize()
     {
-        return "{groupOrderId:" . $this-> groupOrderId. " }";
+        return '{"groupOrderId":' . $this-> groupOrderId. ' }';
     }
 
     /**
