@@ -1,5 +1,6 @@
 // pages/user/address/index.js
 const app = getApp()
+const request = require('../../tmpl/request.js')
 Page({
 
   /**
@@ -7,7 +8,8 @@ Page({
    */
   data: {
     addresses: [],
-    delBtnWidth: 80 //删除按钮宽度(px)  
+    delBtnWidth: 80, //删除按钮宽度(px)
+    groupUserOrderId: null, //从支付页选地址过来的
   },
 
   /**
@@ -15,6 +17,18 @@ Page({
    */
   onLoad: function (options) {
     //this.getAddresses()
+    if (options.orderId) {
+      this.setData({
+        groupUserOrderId: options.orderId
+      })
+    }    
+  },
+
+  // 确认选择收货地址
+  confirmAddress: function(e) {
+    const index = e.currentTarget.dataset.index;
+    const url = app.globalData.baseUrl + '/groupUserOrder/confirmAddress';
+    request.confirmAddress(this, url, this.data.addresses[index].id)
   },
 
   getAddresses: function() {
@@ -28,8 +42,9 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           //console.log(res.data.data)
+          const addresses = res.data.data.userAddresses
           that.setData({
-            addresses: res.data.data.userAddresses
+            addresses: addresses
           })
         } else {
           console.log('wx.request return error', res.statusCode);

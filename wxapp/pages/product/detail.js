@@ -10,6 +10,7 @@ Page({
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
     product: [],
     productReviewData: {},
+    showModal: false,
     btnDisabled: false //防止连击button
   },
 
@@ -17,7 +18,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const productId = options.id ? options.id : 1;
+    const productId = options.id ? options.id : 2;
     this.getProduct(productId);
     const url = app.globalData.baseUrl + '/products/' + productId + '/reviews'
     productReview.init(this, url);
@@ -48,17 +49,75 @@ Page({
     })
   },
 
+  // 产品评价图片预览
   wxPreviewImage (e) {
     productReview.previewImage(e, this)
   },
 
+  // 转首页
   toHome: function(e) {
     wx.switchTab({
       url: '/pages/product/index',
     })
   },
 
-  openGroup: function(e) {
+  // 单独购买提醒弹窗
+  showModal: function (e) {
+    this.setData({
+      showModal: true
+    })
+  },
+  hideModal: function (e) {
+    this.setData({
+      showModal: false
+    })
+  },
+
+  // 单独购买
+  tapCreateOrder: function (e) {
+    if (this.data.isLogin) {
+      this.createOrder();
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },
+  createOrder: function () {
+    const that = this;
+    wx.showLoading({
+      title: '载入中',
+      mask: true,
+    });
+    that.setData({ btnDisabled: true });
+    wx.request({
+      url: app.globalData.baseUrl + '/groupUserOrder/create',
+      data: {
+        productId: this.data.product.id,
+        thirdSession: wx.getStorageSync('thirdSession'),
+      },
+      method: 'POST',
+      success: (res) => {
+        wx.hideLoading();
+        if (res.statusCode == 200 && res.data.code == 200) {
+          //console.log(res.data.data)
+          wx.redirectTo({
+            url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+        wx.hideLoading();
+        that.setData({ btnDisabled: false });
+      },
+      complete(e) { }
+    })
+  },  
+
+  // 发起拼团
+  tpaCreateGroup: function(e) {
     if (this.data.isLogin) {
       this.createGroup();
     } else {
@@ -70,7 +129,7 @@ Page({
   createGroup: function() {
     const that = this;
     wx.showLoading({
-      title: '跳转支付',
+      title: '载入中',
       mask: true,
     });
     that.setData({ btnDisabled: true });
@@ -84,49 +143,10 @@ Page({
       success: (res) => {
         wx.hideLoading();
         if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
-          const payment = res.data.data.payment;
-          const groupOrderId = res.data.data.groupOrder.id;
-          wx.requestPayment({
-            timeStamp: payment.timeStamp.toString(),
-            nonceStr: payment.nonceStr,
-            package: payment.package,
-            signType: payment.signType,
-            paySign: payment.paySign,
-            success: function (res) {
-              wx.request({
-                url: app.globalData.baseUrl + '/groupOrder/notifyPayment',
-                data: {
-                  isPaid: true,
-                  thirdSession: wx.getStorageSync('thirdSession'),
-                  groupOrderId: groupOrderId,
-                },
-                method: 'POST',
-                success: (res) => {
-                  if (res.statusCode == 200 && res.data.code == 200) {
-                    console.log(res.data.data)
-                    wx.redirectTo({
-                      url: '/pages/group/index?id=' + res.data.data.groupOrder.id,
-                    })
-                  } else {
-                    console.log('wx.request return error', res.statusCode);
-                  }
-                },
-                fail(e) {
-                  console.log('wx.request /groupOrder/notifyPayment: fail', e)
-                },
-                complete(e) { }
-              })
-            },
-            fail: function (res) {
-              console.log('wx.requestpayment: fail', res)
-              wx.showToast({
-                title: '支付失败',
-              });
-              that.setData({ btnDisabled: false });
-            },
-            complete: function (res) { }
-          })          
+          //console.log(res.data.data)
+          wx.redirectTo({
+            url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
+          })
         } else {
           console.log('wx.request return error', res.statusCode);
         }

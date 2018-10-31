@@ -1,5 +1,6 @@
 // pages/user/address/edit.js
 const app= getApp()
+const request = require('../../tmpl/request.js')
 Page({
 
   /**
@@ -14,12 +15,20 @@ Page({
     customItem: '',
     address: '',
     isDefault: false,
+    setDefault: false,
+    groupUserOrderId: null, //从支付页无地址过来的
+    user: null,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    if (options.orderId) {
+      this.setData({
+        groupUserOrderId: options.orderId
+      })
+    }
     if (options.id) {
       if (options.id == 'import') {
         this.importAddress()
@@ -29,6 +38,9 @@ Page({
       wx.setNavigationBarTitle({ title: '编辑地址' })
     } else {
       wx.setNavigationBarTitle({ title: '新建地址' })
+      this.setData({
+        user: app.globalData.user
+      })
     }
   },
 
@@ -52,7 +64,8 @@ Page({
             region: [userAddress.region.province, userAddress.region.city, userAddress.region.county],
             regionText: userAddress.region.province+' '+userAddress.region.city+' '+userAddress.region.county,
             address: userAddress.address,
-            isDefault: userAddress.isDefault
+            isDefault: userAddress.isDefault,
+            setDefault: userAddress.isDefault
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -92,7 +105,7 @@ Page({
 
   setDefault: function(e) {
     this.setData({
-      isDefault: !e.currentTarget.dataset.isdefault
+      setDefault: !e.currentTarget.dataset.setdefault
     })
   },
 
@@ -109,6 +122,27 @@ Page({
     }
   },
 
+  // 导入
+  import: function (e) {
+    const that = this;
+    app.unifiedAuth(
+      'scope.address',
+      '需要使用您的通讯地址，是否允许？',
+      function () {
+        wx.chooseAddress({
+          success: (res) => {
+            console.log(res);
+            app.globalData.addressInfo = res;
+            that.importAddress()
+          },
+          fail: function (err) {
+            console.log('wx.chooseAddress fail', err)
+          }
+        })
+      }
+    )
+  },
+
   // 保存
   save: function (e) {
     const that = this;
@@ -116,23 +150,28 @@ Page({
     wx.request({
       url: app.globalData.baseUrl + '/user/address/post',
       data: {
-        userAddressId: this.data.id,
-        name: this.data.name,
-        phone: this.data.phone,
-        province: this.data.region[0],
-        city: this.data.region[1],
-        county: this.data.region[2],
-        address: this.data.address,
-        isDefault: this.data.isDefault,
+        userAddressId: that.data.id,
+        name: that.data.name,
+        phone: that.data.phone,
+        province: that.data.region[0],
+        city: that.data.region[1],
+        county: that.data.region[2],
+        address: that.data.address,
+        isDefault: (that.data.user && !that.data.user.defaultAddress) ? true : that.data.setDefault, //首次地址强制默认
         thirdSession: wx.getStorageSync('thirdSession'),
       },
       method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           //console.log(res.data.data)
-          wx.redirectTo({
-            url: '/pages/user/address/index',
-          })
+          if (that.data.groupUserOrderId) {
+            const url = app.globalData.baseUrl + '/groupUserOrder/confirmAddress';
+            request.confirmAddress(this, url, res.data.data.userAddress.id)
+          } else {
+            wx.redirectTo({
+              url: '/pages/user/address/index',
+            })
+          }
         } else {
           console.log('wx.request return error', res.statusCode);
         }

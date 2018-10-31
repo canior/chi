@@ -21,7 +21,7 @@
               </swiper-item>
             </swiper>
         <view class="tip"><text>两人</text><text>拼团</text></view>
-        <view class="stock">已购{{'1000'}}件</view>
+        <view class="stock">已购{{product.soldNum}}件</view>
       </view>
 
       <view class="line">

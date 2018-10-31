@@ -74,7 +74,7 @@
 .product .line .desc {
   font-size: 24rpx;
   color: #b2b2b2;
-  width: 250px;
+  width: 240px;
   line-height: 30rpx;
 }
 .product .line .btn {

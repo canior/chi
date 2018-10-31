@@ -3,7 +3,7 @@
 
   <view class="item" wx:for="{{addresses}}" wx:key="index">
     <view class="top" bindtouchstart="touchS" bindtouchmove="touchM" bindtouchend="touchE" style="{{item.txtStyle}}" data-index="{{index}}">
-      <view class="left">
+      <view class="left" bindtap="{{groupUserOrderId ? 'confirmAddress' : ''}}" data-index="{{index}}">
         <view class="line">
           <view class="name">{{item.name}}</view>
           <view class="phone">{{item.phone}}</view>

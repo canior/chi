@@ -8,12 +8,30 @@
   border-bottom: 1px solid #eee;
 }
 .bottom {
+  display: flex;
+  align-items: center;
   position: fixed;
-  bottom: 0;
   left: 0;
   right: 0;
-  text-align: center;
-  background-color: #ffdf00;
-  padding: 30rpx;
+  bottom: 0;
+  z-index: 10;
+}
+.bottom image {
+  width: 35rpx;
+  height: 30rpx;
+  vertical-align: text-bottom;
+  margin-right: 10rpx;
+}
+.bottom .left, .bottom .right {
   font-size: 30rpx;
+  text-align: center;
+  width: 50%;
+  padding: 30rpx 0;
+}
+.bottom .left {
+  color: #fff;
+  background-color: #434343;
+}
+.bottom .right {
+  background-color: #ffdf00;
 }

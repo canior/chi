@@ -410,7 +410,9 @@ class Product implements Dao
             'productImages' => $productImageArray,
             'productSpecImages' => $productSpecImagesArray,
             'stock' => $this->getStock(),
-            'similarProducts' => $similarProductsArray
+            'similarProducts' => $similarProductsArray,
+            'soldNum' => 1000, //TODO 需要从product statistics里拿
+            'reviewsNum' => 500, //TODO 需要从product statistics里拿
         ];
     }
 
