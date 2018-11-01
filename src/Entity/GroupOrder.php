@@ -312,9 +312,7 @@ class GroupOrder implements Dao
 
         $groupUserOrdersArray = [];
         foreach ($this->getGroupUserOrders() as $groupUserOrder) {
-            if ($groupUserOrder->isPaid()) {
-                $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            }
+            $groupUserOrdersArray[] = $groupUserOrder->getArray();
         }
 
         return [
