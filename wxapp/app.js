@@ -132,7 +132,7 @@ App({
   // 埋点请求函数
   buriedPoint(options) {
     var pages = getCurrentPages(); //页面栈
-    var currentPageUrl = pages[pages.length - 1].route; //加载的页面url
+    var currentPageUrl = '/' + pages[pages.length - 1].route; //加载的页面url
     var that = this;
     wx.request({
       url: that.globalData.baseUrl + '/user/activity/add',

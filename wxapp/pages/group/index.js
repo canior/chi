@@ -36,10 +36,13 @@ Page({
 
   getGroupOrder: function(id) {
     const that = this;
+    const pages = getCurrentPages();
+    const currentPageUrl = '/' + pages[pages.length - 1].route;
     wx.request({
       url: app.globalData.baseUrl + '/groupOrder/view',
       data: {
-        groupOrderId: id
+        groupOrderId: id,
+        url: currentPageUrl
       },
       method: 'POST',
       success: (res) => {

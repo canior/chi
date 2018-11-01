@@ -33,7 +33,7 @@ Page({
   getProduct: function (id) {
     const that = this;
     const pages = getCurrentPages();
-    const currentPageUrl = pages[pages.length - 1].route;
+    const currentPageUrl = '/' + pages[pages.length - 1].route;
     wx.request({
       url: app.globalData.baseUrl + '/products/' + id,
       data: {

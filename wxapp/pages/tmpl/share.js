@@ -34,7 +34,7 @@ function saveShareSource(that, e, url) {
 
 function __saveShareSource(that, url, shareSourceType) {
   const pages = getCurrentPages();
-  const currentPageUrl = pages[pages.length - 1].route;
+  const currentPageUrl = '/' + pages[pages.length - 1].route;
   const shareSource = __data.shareSources.find(item => { return item.type == shareSourceType});
   wx.request({
     url: url,
