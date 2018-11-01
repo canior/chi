@@ -22,7 +22,7 @@
 
 <view class="bottom">
   <view>总计付费：<text>￥{{groupUserOrder.paymentTotal}}</text></view>
-  <button class="btn" bindtap="pay" disabled="{{btnDisabled}}">付款</button>
+  <button class="btn" bindtap="tapPay" disabled="{{btnDisabled}}">付款</button>
 </view>
 
 

@@ -157,18 +157,16 @@ Page({
       method: 'POST',
       success: (res) => {
         wx.hideLoading();
+        console.log(res.data.data)
         if (res.statusCode == 200 && res.data.code == 200) {
-          //console.log(res.data.data)
-          //---判断拼团订单是否已被其它参团人抢先支付了
-          if (res.data.data.groupUserOrder.status == 'pending') {//继续支付
-            wx.redirectTo({
-              url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
-            })
-          } else {//已经被抢
-            wx.redirectTo({
-              url: '/pages/group/index?id=' + this.data.groupOrder.id,
-            })
-          }
+          wx.redirectTo({
+            url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
+          })
+        } else if (res.statusCode == 200 && res.data.code == 302) {
+          //---拼团订单已被其它参团人抢先支付了
+          wx.redirectTo({
+            url: '/pages/group/index?id=' + this.data.groupOrder.id,
+          })
         } else {
           console.log('wx.request return error', res.statusCode);
         }

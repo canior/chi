@@ -77,7 +77,7 @@ Page({
   },
 
   // 付款
-  pay: function(e) {
+  tapPay: function(e) {
     const that = this;
     wx.showLoading({
       title: '跳转支付',
