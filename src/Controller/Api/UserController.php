@@ -504,7 +504,7 @@ class UserController extends BaseController
      * @param GroupOrderRepository $groupOrderRepository
      * @return Response
      */
-    public function createShareSource(Request $request, FileRepository $fileRepository, ProductRepository $productRepository, GroupOrderRepository $groupOrderRepository) : Response {
+    public function createShareSource(Request $request, ShareSourceRepository $shareSourceRepository, FileRepository $fileRepository, ProductRepository $productRepository, GroupOrderRepository $groupOrderRepository) : Response {
 
         $data = json_decode($request->getContent(), true);
 
@@ -522,7 +522,10 @@ class UserController extends BaseController
         $groupOrder = $groupOrderId == null ? null : $groupOrderRepository->find($groupOrderId);
         $bannerFile = $fileRepository->find($bannerFileId);
 
-        $shareSource = new ShareSource();
+        $shareSource = $shareSourceRepository->find($shareSourceId);
+        if ($shareSource == null) {
+            $shareSource = new ShareSource();
+        }
         $shareSource->setId($shareSourceId);
         $shareSource->setUser($user);
         $shareSource->setProduct($product);
