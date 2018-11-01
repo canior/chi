@@ -16,9 +16,11 @@ use Doctrine\ORM\Mapping as ORM;
 class ProjectBannerMeta extends ProjectMeta
 {
 
-    const HOME_BANNER_1 = "home_banner_1";
-    const HOME_BANNER_2 = "home_banner_2";
-    const HOME_BANNER_3 = "home_banner_3";
+    const BANNER_HOME_1 = "banner_home_1";
+    const BANNER_HOME_2 = "banner_home_2";
+    const BANNER_HOME_3 = "banner_home_3";
+    const BANNER_LOGIN = 'banner_login';
+    const BANNER_GROUP_ORDER_DETAIL = "banner_group_order_detail";
 
     public function isTextMeta()
     {

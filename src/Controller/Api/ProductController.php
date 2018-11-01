@@ -10,10 +10,12 @@ namespace App\Controller\Api;
 
 use App\Entity\Product;
 use App\Entity\ProductReview;
+use App\Entity\ProjectBannerMeta;
 use App\Entity\ProjectMeta;
 use App\Entity\ShareSource;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
+use App\Repository\ProjectBannerMetaRepository;
 use App\Repository\ProjectMetaRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,18 +32,18 @@ class ProductController extends BaseController
      * @Route("/products/", name="productIndex", methods="GET")
      * @param Request $request
      * @param ProductRepository $productRepository
-     * @param ProjectMetaRepository $projectMetaRepository
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
      * @return Response
      */
-    public function indexAction(Request $request, ProductRepository $productRepository, ProjectMetaRepository $projectMetaRepository) : Response {
+    public function indexAction(Request $request, ProductRepository $productRepository, ProjectBannerMetaRepository $projectBannerMetaRepository) : Response {
         $bannersArray = [];
         $productsArray = [];
 
-//        $projectMetas = $projectMetaRepository->findBy(['metaKey' => [ProjectMeta::HOME_BANNER_1, ProjectMeta::HOME_BANNER_2, ProjectMeta::HOME_BANNER_3]]);
-//        foreach ($projectMetas as $projectMeta) {
-//            $bannersArray[] = $projectMeta->getMetaValue();
-//        }
-//
+        $projectBannerMetas = $projectBannerMetaRepository->findBy(['metaKey' => [ProjectBannerMeta::BANNER_HOME_1, ProjectBannerMeta::BANNER_HOME_2, ProjectBannerMeta::BANNER_HOME_3]]);
+        foreach ($projectBannerMetas as $projectBannerMeta) {
+            $bannersArray[] = $projectBannerMeta->getArray();
+        }
+
         $products = $productRepository->findActiveProducts($request->query->getInt('page', 1), self::PAGE_LIMIT);
         foreach($products as $product) {
             $productsArray[] = $product->getArray();
