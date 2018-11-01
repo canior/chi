@@ -188,9 +188,7 @@ class GroupUserOrderController extends BaseController
                 $this->getEntityManager()->persist($groupUserOrder);
                 $this->getEntityManager()->flush();
 
-                return $this->responseJson('success', 200, [
-                    'groupUserOrder' => $groupUserOrder->getArray()
-                ]);
+                return $this->responseJson('success', 302, []);
             }
         }
 
