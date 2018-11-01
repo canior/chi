@@ -196,6 +196,7 @@ class GroupOrderController extends BaseController
         $groupOrder = $groupOrderRepository->find($groupOrderId);
 
         $data = [
+            'product' => $groupOrder->getProduct()->getArray(),
             'groupOrder' => $groupOrder->getArray(),
             'shareSources' => $this->createShareSource($groupOrder, $url)
         ];
