@@ -1,4 +1,5 @@
 <!--pages/user/order/review.wxml-->
+<import src="/pages/tmpl/price.wxml"/>
 <view class="container">
   <view class="row">
     <view class="left">
@@ -7,11 +8,7 @@
     <view class="right">
       <view class="name">{{groupUserOrder.product.title}}</view>
       <view class="desc">{{groupUserOrder.product.shortDescription}}</view>
-      <view class="chi-price-container">
-        <view class="price">拼团价￥<text>{{groupUserOrder.product.price}}</text></view>
-        <view class="freight">包邮</view>
-        <view class="ori-price">￥{{groupUserOrder.product.originalPrice}}</view>
-      </view>
+      <template is="price" data="{{...groupUserOrder}}"/>
     </view>
   </view>
 </view>

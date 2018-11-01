@@ -1,5 +1,6 @@
 /* pages/product/detail.wxss */
 @import "/pages/tmpl/bottom.wxss";
+@import "/pages/tmpl/share.wxss";
 .banner {
   text-align: center;
   position: relative;

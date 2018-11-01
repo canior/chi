@@ -2,6 +2,7 @@
 <import src="/pages/tmpl/price.wxml"/>
 <import src="/pages/tmpl/address.wxml"/>
 <import src="/pages/tmpl/productReview.wxml"/>
+<import src="/pages/tmpl/share.wxml"/>
 <import src="/pages/tmpl/bottom.wxml"/>
 <!--拼团订单地址信息,包括开团人订单和参团人订单-->
 <block wx:if="{{userType == 'open'}}">
@@ -137,7 +138,7 @@
 <!--拼团未完成-->
 <block wx:if="{{groupOrder.status != 'completed'}}">
   <block wx:if="{{userType == 'open'}}"><!--开团人-->
-    <view class="bottom" bindtap="showModal" wx:if="{{!showModal}}">
+    <view class="bottom" bindtap="wxShowShareModal" wx:if="{{!shareData.showModal}}">
       <text>邀请好友参团</text>
     </view>
   </block>
@@ -147,7 +148,7 @@
         <image src="/images/home2.png"/>
         <text>首页</text>
       </view>  
-      <view class="home" bindtap="showModal">
+      <view class="home" bindtap="wxShowShareModal">
         <image src="/images/share.png"/>
         <text>分享</text>
       </view>
@@ -165,7 +166,7 @@
   <block wx:if="{{usetType == 'open' && userType == 'join'}}">
     <view class="bottom-done"><!--开团人和参团人-->
       <view class="left" bindtap="toProductDetail">继续拼团</view>
-      <view class="right" bindtap="showModal">邀请好友</view>
+      <view class="right" bindtap="wxShowShareModal">邀请好友</view>
     </view>
   </block>
   <block wx:else><!--其他用户-->
@@ -173,20 +174,5 @@
   </block>
 </block><!--拼团已完成-->
 
-
 <!--分享弹窗-->
-<view class="mask" wx:if="{{showModal}}" bindtap="hideModal"/>
-<view class="modal" wx:if="{{showModal}}">
-  <view class="title">分享到</view>
-  <view class="body">
-    <button class="item" open-type="share">
-      <image src="/images/share-wx.png"/><text>微信好友</text>
-    </button>
-    <button class="item">
-      <image src="/images/share-moments.png"/><text>生成朋友圈图片</text>
-    </button>
-  </view>
-  <view class="foot" bindtap="hideModal">
-    <icon type="clear" size="20"/>
-  </view>
-</view><!--分享弹窗-->
+<template is="share" data="{{...shareData}}"/>

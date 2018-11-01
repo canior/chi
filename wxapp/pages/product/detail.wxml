@@ -1,6 +1,7 @@
 <!--pages/product/detail.wxml-->
 <import src="/pages/tmpl/price.wxml"/>
 <import src="/pages/tmpl/productReview.wxml"/>
+<import src="/pages/tmpl/share.wxml"/>
 <import src="/pages/tmpl/bottom.wxml"/>
 <view class="container">
 
@@ -44,3 +45,4 @@
 </view>
 
 <template is="bottom" data="{{product, ...bottomData}}"/>
+<template is="share" data="{{...shareData}}"/>

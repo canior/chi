@@ -31,10 +31,11 @@ Page({
   },
 
   // 转我的订单
-  toUserOrder: function () {
+  toUserOrder: function (e) {
+    var status = e.currentTarget.dataset.status
     if (this.data.isLogin) {
       wx.navigateTo({
-        url: '/pages/user/order/index',
+        url: '/pages/user/order/index?status=' + status,
       })
     } else {
       wx.navigateTo({

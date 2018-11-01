@@ -18,6 +18,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    app.buriedPoint(options);
     wx.setNavigationBarTitle({ title: app.globalData.appName })
     this.getProducts(this.data.page)
   },

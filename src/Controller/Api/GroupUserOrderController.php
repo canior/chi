@@ -11,6 +11,7 @@ namespace App\Controller\Api;
 
 use App\Command\EnqueueCommand;
 use App\Command\Notification\NotifyCompletedGroupOrderCommand;
+use App\Command\Notification\NotifyOrderRewardsSentCommand;
 use App\Command\Notification\NotifyPendingGroupOrderCommand;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
@@ -173,6 +174,22 @@ class GroupUserOrderController extends BaseController
         $user = $this->getWxUser($thirdSession);
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
 
+        /**
+         * 如果是拼团订单，并且是已完成或者已过期，则把当前订单取消不让支付继续
+         */
+        if ($groupUserOrder->isGroupOrder()) {
+            if (!$groupUserOrder->getGroupOrder()->isPending()) {
+
+                $groupUserOrder->setCancelled();
+                $this->getEntityManager()->persist($groupUserOrder);
+                $this->getEntityManager()->flush();
+
+                return $this->responseJson('success', 200, [
+                    'groupUserOrder' => $groupUserOrder->getArray()
+                ]);
+            }
+        }
+
         $body = "create order"; //TODO 开团信息要怎么写
         $wxPaymentApi = new WxPayment($this->getLog());
         $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
@@ -224,50 +241,32 @@ class GroupUserOrderController extends BaseController
             return $this->responseJson('group_order_created_fail', 200, $data);
         }
 
-        if ($groupUserOrder->isGroupOrder()) {
+        if ($groupUserOrder->isGroupOrder()) { //拼团订单
             $groupOrder = $groupUserOrder->getGroupOrder();
             if ($groupUserOrder->isMasterOrder()) {
                 $groupOrder->setPending();
-                //$command = new NotifyPendingGroupOrderCommand($groupOrder->getId());
+                //$command = new EnqueueCommand(new NotifyPendingGroupOrderCommand($groupOrder->getId()), true);
+                //$this->getCommandBus()->handle($command);
             } else {
                 $groupOrder->setCompleted($user);
-                //$command = new NotifyPendingGroupOrderCommand($groupOrder->getId());
+
+                //$command = new NotifyCompletedGroupOrderCommand($groupOrder->getId());
+                //$this->getCommandBus()->handle($command);
+
+                //$command = new NotifyOrderRewardsSentCommand($groupOrder->getId());
+                //$this->getCommandBus()->handle($command);
             }
             $this->getEntityManager()->persist($groupOrder);
             $this->getEntityManager()->flush();
-        } else {
+        } else { //普通订单
             $groupUserOrder->setPending();
             $groupUserOrder->setPaid();
             $this->getEntityManager()->persist($groupUserOrder);
             $this->getEntityManager()->flush();
-            //$command = new NotifyPendingGroupOrderCommand($groupOrder->getId());
+
+            //$command = new NotifyOrderRewardsSentCommand($groupUserOrder->getId());
+            //$this->getCommandBus()->handle($command);
         }
-
-        //$this->getCommandBus()->handle($command);
-
-//        if ($groupOrder->isPending()) {
-//
-//            $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
-//
-//            $formId = $groupUserOrder->getPrePayId();
-//            $templateId = "9RLVQOC7gP3qJipiFX2efKvz2oSYuJRs0dDaY2UeDIA";
-//            $page = "pages/group/index?id=" . $groupOrderId;
-//            $toUser = $groupUserOrder->getUser()->getWxOpenId();
-//            $data = ['keyword1' => ['value' => $groupOrder->getProduct()->getTitle()],
-//                'keyword2' => ['value' => $groupOrder->getProduct()->getPrice()],
-//                'keyword3' => ['value' => 1],
-//                'keyword4' => ['value' => '2019-01-01 12:12:12']];
-//            $emphasisKeyword = "keyword3.DATA";
-//
-//            $wxApi = new WxCommon($this->getLog());
-//            $wxApi->sendMessage($toUser, $templateId, $page, $formId, $data, $emphasisKeyword);
-//
-//            //$command = new NotifyPendingGroupOrderCommand($groupOrder->getId());
-//            //$this->getCommandBus()->handle($command);
-//        } else if ($groupOrder->isCompleted()) {
-//            $command = new NotifyCompletedGroupOrderCommand($groupOrder->getId());
-//            //$this->getCommandBus()->handle($command);
-//        }
 
         $data = [
             'groupUserOrder' => $groupUserOrder->getArray()

@@ -10,7 +10,7 @@ Page({
     curIndex: 0,
     isLogin: null,
     user: null,
-
+    rewardList: [],
   },
 
   /**
@@ -26,6 +26,34 @@ Page({
     })
   },
   
+  getRewardList: function() {
+    const that = this;
+    wx.showLoading({
+      title: '载入中',
+    })
+    wx.request({
+      url: app.globalData.baseUrl + '/user/rewards/list',
+      data: {
+        thirdSession: wx.getStorageSync('thirdSession')
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          that.setData({
+            rewardList: res.data.data.children
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) { },
+      complete(e) {
+        wx.hideLoading()
+      }
+    })
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -41,6 +69,9 @@ Page({
       isLogin: app.globalData.isLogin,
       user: app.globalData.user
     })
+    if (this.data.isLogin) {
+      this.getRewardList()
+    }
   },
 
   /**

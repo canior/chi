@@ -1,6 +1,7 @@
 // pages/group/index.js
 const app = getApp()
 const productReview = require('../tmpl/productReview.js');
+const share = require('../tmpl/share.js');
 const bottom = require('../tmpl/bottom.js');
 Page({
 
@@ -17,8 +18,8 @@ Page({
     joinUserOrder: null, //参团人订单
     productReviewData: {},
     moreProducts: [],
+    shareData: {},
     bottomData: {},
-    showModal: false,
     btnDisabled: false, //防止连击button
   },
 
@@ -26,6 +27,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    app.buriedPoint(options);
     const id = options.id ? options.id : 10145;
     if (id) {
       this.getGroupOrder(id);      
@@ -34,10 +36,13 @@ Page({
 
   getGroupOrder: function(id) {
     const that = this;
+    const pages = getCurrentPages();
+    const currentPageUrl = '/' + pages[pages.length - 1].route;
     wx.request({
       url: app.globalData.baseUrl + '/groupOrder/view',
       data: {
-        groupOrderId: id
+        groupOrderId: id,
+        url: currentPageUrl
       },
       method: 'POST',
       success: (res) => {
@@ -45,6 +50,7 @@ Page({
           console.log(res.data.data)
           const groupOrder = res.data.data.groupOrder;
           that.setGroupData(groupOrder);
+          share.setShareSources(that, res.data.data.shareSources)          
           if (groupOrder.status != 'completed') {
             // 更多精彩拼团
             that.getMoreProducts();
@@ -217,17 +223,16 @@ Page({
     })
   },
 
-  // 邀请好友
-  showModal: function(e) {
-    this.setData({
-      showModal: true
-    })
+  // 分享:邀请好友
+  wxShowShareModal: function (e) {
+    share.showModal(this)
   },
-  hideModal: function (e) {
-    this.setData({
-      showModal: false
-    })
+  wxHideShareModal: function (e) {
+    share.hideModal(this)
   },
+  wxSaveShareSource: function (e) {
+    share.saveShareSource(this, e, app.globalData.baseUrl + '/user/shareSource/create')
+  },  
 
   // 转地址管理
   /*wxUserAddress: function (e) {
@@ -284,6 +289,7 @@ Page({
       user: app.globalData.user
     })
     bottom.init(this)
+    share.init(this)
   },
 
   /**
@@ -317,11 +323,7 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-    return {
-      title: "分享标题",
-      imageUrl: '',
-      path: '/pages/group/index?id=' + this.data.groupOrder.id
-    }
+  onShareAppMessage: function (res) {
+    return share.shareObject(this, res)
   }
 })

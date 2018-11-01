@@ -10,9 +10,12 @@ namespace App\Controller\Api;
 
 use App\Entity\Product;
 use App\Entity\ProductReview;
+use App\Entity\ProjectBannerMeta;
 use App\Entity\ProjectMeta;
+use App\Entity\ShareSource;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
+use App\Repository\ProjectBannerMetaRepository;
 use App\Repository\ProjectMetaRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,22 +32,23 @@ class ProductController extends BaseController
      * @Route("/products/", name="productIndex", methods="GET")
      * @param Request $request
      * @param ProductRepository $productRepository
-     * @param ProjectMetaRepository $projectMetaRepository
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
      * @return Response
      */
-    public function indexAction(Request $request, ProductRepository $productRepository, ProjectMetaRepository $projectMetaRepository) : Response {
+    public function indexAction(Request $request, ProductRepository $productRepository, ProjectBannerMetaRepository $projectBannerMetaRepository) : Response {
         $bannersArray = [];
         $productsArray = [];
 
-        $projectMetas = $projectMetaRepository->findBy(['metaKey' => [ProjectMeta::HOME_BANNER_1, ProjectMeta::HOME_BANNER_2, ProjectMeta::HOME_BANNER_3]]);
-        foreach ($projectMetas as $projectMeta) {
-            $bannersArray[] = $projectMeta->getMetaValue();
+        $projectBannerMetas = $projectBannerMetaRepository->findBy(['metaKey' => [ProjectBannerMeta::BANNER_HOME_1, ProjectBannerMeta::BANNER_HOME_2, ProjectBannerMeta::BANNER_HOME_3]]);
+        foreach ($projectBannerMetas as $projectBannerMeta) {
+            $bannersArray[] = $projectBannerMeta->getArray();
         }
 
         $products = $productRepository->findActiveProducts($request->query->getInt('page', 1), self::PAGE_LIMIT);
         foreach($products as $product) {
             $productsArray[] = $product->getArray();
         }
+
         $data = [
             'banners' => $bannersArray,
             'products' => $productsArray,
@@ -63,7 +67,12 @@ class ProductController extends BaseController
      * @return Response
      */
     public function detailAction(Request $request, Product $product): Response {
-        return $this->responseJson('success', 200, $product->getArray());
+        $url = $request->query->get('url');
+
+        return $this->responseJson('success', 200, [
+            'product' => $product->getArray(),
+            'shareSources' => $this->createShareSource($product, $url)
+        ]);
     }
 
     /**
@@ -83,6 +92,36 @@ class ProductController extends BaseController
             $data[] = $productReview->getArray();
         }
         return $this->responseJson('success', 200, $data);
+    }
+
+    /**
+     * //TODO 需要确定转发配置
+     * 返回转发和朋友圈的shareSource
+     *
+     * @param Product $product
+     * @param $page
+     * @return array
+     */
+    public function createShareSource(Product $product, $page) {
+
+        $shareSources = [];
+
+        $referShareSource = new ShareSource();
+        $referShareSource->setType(ShareSource::REFER);
+        $referShareSource->setTitle($product->getTitle());
+        $referShareSource->setBannerFile($product->getMainProductImage()->getFile());
+        $referShareSource->setPage($page, true);
+
+        $quanShareSource = new ShareSource();
+        $quanShareSource->setType(ShareSource::QUAN);
+        $quanShareSource->setBannerFile($product->getMainProductImage()->getFile());
+        $quanShareSource->setPage($page, true);
+
+        $shareSources[] = $referShareSource->getArray();
+        $shareSources[] = $quanShareSource->getArray();
+
+
+        return $shareSources;
     }
 
 }

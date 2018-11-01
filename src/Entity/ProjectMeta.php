@@ -8,8 +8,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProjectMetaRepository")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="meta_type", type="string")
+ * @ORM\DiscriminatorMap({"text" = "ProjectTextMeta", "banner" = "ProjectBannerMeta", "notification" = "ProjectNotificationMeta", "share" = "ProjectShareMeta", "rewards" = "ProjectRewardsMeta"})
  */
-class ProjectMeta implements Dao
+abstract class ProjectMeta implements Dao
 {
     use IdTrait;
 
@@ -17,6 +20,7 @@ class ProjectMeta implements Dao
      * @ORM\Column(type="string", length=255)
      */
     private $metaKey;
+
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -30,23 +34,6 @@ class ProjectMeta implements Dao
     private $memo;
 
 
-    const HOME_BANNER_1 = "home_banner_1";
-    const HOME_BANNER_2 = "home_banner_2";
-    const HOME_BANNER_3 = "home_banner_3";
-
-    /**
-     * ProjectMeta constructor.
-     * @param string $metaKey
-     * @param string $metaValue
-     * @param null|string $memo
-     */
-    public function __construct(string $metaKey, string $metaValue, ?string $memo)
-    {
-        $this->setMetaKey($metaKey);
-        $this->setMetaValue($metaValue);
-        $this->setMemo($memo);
-    }
-
     public function getMetaKey(): ?string
     {
         return $this->metaKey;
@@ -59,18 +46,17 @@ class ProjectMeta implements Dao
         return $this;
     }
 
-    public function getMetaValue(): ?string
+    protected function getMetaValue(): ?string
     {
         return $this->metaValue;
     }
 
-    public function setMetaValue(?string $metaValue): self
+    protected function setMetaValue(?string $metaValue): self
     {
         $this->metaValue = $metaValue;
 
         return $this;
     }
-
 
     public function getMemo(): ?string
     {
@@ -84,14 +70,18 @@ class ProjectMeta implements Dao
         return $this;
     }
 
+    public abstract function isTextMeta();
+
+    public abstract function isBannerMeta();
+
+    public abstract function isShareMeta();
+
+    public abstract function isNotificationMeta();
+
+    public abstract function isRewardsMeta();
+
     /**
      * @return array
      */
-    public function getArray() : array {
-        return [
-            'id' => $this->getId(),
-            'metaKey' => $this->getMetaKey(),
-            'metaValue' => $this->getMetaValue()
-        ];
-    }
+    public abstract function getArray();
 }

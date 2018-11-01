@@ -11,6 +11,11 @@ namespace App\Command\Notification;
 
 use App\Command\SerializableCommandInterface;
 
+/**
+ * 通知团长，团员拼团成功
+ * Class NotifyCompletedGroupOrderCommand
+ * @package App\Command\Notification
+ */
 class NotifyCompletedGroupOrderCommand implements SerializableCommandInterface
 {
     private $groupOrderId;

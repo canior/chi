@@ -1,9 +1,16 @@
 <?php
 namespace App\Controller\Api;
 
+use App\Command\EnqueueCommand;
+use App\Command\Notification\NotifyPendingGroupOrderCommand;
+use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
+use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Entity\ProductReviewImage;
+use App\Entity\ProjectBannerMeta;
+use App\Entity\ProjectShareMeta;
+use App\Entity\ProjectTextMeta;
 use App\Entity\Region;
 use App\Entity\ShareSource;
 use App\Entity\ShareSourceUser;
@@ -15,6 +22,9 @@ use App\Repository\FileRepository;
 use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
+use App\Repository\ProjectBannerMetaRepository;
+use App\Repository\ProjectShareMetaRepository;
+use App\Repository\ProjectTextMetaRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ShareSourceRepository;
 use App\Repository\ShareSourceUserRepository;
@@ -32,6 +42,25 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class UserController extends BaseController
 {
+
+    /**
+     * 测试推送信息
+     * @Route("/user/test", name="testUser", methods="POST")
+     * @param Request $request
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function testAction(Request $request, GroupOrderRepository $groupOrderRepository, ProjectShareMetaRepository $projectShareMetaRepository) {
+        if ($this->getEnvironment() != 'dev') exit;
+
+        $data = json_decode($request->getContent(), true);
+        $groupOrderId =  isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
+
+        $command = new EnqueueCommand(new NotifyPendingGroupOrderCommand($groupOrderId), true);
+        $this->getCommandBus()->handle($command);
+
+        return $this->responseJson('success', 200, []);
+    }
 
     /**
      * 获取用户openId
@@ -447,83 +476,74 @@ class UserController extends BaseController
     }
 
     /**
-     * TODO: 需要生产朋友圈图片
+     * 生成所有分享源
+     *
+     * @param User $user
+     * @param Product $product
+     * @param GroupOrder $groupOrder
+     * @return ShareSource[]
+     */
+    public function generateShareSource(User $user, ?Product $product, ?GroupOrder $groupOrder) {
+
+        $shareSources = [];
+
+        if ($groupOrder) {
+            $referShareSource = new ShareSource();
+            $referShareSource->setGroupOrder($groupOrder);
+
+
+        } else if ($product) {
+
+        } else {
+
+        }
+
+        return $shareSources;
+    }
+
+    /**
      * 创建用户分享源
      *
      * @Route("/user/shareSource/create", name="createShareSource", methods="POST")
      * @param Request $request
+     * @param ShareSourceRepository $shareSourceRepository
+     * @param FileRepository $fileRepository
      * @param ProductRepository $productRepository
      * @param GroupOrderRepository $groupOrderRepository
      * @return Response
      */
-    public function createShareSource(Request $request, ProductRepository $productRepository, GroupOrderRepository $groupOrderRepository) : Response {
+    public function saveShareSource(Request $request, ShareSourceRepository $shareSourceRepository, FileRepository $fileRepository, ProductRepository $productRepository, GroupOrderRepository $groupOrderRepository) : Response {
 
         $data = json_decode($request->getContent(), true);
 
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $shareSourceId = isset($data['shareSourceId']) ? $data['shareSourceId'] : null;
         $productId = isset($data['productId']) ? $data['productId'] : null;
         $shareSourceType = isset($data['shareSourceType']) ? $data['shareSourceType'] : null;
-        $page = isset($data['page']) ? $data['page'] : null;
+        $url = isset($data['url']) ? $data['url'] : null;
         $groupOrderId = isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
+        $bannerFileId = isset($data['bannerFileId']) ? $data['bannerFileId'] : null;
+        $title = isset($data['title']) ? $data['title'] : null;
 
         $user = $this->getWxUser($thirdSession);
-        $product = null;
-        $groupOrder = null;
-        $bannerFile = null;
-        $title = "";
+        $product = $productId == null ? null : $productRepository->find($productId);
+        $groupOrder = $groupOrderId == null ? null : $groupOrderRepository->find($groupOrderId);
+        $bannerFile = $fileRepository->find($bannerFileId);
 
-        if ($groupOrderId != null) { //邀请拼团
-            $groupOrder = $groupOrderRepository->find($groupOrderId);
-            $bannerFile = $groupOrder->getProduct()->getMainProductImage()->getFile();
-            if ($shareSourceType == ShareSource::REFER) { //转发用户相关小程序
-                $title = $groupOrder->getUser()->getNickname() . '邀请您参团'; //TODO
-
-            } else if ($shareSourceType == ShareSource::QUAN) { //用户相关朋友圈
-                $bannerFile = "";
-            }
-        } else {
-            if ($productId != null) { //分享产品相关
-                $product = $productRepository->find($productId);
-                $title = $product->getTitle();
-
-                if ($shareSourceType == ShareSource::REFER) { //转发产品相关小程序
-                    $bannerFile = $product->getMainProductImage() == null ? null : $product->getMainProductImage()->getFile();
-                } else if ($shareSourceType == ShareSource::QUAN) { //转发产品相关朋友圈
-                    $bannerFile = $product->getMainProductImage() == null ? null : $product->getMainProductImage()->getFile();
-                }
-            } else { //分享用户相关
-                if ($shareSourceType == ShareSource::REFER) { //转发用户相关小程序
-                    //TODO
-                    $title = $user->getNickname();
-                    $bannerFile = 1;
-                } else if ($shareSourceType == ShareSource::QUAN) { //用户相关朋友圈
-                    //TODO
-                    $title = "";
-                    $bannerFile = "";
-                }
-            }
+        $shareSource = $shareSourceRepository->find($shareSourceId);
+        if ($shareSource == null) {
+            $shareSource = new ShareSource();
         }
-
-        $shareSource = new ShareSource();
+        $shareSource->setId($shareSourceId);
         $shareSource->setUser($user);
         $shareSource->setProduct($product);
-        $shareSource->setGroupOrder($groupOrder);
-
-        $shareSourceId = $shareSource->getId();
-        if (strpos($page, '?') !== false) {
-            $page .= "&shareSourceId=" . $shareSourceId;
-        } else {
-            $page .= "?shareSourceId=" . $shareSourceId;
-        }
-        $shareSource->setPage($page);
-        $shareSource->setTitle($title);
-        $shareSource->setBannerFile($bannerFile);
         $shareSource->setType($shareSourceType);
+        $shareSource->setPage($url);
+        $shareSource->setBannerFile($bannerFile);
+        $shareSource->setGroupOrder($groupOrder);
+        $shareSource->setTitle($title);
 
-        $user->getOrCreateTodayUserStatistics()->increaseShareNum(1);
-        $user->addShareSource($shareSource);
-
-        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->persist($shareSource);
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
@@ -610,6 +630,7 @@ class UserController extends BaseController
         $user = $this->getWxUser($thirdSession);
 
         return $this->responseJson('success', 200, [
+            'totalRewards' => $user->getTotalRewards(),
             'children' => $user->getSharedUsersArray()
         ]);
     }
@@ -625,16 +646,47 @@ class UserController extends BaseController
      */
     public function addUserActivity(Request $request, UserActivityRepository $userActivityRepository) {
         $data = json_decode($request->getContent(), true);
-        $page = isset($data['page']) ? $data['page'] : null;
+        $url = isset($data['url']) ? $data['url'] : null;
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
 
         $user = $this->getWxUser($thirdSession);
-        $userActivity = new UserActivity($user, $page);
+        $userActivity = new UserActivity($user, $url);
         $user->addUserActivity($userActivity);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, []);
+    }
+
+
+    /**
+     * //TODO 需要确定转发配置
+     * 返回转发和朋友圈的shareSource
+     *
+     * @param User $user
+     * @param $page
+     * @return array
+     */
+    public function createShareSource(User $user, $page) {
+
+        $shareSources = [];
+
+        $referShareSource = new ShareSource();
+        $referShareSource->setType(ShareSource::REFER);
+        $referShareSource->setTitle($user->getNickname() . "邀请你来赚钱");
+        $referShareSource->setBannerFile(null);
+        $referShareSource->setPage($page, true);
+
+        $quanShareSource = new ShareSource();
+        $quanShareSource->setType(ShareSource::QUAN);
+        $quanShareSource->setBannerFile(null);
+        $quanShareSource->setPage($page, true);
+
+        $shareSources[] = $referShareSource->getArray();
+        $shareSources[] = $quanShareSource->getArray();
+
+
+        return $shareSources;
     }
 
 }
