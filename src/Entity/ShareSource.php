@@ -139,11 +139,11 @@ class ShareSource implements Dao
 
     /**
      * 如果是raw，则生成shareSourceId
-     * @param string $page
+     * @param string|null $page
      * @param bool $raw
      * @return ShareSource
      */
-    public function setPage(string $page, $raw = false): self
+    public function setPage($page, $raw = false): self
     {
         $this->page = $page;
 
@@ -219,7 +219,7 @@ class ShareSource implements Dao
     public function getArray() : array {
         return [
             'id' => $this->id,
-            'userId' => $this->getUser()->getId(),
+            'userId' => $this->getUser() ? $this->getUser()->getId() : null,
             'type' => $this->type,
             'title' => $this->title,
             'bannerFileId' => $this->getBannerFile()->getId(),

@@ -37,15 +37,16 @@ class ProductController extends BaseController
         $bannersArray = [];
         $productsArray = [];
 
-        $projectMetas = $projectMetaRepository->findBy(['metaKey' => [ProjectMeta::HOME_BANNER_1, ProjectMeta::HOME_BANNER_2, ProjectMeta::HOME_BANNER_3]]);
-        foreach ($projectMetas as $projectMeta) {
-            $bannersArray[] = $projectMeta->getMetaValue();
-        }
+//        $projectMetas = $projectMetaRepository->findBy(['metaKey' => [ProjectMeta::HOME_BANNER_1, ProjectMeta::HOME_BANNER_2, ProjectMeta::HOME_BANNER_3]]);
+//        foreach ($projectMetas as $projectMeta) {
+//            $bannersArray[] = $projectMeta->getMetaValue();
+//        }
+//
+//        $products = $productRepository->findActiveProducts($request->query->getInt('page', 1), self::PAGE_LIMIT);
+//        foreach($products as $product) {
+//            $productsArray[] = $product->getArray();
+//        }
 
-        $products = $productRepository->findActiveProducts($request->query->getInt('page', 1), self::PAGE_LIMIT);
-        foreach($products as $product) {
-            $productsArray[] = $product->getArray();
-        }
         $data = [
             'banners' => $bannersArray,
             'products' => $productsArray,
