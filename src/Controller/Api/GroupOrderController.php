@@ -15,6 +15,7 @@ use App\Command\Notification\NotifyPendingGroupOrderCommand;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
 use App\Entity\Product;
+use App\Entity\ShareSource;
 use App\Entity\User;
 use App\Entity\UserAddress;
 use App\Repository\GroupOrderRepository;
@@ -163,15 +164,53 @@ class GroupOrderController extends BaseController
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $groupOrderId = isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
+        $url = isset($data['url']) ? $data['url'] : null;
 
         /**
          * @var GroupOrder $groupOrder
          */
         $groupOrder = $groupOrderRepository->find($groupOrderId);
+
         $data = [
-            'groupOrder' => $groupOrder->getArray()
+            'groupOrder' => $groupOrder->getArray(),
+            'shareSources' => $this->createShareSource($groupOrder, $url)
         ];
 
         return $this->responseJson('success', 200, $data);
+    }
+
+    /**
+     * //TODO 需要确定转发配置
+     * 返回转发和朋友圈的shareSource
+     *
+     * @param GroupOrder $groupOrder
+     * @param $page
+     * @return array
+     */
+    public function createShareSource(GroupOrder $groupOrder, $page) {
+
+        $shareSources = [];
+
+        $product = $groupOrder->getProduct();
+        $title = "快来拼" . $product->getTitle();
+        if ($groupOrder->isPending()) {
+            $title = "【仅剩1人】" .  $title;
+        }
+
+        $referShareSource = new ShareSource();
+        $referShareSource->setType(ShareSource::REFER);
+        $referShareSource->setTitle($title);
+        $referShareSource->setBannerFile($product->getMainProductImage()->getFile());
+        $referShareSource->setPage($page, true);
+
+        $quanShareSource = new ShareSource();
+        $quanShareSource->setType(ShareSource::QUAN);
+        $quanShareSource->setBannerFile($product->getMainProductImage()->getFile());
+        $quanShareSource->setPage($page, true);
+
+        $shareSources[] = $referShareSource->getArray();
+        $shareSources[] = $quanShareSource->getArray();
+
+        return $shareSources;
     }
 }

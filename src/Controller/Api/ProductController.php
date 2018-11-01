@@ -64,19 +64,11 @@ class ProductController extends BaseController
      * @return Response
      */
     public function detailAction(Request $request, Product $product): Response {
-        $page = $request->query->get('page');
-        $shareSourcesArray = [];
-        if ($page) {
-            $shareSources = $this->createShareSource($product, $page);
-
-            foreach($shareSources as $shareSource) {
-                $shareSourcesArray[] = $shareSource->getArray();
-            }
-        }
+        $url = $request->query->get('url');
 
         return $this->responseJson('success', 200, [
             'product' => $product->getArray(),
-            'shareSources' => $shareSourcesArray
+            'shareSources' => $this->createShareSource($product, $url)
         ]);
     }
 
@@ -105,7 +97,7 @@ class ProductController extends BaseController
      *
      * @param Product $product
      * @param $page
-     * @return ShareSource[]
+     * @return array
      */
     public function createShareSource(Product $product, $page) {
 
@@ -122,8 +114,9 @@ class ProductController extends BaseController
         $quanShareSource->setBannerFile($product->getMainProductImage()->getFile());
         $quanShareSource->setPage($page, true);
 
-        $shareSources[] = $referShareSource;
-        $shareSources[] = $quanShareSource;
+        $shareSources[] = $referShareSource->getArray();
+        $shareSources[] = $quanShareSource->getArray();
+
 
         return $shareSources;
     }

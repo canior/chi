@@ -499,12 +499,13 @@ class UserController extends BaseController
      *
      * @Route("/user/shareSource/create", name="createShareSource", methods="POST")
      * @param Request $request
+     * @param ShareSourceRepository $shareSourceRepository
      * @param FileRepository $fileRepository
      * @param ProductRepository $productRepository
      * @param GroupOrderRepository $groupOrderRepository
      * @return Response
      */
-    public function createShareSource(Request $request, ShareSourceRepository $shareSourceRepository, FileRepository $fileRepository, ProductRepository $productRepository, GroupOrderRepository $groupOrderRepository) : Response {
+    public function saveShareSource(Request $request, ShareSourceRepository $shareSourceRepository, FileRepository $fileRepository, ProductRepository $productRepository, GroupOrderRepository $groupOrderRepository) : Response {
 
         $data = json_decode($request->getContent(), true);
 
@@ -512,7 +513,7 @@ class UserController extends BaseController
         $shareSourceId = isset($data['shareSourceId']) ? $data['shareSourceId'] : null;
         $productId = isset($data['productId']) ? $data['productId'] : null;
         $shareSourceType = isset($data['shareSourceType']) ? $data['shareSourceType'] : null;
-        $page = isset($data['page']) ? $data['page'] : null;
+        $url = isset($data['url']) ? $data['url'] : null;
         $groupOrderId = isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
         $bannerFileId = isset($data['bannerFileId']) ? $data['bannerFileId'] : null;
         $title = isset($data['title']) ? $data['title'] : null;
@@ -530,7 +531,7 @@ class UserController extends BaseController
         $shareSource->setUser($user);
         $shareSource->setProduct($product);
         $shareSource->setType($shareSourceType);
-        $shareSource->setPage($page);
+        $shareSource->setPage($url);
         $shareSource->setBannerFile($bannerFile);
         $shareSource->setGroupOrder($groupOrder);
         $shareSource->setTitle($title);
@@ -638,16 +639,47 @@ class UserController extends BaseController
      */
     public function addUserActivity(Request $request, UserActivityRepository $userActivityRepository) {
         $data = json_decode($request->getContent(), true);
-        $page = isset($data['page']) ? $data['page'] : null;
+        $url = isset($data['url']) ? $data['url'] : null;
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
 
         $user = $this->getWxUser($thirdSession);
-        $userActivity = new UserActivity($user, $page);
+        $userActivity = new UserActivity($user, $url);
         $user->addUserActivity($userActivity);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, []);
+    }
+
+
+    /**
+     * //TODO 需要确定转发配置
+     * 返回转发和朋友圈的shareSource
+     *
+     * @param User $user
+     * @param $page
+     * @return array
+     */
+    public function createShareSource(User $user, $page) {
+
+        $shareSources = [];
+
+        $referShareSource = new ShareSource();
+        $referShareSource->setType(ShareSource::REFER);
+        $referShareSource->setTitle($user->getNickname() . "邀请你来赚钱");
+        $referShareSource->setBannerFile(null);
+        $referShareSource->setPage($page, true);
+
+        $quanShareSource = new ShareSource();
+        $quanShareSource->setType(ShareSource::QUAN);
+        $quanShareSource->setBannerFile(null);
+        $quanShareSource->setPage($page, true);
+
+        $shareSources[] = $referShareSource->getArray();
+        $shareSources[] = $quanShareSource->getArray();
+
+
+        return $shareSources;
     }
 
 }
