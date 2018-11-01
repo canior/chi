@@ -17,6 +17,7 @@ Page({
    */
   onLoad: function (options) {
     const orderId = options.orderId ? options.orderId : 100161
+    console.log('groupUserOrderId=' + orderId);
     this.getGroupUserOrder(orderId)
   },
 
