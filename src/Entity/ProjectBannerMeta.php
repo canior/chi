@@ -42,6 +42,11 @@ class ProjectBannerMeta extends ProjectMeta
         return false;
     }
 
+    public function isRewardsMeta()
+    {
+        return false;
+    }
+
     public function getRedirectUrl() {
         $metaValueArray = json_decode($this->getMetaValue(), true);
         return $metaValueArray['redirectUrl'];

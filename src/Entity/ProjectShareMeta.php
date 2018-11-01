@@ -47,6 +47,11 @@ class ProjectShareMeta extends ProjectMeta
         return false;
     }
 
+    public function isRewardsMeta()
+    {
+        return false;
+    }
+
     /**
      * @param $scene
      * @param $type

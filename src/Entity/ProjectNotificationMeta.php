@@ -36,6 +36,12 @@ class ProjectNotificationMeta extends ProjectMeta
         return true;
     }
 
+    public function isRewardsMeta()
+    {
+        return false;
+    }
+
+
     /**
      * @return array
      */

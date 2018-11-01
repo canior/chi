@@ -35,6 +35,11 @@ class ProjectTextMeta extends ProjectMeta
         return false;
     }
 
+    public function isRewardsMeta()
+    {
+        return false;
+    }
+
     public function setTextMeta($text) {
         $this->setMetaValue($text);
         return $this;
