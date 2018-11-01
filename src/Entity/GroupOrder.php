@@ -241,8 +241,11 @@ class GroupOrder implements Dao
     public function setExpired() : self {
         $this->status = self::EXPIRED;
         foreach ($this->getGroupUserOrders() as $groupUserOrder) {
-            $groupUserOrder->setCancelled();
-            $groupUserOrder->setRefunding();
+            //这里只更新支付过的订单
+            if ($groupUserOrder->isPaid()) {
+                $groupUserOrder->setCancelled();
+                $groupUserOrder->setRefunding();
+            }
             $this->getProduct()->increaseStock();
         }
         $this->setUpdatedAt();
