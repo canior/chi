@@ -174,6 +174,22 @@ class GroupUserOrderController extends BaseController
         $user = $this->getWxUser($thirdSession);
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
 
+        /**
+         * 如果是拼团订单，并且是已完成或者已过期，则把当前订单取消不让支付继续
+         */
+        if ($groupUserOrder->isGroupOrder()) {
+            if (!$groupUserOrder->getGroupOrder()->isPending()) {
+
+                $groupUserOrder->setCancelled();
+                $this->getEntityManager()->persist($groupUserOrder);
+                $this->getEntityManager()->flush();
+
+                return $this->responseJson('success', 200, [
+                    'groupUserOrder' => $groupUserOrder->getArray()
+                ]);
+            }
+        }
+
         $body = "create order"; //TODO 开团信息要怎么写
         $wxPaymentApi = new WxPayment($this->getLog());
         $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
