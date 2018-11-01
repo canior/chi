@@ -470,7 +470,7 @@ class Product implements Dao
 
         $similarProductsArray = [];
         foreach ($this->getProductSimilars() as $similarProduct) {
-            $similarProductArray[] = $similarProduct->getProduct()->getArray();
+            $similarProductArray[] = $similarProduct->getSimilarProduct()->getArray();
         }
 
         return [
