@@ -172,7 +172,7 @@ class GroupOrderController extends BaseController
         $groupOrder->setExpired();
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
-        return $this->responseJson('success', 302, []);
+        return $this->responseJson('success', 200, ['groupOrder' => $groupOrder->getArray()]);
     }
 
 
