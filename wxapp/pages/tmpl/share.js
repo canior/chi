@@ -45,7 +45,8 @@ function __saveShareSource(that, url, shareSourceType) {
       shareSourceId: shareSource.id,
       title: shareSource.title,
       bannerFileId: shareSource.bannerFileId,
-      productId: that.data.product ? that.data.product.id : null
+      productId: that.data.product ? that.data.product.id : null,
+      groupOrderId: that.data.groupOrder ? that.data.groupOrder.id : null
     },
     method: 'POST',
     success: (res) => {

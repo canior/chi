@@ -47,6 +47,7 @@ Page({
           console.log(res.data.data)
           const groupOrder = res.data.data.groupOrder;
           that.setGroupData(groupOrder);
+          share.setShareSources(that, res.data.data.shareSources)          
           if (groupOrder.status != 'completed') {
             // 更多精彩拼团
             that.getMoreProducts();
@@ -226,6 +227,9 @@ Page({
   wxHideShareModal: function (e) {
     share.hideModal(this)
   },
+  wxSaveShareSource: function (e) {
+    share.saveShareSource(this, e, app.globalData.baseUrl + '/user/shareSource/create')
+  },  
 
   // 转地址管理
   /*wxUserAddress: function (e) {
@@ -316,11 +320,7 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-    return {
-      title: "分享标题",
-      imageUrl: '',
-      path: '/pages/group/index?id=' + this.data.groupOrder.id
-    }
+  onShareAppMessage: function (res) {
+    return share.shareObject(this, res)
   }
 })

@@ -4,8 +4,8 @@
   
   <view class="banner">
     <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
-      <swiper-item wx:for="{{banners}}" wx:key="id" wx:for-item="banner">
-        <image src="{{banner}}" />
+      <swiper-item wx:for="{{banners}}" wx:key="index" wx:for-item="banner">
+        <image src="{{imgUrlPrefix + '/' + banner.bannerFileId}}" />
       </swiper-item>
     </swiper>
   </view>

@@ -147,7 +147,6 @@ Page({
    * 开发者将无法获知用户是否分享完成
    */
   onShareAppMessage: function (res) {
-    console.log(share.shareObject(this, res));
     return share.shareObject(this, res)
   }
 })
