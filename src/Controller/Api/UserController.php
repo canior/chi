@@ -9,6 +9,7 @@ use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Entity\ProductReviewImage;
 use App\Entity\ProjectBannerMeta;
+use App\Entity\ProjectRewardsMeta;
 use App\Entity\ProjectShareMeta;
 use App\Entity\ProjectTextMeta;
 use App\Entity\Region;
@@ -52,6 +53,12 @@ class UserController extends BaseController
      */
     public function testAction(Request $request, GroupOrderRepository $groupOrderRepository, ProjectShareMetaRepository $projectShareMetaRepository) {
         if ($this->getEnvironment() != 'dev') exit;
+
+        $rewardsMeta = new ProjectRewardsMeta('rewards_config');
+        $rewardsMeta->setRewardsMeta(0.5, 0.4,0,0.1);
+        $this->getEntityManager()->persist($rewardsMeta);
+        $this->getEntityManager()->flush();
+        exit;
 
         $data = json_decode($request->getContent(), true);
         $groupOrderId =  isset($data['groupOrderId']) ? $data['groupOrderId'] : null;

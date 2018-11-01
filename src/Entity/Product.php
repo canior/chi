@@ -64,6 +64,26 @@ class Product implements Dao
     private $rewards;
 
     /**
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $captainRewards;
+
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $joinerRewards;
+
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $regularRewards;
+
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $parentRewards;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $stock;
@@ -112,6 +132,7 @@ class Product implements Dao
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $groupUserOrders;
+
 
     /**
      * Product constructor.
@@ -208,26 +229,83 @@ class Product implements Dao
         return $this->rewards;
     }
 
-    /**
-     * 每张订单的返现
-     * @return float|int
-     */
-    public function getOrderRewards() {
-        return $this->rewards / 3;
-    }
-
-    /**
-     * 每个上线传销返现
-     * @return float|int
-     */
-    public function getUserRewards() {
-        return $this->rewards / 3;
-    }
 
     public function setRewards($rewards): self
     {
         $this->rewards = $rewards;
+        return $this;
+    }
 
+    /**
+     * @return float
+     */
+    public function getCaptainRewards()
+    {
+        return $this->captainRewards;
+    }
+
+    /**
+     * @param float $captainRewards
+     * @return Product
+     */
+    public function setCaptainRewards($captainRewards)
+    {
+        $this->captainRewards = $captainRewards;
+        return $this;
+    }
+
+
+    /**
+     * @return float
+     */
+    public function getJoinerRewards()
+    {
+        return $this->joinerRewards;
+    }
+
+    /**
+     * @param float $joinerRewards
+     * @return Product
+     */
+    public function setJoinerRewards($joinerRewards)
+    {
+        $this->joinerRewards = $joinerRewards;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getParentRewards()
+    {
+        return $this->parentRewards;
+    }
+
+    /**
+     * @param float $parentRewards
+     * @return Product
+     */
+    public function setParentRewards($parentRewards)
+    {
+        $this->parentRewards = $parentRewards;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getRegularRewards()
+    {
+        return $this->regularRewards;
+    }
+
+    /**
+     * @param float $regularRewards
+     * @return Product
+     */
+    public function setRegularRewards($regularRewards)
+    {
+        $this->regularRewards = $regularRewards;
         return $this;
     }
 

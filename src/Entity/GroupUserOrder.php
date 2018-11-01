@@ -138,7 +138,7 @@ class GroupUserOrder implements Dao
         $this->setUpdatedAt();
         $this->setCreated();
         $this->setUnPaid();
-        $this->setOrderRewards($product->getOrderRewards());
+        $this->setOrderRewards(0);
     }
 
     public function setCreated() : self {
@@ -241,11 +241,11 @@ class GroupUserOrder implements Dao
 
         //订单确认收货后，此时给上线传销返现
         if ($this->getUser()->getParentUser() != null) {
-            $userRewards = $this->getProduct()->getUserRewards();
+            $parentRewards = $this->getProduct()->getParentRewards();
             $userRewards = new GroupUserOrderRewards();
             $userRewards->setUser($this->getUser()->getParentUser());
             $userRewards->setGroupUserOrder($this);
-            $userRewards->setUserRewards($userRewards);
+            $userRewards->setUserRewards($parentRewards);
             $this->addGroupUserOrderReward($userRewards);
 
             //发放传销返现

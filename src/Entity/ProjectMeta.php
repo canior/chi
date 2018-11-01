@@ -33,6 +33,9 @@ abstract class ProjectMeta implements Dao
      */
     private $memo;
 
+    public function __construct($metaKey) {
+        $this->metaKey = $metaKey;
+    }
 
     public function getMetaKey(): ?string
     {

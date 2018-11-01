@@ -56,7 +56,7 @@ class ProjectTextMeta extends ProjectMeta
     {
         return [
             'metaKey' => $this->getMetaKey(),
-            'metaValue' => $this->getMetaValue(),
+            'textMeta' => $this->getMetaValue(),
         ];
     }
 }

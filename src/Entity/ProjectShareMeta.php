@@ -102,6 +102,7 @@ class ProjectShareMeta extends ProjectMeta
     public function getArray()
     {
         return [
+            'metaKey' => $this->getMetaKey(),
             'scene' => $this->getShareScene(),
             'type' => $this->getShareType(),
             'title' => $this->getShareTitle(),

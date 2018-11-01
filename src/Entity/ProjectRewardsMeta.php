@@ -8,6 +8,7 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProjectRewardsMetaRepository")
@@ -40,6 +41,26 @@ class ProjectRewardsMeta extends ProjectMeta
         return true;
     }
 
+    public function getCaptainRewardsRate() {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $metaValueArray['captainRewardsRate'];
+    }
+
+    public function getJoinerRewardsRate() {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $metaValueArray['joinerRewardsRate'];
+    }
+
+    public function getRegularRewardsRate() {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $metaValueArray['regularRewardsRate'];
+    }
+
+    public function getUserRewardsRate() {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $metaValueArray['userRewardsRate'];
+    }
+
     /**
      * @param $captainRewardsRate
      * @param $joinerRewardsRate
@@ -62,7 +83,13 @@ class ProjectRewardsMeta extends ProjectMeta
      */
     public function getArray()
     {
-        // TODO: Implement getArray() method.
+        return [
+            'metaKey' => $this->getMetaKey(),
+            'captainRewardsRate' => $this->getCaptainRewardsRate(),
+            'joinerRewardsRate' => $this->getJoinerRewardsRate(),
+            'regularOrderRewardsRate' => $this->getRegularRewardsRate(),
+            'userRewardsRate' => $this->getUserRewardsRate(),
+        ];
     }
 
 }

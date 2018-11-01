@@ -47,6 +47,8 @@ class ProjectNotificationMeta extends ProjectMeta
      */
     public function getArray()
     {
-        return [];
+        return [
+            'metaKey' => $this->getMetaKey()
+        ];
     }
 }
