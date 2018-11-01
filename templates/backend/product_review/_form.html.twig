@@ -1,7 +1,41 @@
 {{ form_start(form) }}
+    <div class="row">
+        <div class="form-group col-md-4{% if form.rate.vars.errors|length %} has-error{% endif %}">
+            {{ form_label(form.rate) }}
+            {{ form_errors(form.rate) }}
+            {{ form_widget(form.rate) }}
+            {{ form_help(form.rate) }}
+        </div>
+        <div class="form-group col-md-4{% if form.review.vars.errors|length %} has-error{% endif %}">
+            {{ form_label(form.review) }}
+            {{ form_errors(form.review) }}
+            {{ form_widget(form.review) }}
+            {{ form_help(form.review) }}
+        </div>
+        <div class="form-group col-md-4{% if form.status.vars.errors|length %} has-error{% endif %}">
+            {{ form_label(form.status) }}
+            {{ form_errors(form.status) }}
+            {{ form_widget(form.status) }}
+            {{ form_help(form.status) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-4{% if form.product.vars.errors|length %} has-error{% endif %}">
+            {{ form_label(form.product) }}
+            {{ form_errors(form.product) }}
+            {{ form_widget(form.product) }}
+            {{ form_help(form.product) }}
+        </div>
+        <div class="form-group col-md-4{% if form.groupUserOrder.vars.errors|length %} has-error{% endif %}">
+            {{ form_label(form.groupUserOrder) }}
+            {{ form_errors(form.groupUserOrder) }}
+            {{ form_widget(form.groupUserOrder) }}
+            {{ form_help(form.groupUserOrder) }}
+        </div>
+    </div>
     {{ form_widget(form) }}
     {% if app.request.query.get('productId') %}
-        <a class="btn btn-danger" href="{{ path('product_review_info', {id: app.request.query.get('productId')}) }}">{{ 'Back to list'|trans }}</a>
+        <a class="btn btn-danger" href="{{ path('product_edit', {id: app.request.query.get('productId')}) }}">{{ 'Back to list'|trans }}</a>
     {% else %}
         <a class="btn btn-danger" href="{{ path('product_review_index') }}">{{ 'Back to list'|trans }}</a>
     {% endif %}

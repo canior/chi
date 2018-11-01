@@ -32,8 +32,8 @@
                                             <div class="box-body">
                                                 <div class="media">
                                                     <div class="media-left">
-                                                        {% if userStatistics.user.avatarUrl %}
-                                                            <img src="{{ userStatistics.user.avatarUrl }}" alt="MaterialPro" class="media-object"
+                                                        {% if user.avatarUrl %}
+                                                            <img src="{{ user.avatarUrl }}" alt="MaterialPro" class="media-object"
                                                                  style="width: 150px;height: auto;border-radius: 4px;box-shadow: 0 1px 3px rgba(0,0,0,.15);">
                                                         {% endif %}
                                                     </div>
@@ -41,13 +41,13 @@
                                                         <div class="clearfix">
                                                             <h5>
                                                                 用户ID:
-                                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': userStatistics.user.id}) }}" target="_blank" title="查看详情">
-                                                                    {{ userStatistics.user.id }}
+                                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': user.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ user.id }}
                                                                 </a>
                                                             </h5>
-                                                            <h5>用户昵称: {{ userStatistics.user.nickname }}</h5>
-                                                            <h5>总收益: ￥{{ userStatistics.user.totalRewards|default(0)|number_format }}</h5>
-                                                            <h5>待发放收益: ￥{{ userStatistics.user.pendingTotalRewards|default(0)|number_format }}</h5>
+                                                            <h5>用户昵称: {{ user.nickname }}</h5>
+                                                            <h5>总收益: ￥{{ user.totalRewards|default(0)|number_format }}</h5>
+                                                            <h5>待发放收益: ￥{{ user.pendingTotalRewards|default(0)|number_format }}</h5>
                                                             <h5>订单收益: ￥{{ userStatisticsTotal.orderRewardsTotal|default(0)|number_format }}</h5>
                                                             <h5>传销收益: ￥{{ userStatisticsTotal.userRewardsTotal|default(0)|number_format }}</h5>
                                                         </div>
@@ -76,11 +76,12 @@
                                 <div class="box-body">
                                     <div class="chart" style="height: 200px;">
                                         <div class="box box-solid">
+                                            {% if user.parentUser %}
                                             <div class="box-body">
                                                 <div class="media">
                                                     <div class="media-left">
-                                                        {% if userStatistics.user.parentUser and userStatistics.user.parentUser.avatarUrl %}
-                                                            <img src="{{ userStatistics.user.parentUser.avatarUrl }}" alt="MaterialPro" class="media-object"
+                                                        {% if user.parentUser and user.parentUser.avatarUrl %}
+                                                            <img src="{{ user.parentUser.avatarUrl }}" alt="MaterialPro" class="media-object"
                                                                  style="width: 150px;height: auto;border-radius: 4px;box-shadow: 0 1px 3px rgba(0,0,0,.15);">
                                                         {% endif %}
                                                     </div>
@@ -88,21 +89,22 @@
                                                         <div class="clearfix">
                                                             <h5>
                                                                 用户ID:
-                                                                {% if userStatistics.user.parentUser %}
-                                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': userStatistics.user.parentUser.id}) }}" target="_blank" title="查看详情">
-                                                                    {{ userStatistics.user.parentUser.id }}
+                                                                {% if user.parentUser %}
+                                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': user.parentUser.id}) }}" target="_blank" title="查看详情">
+                                                                    {{ user.parentUser.id }}
                                                                 </a>
                                                                 {% endif %}
                                                             </h5>
-                                                            <h5>用户昵称: {{ userStatistics.user.parentUser.nickname|default }}</h5>
-                                                            <h5>总收益: ￥{{ userStatistics.user.parentUser.totalRewards|default(0)|number_format }}</h5>
-                                                            <h5>待发放收益: ￥{{ userStatistics.user.parentUser.pendingTotalRewards|default(0)|number_format }}</h5>
+                                                            <h5>用户昵称: {{ user.parentUser.nickname|default }}</h5>
+                                                            <h5>总收益: ￥{{ user.parentUser.totalRewards|default(0)|number_format }}</h5>
+                                                            <h5>待发放收益: ￥{{ user.parentUser.pendingTotalRewards|default(0)|number_format }}</h5>
                                                             <h5>订单收益: ￥{{ parentUserStatisticsTotal.orderRewardsTotal|default(0)|number_format }}</h5>
                                                             <h5>传销收益: ￥{{ parentUserStatisticsTotal.userRewardsTotal|default(0)|number_format }}</h5>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -137,8 +139,8 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {% if userStatistics.user.sharedUsersArray is not empty %}
-                                                {% for item in userStatistics.user.sharedUsersArray %}
+                                            {% if user.sharedUsersArray is not empty %}
+                                                {% for item in user.sharedUsersArray %}
                                                     <tr>
                                                         <td>
                                                             <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.id}) }}" target="_blank" title="查看详情">
@@ -163,7 +165,7 @@
                                             </tbody>
                                             <tfoot>
                                             <tr>
-                                                <th colspan="5">总计({{ userStatistics.user.sharedUsersArray|length }})</th>
+                                                <th colspan="5">总计({{ user.sharedUsersArray|length }})</th>
                                             </tr>
                                             </tfoot>
                                         </table>
@@ -200,8 +202,8 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {% if userStatistics.user.groupUserOrders.count %}
-                                                {% for item in userStatistics.user.groupUserOrders %}
+                                            {% if user.groupUserOrders.count %}
+                                                {% for item in user.groupUserOrders %}
                                                     <tr>
                                                         <td>
                                                             <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {'id': item.id}) }}" target="_blank" title="查看详情">
@@ -278,8 +280,8 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {% if userStatistics.user.groupUserOrderRewards.count %}
-                                                {% for item in userStatistics.user.groupUserOrderRewards %}
+                                            {% if user.groupUserOrderRewards.count %}
+                                                {% for item in user.groupUserOrderRewards %}
                                                     <tr>
                                                         <td>
                                                             <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {'id': item.groupUserOrder.id}) }}" target="_blank" title="查看详情">

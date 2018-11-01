@@ -2,6 +2,7 @@
 
 namespace App\Controller\Backend;
 
+use App\Entity\User;
 use App\Entity\UserStatistics;
 use App\Form\UserStatisticsType;
 use App\Repository\UserStatisticsRepository;
@@ -40,18 +41,18 @@ class UserStatisticsController extends BackendController
     /**
      * @Route("/user/statistics/info/{id}", name="user_statistics_info", methods="GET")
      */
-    public function info(Request $request, UserStatistics $userStatistics, UserStatisticsRepository $userStatisticsRepository): Response
+    public function info(Request $request, User $user, UserStatisticsRepository $userStatisticsRepository): Response
     {
-        $queryBuilder = $userStatisticsRepository->findUserStatisticsQueryBuilder($userStatistics->getUser()->getId());
+        $queryBuilder = $userStatisticsRepository->findUserStatisticsQueryBuilder($user->getId());
         $userStatisticsTotal = $queryBuilder->getQuery()->getOneOrNullResult();
         $parentUserStatisticsTotal = null;
-        if ($userStatistics->getUser()->getParentUser()) {
-            $queryBuilder = $userStatisticsRepository->findUserStatisticsQueryBuilder($userStatistics->getUser()->getParentUser()->getId());
+        if ($user->getParentUser()) {
+            $queryBuilder = $userStatisticsRepository->findUserStatisticsQueryBuilder($user->getParentUser()->getId());
             $parentUserStatisticsTotal = $queryBuilder->getQuery()->getOneOrNullResult();
         }
         $data = [
             'title' => '收益详情',
-            'userStatistics' => $userStatistics,
+            'user' => $user,
             'userStatisticsTotal' => $userStatisticsTotal,
             'parentUserStatisticsTotal' => $parentUserStatisticsTotal,
         ];

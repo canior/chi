@@ -14,7 +14,7 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-sm-12 col-md-2">
+                        <div class="col-sm-12 col-md-3">
                             <!-- BAR CHART -->
                             <div class="box box-info">
                                 <div class="box-header with-border">
@@ -42,6 +42,8 @@
                                                             <h5>昵称: {{ user.nickname }}</h5>
                                                             <h5>性别: {{ user.gender }}</h5>
                                                             <h5>城市: {{ user.location }}</h5>
+                                                            <h5>待发用户返现: ￥{{ user.pendingTotalRewards|default(0)|number_format }}</h5>
+                                                            <h5>用户返现总额: ￥{{ user.totalRewards|default(0)|number_format }}</h5>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -77,7 +79,7 @@
                             <!-- /.box -->
                         </div>
                         {{ form_end(form) }}
-                        <div class="col-sm-12 col-md-8">
+                        <div class="col-sm-12 col-md-7">
                             <!-- BAR CHART -->
                             <div class="box box-info">
                                 <div class="box-header with-border">
@@ -229,7 +231,7 @@
                                     <h3 class="box-title">最近5次订单收益</h3>
 
                                     <div class="box-tools pull-right">
-                                        <a href="{{ path('user_statistics_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
+                                        <a href="{{ path('user_statistics_info', {id: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
                                                     class="fa fa-minus"></i>
                                         </button>
@@ -284,7 +286,7 @@
                                     <h3 class="box-title">最近5次传销收益</h3>
 
                                     <div class="box-tools pull-right">
-                                        <a href="{{ path('user_statistics_index', {userId: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
+                                        <a href="{{ path('user_statistics_info', {id: user.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
                                                     class="fa fa-minus"></i>
                                         </button>

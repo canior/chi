@@ -126,7 +126,7 @@ class Product implements Dao
         $this->productSpecImages = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
         $this->shareSources = new ArrayCollection();
-        $this->productStatistics = new ProductStatistics($this);
+        $this->productStatistics = new ArrayCollection([new ProductStatistics($this)]);
         $this->productSimilars = new ArrayCollection();
         $this->groupUserOrders = new ArrayCollection();
     }
@@ -288,10 +288,7 @@ class Product implements Dao
      * @return ProductImage|null
      */
     public function getMainProductImage() {
-        foreach($this->productImages as $productImage) {
-            return $productImage;
-        }
-        return null;
+        return $this->productImages->isEmpty() ? null : $this->productImages->first();
     }
 
     public function addProductImage(ProductImage $productImage): self

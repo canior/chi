@@ -17,12 +17,21 @@
                 <div class="box-body">
                     <div class="row">
                         <form class="cmxform" id="myForm">
-                            <div class="col-md-3 form-group">
+                            <div class="col-md-2 form-group">
                                 <label>关键词</label>
                                 <input type="text" name="keyword" class="form-control" value="{{ form.keyword }}"
                                        placeholder="按 产品名，短描述 查询">
                             </div>
-                            <div class="col-md-3 form-group">
+                            <div class="col-md-2 form-group">
+                                <label>状态</label>
+                                <select name="status" class="form-control chosen">
+                                    <option value="">全部</option>
+                                    {% for status, text in statuses %}
+                                        <option value="{{ status }}"{% if status == form.status %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
                                 <label>&nbsp;</label>
                                 <input class="form-control btn btn-primary" type="submit" value="搜索"/>
                             </div>
@@ -33,11 +42,13 @@
                             <thead>
                             <tr>
                                 <th width="10%">产品ID</th>
-                                <th width="10%">产品图片</th>
                                 <th width="10%">产品名</th>
-                                <th width="10%">产品价格</th>
+                                <th width="10%">产品图片</th>
+                                <th width="10%">零售价</th>
+                                <th width="10%">拼团价</th>
                                 <th width="10%">原价</th>
                                 <th width="10%">库存</th>
+                                <th width="10%">状态</th>
                                 <th width="10%">创建时间</th>
                                 <th width="10%" class="text-center hidden-xs">操作</th>
                             </tr>
@@ -47,30 +58,22 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>{{ item.id }}</td>
+                                        <td>{{ item.title }}</td>
                                         <td>
-                                            {% if item.productImages.count %}
-                                                {% for productImage in item.productImages %}
-                                                    <img src="{{ path('imagePreview', {fileId: productImage.file.id}) }}" width="40" height="40"/>
-                                                    {% if not loop.last %}<br />{% endif %}
-                                                {% endfor %}
+                                            {% if item.mainProductImage %}
+                                                <img src="{{ path('imagePreview', {fileId: item.mainProductImage.file.id}) }}" width="40" height="40"/>
                                             {% endif %}
                                         </td>
-                                        <td>{{ item.title }}</td>
                                         <td>{{ item.price }}</td>
+                                        <td>{{ item.groupPrice }}</td>
                                         <td>{{ item.originalPrice }}</td>
                                         <td>{{ item.stock }}</td>
+                                        <td>{{ item.statusText }}</td>
                                         <td>{{ item.createdAt }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
                                                 <a href="{{ path('product_edit', {'id': item.id}) }}" title="修改">
                                                     <span class="glyphicon glyphicon-edit"></span>
-                                                </a>&nbsp;
-                                                <a class="delete" data-toggle="modal" data-target="#modal-delete"
-                                                   data-url="{{ path('product_delete', {'id': item.id}) }}"
-                                                   data-item='{"name": "{{ macros.cut(item.title, 30) }}"}'
-                                                   data-token="{{ csrf_token('delete' ~ item.id) }}"
-                                                   title="删除">
-                                                    <span class="glyphicon glyphicon-trash"></span>
                                                 </a>
                                             </div>
                                         </td>
@@ -78,7 +81,7 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="13" class="alert">no records found</td>
+                                    <td colspan="10" class="alert">no records found</td>
                                 </tr>
                             {% endif %}
                             </tbody>

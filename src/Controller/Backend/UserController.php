@@ -71,23 +71,31 @@ class UserController extends BackendController
     /**
      * @Route("/user/new", name="user_new", methods="GET|POST")
      */
-    public function new(Request $request): Response
+    public function new(Request $request, UserManagerInterface $userManager): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
+        $form->get('roles')->setData($user->getRoles());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+            $roles = $request->request->get('user')['roles'];
+            $user->setRoles($roles);
+            if (empty($user->getEmail())) {
+                $user->setEmail($user->getUsername() . '@test.com');
+            }
+            if ($request->request->get('user')['password']) {
+                $user->setPlainPassword($request->request->get('user')['password']);
+                $userManager->updatePassword($user);
+            }
+            $userManager->updateUser($user);
             $this->addFlash('notice', '添加成功');
             return $this->redirectToRoute('user_index');
         }
 
         return $this->render('backend/user/new.html.twig', [
             'user' => $user,
-            'title' => '添加 User',
+            'title' => '添加用户',
             'form' => $form->createView(),
         ]);
     }
@@ -95,20 +103,27 @@ class UserController extends BackendController
     /**
      * @Route("/user/{id}/edit", name="user_edit", methods="GET|POST")
      */
-    public function edit(Request $request, User $user): Response
+    public function edit(Request $request, User $user, UserManagerInterface $userManager): Response
     {
         $form = $this->createForm(UserType::class, $user);
+        $form->get('roles')->setData($user->getRoles());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $roles = $request->request->get('user')['roles'];
+            $user->setRoles($roles);
+            if ($request->request->get('user')['password']) {
+                $user->setPlainPassword($request->request->get('user')['password']);
+                $userManager->updatePassword($user);
+            }
+            $userManager->updateUser($user);
             $this->addFlash('notice', '修改成功');
             return $this->redirectToRoute('user_edit', ['id' => $user->getId()]);
         }
 
         return $this->render('backend/user/edit.html.twig', [
             'user' => $user,
-            'title' => '修改 User',
+            'title' => '修改用户',
             'form' => $form->createView(),
         ]);
     }
