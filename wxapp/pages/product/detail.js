@@ -10,7 +10,7 @@ Page({
   data: {
     isLogin: false,
     imgUrlPrefix: app.globalData.imgUrlPrefix,
-    product: {},
+    product: null,
     productReviewData: {},
     bottomData: {},
     shareData: {},
@@ -33,7 +33,7 @@ Page({
   getProduct: function (id) {
     const that = this;
     const pages = getCurrentPages();
-    const currentPageUrl = pages[pages.length - 1].route;    
+    const currentPageUrl = pages[pages.length - 1].route;
     wx.request({
       url: app.globalData.baseUrl + '/products/' + id,
       data: {
@@ -43,8 +43,9 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           that.setData({
-            product: res.data.data
+            product: res.data.data.product
           })
+          share.setShareSources(that, res.data.data.shareSources)
         } else {
           console.log('wx.request return error', res.statusCode);
         }
@@ -89,6 +90,9 @@ Page({
   },
   wxHideShareModal: function (e) {
     share.hideModal(this)
+  },
+  wxSaveShareSource: function (e) {
+    share.saveShareSource(this, e, app.globalData.baseUrl + '/user/shareSource/create')
   },
 
   /**
@@ -139,42 +143,11 @@ Page({
 
   /**
    * 用户点击右上角分享
+   * https://mp.weixin.qq.com/cgi-bin/announce?action=getannouncement&announce_id=11526372695t90Dn&version&lang=zh_CN
+   * 开发者将无法获知用户是否分享完成
    */
-  onShareAppMessage: function (options) {
-    const that = this;
-    var pages = getCurrentPages();
-    var currentPageUrl = pages[pages.length - 1].route;
-    wx.request({
-      url: app.globalData.baseUrl + '/user/shareSource/create',
-      data: {
-        thirdSession: wx.getStorageSync('thirdSession'),
-        page: currentPageUrl,
-        shareSourceType: 'refer',
-        productId: that.data.product.id,
-      },
-      method: 'POST',
-      success: (res) => {
-        if (res.statusCode == 200 && res.data.code == 200) {
-          //console.log(res.data.data);
-          const shareSource = res.data.data.shareSource;
-          console.log(res.data.data.shareSource)
-          return {
-            title: shareSource.title,
-            imageUrl: that.data.imgUrlPrefix + '/' + shareSource.bannerFileId,
-            path: shareSource.page
-          }
-        } else {
-          console.log('wx.request return error', res.statusCode);
-        }
-      },
-      fail(e) {},
-      complete(e) {}
-    })
-
-    return {
-      title: "分享标题",
-      imageUrl: '',
-      path: '/pages/group/index'
-    }
+  onShareAppMessage: function (res) {
+    console.log(share.shareObject(this, res));
+    return share.shareObject(this, res)
   }
 })
