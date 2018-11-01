@@ -64,10 +64,13 @@ function __saveShareSource(that, url, shareSourceType) {
 function shareObject(that, res) {
   const shareSourceType = res.target.dataset.type;
   const shareSource = __data.shareSources.find(item => { return item.type == shareSourceType });
+  var id = null;
+  if (that.data.product) id = that.data.product.id
+  else if (that.data.groupOrder) id = that.data.groupOrder.id
   return {
     title: shareSource.title,
     imageUrl: that.data.imgUrlPrefix + '/' + shareSource.bannerFileId,
-    path: shareSource.page
+    path: shareSource.page + '&id=' + id
   }
 }
 
