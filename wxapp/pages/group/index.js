@@ -165,7 +165,7 @@ Page({
         } else if (res.statusCode == 200 && res.data.code == 302) {
           //---拼团订单已被其它参团人抢先支付了
           wx.redirectTo({
-            url: '/pages/group/index?id=' + this.data.groupOrder.id,
+            url: '/pages/group/index?id=' + that.data.groupOrder.id,
           })
         } else {
           console.log('wx.request return error', res.statusCode);

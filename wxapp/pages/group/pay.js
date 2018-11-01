@@ -93,65 +93,63 @@ Page({
       method: 'POST',
       success: (res) => {
         wx.hideLoading();
+        console.log(res.data.data)
+        const groupUserOrder = res.data.data.groupUserOrder        
         if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
-          const groupUserOrder = res.data.data.groupUserOrder
-          //---判断拼团订单是否已被其它参团人抢先支付了
-          if (groupUserOrder.groupOrderId && !groupUserOrder.isMasterOrder && groupUserOrder.status != 'pending') {
-            wx.redirectTo({
-              url: '/pages/group/index?id=' + groupUserOrder.groupOrderId,
-            })
-          } else {
-            const payment = res.data.data.payment;
-            const groupUserOrderId = groupUserOrder.id;
-            wx.requestPayment({
-              timeStamp: payment.timeStamp.toString(),
-              nonceStr: payment.nonceStr,
-              package: payment.package,
-              signType: payment.signType,
-              paySign: payment.paySign,
-              success: function (res) {
-                wx.request({
-                  url: app.globalData.baseUrl + '/groupUserOrder/notifyPayment',
-                  data: {
-                    isPaid: true,
-                    thirdSession: wx.getStorageSync('thirdSession'),
-                    groupUserOrderId: groupUserOrderId,
-                  },
-                  method: 'POST',
-                  success: (res) => {
-                    if (res.statusCode == 200 && res.data.code == 200) {
-                      console.log(res.data.data)
-                      const groupOrderId = res.data.data.groupUserOrder.groupOrderId
-                      if (groupOrderId) {//转开团成功页
-                        wx.redirectTo({
-                          url: '/pages/group/index?id=' + groupOrderId,
-                        })
-                      } else {//转订单详情页
-                        wx.redirectTo({
-                          url: '/pages/user/order/detail?id=' + groupUserOrderId,
-                        })
-                      }
-                    } else {
-                      console.log('wx.request return error', res.statusCode);
+          const payment = res.data.data.payment;
+          const groupUserOrderId = groupUserOrder.id;
+          wx.requestPayment({
+            timeStamp: payment.timeStamp.toString(),
+            nonceStr: payment.nonceStr,
+            package: payment.package,
+            signType: payment.signType,
+            paySign: payment.paySign,
+            success: function (res) {
+              wx.request({
+                url: app.globalData.baseUrl + '/groupUserOrder/notifyPayment',
+                data: {
+                  isPaid: true,
+                  thirdSession: wx.getStorageSync('thirdSession'),
+                  groupUserOrderId: groupUserOrderId,
+                },
+                method: 'POST',
+                success: (res) => {
+                  if (res.statusCode == 200 && res.data.code == 200) {
+                    console.log(res.data.data)
+                    const groupOrderId = res.data.data.groupUserOrder.groupOrderId
+                    if (groupOrderId) {//转开团成功页
+                      wx.redirectTo({
+                        url: '/pages/group/index?id=' + groupOrderId,
+                      })
+                    } else {//转订单详情页
+                      wx.redirectTo({
+                        url: '/pages/user/order/detail?id=' + groupUserOrderId,
+                      })
                     }
-                  },
-                  fail(e) {
-                    console.log('wx.request /groupUserOrder/notifyPayment: fail', e)
-                  },
-                  complete(e) { }
-                })
-              },
-              fail: function (res) {
-                console.log('wx.requestpayment: fail', res)
-                wx.showToast({
-                  title: '支付失败',
-                });
-                that.setData({ btnDisabled: false });
-              },
-              complete: function (res) { }
-            })
-          }
+                  } else {
+                    console.log('wx.request return error', res.statusCode);
+                  }
+                },
+                fail(e) {
+                  console.log('wx.request /groupUserOrder/notifyPayment: fail', e)
+                },
+                complete(e) { }
+              })
+            },
+            fail: function (res) {
+              console.log('wx.requestpayment: fail', res)
+              wx.showToast({
+                title: '支付失败',
+              });
+              that.setData({ btnDisabled: false });
+            },
+            complete: function (res) { }
+          })
+        } else if (res.statusCode == 200 && res.data.code == 302) {
+          //拼团订单已被其它参团人抢先支付了
+          wx.redirectTo({
+            url: '/pages/group/index?id=' + groupUserOrder.groupOrderId,
+          })
         } else {
           console.log('wx.request return error', res.statusCode);
         }
