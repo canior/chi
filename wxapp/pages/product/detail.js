@@ -20,7 +20,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    //app.buriedPoint(options);
+    app.buriedPoint(options);
     const productId = options.id ? options.id : 2;
     this.getProduct(productId);
     const url = app.globalData.baseUrl + '/products/' + productId + '/reviews'
@@ -32,9 +32,12 @@ Page({
 
   getProduct: function (id) {
     const that = this;
+    const pages = getCurrentPages();
+    const currentPageUrl = pages[pages.length - 1].route;    
     wx.request({
       url: app.globalData.baseUrl + '/products/' + id,
       data: {
+        url: currentPageUrl
       },
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
@@ -167,11 +170,11 @@ Page({
       fail(e) {},
       complete(e) {}
     })
-    /*console.log('-----------------');
+
     return {
       title: "分享标题",
       imageUrl: '',
       path: '/pages/group/index'
-    }*/
+    }
   }
 })
