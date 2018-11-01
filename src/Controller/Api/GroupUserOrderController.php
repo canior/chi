@@ -182,7 +182,7 @@ class GroupUserOrderController extends BaseController
          * 如果是拼团订单，并且是已完成或者已过期，则把当前订单取消不让支付继续
          */
         if ($groupUserOrder->isGroupOrder()) {
-            if (!$groupUserOrder->getGroupOrder()->isPending()) {
+            if (!$groupUserOrder->getGroupOrder()->isPending() and !$groupUserOrder->isMasterOrder()) {
 
                 $groupUserOrder->setCancelled();
                 $this->getEntityManager()->persist($groupUserOrder);
