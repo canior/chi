@@ -96,7 +96,7 @@ Page({
           console.log(res.data.data)
           const groupUserOrder = res.data.data.groupUserOrder
           //---判断拼团订单是否已被其它参团人抢先支付了
-          if (groupUserOrder.groupOrderId && groupUserOrder.status != 'pending') {
+          if (groupUserOrder.groupOrderId && !groupUserOrder.isMasterOrder && groupUserOrder.status != 'pending') {
             wx.redirectTo({
               url: '/pages/group/index?id=' + groupUserOrder.groupOrderId,
             })
