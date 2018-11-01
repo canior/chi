@@ -139,7 +139,7 @@ App({
       method: 'POST',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
-        page: currentPageUrl,
+        url: currentPageUrl,
         version: '1.0'
       },
       success: function (res) {

@@ -42,10 +42,10 @@ class ProductController extends BaseController
 //            $bannersArray[] = $projectMeta->getMetaValue();
 //        }
 //
-//        $products = $productRepository->findActiveProducts($request->query->getInt('page', 1), self::PAGE_LIMIT);
-//        foreach($products as $product) {
-//            $productsArray[] = $product->getArray();
-//        }
+        $products = $productRepository->findActiveProducts($request->query->getInt('page', 1), self::PAGE_LIMIT);
+        foreach($products as $product) {
+            $productsArray[] = $product->getArray();
+        }
 
         $data = [
             'banners' => $bannersArray,
