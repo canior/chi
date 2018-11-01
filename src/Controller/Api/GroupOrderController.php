@@ -135,9 +135,7 @@ class GroupOrderController extends BaseController
         $groupOrder = $groupOrderRepository->find($groupOrderId);
 
         if (!$groupOrder->isPending()) {
-            return $this->responseJson('success', 200, [
-                'groupOrder' => $groupOrder->getArray()
-            ]);
+            return $this->responseJson('success', 302, []);
         }
 
         $groupUserOrder = $groupOrder->getSlaveGroupUserOrder($user);
