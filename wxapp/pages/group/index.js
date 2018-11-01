@@ -163,6 +163,7 @@ Page({
             url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
           })
         } else if (res.statusCode == 200 && res.data.code == 302) {
+          console.log('group order is expired or completed');
           //---拼团订单已被其它参团人抢先支付了
           wx.redirectTo({
             url: '/pages/group/index?id=' + that.data.groupOrder.id,
