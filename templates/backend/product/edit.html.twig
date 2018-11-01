@@ -22,11 +22,137 @@
             <!-- /.box -->
         </div>
         <!--/.col (right) -->
+        <div class="col-xs-12 col-md-6">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">最近5条产品评价</h3>
+
+                    <div class="box-tools pull-right">
+                        <a href="{{ path('product_review_new', {productId: product.id}) }}" type="button" class="btn btn-info btn-sm pull-left">添加</a>
+                        <a href="{{ path('product_review_index', {productId: product.id}) }}" type="button" class="btn btn-link btn-sm pull-left">更多</a>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                    class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th width="5%">ID</th>
+                                <th width="5%">拼团订单ID</th>
+                                <th width="5%">用户ID</th>
+                                <th width="10%">用户名</th>
+                                <th width="10%">评分</th>
+                                <th width="10%">评价</th>
+                                <th width="10%">状态</th>
+                                <th width="10%">创建时间</th>
+                                <th width="10%" class="text-center hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if product.productReviews.count %}
+                                {% for item in product.productReviews.slice(0, 5) %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>
+                                            {% if item.groupUserOrder %}
+                                                <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {'id': item.groupUserOrder.id}) }}" target="_blank" title="查看详情">
+                                                    {{ item.groupUserOrder.id }}
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if item.groupUserOrder %}
+                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.groupUserOrder.user.id}) }}" target="_blank" title="查看详情">
+                                                    {{ item.groupUserOrder.user.id }}
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if item.groupUserOrder %}
+                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.groupUserOrder.user.id}) }}" target="_blank" title="查看详情">
+                                                    {{ item.groupUserOrder.user.nickname }}
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ item.rate }}</td>
+                                        <td>{{ item.review }}</td>
+                                        <td>{{ item.statusText }}</td>
+                                        <td>{{ item.createdAt }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('product_review_edit', {id: item.id, productId: item.product.id}) }}"
+                                                   title="修改">
+                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="9" class="alert">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th colspan="9">总计({{ product.productReviews.count }})</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!--/.col (left) -->
+        <div class="col-xs-12 col-md-6">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">总评价数量({{ statistics.totalReviewed }})</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                    class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body chart-responsive">
+                    <div class="chart" id="rate-chart" style="min-height: 200px;"></div>
+
+                    <div class="progress-group">
+                        <span class="progress-text">好评率({{ (statistics.favorableRate * 100)|number_format(2, '.') }}%)</span>
+                        <span class="progress-number"><b>{{ statistics.totalRate5 }}</b>/{{ statistics.totalReviewed }}</span>
+
+                        <div class="progress sm">
+                            <div class="progress-bar progress-bar-yellow"
+                                 style="width: {{ statistics.favorableRate * 100 }}%"></div>
+                        </div>
+                    </div>
+                    <!-- /.progress-group -->
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!--/.col (right) -->
         <div class="col-xs-12">
-            <div class="box">
+            <div class="box box-warning">
                 <div class="box-header with-border">
                     <h3 class="box-title">推荐产品</h3>
-                    <a href="{{ path('product_similar_new', {productId: product.id}) }}" type="button" class="btn btn-info btn-sm pull-right">添加</a>
+
+                    <div class="box-tools pull-right">
+                        <a href="{{ path('product_similar_new', {productId: product.id}) }}" type="button" class="btn btn-info btn-sm pull-left">添加</a>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                    class="fa fa-minus"></i>
+                        </button>
+                    </div>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
@@ -58,11 +184,8 @@
                                             </a>
                                         </td>
                                         <td>
-                                            {% if item.similarProduct.productImages.count %}
-                                                {% for productImage in item.similarProduct.productImages %}
-                                                    <img src="{{ path('imagePreview', {fileId: productImage.file.id}) }}" width="40" height="40"/>
-                                                    {% if not loop.last %}<br />{% endif %}
-                                                {% endfor %}
+                                            {% if item.similarProduct.mainProductImage %}
+                                                <img src="{{ path('imagePreview', {fileId: item.similarProduct.mainProductImage.file.id}) }}" width="40" height="40"/>
                                             {% endif %}
                                         </td>
                                         <td>{{ item.createdAt }}</td>
@@ -110,5 +233,27 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script type="text/javascript">
+        $(function () {
+            "use strict";
+            // Rate BAR CHART
+            var bar = new Morris.Bar({
+                element: 'rate-chart',
+                resize: true,
+                data: [
+                    {y: 'Rate 1', total: {{ statistics.totalRate1 }}},
+                    {y: 'Rate 2', total: {{ statistics.totalRate2 }}},
+                    {y: 'Rate 3', total: {{ statistics.totalRate3 }}},
+                    {y: 'Rate 4', total: {{ statistics.totalRate4 }}},
+                    {y: 'Rate 5', total: {{ statistics.totalRate5 }}},
+                ],
+                barColors: ['#f56954'],
+                xkey: 'y',
+                ykeys: ['total'],
+                labels: ['Total'],
+                hideHover: 'auto'
+            });
+        });
+    </script>
     {% include '/backend/includes/delete.js.html.twig' with {title: 'ProductSimilar'} %}
 {% endblock %}

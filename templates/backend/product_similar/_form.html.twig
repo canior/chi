@@ -1,4 +1,18 @@
 {{ form_start(form) }}
+    <div class="row">
+        <div class="form-group col-md-4{% if form.product.vars.errors|length %} has-error{% endif %}">
+            {{ form_label(form.product) }}
+            {{ form_errors(form.product) }}
+            {{ form_widget(form.product) }}
+            {{ form_help(form.product) }}
+        </div>
+        <div class="form-group col-md-4{% if form.similarProduct.vars.errors|length %} has-error{% endif %}">
+            {{ form_label(form.similarProduct) }}
+            {{ form_errors(form.similarProduct) }}
+            {{ form_widget(form.similarProduct) }}
+            {{ form_help(form.similarProduct) }}
+        </div>
+    </div>
     {{ form_widget(form) }}
     {#<a class="btn btn-danger" href="{{ path('product_similar_index') }}">{{ 'Back to list'|trans }}</a>#}
     <button class="btn btn-primary">{{ button_label|default('Save') }}</button>

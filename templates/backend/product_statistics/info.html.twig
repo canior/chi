@@ -32,10 +32,10 @@
                                             <div class="box-body">
                                                 <div class="media">
                                                     <div class="media-left">
-                                                        {% if productStatistics.product.productImages.count %}
+                                                        {% if productStatistics.product.mainProductImage %}
                                                             <a href="{{ path('product_edit', {id: productStatistics.product.id}) }}"
                                                                class="ad-click-event">
-                                                                <img src="{{ path('imagePreview', {fileId: productStatistics.product.productImages.first.file.id}) }}"
+                                                                <img src="{{ path('imagePreview', {fileId: productStatistics.product.mainProductImage.file.id}) }}"
                                                                      alt="MaterialPro" class="media-object"
                                                                      style="width: 150px;height: auto;border-radius: 4px;box-shadow: 0 1px 3px rgba(0,0,0,.15);">
                                                             </a>

@@ -174,6 +174,11 @@ class User extends BaseUser implements Dao
         return $this->id;
     }
 
+    public function getRoleText()
+    {
+        return join(array_intersect_key(self::$roleTexts, array_flip($this->getRoles())), ', ');
+    }
+
     public function getNickname(): ?string
     {
         return $this->nickname;

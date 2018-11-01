@@ -78,17 +78,17 @@
                                                                 </a>
                                                             </h5>
                                                             <h5>产品名: {{ group_order.product.title }}</h5>
-                                                            <h5>产品价格: {{ group_order.product.price|number_format }}</h5>
+                                                            <h5>拼团价格: {{ group_order.product.groupPrice|number_format }}</h5>
                                                             <h5>产品状态: {{ group_order.product.statusText }}</h5>
 
                                                             <p>{{ macros.cut(group_order.product.shortDescription, 50) }}</p>
                                                         </div>
                                                     </div>
                                                     <div class="media-right">
-                                                        {% if group_order.product.productImages.count %}
+                                                        {% if group_order.product.mainProductImage %}
                                                             <a href="{{ path('product_edit', {id: group_order.product.id}) }}"
                                                                class="ad-click-event">
-                                                                <img src="{{ path('imagePreview', {fileId: group_order.product.productImages.first.file.id}) }}"
+                                                                <img src="{{ path('imagePreview', {fileId: group_order.product.mainProductImage.file.id}) }}"
                                                                      alt="MaterialPro" class="media-object"
                                                                      style="width: 150px;height: auto;border-radius: 4px;box-shadow: 0 1px 3px rgba(0,0,0,.15);">
                                                             </a>
@@ -151,7 +151,7 @@
                                                 <th width="10%">角色</th>
                                                 <th width="10%">产品ID</th>
                                                 <th width="10%">产品名</th>
-                                                <th width="10%">产品价格</th>
+                                                <th width="10%">拼团价格</th>
                                                 <th width="10%">订单状态</th>
                                                 <th width="10%">支付状态</th>
                                                 <th width="10%">支付金额</th>
@@ -184,7 +184,7 @@
                                                                 </a>
                                                             {% endif %}
                                                         </td>
-                                                        <td>{{ item.groupOrder.product.price|number_format }}</td>
+                                                        <td>{{ item.groupOrder.product.groupPrice|number_format }}</td>
                                                         <td>{{ item.statusText }}</td>
                                                         <td>{{ item.paymentStatusText }}</td>
                                                         <td>{{ item.total|number_format }}</td>

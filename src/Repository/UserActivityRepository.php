@@ -19,32 +19,44 @@ class UserActivityRepository extends ServiceEntityRepository
         parent::__construct($registry, UserActivity::class);
     }
 
-//    /**
-//     * @return UserActivity[] Returns an array of UserActivity objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param null $userId
+     * @param null $keyword
+     * @param null $createdAtStart
+     * @param null $createdAtEnd
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findUserActivitiesQueryBuilder($userId = null, $keyword = null, $createdAtStart = null, $createdAtEnd = null)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $query = $this->createQueryBuilder('ua')
+            ->orderBy('ua.id', 'DESC');
 
-    /*
-    public function findOneBySomeField($value): ?UserActivity
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ($userId) {
+            $query->where('ua.user = :userId')
+                ->setParameter('userId', $userId);
+        }
+
+        if ($keyword) {
+            $literal = $query->expr()->literal("%$keyword%");
+            $query->andWhere($query->expr()->like('ua.page', $literal));
+        }
+
+        if ($createdAtStart) {
+            if (is_string($createdAtStart)) {
+                $createdAtStart = strtotime($createdAtStart);
+            }
+            $query->andWhere('ua.createdAt >= :createdAtStart')
+                ->setParameter('createdAtStart', $createdAtStart);
+        }
+
+        if ($createdAtEnd) {
+            if (is_string($createdAtEnd)) {
+                $createdAtEnd = strtotime($createdAtEnd);
+            }
+            $query->andWhere('ua.createdAt <= :createdAtEnd')
+                ->setParameter('createdAtEnd', $createdAtEnd);
+        }
+
+        return $query;
     }
-    */
 }

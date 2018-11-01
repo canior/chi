@@ -1,40 +1,111 @@
 {{ form_start(form) }}
-    <div class="form-group col-md-3">
-        {{ form_row(form.title) }}
+<div class="row">
+    <div class="col-sm-12 col-md-4">
+        <!-- BAR CHART -->
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">基本信息</h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="chart" style="min-height: 200px;">
+                    {{ form_row(form.title) }}
+                    {{ form_row(form.shortDescription) }}
+                    {{ form_row(form.status) }}
+                    <div class="form-group">
+                        <label class="control-label required" for="product_status">创建时间: <span
+                                    class="label-info">{{ product.createdAt }}</span></label>
+                        <label class="control-label required" for="product_status">更新时间: <span
+                                    class="label-info">{{ product.updatedAt }}</span></label>
+                    </div>
+                    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
     </div>
-    <div class="form-group col-md-3">
-        {{ form_row(form.price) }}
+    <div class="col-sm-12 col-md-4">
+        <!-- BAR CHART -->
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">产品价格</h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="chart" style="min-height: 200px;">
+                    {{ form_row(form.originalPrice) }}
+                    {{ form_row(form.price) }}
+                    {{ form_row(form.groupPrice) }}
+                    {{ form_row(form.rewards) }}
+                    {{ form_row(form.freight) }}
+                    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
     </div>
-    <div class="form-group col-md-3">
-        {{ form_row(form.originalPrice) }}
+    <div class="col-sm-12 col-md-4">
+        <!-- BAR CHART -->
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">库存信息</h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="chart" style="min-height: 200px;">
+                    {{ form_row(form.sku) }}
+                    {{ form_row(form.stock) }}
+                    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
     </div>
-    <div class="form-group col-md-3">
-        {{ form_row(form.rewards) }}
-    </div>
-    <div class="form-group col-md-3">
-        {{ form_row(form.sku) }}
-    </div>
-    <div class="form-group col-md-3">
-        {{ form_row(form.stock) }}
-    </div>
-    <div class="form-group col-md-3">
-        {{ form_row(form.freight) }}
-    </div>
-    <div class="form-group col-md-3">
-        {{ form_row(form.shortDescription) }}
-    </div>
-    <div class="form-group col-md-3">
-        <label class="control-label required" for="product_status">状态: <span class="label-info">{{ product.statusText }}</span></label>
-    </div>
-    <div class="form-group col-md-3">
-        <label class="control-label required" for="product_status">创建时间: <span class="label-info">{{ product.createdAt }}</span></label>
-    </div>
-    <div class="form-group col-md-3">
-        <label class="control-label required" for="product_status">更新时间: <span class="label-info">{{ product.updatedAt }}</span></label>
-    </div>
-    {{ form_widget(form, {'attr': {'class': 'col-md-12'}}) }}
+</div>
+<div class="row">
     <div class="col-md-12">
-        <a class="btn btn-danger" href="{{ path('product_index') }}">{{ 'Back to list'|trans }}</a>
-        <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+        <!-- BAR CHART -->
+        <div class="box box-warning">
+            <div class="box-header with-border">
+                <h3 class="box-title">图片信息</h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body row">
+                <div class="col-sm-12 col-md-6">
+                    {{ form_row(form.images) }}
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    {{ form_row(form.specImages) }}
+                </div>
+                <div class="col-sm-12 col-md-12">
+                    {{ form_widget(form) }}
+                    <a class="btn btn-danger" href="{{ path('product_index') }}">{{ 'Back to list'|trans }}</a>
+                    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
     </div>
+</div>
 {{ form_end(form) }}
+

@@ -65,7 +65,7 @@ class ShareSource implements Dao
     const REFER = 'refer';
     const QUAN = 'quan';
 
-    public static $statuses = [
+    public static $types = [
         self::REFER => '小程序转发',
         self::QUAN => '朋友圈图片',
     ];

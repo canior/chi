@@ -60,6 +60,15 @@ class BackendController extends DefaultController
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
+                [
+                    'path' => [
+                        'user_activity_index',
+                    ],
+                    'name' => '用户行为',
+                    'icon' => 'fa fa-area-chart',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
             ]
         ],
         [
@@ -133,45 +142,25 @@ class BackendController extends DefaultController
                 ],
             ]
         ],
-        [
-            'path' => 'backendIndex',
-            'name' => '运营分析',
-            'icon' => 'fa fa-line-chart',
-            'active' => false,
-            'role' => 'ROLE_ADMIN',
-            'subMenus' => [
-                [
-                    'path' => [
-                        '_twig_error_test',
-                    ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:用户行为',
-                    'icon' => 'fa fa-area-chart',
-                    'active' => false,
-                    'role' => 'ROLE_ADMIN',
-                ],
-                [
-                    'path' => [
-                        '_twig_error_test',
-                    ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:用户画像',
-                    'icon' => 'fa fa-image',
-                    'active' => false,
-                    'role' => 'ROLE_ADMIN',
-                ],
-                [
-                    'path' => [
-                        '_twig_error_test',
-                    ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:用户分享',
-                    'icon' => 'fa fa-share-alt-square',
-                    'active' => false,
-                    'role' => 'ROLE_ADMIN',
-                ],
-            ]
-        ],
+//        [
+//            'path' => 'backendIndex',
+//            'name' => '运营分析',
+//            'icon' => 'fa fa-line-chart',
+//            'active' => false,
+//            'role' => 'ROLE_ADMIN',
+//            'subMenus' => [
+//                [
+//                    'path' => [
+//                        '_twig_error_test',
+//                    ],
+//                    'params' => ['code' => 404],
+//                    'name' => 'TODO:用户画像',
+//                    'icon' => 'fa fa-image',
+//                    'active' => false,
+//                    'role' => 'ROLE_ADMIN',
+//                ],
+//            ]
+//        ],
         [
             'path' => 'project_meta_index',
             'name' => '项目配置',
@@ -197,6 +186,55 @@ class BackendController extends DefaultController
                     'params' => ['code' => 404],
                     'name' => 'TODO:分享设置',
                     'icon' => 'fa fa-object-group',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+            ]
+        ],
+        [
+            'path' => 'backendIndex',
+            'name' => '人工智能',
+            'icon' => 'fa fa-user-secret',
+            'active' => false,
+            'role' => 'ROLE_ADMIN',
+            'subMenus' => [
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:生成用户',
+                    'icon' => 'fa fa-user',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:生成订单',
+                    'icon' => 'fa fa-shopping-cart',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:生成评价',
+                    'icon' => 'fa fa-comment',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        '_twig_error_test',
+                    ],
+                    'params' => ['code' => 404],
+                    'name' => 'TODO:生成收益',
+                    'icon' => 'fa fa-rmb',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],

@@ -20,14 +20,16 @@ class UserActivityController extends BackendController
     public function index(UserActivityRepository $userActivityRepository, Request $request): Response
     {
         $data = [
-            'title' => 'UserActivity 列表',
+            'title' => '用户行为',
             'form' => [
                 'userId' => $request->query->getInt('userId', null),
                 'keyword' => $request->query->get('keyword', null),
+                'createdAtStart' => $request->query->get('createdAtStart', null),
+                'createdAtEnd' => $request->query->get('createdAtEnd', null),
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
-        $data['data'] = $userActivityRepository->findBy(['user' => $data['form']['userId']]);
+        $data['data'] = $userActivityRepository->findUserActivitiesQueryBuilder($data['form']['userId'], $data['form']['keyword'], $data['form']['createdAtStart'], $data['form']['createdAtEnd']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/user_activity/index.html.twig', $data);
     }

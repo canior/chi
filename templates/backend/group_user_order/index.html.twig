@@ -77,15 +77,15 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th width="8%">订单ID</th>
-                                <th width="8%">拼团ID</th>
-                                <th width="8%">用户ID</th>
+                                <th width="5%">订单ID</th>
+                                <th width="5%">拼团ID</th>
+                                <th width="5%">用户ID</th>
                                 <th width="10%">用户昵称</th>
+                                <th width="10%">产品名</th>
                                 <th width="10%">支付金额</th>
                                 <th width="10%">订单类型</th>
                                 <th width="10%">订单状态</th>
                                 <th width="10%">支付状态</th>
-                                <th width="10%">创建时间</th>
                                 <th width="10%">更新时间</th>
                                 <th width="10%" class="text-center hidden-xs">操作</th>
                             </tr>
@@ -112,11 +112,17 @@
                                                 {{ item.user.nickname }}
                                             </a>
                                         </td>
+                                        <td>
+                                            {% if item.product %}
+                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
+                                                {{ item.product.title }}
+                                            </a>
+                                            {% endif %}
+                                        </td>
                                         <td>{{ item.total }}</td>
                                         <td>{{ item.groupOrder ? types['NOT NULL'] : types['NULL'] }}</td>
                                         <td>{{ item.statusText }}</td>
                                         <td>{{ item.paymentStatusText }}</td>
-                                        <td>{{ item.createdAt }}</td>
                                         <td>{{ item.updatedAt }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">

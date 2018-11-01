@@ -43,9 +43,10 @@ class ProductRepository extends ServiceEntityRepository
 
     /**
      * @param null $keyword
+     * @param null $status
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findProductsQueryBuilder($keyword = null)
+    public function findProductsQueryBuilder($keyword = null, $status = null)
     {
         $query = $this->createQueryBuilder('p');
 
@@ -55,6 +56,11 @@ class ProductRepository extends ServiceEntityRepository
             $orX->add($query->expr()->like('p.title', $literal));
             $orX->add($query->expr()->like('p.shortDescription', $literal));
             $query->andWhere($orX);
+        }
+
+        if ($status) {
+            $query->andWhere('p.status = :status')
+                ->setParameter('status', $status);
         }
 
         return $query->orderBy('p.id', 'DESC');

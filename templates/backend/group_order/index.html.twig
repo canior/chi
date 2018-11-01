@@ -61,7 +61,7 @@
                                 <th width="10%">团长昵称</th>
                                 <th width="10%">产品图片</th>
                                 <th width="10%">产品名</th>
-                                <th width="10%">产品价格</th>
+                                <th width="10%">拼团价格</th>
                                 <th width="10%">拼团状态</th>
                                 <th width="10%">创建时间</th>
                                 <th width="10%">结束时间</th>
@@ -90,11 +90,8 @@
                                             </a>
                                         </td>
                                         <td>
-                                            {% if item.product.productImages.count %}
-                                                {% for productImage in item.product.productImages %}
-                                                    <img src="{{ path('imagePreview', {fileId: productImage.file.id}) }}" width="40" height="40"/>
-                                                    {% if not loop.last %}<br />{% endif %}
-                                                {% endfor %}
+                                            {% if item.product.mainProductImage %}
+                                                <img src="{{ path('imagePreview', {fileId: item.product.mainProductImage.file.id}) }}" width="40" height="40"/>
                                             {% endif %}
                                         </td>
                                         <td>
@@ -102,7 +99,7 @@
                                                 {{ item.product.title }}
                                             </a>
                                         </td>
-                                        <td>{{ item.product.price }}</td>
+                                        <td>{{ item.product.groupPrice }}</td>
                                         <td>{{ item.statusText }}</td>
                                         <td>{{ item.createdAt }}</td>
                                         <td>{{ item.CompletedAt }}</td>

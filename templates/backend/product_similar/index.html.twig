@@ -51,21 +51,15 @@
                                         <td>{{ item.product.id }}</td>
                                         <td>{{ item.product.title }}</td>
                                         <td>
-                                            {% if item.product.productImages.count %}
-                                                {% for productImage in item.product.productImages %}
-                                                    <img src="{{ path('imagePreview', {fileId: productImage.file.id}) }}" width="40" height="40"/>
-                                                    {% if not loop.last %}<br />{% endif %}
-                                                {% endfor %}
+                                            {% if item.product.mainProductImage %}
+                                                <img src="{{ path('imagePreview', {fileId: item.product.mainProductImage.file.id}) }}" width="40" height="40"/>
                                             {% endif %}
                                         </td>
                                         <td>{{ item.similarProduct.id }}</td>
                                         <td>{{ item.similarProduct.title }}</td>
                                         <td>
-                                            {% if item.similarProduct.productImages.count %}
-                                                {% for productImage in item.similarProduct.productImages %}
-                                                    <img src="{{ path('imagePreview', {fileId: productImage.file.id}) }}" width="40" height="40"/>
-                                                    {% if not loop.last %}<br />{% endif %}
-                                                {% endfor %}
+                                            {% if item.similarProduct.mainProductImage %}
+                                                <img src="{{ path('imagePreview', {fileId: item.similarProduct.mainProductImage.file.id}) }}" width="40" height="40"/>
                                             {% endif %}
                                         </td>
                                         <td>{{ item.createdAt }}</td>

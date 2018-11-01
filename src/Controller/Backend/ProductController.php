@@ -7,6 +7,7 @@ use App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommand;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
+use App\Repository\ProductReviewRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,10 +26,12 @@ class ProductController extends BackendController
             'title' => '产品管理',
             'form' => [
                 'keyword' => $request->query->get('keyword', null),
+                'status' => $request->query->get('status', null),
                 'page' => $request->query->getInt('page', 1)
-            ]
+            ],
+            'statuses' => Product::$statuses
         ];
-        $data['data'] = $productRepository->findProductsQueryBuilder($data['form']['keyword']);
+        $data['data'] = $productRepository->findProductsQueryBuilder($data['form']['keyword'], $data['form']['status']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/product/index.html.twig', $data);
     }
@@ -40,9 +43,17 @@ class ProductController extends BackendController
     {
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
+        $form->get('status')->setData(array_search($product->getStatusText(), Product::$statuses));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $status = $request->request->get('product')['status'];
+            $isMethod = 'is' . ucwords($status);
+            if (in_array($status, array_keys(Product::$statuses)) && !$product->$isMethod()) {
+                $setMethod = 'set' . ucwords($status);
+                $product->$setMethod();
+            }
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($product);
             $em->flush();
@@ -81,7 +92,7 @@ class ProductController extends BackendController
 
         return $this->render('backend/product/new.html.twig', [
             'product' => $product,
-            'title' => '添加 Product',
+            'title' => '添加产品',
             'form' => $form->createView(),
         ]);
     }
@@ -89,9 +100,10 @@ class ProductController extends BackendController
     /**
      * @Route("/product/{id}/edit", name="product_edit", methods="GET|POST")
      */
-    public function edit(Request $request, Product $product): Response
+    public function edit(Request $request, Product $product, ProductReviewRepository $productReviewRepository): Response
     {
         $form = $this->createForm(ProductType::class, $product);
+        $form->get('status')->setData(array_search($product->getStatusText(), Product::$statuses));
 
         // init images
         if (!$product->getProductImages()->isEmpty()) {
@@ -126,6 +138,13 @@ class ProductController extends BackendController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $status = $request->request->get('product')['status'];
+            $isMethod = 'is' . ucwords($status);
+            if (in_array($status, array_keys(Product::$statuses)) && !$product->$isMethod()) {
+                $setMethod = 'set' . ucwords($status);
+                $product->$setMethod();
+            }
+
             try {
                 $images = isset($request->request->get('product')['images']) ? $request->request->get('product')['images'] : [];
                 $imagesCommand = new CreateOrUpdateProductImagesCommand($product->getId(), $images);
@@ -164,7 +183,8 @@ class ProductController extends BackendController
 
         return $this->render('backend/product/edit.html.twig', [
             'product' => $product,
-            'title' => '修改 Product',
+            'statistics' => $productReviewRepository->findProductReviewStatistics($product->getId()),
+            'title' => '修改产品',
             'form' => $form->createView(),
         ]);
     }

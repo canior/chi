@@ -23,15 +23,16 @@ class ProductReviewController extends BackendController
     public function index(ProductReviewRepository $productReviewRepository, Request $request): Response
     {
         $data = [
-            'title' => '评价产品列表',
+            'title' => '产品评价',
             'form' => [
-                'userId' => $request->query->get('userId', null),
-                'productId' => $request->query->get('productId', null),
-                'keyword' => $request->query->get('keyword', null),
+                'productId' => $request->query->getInt('productId', null),
+                'rate' => $request->query->getInt('rate', null),
+                'status' => $request->query->get('status', null),
                 'page' => $request->query->getInt('page', 1)
-            ]
+            ],
+            'statuses' => ProductReview::$statuses
         ];
-        $data['data'] = $productReviewRepository->findReviewedProductsQueryBuilder($data['form']['userId'], $data['form']['productId'], $data['form']['keyword']);
+        $data['data'] = $productReviewRepository->findProductReviewsQueryBuilder($data['form']['productId'], $data['form']['rate'], $data['form']['status']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/product_review/index.html.twig', $data);
     }
@@ -59,6 +60,7 @@ class ProductReviewController extends BackendController
     {
         $productReview = new ProductReview();
         $form = $this->createForm(ProductReviewType::class, $productReview);
+        $form->get('status')->setData(array_search($productReview->getStatusText(), ProductReview::$statuses));
 
         if ($request->query->get('productId')) {
             $product = $productRepository->find($request->query->get('productId'));
@@ -68,6 +70,13 @@ class ProductReviewController extends BackendController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $status = $request->request->get('product_review')['status'];
+            $isMethod = 'is' . ucwords($status);
+            if (in_array($status, array_keys(Product::$statuses)) && !$productReview->$isMethod()) {
+                $setMethod = 'set' . ucwords($status);
+                $productReview->$setMethod();
+            }
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($productReview);
             $em->flush();
@@ -87,12 +96,12 @@ class ProductReviewController extends BackendController
             }
 
             $this->addFlash('notice', '添加成功');
-            return $this->redirectToRoute('product_review_info', ['id' => $productReview->getProduct()->getId()]);
+            return $this->redirectToRoute('product_edit', ['id' => $productReview->getProduct()->getId()]);
         }
 
         return $this->render('backend/product_review/new.html.twig', [
             'product_review' => $productReview,
-            'title' => '添加 ProductReview',
+            'title' => '添加产品评价',
             'form' => $form->createView(),
         ]);
     }
@@ -103,6 +112,7 @@ class ProductReviewController extends BackendController
     public function edit(Request $request, ProductReview $productReview): Response
     {
         $form = $this->createForm(ProductReviewType::class, $productReview);
+        $form->get('status')->setData(array_search($productReview->getStatusText(), ProductReview::$statuses));
 
         // init images
         if (!$productReview->getProductReviewImages()->isEmpty()) {
@@ -121,6 +131,13 @@ class ProductReviewController extends BackendController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $status = $request->request->get('product_review')['status'];
+            $isMethod = 'is' . ucwords($status);
+            if (in_array($status, array_keys(Product::$statuses)) && !$productReview->$isMethod()) {
+                $setMethod = 'set' . ucwords($status);
+                $productReview->$setMethod();
+            }
+
             try {
                 $images = isset($request->request->get('product_review')['images']) ? $request->request->get('product_review')['images'] : [];
                 $imagesCommand = new CreateOrUpdateProductReviewImagesCommand($productReview->getId(), $images);
@@ -140,12 +157,15 @@ class ProductReviewController extends BackendController
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');
 
+            if ($request->query->getInt('productId')) {
+                return $this->redirectToRoute('product_edit', ['id' => $request->query->getInt('productId')]);
+            }
             return $this->redirectToRoute('product_review_edit', array_merge(['id' => $productReview->getId()], $request->query->all()));
         }
 
         return $this->render('backend/product_review/edit.html.twig', [
             'product_review' => $productReview,
-            'title' => '修改 ProductReview',
+            'title' => '修改产品评价',
             'form' => $form->createView(),
         ]);
     }

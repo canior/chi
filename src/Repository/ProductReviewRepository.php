@@ -161,14 +161,31 @@ class ProductReviewRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param $productId
+     * @param null $productId
+     * @param null $rate
+     * @param null $status
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findProductReviewsQueryBuilder($productId)
+    public function findProductReviewsQueryBuilder($productId = null, $rate = null, $status = null)
     {
-        return $this->createQueryBuilder('pr')
-            ->where('pr.product = :productId')
-            ->setParameter('productId', $productId)
+        $query = $this->createQueryBuilder('pr')
             ->orderBy('pr.id', 'DESC');
+
+        if ($productId) {
+            $query->where('pr.product = :productId')
+                ->setParameter('productId', $productId);
+        }
+
+        if ($rate != null) {
+            $query->andWhere('pr.rate = :rate')
+                ->setParameter('rate', $rate);
+        }
+
+        if ($status) {
+            $query->andWhere('pr.status = :status')
+                ->setParameter('status', $status);
+        }
+
+        return $query;
     }
 }

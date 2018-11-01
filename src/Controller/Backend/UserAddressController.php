@@ -40,8 +40,9 @@ class UserAddressController extends BackendController
     {
         $userAddress = new UserAddress();
         $form = $this->createForm(UserAddressType::class, $userAddress);
-        if ($request->query->getInt('userId')) {
-            $form->get('user')->setData($userRepository->find($request->query->getInt('userId')));
+        if (!$request->query->getInt('userId')) {
+            throw $this->createNotFoundException('Missing userId parameter');
+//            $form->get('user')->setData($userRepository->find($request->query->getInt('userId')));
         }
         $form->handleRequest($request);
 
@@ -54,6 +55,8 @@ class UserAddressController extends BackendController
                 $region = $regionRepository->find($regionId);
                 $userAddress->setRegion($region);
             }
+            $user = $userRepository->find($request->query->getInt('userId'));
+            $userAddress->setUser($user);
             $em = $this->getDoctrine()->getManager();
             $em->persist($userAddress);
             $em->flush();
@@ -72,7 +75,7 @@ class UserAddressController extends BackendController
 
         return $this->render('backend/user_address/new.html.twig', [
             'user_address' => $userAddress,
-            'title' => '添加 UserAddress',
+            'title' => '添加收货地址',
             'form' => $form->createView(),
         ]);
     }
@@ -115,7 +118,7 @@ class UserAddressController extends BackendController
 
         return $this->render('backend/user_address/edit.html.twig', [
             'user_address' => $userAddress,
-            'title' => '修改 UserAddress',
+            'title' => '修改收货地址',
             'form' => $form->createView(),
         ]);
     }

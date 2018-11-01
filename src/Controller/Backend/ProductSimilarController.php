@@ -54,7 +54,7 @@ class ProductSimilarController extends BackendController
 
         return $this->render('backend/product_similar/new.html.twig', [
             'product_similar' => $productSimilar,
-            'title' => '添加 ProductSimilar',
+            'title' => '添加推荐产品',
             'form' => $form->createView(),
         ]);
     }
@@ -75,7 +75,7 @@ class ProductSimilarController extends BackendController
 
         return $this->render('backend/product_similar/edit.html.twig', [
             'product_similar' => $productSimilar,
-            'title' => '修改 ProductSimilar',
+            'title' => '修改推荐产品',
             'form' => $form->createView(),
         ]);
     }

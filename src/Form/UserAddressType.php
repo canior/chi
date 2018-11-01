@@ -15,12 +15,16 @@ class UserAddressType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('user')
+//            ->add('user')
             ->add('address')
             ->add('name')
             ->add('phone')
-            ->add('isDefault')
-            ->add('isDeleted')
+            ->add('isDefault', null, [
+                'label' => '是否默认'
+            ])
+            ->add('isDeleted', null, [
+                'label' => '是否删除'
+            ])
 //            ->add('createdAt')
 //            ->add('updatedAt')
 //            ->add('region')
