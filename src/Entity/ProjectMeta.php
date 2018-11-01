@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\ProjectMetaRepository")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="meta_type", type="string")
- * @ORM\DiscriminatorMap({"text" = "ProjectTextMeta", "banner" = "ProjectBannerMeta"})
+ * @ORM\DiscriminatorMap({"text" = "ProjectTextMeta", "banner" = "ProjectBannerMeta", "notification" = "ProjectNotificationMeta", "share" = "ProjectShareMeta"})
  */
 abstract class ProjectMeta implements Dao
 {

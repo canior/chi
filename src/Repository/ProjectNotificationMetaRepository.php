@@ -1,0 +1,24 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: tandy
+ * Date: 2018-11-01
+ * Time: 2:25 PM
+ */
+
+namespace App\Repository;
+
+use App\Entity\ProjectNotificationMeta;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+
+/**
+ * @method ProjectNotificationMeta|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ProjectNotificationMeta|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ProjectNotificationMeta[]    findAll()
+ * @method ProjectNotificationMeta[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class ProjectNotificationMetaRepository
+{
+
+}

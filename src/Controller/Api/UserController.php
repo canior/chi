@@ -9,6 +9,7 @@ use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Entity\ProductReviewImage;
 use App\Entity\ProjectBannerMeta;
+use App\Entity\ProjectShareMeta;
 use App\Entity\ProjectTextMeta;
 use App\Entity\Region;
 use App\Entity\ShareSource;
@@ -22,6 +23,7 @@ use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProjectBannerMetaRepository;
+use App\Repository\ProjectShareMetaRepository;
 use App\Repository\ProjectTextMetaRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ShareSourceRepository;
@@ -48,8 +50,9 @@ class UserController extends BaseController
      * @param GroupOrderRepository $groupOrderRepository
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function testAction(Request $request, GroupOrderRepository $groupOrderRepository, ProjectTextMetaRepository $projectTextMetaRepository, ProjectBannerMetaRepository $projectBannerMetaRepository) {
+    public function testAction(Request $request, GroupOrderRepository $groupOrderRepository, ProjectShareMetaRepository $projectShareMetaRepository) {
         if ($this->getEnvironment() != 'dev') exit;
+
         $data = json_decode($request->getContent(), true);
         $groupOrderId =  isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
 
