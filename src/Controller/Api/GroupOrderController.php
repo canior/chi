@@ -156,6 +156,25 @@ class GroupOrderController extends BaseController
     }
 
 
+    /**
+     * 拼团到期
+     *
+     * @Route("/groupOrder/expire", name="joinGroupOrder", methods="POST")
+     * @param Request $request
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function expireAction(Request $request, GroupOrderRepository $groupOrderRepository) {
+        $data = json_decode($request->getContent(), true);
+
+        $groupOrderId =  isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
+        $groupOrder = $groupOrderRepository->find($groupOrderId);
+        $groupOrder->setExpired();
+        $this->getEntityManager()->persist($groupOrder);
+        $this->getEntityManager()->flush();
+        return $this->responseJson('success', 302, []);
+    }
+
 
     /**
      * 查看拼团详情
