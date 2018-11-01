@@ -152,7 +152,7 @@ class GroupOrderController extends BaseController
 
 
         $data = [
-            'groupOrder' => $groupOrder->getArray()
+            'groupUserOrder' => $groupUserOrder->getArray()
         ];
         return $this->responseJson('success', 200, $data);
     }
