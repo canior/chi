@@ -3,7 +3,9 @@ namespace App\Controller\Api;
 
 use App\Command\EnqueueCommand;
 use App\Command\Notification\NotifyPendingGroupOrderCommand;
+use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
+use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Entity\ProductReviewImage;
 use App\Entity\Region;
@@ -467,83 +469,70 @@ class UserController extends BaseController
     }
 
     /**
-     * TODO: 需要生产朋友圈图片
+     * 生成所有分享源
+     *
+     * @param User $user
+     * @param Product $product
+     * @param GroupOrder $groupOrder
+     * @return ShareSource[]
+     */
+    public function generateShareSource(User $user, ?Product $product, ?GroupOrder $groupOrder) {
+
+        $shareSources = [];
+
+        if ($groupOrder) {
+            $referShareSource = new ShareSource();
+            $referShareSource->setGroupOrder($groupOrder);
+
+
+        } else if ($product) {
+
+        } else {
+
+        }
+
+        return $shareSources;
+    }
+
+    /**
      * 创建用户分享源
      *
      * @Route("/user/shareSource/create", name="createShareSource", methods="POST")
      * @param Request $request
+     * @param FileRepository $fileRepository
      * @param ProductRepository $productRepository
      * @param GroupOrderRepository $groupOrderRepository
      * @return Response
      */
-    public function createShareSource(Request $request, ProductRepository $productRepository, GroupOrderRepository $groupOrderRepository) : Response {
+    public function createShareSource(Request $request, FileRepository $fileRepository, ProductRepository $productRepository, GroupOrderRepository $groupOrderRepository) : Response {
 
         $data = json_decode($request->getContent(), true);
 
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $shareSourceId = isset($data['shareSourceId']) ? $data['shareSourceId'] : null;
         $productId = isset($data['productId']) ? $data['productId'] : null;
         $shareSourceType = isset($data['shareSourceType']) ? $data['shareSourceType'] : null;
         $page = isset($data['page']) ? $data['page'] : null;
         $groupOrderId = isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
+        $bannerFileId = isset($data['bannerFileId']) ? $data['bannerFileId'] : null;
+        $title = isset($data['title']) ? $data['title'] : null;
 
         $user = $this->getWxUser($thirdSession);
-        $product = null;
-        $groupOrder = null;
-        $bannerFile = null;
-        $title = "";
-
-        if ($groupOrderId != null) { //邀请拼团
-            $groupOrder = $groupOrderRepository->find($groupOrderId);
-            $bannerFile = $groupOrder->getProduct()->getMainProductImage()->getFile();
-            if ($shareSourceType == ShareSource::REFER) { //转发用户相关小程序
-                $title = $groupOrder->getUser()->getNickname() . '邀请您参团'; //TODO
-
-            } else if ($shareSourceType == ShareSource::QUAN) { //用户相关朋友圈
-                $bannerFile = "";
-            }
-        } else {
-            if ($productId != null) { //分享产品相关
-                $product = $productRepository->find($productId);
-                $title = $product->getTitle();
-
-                if ($shareSourceType == ShareSource::REFER) { //转发产品相关小程序
-                    $bannerFile = $product->getMainProductImage() == null ? null : $product->getMainProductImage()->getFile();
-                } else if ($shareSourceType == ShareSource::QUAN) { //转发产品相关朋友圈
-                    $bannerFile = $product->getMainProductImage() == null ? null : $product->getMainProductImage()->getFile();
-                }
-            } else { //分享用户相关
-                if ($shareSourceType == ShareSource::REFER) { //转发用户相关小程序
-                    //TODO
-                    $title = $user->getNickname();
-                    $bannerFile = 1;
-                } else if ($shareSourceType == ShareSource::QUAN) { //用户相关朋友圈
-                    //TODO
-                    $title = "";
-                    $bannerFile = "";
-                }
-            }
-        }
+        $product = $productId == null ? null : $productRepository->find($productId);
+        $groupOrder = $groupOrderId == null ? null : $groupOrderRepository->find($groupOrderId);
+        $bannerFile = $fileRepository->find($bannerFileId);
 
         $shareSource = new ShareSource();
+        $shareSource->setId($shareSourceId);
         $shareSource->setUser($user);
         $shareSource->setProduct($product);
-        $shareSource->setGroupOrder($groupOrder);
-
-        $shareSourceId = $shareSource->getId();
-        if (strpos($page, '?') !== false) {
-            $page .= "&shareSourceId=" . $shareSourceId;
-        } else {
-            $page .= "?shareSourceId=" . $shareSourceId;
-        }
-        $shareSource->setPage($page);
-        $shareSource->setTitle($title);
-        $shareSource->setBannerFile($bannerFile);
         $shareSource->setType($shareSourceType);
+        $shareSource->setPage($page);
+        $shareSource->setBannerFile($bannerFile);
+        $shareSource->setGroupOrder($groupOrder);
+        $shareSource->setTitle($title);
 
-        $user->getOrCreateTodayUserStatistics()->increaseShareNum(1);
-        $user->addShareSource($shareSource);
-
-        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->persist($shareSource);
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [

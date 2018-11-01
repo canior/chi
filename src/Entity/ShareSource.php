@@ -78,6 +78,13 @@ class ShareSource implements Dao
     }
 
     /**
+     * @param $id
+     */
+    public function setId($id) {
+        $this->id = $id;
+    }
+
+    /**
      * Get string
      *
      * @return string
@@ -130,9 +137,23 @@ class ShareSource implements Dao
         return $this->page;
     }
 
-    public function setPage(string $page): self
+    /**
+     * 如果是raw，则生成shareSourceId
+     * @param string $page
+     * @param bool $raw
+     * @return ShareSource
+     */
+    public function setPage(string $page, $raw = false): self
     {
         $this->page = $page;
+
+        if ($raw) {
+            if (strpos($page, '?') !== false) {
+                $this->page .= "&shareSourceId=" . $this->getId();
+            } else {
+                $this->page .= "?shareSourceId=" . $this->getId();
+            }
+        }
 
         return $this;
     }
@@ -198,6 +219,8 @@ class ShareSource implements Dao
     public function getArray() : array {
         return [
             'id' => $this->id,
+            'userId' => $this->getUser()->getId(),
+            'type' => $this->type,
             'title' => $this->title,
             'bannerFileId' => $this->getBannerFile()->getId(),
             'page' => $this->getPage(),
