@@ -18,7 +18,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method ProjectRewardsMeta[]    findAll()
  * @method ProjectRewardsMeta[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProjectRewardsMetaRepository
+class ProjectRewardsMetaRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {

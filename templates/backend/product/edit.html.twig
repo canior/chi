@@ -241,11 +241,11 @@
                 element: 'rate-chart',
                 resize: true,
                 data: [
-                    {y: 'Rate 1', total: {{ statistics.totalRate1 }}},
-                    {y: 'Rate 2', total: {{ statistics.totalRate2 }}},
-                    {y: 'Rate 3', total: {{ statistics.totalRate3 }}},
-                    {y: 'Rate 4', total: {{ statistics.totalRate4 }}},
-                    {y: 'Rate 5', total: {{ statistics.totalRate5 }}},
+                    {y: 'Rate 1', total: {{ statistics.totalRate1|default(0) }}},
+                    {y: 'Rate 2', total: {{ statistics.totalRate2|default(0) }}},
+                    {y: 'Rate 3', total: {{ statistics.totalRate3|default(0) }}},
+                    {y: 'Rate 4', total: {{ statistics.totalRate4|default(0) }}},
+                    {y: 'Rate 5', total: {{ statistics.totalRate5|default(0) }}},
                 ],
                 barColors: ['#f56954'],
                 xkey: 'y',
@@ -253,6 +253,40 @@
                 labels: ['Total'],
                 hideHover: 'auto'
             });
+            {% if product.captainRewards + product.joinerRewards + product.regularRewards + product.parentRewards > 0 %}
+            // Rewards DONUT CHART
+            var donut = new Morris.Donut({
+                element: 'pieChart',
+                resize: true,
+                colors: ["#f56954", "#00a65a", "#f39c12", "#00c0ef"],
+                data: [
+                    {label: "团长返现", value: {{ product.captainRewards }}},
+                    {label: "团员返现", value: {{ product.joinerRewards }}},
+                    {label: "零售返现", value: {{ product.regularRewards }}},
+                    {label: "上线返现", value: {{ product.parentRewards }}}
+                ],
+                hideHover: 'auto'
+            });
+            {% endif %}
+            {% if projectRewardsMeta %}
+            //  preview rewards changes
+            $('#product_rewards').on('keyup', function (e) {
+                var rewards = $(this).val();
+                $('#rewardsSpan').text(rewards);
+                new Morris.Donut({
+                    element: 'pieChart',
+                    resize: true,
+                    colors: ["#f56954", "#00a65a", "#f39c12", "#00c0ef"],
+                    data: [
+                        {label: "团长返现", value: (rewards * {{ projectRewardsMeta.captainRewardsRate }}).toFixed(2)},
+                        {label: "团员返现", value: (rewards * {{ projectRewardsMeta.joinerRewardsRate }}).toFixed(2)},
+                        {label: "零售返现", value: (rewards * {{ projectRewardsMeta.regularRewardsRate }}).toFixed(2)},
+                        {label: "上线返现", value: (rewards * {{ projectRewardsMeta.userRewardsRate }}).toFixed(2)}
+                    ],
+                    hideHover: 'auto'
+                });
+            });
+            {% endif %}
         });
     </script>
     {% include '/backend/includes/delete.js.html.twig' with {title: 'ProductSimilar'} %}

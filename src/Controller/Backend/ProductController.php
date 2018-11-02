@@ -4,10 +4,14 @@ namespace App\Controller\Backend;
 
 use App\Command\Product\Image\CreateOrUpdateProductImagesCommand;
 use App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommand;
+use App\Command\Product\UpdateProductRewardsCommand;
 use App\Entity\Product;
+use App\Entity\ProjectMeta;
+use App\Entity\ProjectRewardsMeta;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
+use App\Repository\ProjectRewardsMetaRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -86,6 +90,19 @@ class ProductController extends BackendController
                 return new Response('页面错误', 500);
             }
 
+            try {
+                $productRewardsCommand = new UpdateProductRewardsCommand($product->getId());
+                $this->getCommandBus()->handle($productRewardsCommand);
+            } catch (\Exception $e) {
+                $this->getLog()->error('can not run UpdateProductRewardsCommand because of' . $e->getMessage());
+                if ($this->isDev()) {
+                    dump($e->getFile());
+                    dump($e->getMessage());
+                    die;
+                }
+                return new Response('页面错误', 500);
+            }
+
             $this->addFlash('notice', '添加成功');
             return $this->redirectToRoute('product_index');
         }
@@ -100,7 +117,7 @@ class ProductController extends BackendController
     /**
      * @Route("/product/{id}/edit", name="product_edit", methods="GET|POST")
      */
-    public function edit(Request $request, Product $product, ProductReviewRepository $productReviewRepository): Response
+    public function edit(Request $request, Product $product, ProductReviewRepository $productReviewRepository, ProjectRewardsMetaRepository $projectRewardsMetaRepository): Response
     {
         $form = $this->createForm(ProductType::class, $product);
         $form->get('status')->setData(array_search($product->getStatusText(), Product::$statuses));
@@ -173,6 +190,19 @@ class ProductController extends BackendController
                 return new Response('页面错误', 500);
             }
 
+            try {
+                $productRewardsCommand = new UpdateProductRewardsCommand($product->getId());
+                $this->getCommandBus()->handle($productRewardsCommand);
+            } catch (\Exception $e) {
+                $this->getLog()->error('can not run UpdateProductRewardsCommand because of' . $e->getMessage());
+                if ($this->isDev()) {
+                    dump($e->getFile());
+                    dump($e->getMessage());
+                    die;
+                }
+                return new Response('页面错误', 500);
+            }
+
             $product->setUpdatedAt(time());
 
             $this->getDoctrine()->getManager()->flush();
@@ -181,9 +211,16 @@ class ProductController extends BackendController
             return $this->redirectToRoute('product_edit', ['id' => $product->getId()]);
         }
 
+        $projectRewardsMetas = $projectRewardsMetaRepository->findAll();
+        /**
+         * @var ProjectRewardsMeta $projectRewardsMeta
+         */
+        $projectRewardsMeta = !empty($projectRewardsMetas) ? $projectRewardsMetas[0] : null;
+
         return $this->render('backend/product/edit.html.twig', [
             'product' => $product,
             'statistics' => $productReviewRepository->findProductReviewStatistics($product->getId()),
+            'projectRewardsMeta' => $projectRewardsMeta,
             'title' => '修改产品',
             'form' => $form->createView(),
         ]);

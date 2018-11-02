@@ -19,9 +19,9 @@ class ProductType extends AbstractType
             ->add('originalPrice', null, ['label' => '原价'])
             ->add('price', null, ['label' => '零售价'])
             ->add('groupPrice', null, ['label' => '拼团价'])
-            ->add('rewards', null, ['label' => '返现'])
+            ->add('rewards', null, ['label' => '返现总额'])
             ->add('freight', null, ['label' => '运费'])
-            ->add('sku', null, ['label' => '库存单位'])
+            ->add('sku', null, ['label' => 'SKU'])
             ->add('stock', null, ['label' => '库存'])
             ->add('images', DropzoneType::class, [
                 'label' => '图片',

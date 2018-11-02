@@ -1,0 +1,3 @@
+ProjectRewardsMeta:
+    meta_key: product_rewards
+    meta_value: {captainRewardsRate: 0.1, joinerRewardsRate: 0.1, regularRewardsRate: 0.1, userRewardsRate: 0.1}

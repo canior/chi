@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ProjectRewardsMeta extends ProjectMeta
 {
+    const PRODUCT_REWARDS = "product_rewards";
 
     public function isTextMeta()
     {
@@ -46,9 +47,19 @@ class ProjectRewardsMeta extends ProjectMeta
         return $metaValueArray['captainRewardsRate'];
     }
 
+    public function setCaptainRewardsRate($captainRewardsRate) {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $this->setRewardsMeta($captainRewardsRate, $metaValueArray['joinerRewardsRate'], $metaValueArray['regularRewardsRate'], $metaValueArray['userRewardsRate']);
+    }
+
     public function getJoinerRewardsRate() {
         $metaValueArray = json_decode($this->getMetaValue(), true);
         return $metaValueArray['joinerRewardsRate'];
+    }
+
+    public function setJoinerRewardsRate($joinerRewardsRate) {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $this->setRewardsMeta($metaValueArray['captainRewardsRate'], $joinerRewardsRate, $metaValueArray['regularRewardsRate'], $metaValueArray['userRewardsRate']);
     }
 
     public function getRegularRewardsRate() {
@@ -56,23 +67,33 @@ class ProjectRewardsMeta extends ProjectMeta
         return $metaValueArray['regularRewardsRate'];
     }
 
+    public function setRegularRewardsRate($regularRewardsRate) {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $this->setRewardsMeta($metaValueArray['captainRewardsRate'], $metaValueArray['joinerRewardsRate'], $regularRewardsRate, $metaValueArray['userRewardsRate']);
+    }
+
     public function getUserRewardsRate() {
         $metaValueArray = json_decode($this->getMetaValue(), true);
         return $metaValueArray['userRewardsRate'];
     }
 
+    public function setUserRewardsRate($userRewardsRate) {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $this->setRewardsMeta($metaValueArray['captainRewardsRate'], $metaValueArray['joinerRewardsRate'], $metaValueArray['regularRewardsRate'], $userRewardsRate);
+    }
+
     /**
      * @param $captainRewardsRate
      * @param $joinerRewardsRate
-     * @param $regularOrderRewardsRate
+     * @param $regularRewardsRate
      * @param $userRewardsRate
      * @return ProjectMeta
      */
-    public function setRewardsMeta($captainRewardsRate, $joinerRewardsRate, $regularOrderRewardsRate, $userRewardsRate) {
+    public function setRewardsMeta($captainRewardsRate, $joinerRewardsRate, $regularRewardsRate, $userRewardsRate) {
         return $this->setMetaValue(json_encode([
             'captainRewardsRate' => $captainRewardsRate,
             'joinerRewardsRate' => $joinerRewardsRate,
-            'regularOrderRewardsRate' => $regularOrderRewardsRate,
+            'regularRewardsRate' => $regularRewardsRate,
             'userRewardsRate' => $userRewardsRate,
         ]));
     }
@@ -87,7 +108,7 @@ class ProjectRewardsMeta extends ProjectMeta
             'metaKey' => $this->getMetaKey(),
             'captainRewardsRate' => $this->getCaptainRewardsRate(),
             'joinerRewardsRate' => $this->getJoinerRewardsRate(),
-            'regularOrderRewardsRate' => $this->getRegularRewardsRate(),
+            'regularRewardsRate' => $this->getRegularRewardsRate(),
             'userRewardsRate' => $this->getUserRewardsRate(),
         ];
     }

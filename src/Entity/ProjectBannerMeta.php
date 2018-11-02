@@ -15,7 +15,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ProjectBannerMeta extends ProjectMeta
 {
-
     const BANNER_HOME_1 = "banner_home_1";
     const BANNER_HOME_2 = "banner_home_2";
     const BANNER_HOME_3 = "banner_home_3";
