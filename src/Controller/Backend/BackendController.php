@@ -170,11 +170,9 @@ class BackendController extends DefaultController
             'subMenus' => [
                 [
                     'path' => [
-                        'project_meta_index',
-                        'project_meta_new',
-                        'project_meta_edit'
+                        'project_text_meta_index',
                     ],
-                    'name' => 'TODO:文案配置',
+                    'name' => '文案配置',
                     'icon' => 'fa fa-file-text',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',

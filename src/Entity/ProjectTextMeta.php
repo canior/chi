@@ -45,7 +45,7 @@ class ProjectTextMeta extends ProjectMeta
         return $this;
     }
 
-    public function getTextValue() {
+    public function getTextMeta() {
         return $this->getMetaValue();
     }
 

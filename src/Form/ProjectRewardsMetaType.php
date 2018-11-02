@@ -17,7 +17,7 @@ class ProjectRewardsMetaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('memo', null, ['label' => '描述'])
+            ->add('memo', null, ['label' => '描述', 'attr' => ['rows' => 5]])
             ->add('captainRewardsRate', null, [
                 'label' => '拼团订单【团长】返现此产品总返现金额(%)',
                 'constraints' => [
