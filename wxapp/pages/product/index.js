@@ -18,9 +18,11 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    app.buriedPoint(options);
     wx.setNavigationBarTitle({ title: app.globalData.appName })
     this.getProducts(this.data.page)
+    app.userActivityCallback = res => {
+      app.buriedPoint(options)
+    }
   },
 
   getProducts: function (page) {
@@ -61,6 +63,12 @@ Page({
     const id = e.currentTarget.dataset.id
     wx.navigateTo({
       url: '/pages/product/detail?id=' + id,
+    })
+  },
+
+  redirect: function(e) {
+    wx.reLaunch({
+      url: e.currentTarget.dataset.url,
     })
   },
 

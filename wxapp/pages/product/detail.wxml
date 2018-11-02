@@ -25,7 +25,7 @@
 
   <view class="chi-reward-container">
     <view class="line reward">团长返现￥{{product.rewards}}</view>
-    <view class="line btn" bindtap="toWhere?">每单皆有返现，查看详情></view>
+    <view class="line btn" bindtap="toWhere?">查看详情></view>
   </view>
 </view>
 <view class="split-line"/>

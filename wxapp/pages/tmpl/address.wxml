@@ -1,17 +1,30 @@
 <wxs src="phone.wxs" module="phone"/>
 <template name="address">
   <view class="top-address">
-    <view class="left">
-      <view class="line name">
-        <image src="/images/addr-white.png"/>
-        <text>{{address.name}} {{address.phone ? phone.encode(address.phone) : ''}}</text>
-      </view>
-      <view class="line addr">
-        <text>{{address.region.fullname}} {{address.address}}</text>
-      </view>
-    </view>
-    <view class="right" bindtap="wxUserAddress" wx:if="{{unpaid}}">
-      <view class="arrow-right"/>
-    </view>
+    <block wx:if="{{address}}">
+        <view class="left">
+          <view class="line name">
+            <image src="/images/addr-white.png"/>
+            <text>{{address.name}} {{address.phone ? phone.encode(address.phone) : ''}}</text>
+          </view>
+          <view class="line addr">
+            <text>{{address.region.fullname}} {{address.address}}</text>
+          </view>
+        </view>
+        <view class="right" bindtap="wxSelectUserAddress" wx:if="{{unpaid}}">
+          <view class="arrow-right"/>
+        </view>
+    </block>
+    <block wx:else>
+        <view class="left">    
+          <view class="line name">
+            <image src="/images/addr-white.png"/>
+            <text>请输入您的收货地址</text>
+          </view>
+        </view>
+        <view class="right" bindtap="wxNewUserAddress" wx:if="{{unpaid}}">
+          <view class="arrow-right"/>
+        </view>        
+    </block>    
   </view>
 </template>

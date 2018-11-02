@@ -157,7 +157,7 @@ Page({
         city: that.data.region[1],
         county: that.data.region[2],
         address: that.data.address,
-        isDefault: (that.data.user && !that.data.user.defaultAddress) ? true : that.data.setDefault, //首次地址强制默认
+        //isDefault: (that.data.user && !that.data.user.defaultAddress) ? true : that.data.setDefault, //首次地址强制默认
         thirdSession: wx.getStorageSync('thirdSession'),
       },
       method: 'POST',

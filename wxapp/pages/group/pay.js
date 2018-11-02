@@ -47,16 +47,19 @@ Page({
           const groupUserOrder = res.data.data.groupUserOrder;
           that.setData({
             groupUserOrder: groupUserOrder
-          })          
-          if (!groupUserOrder.user.defaultAddress) {
-            // 用户无地址,转新建地址页
-            wx.navigateTo({
-              url: '/pages/user/address/edit?orderId=' + groupUserOrder.id,
-            })
-          } else if (!groupUserOrder.address) {
-            // 用户有地址,订单无地址,则用默认地址
-            const url = app.globalData.baseUrl + '/groupUserOrder/confirmAddress';
-            request.confirmAddress(that, url, groupUserOrder.user.defaultAddress.id)
+          })
+          // 处理订单无地址
+          if (!groupUserOrder.address) {
+            if (groupUserOrder.user.defaultAddress) {
+              // 用户有地址,则用默认地址
+              const url = app.globalData.baseUrl + '/groupUserOrder/confirmAddress';
+              request.confirmAddress(that, url, groupUserOrder.user.defaultAddress.id)
+            } else {
+              // 用户无地址,转新建地址页
+              wx.navigateTo({
+                url: '/pages/user/address/edit?orderId=' + groupUserOrder.id,
+              })              
+            }
           }
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -70,9 +73,15 @@ Page({
   },
 
   // 转地址管理
-  wxUserAddress: function(e) {
+  wxSelectUserAddress: function(e) {
     wx.navigateTo({
       url: '/pages/user/address/index?orderId=' + this.data.groupUserOrder.id,
+    })
+  },
+  // 转新建地址
+  wxNewUserAddress: function (e) {
+    wx.navigateTo({
+      url: '/pages/user/address/edit?orderId=' + this.data.groupUserOrder.id,
     })
   },
 
