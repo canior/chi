@@ -27,10 +27,16 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    app.buriedPoint(options);
-    const id = options.id ? options.id : 10145;
+    const id = options.id;
     if (id) {
       this.getGroupOrder(id);      
+    }
+    app.userActivityCallback = res => {
+      app.buriedPoint(options)
+      this.setData({
+        isLogin: app.globalData.isLogin,
+        user: app.globalData.user
+      })
     }
   },
 
@@ -51,11 +57,11 @@ Page({
           const groupOrder = res.data.data.groupOrder;
           that.setGroupData(groupOrder);
           share.setShareSources(that, res.data.data.shareSources)          
-          if (groupOrder.status != 'completed') {
+          if (groupOrder.status == 'completed') {
             // 更多精彩拼团
             that.setData({
               moreProducts: res.data.data.product.similarProducts
-            })            
+            })
           } else {
             // 产品评价
             const url = app.globalData.baseUrl + '/products/' + groupOrder.product.id + '/reviews';

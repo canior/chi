@@ -43,7 +43,7 @@ function __saveShareSource(that, url, shareSourceType) {
       url: currentPageUrl,
       shareSourceType: shareSourceType,
       shareSourceId: shareSource.id,
-      title: shareSource.title,
+      title: shareSource.title ? shareSource.title : '食咖',
       bannerFileId: shareSource.bannerFileId,
       productId: that.data.product ? that.data.product.id : null,
       groupOrderId: that.data.groupOrder ? that.data.groupOrder.id : null
@@ -52,6 +52,11 @@ function __saveShareSource(that, url, shareSourceType) {
     success: (res) => {
       if (res.statusCode == 200 && res.data.code == 200) {
         console.log(res.data.data);
+        if (shareSourceType == 'quan') {//生成朋友圈图片
+          wx.navigateTo({
+            url: '/pages/share/moment?imageUrl=' + encodeURIComponent(that.data.imgUrlPrefix + '/' + shareSource.bannerFileId),
+          })
+        }
       } else {
         console.log('wx.request return error', res.statusCode);
       }
@@ -62,7 +67,8 @@ function __saveShareSource(that, url, shareSourceType) {
 }
 
 function shareObject(that, res) {
-  const shareSourceType = res.target.dataset.type;
+  //const shareSourceType = res.target.dataset.type;
+  const shareSourceType = 'refer';//仅类型refer需发送
   const shareSource = __data.shareSources.find(item => { return item.type == shareSourceType });
   var id = null;
   if (that.data.product) id = that.data.product.id

@@ -20,15 +20,17 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    wx.hideShareMenu()    
-    app.buriedPoint(options);
+    wx.hideShareMenu()
     const productId = options.id ? options.id : 2;
     this.getProduct(productId);
     const url = app.globalData.baseUrl + '/products/' + productId + '/reviews'
     productReview.init(this, url);
-    this.setData({
-      isLogin: app.globalData.isLogin
-    })
+    app.userActivityCallback = res => {
+      app.buriedPoint(options)
+      this.setData({
+        isLogin: app.globalData.isLogin
+      })
+    }
   },
 
   getProduct: function (id) {

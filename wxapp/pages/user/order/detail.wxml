@@ -2,7 +2,7 @@
 <import src="/pages/tmpl/price.wxml"/>
 <view class="top">
   <view>下单时间：{{groupUserOrder.createdAt}}</view>
-  <view>订单编号：{{groupUserOrder.id}}</view>
+  <view wx:if="{{groupUserOrder.groupOrderId}}">拼团编号：{{groupUserOrder.groupOrderId}}</view>
 </view>
 <view class="split-brand"/>
 

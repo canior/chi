@@ -16,7 +16,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    //this.getAddresses()
+    app.buriedPoint(options)
     if (options.orderId) {
       this.setData({
         groupUserOrderId: options.orderId

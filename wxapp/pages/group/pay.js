@@ -16,9 +16,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const orderId = options.orderId ? options.orderId : 100161
+    const orderId = options.orderId
     console.log('groupUserOrderId=' + orderId);
     this.getGroupUserOrder(orderId)
+    app.buriedPoint(options)
   },
 
   /**

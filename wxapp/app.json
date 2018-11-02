@@ -13,8 +13,7 @@
     "pages/user/order/detail",
     "pages/user/order/review",
     "pages/user/reward/index",
-    "pages/index/index",
-    "pages/logs/logs"
+    "pages/share/moment"
   ],
   "window":{
     "backgroundTextStyle":"light",
