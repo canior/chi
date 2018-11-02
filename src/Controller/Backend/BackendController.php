@@ -171,6 +171,7 @@ class BackendController extends DefaultController
                 [
                     'path' => [
                         'project_text_meta_index',
+                        'project_text_meta_edit',
                     ],
                     'name' => '文案配置',
                     'icon' => 'fa fa-file-text',
@@ -189,10 +190,10 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
-                        '_twig_error_test',
+                        'project_banner_meta_index',
+                        'project_banner_meta_edit',
                     ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:横幅配置',
+                    'name' => '横幅配置',
                     'icon' => 'fa fa-image',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',

@@ -51,9 +51,19 @@ class ProjectBannerMeta extends ProjectMeta
         return $metaValueArray['redirectUrl'];
     }
 
+    public function setRedirectUrl($redirectUrl) {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $this->setBannerMeta($metaValueArray['bannerFileId'], $redirectUrl);
+    }
+
     public function getBannerFileId() {
         $metaValueArray = json_decode($this->getMetaValue(), true);
         return $metaValueArray['bannerFileId'];
+    }
+
+    public function setBannerFileId($bannerFileId) {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $this->setBannerMeta($bannerFileId, $metaValueArray['redirectUrl']);
     }
 
     /**

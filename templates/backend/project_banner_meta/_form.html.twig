@@ -1,0 +1,31 @@
+{{ form_start(form) }}
+<div class="row">
+    <div class="form-group col-md-6">
+        <label class="control-label">KEY</label>
+        <h4>{{ project_banner_metum.metaKey }}</h4>
+    </div>
+    <div class="form-group col-md-6{% if form.memo.vars.errors|length %} has-error{% endif %}">
+        {{ form_label(form.memo) }}
+        {{ form_errors(form.memo) }}
+        {{ form_widget(form.memo) }}
+        {{ form_help(form.memo) }}
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-md-6{% if form.redirectUrl.vars.errors|length %} has-error{% endif %}">
+        {{ form_label(form.redirectUrl) }}
+        {{ form_errors(form.redirectUrl) }}
+        {{ form_widget(form.redirectUrl) }}
+        {{ form_help(form.redirectUrl) }}
+    </div>
+    <div class="form-group col-md-6{% if form.bannerFileId.vars.errors|length %} has-error{% endif %}">
+        {{ form_label(form.bannerFileId) }}
+        {{ form_errors(form.bannerFileId) }}
+        {{ form_widget(form.bannerFileId) }}
+        {{ form_help(form.bannerFileId) }}
+    </div>
+</div>
+{{ form_widget(form) }}
+<a class="btn btn-danger" href="{{ path('project_banner_meta_index') }}">{{ 'Back to list'|trans }}</a>
+<button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
