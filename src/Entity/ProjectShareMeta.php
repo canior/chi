@@ -16,7 +16,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ProjectShareMeta extends ProjectMeta
 {
-
     const GROUP_ORDER = 'groupOrder';
     const PRODUCT = 'product';
     const USER = 'user';

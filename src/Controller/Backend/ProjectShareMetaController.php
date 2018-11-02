@@ -39,7 +39,7 @@ class ProjectShareMetaController extends BackendController
     {
         $form = $this->createForm(ProjectShareMetaType::class, $projectShareMetum);
 
-        // init bannerFileId
+        // init shareBannerFileId
         if ($projectShareMetum->isBannerEditable() && $projectShareMetum->getShareBannerFileId()) {
             $shareBannerFileId = [];
             $file = $fileRepository->find($projectShareMetum->getShareBannerFileId());
