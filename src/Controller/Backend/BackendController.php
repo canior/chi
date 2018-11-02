@@ -180,10 +180,10 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
-                        '_twig_error_test',
+                        'project_share_meta_index',
+                        'project_share_meta_edit',
                     ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:分享配置',
+                    'name' => '分享配置',
                     'icon' => 'fa fa-share-alt',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',

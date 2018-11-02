@@ -75,6 +75,10 @@ class ProjectShareMeta extends ProjectMeta
         return $metaValueArray['scene'];
     }
 
+    public function getShareSceneText() {
+        return isset(self::$scenes[$this->getShareScene()]) ? self::$scenes[$this->getShareScene()] : $this->getShareScene();
+    }
+
     public function getShareType() {
         $metaValueArray = json_decode($this->getMetaValue(), true);
         return $metaValueArray['type'];
@@ -85,9 +89,19 @@ class ProjectShareMeta extends ProjectMeta
         return $metaValueArray['title'];
     }
 
+    public function setShareTitle($title) {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $this->setShareMeta($metaValueArray['scene'], $metaValueArray['type'], $title, $metaValueArray['bannerFileId'], $metaValueArray['bannerEditable']);
+    }
+
     public function getShareBannerFileId() {
         $metaValueArray = json_decode($this->getMetaValue(), true);
         return $metaValueArray['bannerFileId'];
+    }
+
+    public function setShareBannerFileId($bannerFileId) {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $this->setShareMeta($metaValueArray['scene'], $metaValueArray['type'], $metaValueArray['title'], $bannerFileId, $metaValueArray['bannerEditable']);
     }
 
     public function isBannerEditable() {

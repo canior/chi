@@ -39,7 +39,7 @@ class ProjectBannerMetaController extends BackendController
     {
         $form = $this->createForm(ProjectBannerMetaType::class, $projectBannerMetum);
 
-        // init images
+        // init bannerFileId
         if ($projectBannerMetum->getBannerFileId()) {
             $bannerFileId = [];
             $file = $fileRepository->find($projectBannerMetum->getBannerFileId());

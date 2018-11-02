@@ -86,7 +86,7 @@
                                             <div class="btn-group">
                                                 <a href="{{ path('product_review_edit', {id: item.id, productId: item.product.id}) }}"
                                                    title="修改">
-                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                    <span class="fa fa-edit"></span>
                                                 </a>
                                             </div>
                                         </td>
@@ -193,14 +193,14 @@
                                             <div class="btn-group">
                                                 <a href="{{ path('product_similar_edit', {'id': item.id}) }}"
                                                    title="修改">
-                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                    <span class="fa fa-edit"></span>
                                                 </a>&nbsp;
                                                 <a class="delete" data-toggle="modal" data-target="#modal-delete"
                                                    data-url="{{ path('product_similar_delete', {'id': item.id}) }}"
                                                    data-item='{"name": "{{ macros.cut(item.id, 30) }}"}'
                                                    data-token="{{ csrf_token('delete' ~ item.id) }}"
                                                    title="删除">
-                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                    <span class="fa fa-trash"></span>
                                                 </a>
                                             </div>
                                         </td>

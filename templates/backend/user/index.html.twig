@@ -102,14 +102,14 @@
                                                 {% endif %}
                                                 {#
                                                 <a href="{{ path('user_edit', {'id': item.id}) }}" title="修改">
-                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                    <span class="fa fa-edit"></span>
                                                 </a>&nbsp;
                                                 <a class="delete" data-toggle="modal" data-target="#modal-delete"
                                                    data-url="{{ path('user_delete', {'id': item.id}) }}"
                                                    data-item='{"name": "{{ macros.cut(item.username, 30) }}"}'
                                                    data-token="{{ csrf_token('delete' ~ item.id) }}"
                                                    title="删除">
-                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                    <span class="fa fa-trash"></span>
                                                 </a>
                                                 #}
                                             </div>

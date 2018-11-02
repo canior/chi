@@ -1,6 +1,6 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}ProductSimilar{% endblock %}
+{% block title %}ProjectShareMeta{% endblock %}
 
 {% import 'form/macros.html.twig' as macros %}
 
@@ -11,16 +11,15 @@
                 <div class="box-header">
                     {% include "backend/includes/app.session.flashbag.html.twig" %}
                     <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
-                    <a href="{{ path('product_similar_new') }}" type="button" class="btn btn-info pull-right">添加</a>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
                         <form class="cmxform" id="myForm">
                             <div class="col-md-3 form-group">
-                                <label>产品ID</label>
-                                <input type="number" name="productId" class="form-control" value="{{ form.productId }}"
-                                       placeholder="按 产品ID 查询">
+                                <label>关键词</label>
+                                <input type="text" name="keyword" class="form-control" value="{{ form.keyword }}"
+                                       placeholder="按 meta key, value, memo 查询">
                             </div>
                             <div class="col-md-3 form-group">
                                 <label>&nbsp;</label>
@@ -33,13 +32,13 @@
                             <thead>
                             <tr>
                                 <th width="10%">Id</th>
-                                <th width="10%">产品ID</th>
-                                <th width="10%">产品名</th>
-                                <th width="10%">产品图片</th>
-                                <th width="10%">推荐产品ID</th>
-                                <th width="10%">推荐产品名</th>
-                                <th width="10%">推荐产品图片</th>
-                                <th width="10%">创建日期</th>
+                                <th width="10%">Key</th>
+                                <th width="10%">场景</th>
+                                <th width="10%">类型</th>
+                                <th width="10%">描述</th>
+                                <th width="10%">标题</th>
+                                <th width="10%">图片</th>
+                                <th width="10%">图片可编辑</th>
                                 <th width="10%" class="text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
@@ -48,33 +47,24 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>{{ item.id }}</td>
-                                        <td>{{ item.product.id }}</td>
-                                        <td>{{ item.product.title }}</td>
+                                        <td>{{ item.metaKey }}</td>
+                                        <td>{{ item.shareSceneText }}</td>
+                                        <td>{{ item.shareType }}</td>
+                                        <td>{{ item.memo }}</td>
+                                        <td>{{ item.shareTitle }}</td>
                                         <td>
-                                            {% if item.product.mainProductImage %}
-                                                <img src="{{ path('imagePreview', {fileId: item.product.mainProductImage.file.id}) }}" width="40" height="40"/>
+                                            {% if item.shareBannerFileId %}
+                                                <img src="{{ path('imagePreview', {fileId: item.shareBannerFileId}) }}" width="40" height="40"/>
                                             {% endif %}
                                         </td>
-                                        <td>{{ item.similarProduct.id }}</td>
-                                        <td>{{ item.similarProduct.title }}</td>
                                         <td>
-                                            {% if item.similarProduct.mainProductImage %}
-                                                <img src="{{ path('imagePreview', {fileId: item.similarProduct.mainProductImage.file.id}) }}" width="40" height="40"/>
-                                            {% endif %}
+                                            <i class="fa {% if item.isBannerEditable %}fa-check text-success{% else %}fa-close text-danger{% endif %}"></i>
                                         </td>
-                                        <td>{{ item.createdAt }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{ path('product_similar_edit', {'id': item.id}) }}"
+                                                <a href="{{ path('project_share_meta_edit', {'id': item.id}) }}"
                                                    title="修改">
                                                     <span class="fa fa-edit"></span>
-                                                </a>&nbsp;
-                                                <a class="delete" data-toggle="modal" data-target="#modal-delete"
-                                                   data-url="{{ path('product_similar_delete', {'id': item.id}) }}"
-                                                   data-item='{"name": "{{ macros.cut(item.id, 30) }}"}'
-                                                   data-token="{{ csrf_token('delete' ~ item.id) }}"
-                                                   title="删除">
-                                                    <span class="fa fa-trash"></span>
                                                 </a>
                                             </div>
                                         </td>
@@ -101,11 +91,8 @@
         <!-- /.col -->
     </div>
     <!-- /.row -->
-
-    {% include 'backend/includes/delete.modal.html.twig' with {title: 'ProductSimilar'} %}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    {% include '/backend/includes/delete.js.html.twig' with {title: 'ProductSimilar'} %}
 {% endblock %}
