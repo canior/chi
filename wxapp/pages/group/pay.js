@@ -17,6 +17,7 @@ Page({
    */
   onLoad: function (options) {
     const orderId = options.orderId ? options.orderId : 100161
+    console.log('groupUserOrderId=' + orderId);
     this.getGroupUserOrder(orderId)
   },
 
@@ -76,7 +77,7 @@ Page({
   },
 
   // 付款
-  pay: function(e) {
+  tapPay: function(e) {
     const that = this;
     wx.showLoading({
       title: '跳转支付',
@@ -92,10 +93,11 @@ Page({
       method: 'POST',
       success: (res) => {
         wx.hideLoading();
+        console.log(res.data.data)
+        const groupUserOrder = res.data.data.groupUserOrder        
         if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
           const payment = res.data.data.payment;
-          const groupUserOrderId = res.data.data.groupUserOrder.id;
+          const groupUserOrderId = groupUserOrder.id;
           wx.requestPayment({
             timeStamp: payment.timeStamp.toString(),
             nonceStr: payment.nonceStr,
@@ -142,6 +144,11 @@ Page({
               that.setData({ btnDisabled: false });
             },
             complete: function (res) { }
+          })
+        } else if (res.statusCode == 200 && res.data.code == 302) {
+          //拼团订单已被其它参团人抢先支付了
+          wx.redirectTo({
+            url: '/pages/group/index?id=' + groupUserOrder.groupOrderId,
           })
         } else {
           console.log('wx.request return error', res.statusCode);

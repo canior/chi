@@ -135,9 +135,7 @@ class GroupOrderController extends BaseController
         $groupOrder = $groupOrderRepository->find($groupOrderId);
 
         if (!$groupOrder->isPending()) {
-            return $this->responseJson('success', 200, [
-                'groupOrder' => $groupOrder->getArray()
-            ]);
+            return $this->responseJson('success', 302, []);
         }
 
         $groupUserOrder = $groupOrder->getSlaveGroupUserOrder($user);
@@ -152,11 +150,30 @@ class GroupOrderController extends BaseController
 
 
         $data = [
-            'groupUserOrder' => $groupOrder->getArray()
+            'groupUserOrder' => $groupUserOrder->getArray()
         ];
         return $this->responseJson('success', 200, $data);
     }
 
+
+    /**
+     * 拼团到期
+     *
+     * @Route("/groupOrder/expire", name="expireGroupOrder", methods="POST")
+     * @param Request $request
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function expireAction(Request $request, GroupOrderRepository $groupOrderRepository) {
+        $data = json_decode($request->getContent(), true);
+        $groupOrderId =  isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
+
+        $groupOrder = $groupOrderRepository->find($groupOrderId);
+        $groupOrder->setExpired();
+        $this->getEntityManager()->persist($groupOrder);
+        $this->getEntityManager()->flush();
+        return $this->responseJson('success', 200, ['groupOrder' => $groupOrder->getArray()]);
+    }
 
 
     /**
@@ -179,6 +196,7 @@ class GroupOrderController extends BaseController
         $groupOrder = $groupOrderRepository->find($groupOrderId);
 
         $data = [
+            'product' => $groupOrder->getProduct()->getArray(),
             'groupOrder' => $groupOrder->getArray(),
             'shareSources' => $this->createShareSource($groupOrder, $url)
         ];
