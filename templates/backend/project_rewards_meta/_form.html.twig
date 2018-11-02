@@ -1,43 +1,41 @@
 {{ form_start(form) }}
-<div class="row">
-    <div class="form-group col-md-6">
+<div class="row col-sm-12 col-md-6">
+    <div class="form-group">
         <label class="control-label">KEY</label>
         <h4>{{ projectRewardsMeta.metaKey }}</h4>
     </div>
-    <div class="form-group col-md-6{% if form.memo.vars.errors|length %} has-error{% endif %}">
+    <div class="form-group{% if form.memo.vars.errors|length %} has-error{% endif %}">
         {{ form_label(form.memo) }}
         {{ form_errors(form.memo) }}
         {{ form_widget(form.memo) }}
         {{ form_help(form.memo) }}
     </div>
-</div>
-<div class="row">
-    <div class="form-group col-md-3{% if form.captainRewardsRate.vars.errors|length %} has-error{% endif %}">
+    <div class="form-group{% if form.captainRewardsRate.vars.errors|length %} has-error{% endif %}">
         {{ form_label(form.captainRewardsRate) }}
         {{ form_errors(form.captainRewardsRate) }}
         {{ form_widget(form.captainRewardsRate) }}
         {{ form_help(form.captainRewardsRate) }}
     </div>
-    <div class="form-group col-md-3{% if form.joinerRewardsRate.vars.errors|length %} has-error{% endif %}">
+    <div class="form-group{% if form.joinerRewardsRate.vars.errors|length %} has-error{% endif %}">
         {{ form_label(form.joinerRewardsRate) }}
         {{ form_errors(form.joinerRewardsRate) }}
         {{ form_widget(form.joinerRewardsRate) }}
         {{ form_help(form.joinerRewardsRate) }}
     </div>
-    <div class="form-group col-md-3{% if form.regularRewardsRate.vars.errors|length %} has-error{% endif %}">
+    <div class="form-group{% if form.regularRewardsRate.vars.errors|length %} has-error{% endif %}">
         {{ form_label(form.regularRewardsRate) }}
         {{ form_errors(form.regularRewardsRate) }}
         {{ form_widget(form.regularRewardsRate) }}
         {{ form_help(form.regularRewardsRate) }}
     </div>
-    <div class="form-group col-md-3{% if form.userRewardsRate.vars.errors|length %} has-error{% endif %}">
+    <div class="form-group{% if form.userRewardsRate.vars.errors|length %} has-error{% endif %}">
         {{ form_label(form.userRewardsRate) }}
         {{ form_errors(form.userRewardsRate) }}
         {{ form_widget(form.userRewardsRate) }}
         {{ form_help(form.userRewardsRate) }}
     </div>
+    {{ form_widget(form) }}
+    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    <a href="{{ path('project_rewards_meta_sync') }}" class="btn btn-danger">更新产品返现</a>
 </div>
-{{ form_widget(form) }}
-<button class="btn btn-primary">{{ button_label|default('Save') }}</button>
-<a href="{{ path('project_rewards_meta_sync') }}" class="btn btn-danger">更新产品返现</a>
 {{ form_end(form) }}

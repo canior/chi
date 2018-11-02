@@ -1,39 +1,37 @@
 {{ form_start(form) }}
-<div class="row">
-    <div class="form-group col-md-4">
+<div class="row col-sm-12 col-md-6">
+    <div class="form-group">
         <label class="control-label">KEY</label>
         <h4>{{ project_share_metum.metaKey }}</h4>
     </div>
-    <div class="form-group col-md-4">
+    <div class="form-group">
         <label class="control-label">场景</label>
         <h4>{{ project_share_metum.shareSceneText }}</h4>
     </div>
-    <div class="form-group col-md-4">
+    <div class="form-group">
         <label class="control-label">类型</label>
         <h4>{{ project_share_metum.shareType }}</h4>
     </div>
-</div>
-<div class="row">
-    <div class="form-group col-md-4{% if form.memo.vars.errors|length %} has-error{% endif %}">
+    <div class="form-group{% if form.memo.vars.errors|length %} has-error{% endif %}">
         {{ form_label(form.memo) }}
         {{ form_errors(form.memo) }}
         {{ form_widget(form.memo) }}
         {{ form_help(form.memo) }}
     </div>
-    <div class="form-group col-md-4{% if form.shareTitle.vars.errors|length %} has-error{% endif %}">
+    <div class="form-group{% if form.shareTitle.vars.errors|length %} has-error{% endif %}">
         {{ form_label(form.shareTitle) }}
         {{ form_errors(form.shareTitle) }}
         {{ form_widget(form.shareTitle) }}
         {{ form_help(form.shareTitle) }}
     </div>
-    <div class="form-group col-md-4{% if form.shareBannerFileId.vars.errors|length %} has-error{% endif %}{% if not project_share_metum.bannerEditable %} hidden{% endif %}">
+    <div class="form-group{% if form.shareBannerFileId.vars.errors|length %} has-error{% endif %}{% if not project_share_metum.bannerEditable %} hidden{% endif %}">
         {{ form_label(form.shareBannerFileId) }}
         {{ form_errors(form.shareBannerFileId) }}
         {{ form_widget(form.shareBannerFileId) }}
         {{ form_help(form.shareBannerFileId) }}
     </div>
+    {{ form_widget(form) }}
+    <a class="btn btn-danger" href="{{ path('project_share_meta_index') }}">{{ 'Back to list'|trans }}</a>
+    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
 </div>
-{{ form_widget(form) }}
-<a class="btn btn-danger" href="{{ path('project_share_meta_index') }}">{{ 'Back to list'|trans }}</a>
-<button class="btn btn-primary">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

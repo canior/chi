@@ -11,8 +11,8 @@
                 <div class="box-header">
                     {% include "backend/includes/app.session.flashbag.html.twig" %}
                     <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
-                    <a href="{{ path('product_review_new', {productId: app.request.attributes.get('id')}) }}"
-                       type="button" class="btn btn-info pull-right">添加评价</a>
+                    {#<a href="{{ path('product_review_new', {productId: app.request.attributes.get('id')}) }}"#}
+                       {#type="button" class="btn btn-info pull-right">添加评价</a>#}
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
