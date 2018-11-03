@@ -6,8 +6,13 @@ Page({
    * 页面的初始数据
    */
   data: {
-    menu: ['我的拼团', '等待成团', '拼团成功', '拼团失败'],
-    curIndex: 0,
+    menu: [
+      { name: '我的拼团', status: null },
+      { name: '等待成团', status: 'pending' },
+      { name: '拼团成功', status: 'completed' },
+      { name: '拼团失败', status: 'expired' },
+    ],
+    curStatus: null,
     groupOrders: [], 
     imgUrlPrefix: app.globalData.imgUrlPrefix,
   },
@@ -17,22 +22,26 @@ Page({
    */
   onLoad: function (options) {
     app.buriedPoint(options)
-    this.getGroupOrders()
+    this.setData({
+      curStatus: options.status ? options.status : null
+    })    
   },
 
-  getGroupOrders: function () {
+  getGroupOrders: function (status) {
     const that = this;
     wx.request({
       url: app.globalData.baseUrl + '/user/groupOrders/',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
+        groupOrderStatus: status
       },
       method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
-          //console.log(res.data.data)
+          console.log(res.data.data)
           that.setData({
-            groupOrders: res.data.data.groupOrders
+            groupOrders: res.data.data.groupOrders,
+            curStatus: status
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -45,9 +54,7 @@ Page({
   },
 
   tapMenu: function (e) {
-    this.setData({
-      curIndex: e.currentTarget.dataset.index
-    })
+    this.getGroupOrders(e.currentTarget.dataset.status)
   },
 
   // 转拼团详情
@@ -77,7 +84,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.getGroupOrders(this.data.curStatus)
   },
 
   /**

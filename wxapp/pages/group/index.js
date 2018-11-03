@@ -21,6 +21,7 @@ Page({
     shareData: {},
     bottomData: {},
     btnDisabled: false, //防止连击button
+    countdown: {hr: '00', min: '00', sec: '00'}, //倒计时数据
   },
 
   /**
@@ -57,15 +58,17 @@ Page({
           const groupOrder = res.data.data.groupOrder;
           that.setGroupData(groupOrder);
           share.setShareSources(that, res.data.data.shareSources)          
-          if (groupOrder.status == 'completed') {
+          if (groupOrder.status == 'completed') {//拼团完成
             // 更多精彩拼团
             that.setData({
               moreProducts: res.data.data.product.similarProducts
             })
-          } else {
+          } else {//拼团未完成:pending, expired
             // 产品评价
             const url = app.globalData.baseUrl + '/products/' + groupOrder.product.id + '/reviews';
             productReview.init(that, url);
+            // pending: 拼团倒计时
+            that.countdown()
           }
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -75,6 +78,68 @@ Page({
       },
       complete(e) { }
     })
+  },
+
+  // pending: 拼团倒计时
+  countdown: function() {
+    const groupOrder = this.data.groupOrder
+    const expiredAt = new Date('2018-11-03 17:29');
+    const now = new Date();
+    var totalSecond = Math.floor((expiredAt - now) / 1000);
+    if (groupOrder.status == 'pending') {
+      var interval = setInterval(function () {
+        // 总秒数
+        var second = totalSecond;
+        // 时钟位
+        var hr = Math.floor(second / 3600);
+        var hrStr = hr.toString();
+        if (hrStr.length == 1) hrStr = '0' + hrStr;
+        // 分钟位
+        var min = Math.floor((second - hr * 3600) / 60);
+        var minStr = min.toString();
+        if (minStr.length == 1) minStr = '0' + minStr;
+        // 秒位
+        var sec = second - hr * 3600 - min * 60;
+        var secStr = sec.toString();
+        if (secStr.length == 1) secStr = '0' + secStr;
+        this.setData({
+          countdown: {hr: hrStr, min: minStr, sec: secStr}
+        });
+        totalSecond--;
+        if (totalSecond < 0) {
+          clearInterval(interval);
+          // 倒计时完成
+          this.setData({
+            countdown: {hr: '00', min: '00', sec: '00' }
+          });
+          this.expireGroupOrder()
+        }
+      }.bind(this), 1000);
+    }
+  },
+
+  expireGroupOrder: function() {
+    const that = this;
+    const groupOrder = that.data.groupOrder
+    wx.request({
+      url: app.globalData.baseUrl + '/groupOrder/expire',
+      data: {
+        groupOrderId: groupOrder.id
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          const groupOrder = res.data.data.groupOrder;
+          that.setGroupData(groupOrder);
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
+    })    
   },
 
   // 设置拼团数据，包括用户类型,开团订单,参团订单
