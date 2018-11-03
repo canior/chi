@@ -6,7 +6,7 @@
  * Time: 09:03
  */
 
-namespace App\Command;
+namespace App\Command\Console;
 
 use App\Entity\CommandMessage;
 use Doctrine\Common\Persistence\ObjectManager;
