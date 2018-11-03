@@ -149,10 +149,6 @@ class GroupUserOrderController extends BaseController
 
         $groupUserOrder = new GroupUserOrder($user, $product);
         $groupUserOrder->setTotal($product->getPrice());
-        if ($groupUserOrder->isGroupOrder())
-            $groupUserOrder->setOrderRewards($product->getJoinerRewards());
-        else
-            $groupUserOrder->setOrderRewards($product->getRegularRewards());
         $this->getEntityManager()->persist($groupUserOrder);
         $this->getEntityManager()->flush();
 

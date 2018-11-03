@@ -140,7 +140,7 @@ class GroupOrderController extends BaseController
 
         $groupUserOrder = $groupOrder->getSlaveGroupUserOrder($user);
         if ($groupUserOrder == null) {
-            $groupUserOrder = new GroupUserOrder($user, $groupOrder->getProduct());
+            $groupUserOrder = new GroupUserOrder($user, $groupOrder->getProduct(), $groupOrder);
             $groupUserOrder->setTotal($groupOrder->getProduct()->getGroupPrice());
             $groupUserOrder->setGroupOrder($groupOrder);
             $groupOrder->addGroupUserOrder($groupUserOrder);

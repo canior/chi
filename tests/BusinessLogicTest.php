@@ -40,6 +40,7 @@ class BusinessLogicTest extends BaseTestCase
         $this->assertTrue($masterGroupUserOrder->isGroupOrder());
         $this->assertTrue($masterGroupUserOrder->isMasterOrder());
         $this->assertEquals($product->getGroupPrice(), $masterGroupUserOrder->getTotal());
+        $this->assertEquals($product->getGroupOrderRewards(), $masterGroupUserOrder->getOrderRewards());
 
         //团长支付成功
         $groupOrder->setPending();
@@ -63,7 +64,7 @@ class BusinessLogicTest extends BaseTestCase
         $this->assertNull($joiner->getParentUser()); //此时团员的有效上线为空
 
         //团员创建拼团订单
-        $slaveGroupUserOrder = new GroupUserOrder($joiner, $product);
+        $slaveGroupUserOrder = new GroupUserOrder($joiner, $product, $groupOrder);
         $slaveGroupUserOrder->setGroupOrder($groupOrder);
         $slaveGroupUserOrder->setTotal($product->getGroupPrice());
         $groupOrder->addGroupUserOrder($slaveGroupUserOrder);
@@ -75,6 +76,7 @@ class BusinessLogicTest extends BaseTestCase
         $this->assertTrue(!$slaveGroupUserOrder->isPaid());
         $this->assertTrue($groupOrder->isPending());
         $this->assertEquals($product->getGroupPrice(), $slaveGroupUserOrder->getTotal());
+        $this->assertEquals($product->getGroupOrderRewards(), $slaveGroupUserOrder->getOrderRewards());
 
         //团员支付拼团订单
         $groupOrder->setCompleted($joiner);
@@ -92,15 +94,21 @@ class BusinessLogicTest extends BaseTestCase
         $this->assertEquals(1, $captainStatistics->getGroupOrderNum());
         $this->assertEquals(0, $captainStatistics->getGroupOrderJoinedNum());
         $this->assertEquals(1, $captainStatistics->getGroupUserOrderNum());
+        $this->assertEquals($captain->getPendingTotalRewards(), $captainStatistics->getOrderRewardsTotal());
 
         $joinerStatistics = $joiner->getUserStatistics()[0];
         $this->assertEquals(0, $joinerStatistics->getChildrenNum());
         $this->assertEquals(1, $joinerStatistics->getGroupOrderJoinedNum());
         $this->assertEquals(1, $joinerStatistics->getGroupUserOrderNum());
+        $this->assertEquals($joiner->getPendingTotalRewards(), $joinerStatistics->getOrderRewardsTotal());
 
         //团员订单发货，团员收货
         $slaveGroupUserOrder->setDelivered();
-        //$this->assertEquals($product->getParentRewards(), $captain->getTotalRewards());
+        $this->assertEquals($captain->getPendingTotalRewards(), $masterGroupUserOrder->getOrderRewards() + $slaveGroupUserOrder->getGroupUserOrderRewards()[0]->getUserRewards());
+        $this->assertEquals(0, $captain->getTotalRewards());
+
+        $this->assertEquals($joiner->getPendingTotalRewards(), $slaveGroupUserOrder->getOrderRewards());
+        $this->assertEquals(0, $joiner->getTotalRewards());
 
     }
 }

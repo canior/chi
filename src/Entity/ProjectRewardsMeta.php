@@ -42,62 +42,56 @@ class ProjectRewardsMeta extends ProjectMeta
         return true;
     }
 
-    public function getCaptainRewardsRate() {
-        $metaValueArray = json_decode($this->getMetaValue(), true);
-        return $metaValueArray['captainRewardsRate'];
-    }
-
-    public function setCaptainRewardsRate($captainRewardsRate) {
-        $metaValueArray = json_decode($this->getMetaValue(), true);
-        return $this->setRewardsMeta($captainRewardsRate, $metaValueArray['joinerRewardsRate'], $metaValueArray['regularRewardsRate'], $metaValueArray['userRewardsRate']);
-    }
-
-    public function getJoinerRewardsRate() {
-        $metaValueArray = json_decode($this->getMetaValue(), true);
-        return $metaValueArray['joinerRewardsRate'];
-    }
-
-    public function setJoinerRewardsRate($joinerRewardsRate) {
-        $metaValueArray = json_decode($this->getMetaValue(), true);
-        return $this->setRewardsMeta($metaValueArray['captainRewardsRate'], $joinerRewardsRate, $metaValueArray['regularRewardsRate'], $metaValueArray['userRewardsRate']);
-    }
-
-    public function getRegularRewardsRate() {
-        $metaValueArray = json_decode($this->getMetaValue(), true);
-        return $metaValueArray['regularRewardsRate'];
-    }
-
-    public function setRegularRewardsRate($regularRewardsRate) {
-        $metaValueArray = json_decode($this->getMetaValue(), true);
-        return $this->setRewardsMeta($metaValueArray['captainRewardsRate'], $metaValueArray['joinerRewardsRate'], $regularRewardsRate, $metaValueArray['userRewardsRate']);
-    }
-
-    public function getUserRewardsRate() {
-        $metaValueArray = json_decode($this->getMetaValue(), true);
-        return $metaValueArray['userRewardsRate'];
-    }
-
-    public function setUserRewardsRate($userRewardsRate) {
-        $metaValueArray = json_decode($this->getMetaValue(), true);
-        return $this->setRewardsMeta($metaValueArray['captainRewardsRate'], $metaValueArray['joinerRewardsRate'], $metaValueArray['regularRewardsRate'], $userRewardsRate);
-    }
-
     /**
-     * @param $captainRewardsRate
-     * @param $joinerRewardsRate
-     * @param $regularRewardsRate
-     * @param $userRewardsRate
+     * @param $groupOrderRewardsRate
+     * @param $groupOrderUserRewardsRate
+     * @param $regularOrderRewardsRate
+     * @param $regularOrderUserRewardsRate
      * @return ProjectMeta
      */
-    public function setRewardsMeta($captainRewardsRate, $joinerRewardsRate, $regularRewardsRate, $userRewardsRate) {
+    public function setRewardsMeta($groupOrderRewardsRate, $groupOrderUserRewardsRate, $regularOrderRewardsRate, $regularOrderUserRewardsRate) {
         return $this->setMetaValue(json_encode([
-            'captainRewardsRate' => $captainRewardsRate,
-            'joinerRewardsRate' => $joinerRewardsRate,
-            'regularRewardsRate' => $regularRewardsRate,
-            'userRewardsRate' => $userRewardsRate,
+            'groupOrderRewardsRate' => $groupOrderRewardsRate,
+            'groupOrderUserRewardsRate' => $groupOrderUserRewardsRate,
+
+            'regularOrderRewardsRate' => $regularOrderRewardsRate,
+            'regularOrderUserRewardsRate' => $regularOrderUserRewardsRate,
         ]));
     }
 
+    public function getGroupOrderRewardsRate() {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $metaValueArray['groupOrderRewardsRate'];
+    }
+    public function getGroupOrderUserRewardsRate() {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $metaValueArray['groupOrderUserRewardsRate'];
+    }
+    public function getRegularOrderRewardsRate() {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $metaValueArray['regularOrderRewardsRate'];
+    }
+    public function getRegularOrderUserRewardsRate() {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $metaValueArray['regularOrderUserRewardsRate'];
+    }
+
+    public function setGroupOrderRewardsRate($groupOrderRewardsRate) {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $this->setRewardsMeta($groupOrderRewardsRate, $metaValueArray['groupOrderUserRewardsRate'], $metaValueArray['regularOrderRewardsRate'], $metaValueArray['regularOrderUserRewardsRate']);
+    }
+    public function setGroupOrderUserRewardsRate($groupOrderUserRewardsRate) {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $this->setRewardsMeta($metaValueArray['groupOrderRewardsRate'], $groupOrderUserRewardsRate, $metaValueArray['regularOrderRewardsRate'], $metaValueArray['regularOrderUserRewardsRate']);
+    }
+    public function setRegularOrderRewardsRate($regularOrderRewardsRate) {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $this->setRewardsMeta($metaValueArray['groupOrderRewardsRate'], $metaValueArray['groupOrderUserRewardsRate'], $regularOrderRewardsRate, $metaValueArray['regularOrderUserRewardsRate']);
+    }
+    public function setRegularOrderUserRewardsRate($regularOrderUserRewardsRate) {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $this->setRewardsMeta($metaValueArray['groupOrderRewardsRate'], $metaValueArray['groupOrderUserRewardsRate'], $metaValueArray['regularOrderRewardsRate'], $regularOrderUserRewardsRate);
+    }
 
     /**
      * @return array
@@ -106,10 +100,11 @@ class ProjectRewardsMeta extends ProjectMeta
     {
         return [
             'metaKey' => $this->getMetaKey(),
-            'captainRewardsRate' => $this->getCaptainRewardsRate(),
-            'joinerRewardsRate' => $this->getJoinerRewardsRate(),
-            'regularRewardsRate' => $this->getRegularRewardsRate(),
-            'userRewardsRate' => $this->getUserRewardsRate(),
+            'groupOrderRewardsRate' => $this->getGroupOrderRewardsRate(),
+            'groupOrderUserRewardsRate' => $this->getGroupOrderUserRewardsRate(),
+
+            'regularOrderRewardsRate' => $this->getRegularOrderRewardsRate(),
+            'regularOrderUserRewardsRate' => $this->getRegularOrderUserRewardsRate(),
         ];
     }
 

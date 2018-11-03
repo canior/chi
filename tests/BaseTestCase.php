@@ -81,13 +81,13 @@ class BaseTestCase extends WebTestCase
         $product->setPrice(100);
         $product->setGroupPrice(80);
         $product->setOriginalPrice(120);
-        $product->setRewards(20);
+        $product->setRewards(10);
         $product->setSku('TEST');
         $product->setStock(100);
-        $product->setCaptainRewards(5);
-        $product->setJoinerRewards(5);
-        $product->setRegularRewards(2);
-        $product->setParentRewards(1);
+        $product->setGroupOrderRewards(8);
+        $product->setGroupOrderUserRewards(2);
+        $product->setRegularOrderRewards(6);
+        $product->setRegularOrderUserRewards(4);
 
         $productImage = new ProductImage();
         $productImage->setProduct($product);

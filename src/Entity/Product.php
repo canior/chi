@@ -66,22 +66,22 @@ class Product implements Dao
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      */
-    private $captainRewards;
+    private $groupOrderRewards;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      */
-    private $joinerRewards;
+    private $groupOrderUserRewards;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      */
-    private $regularRewards;
+    private $regularOrderRewards;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      */
-    private $parentRewards;
+    private $regularOrderUserRewards;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -239,73 +239,72 @@ class Product implements Dao
     /**
      * @return float
      */
-    public function getCaptainRewards()
+    public function getGroupOrderRewards()
     {
-        return $this->captainRewards;
+        return $this->groupOrderRewards;
     }
 
     /**
-     * @param float $captainRewards
+     * @param float $groupOrderRewards
      * @return Product
      */
-    public function setCaptainRewards($captainRewards)
+    public function setGroupOrderRewards($groupOrderRewards): self
     {
-        $this->captainRewards = $captainRewards;
-        return $this;
-    }
-
-
-    /**
-     * @return float
-     */
-    public function getJoinerRewards()
-    {
-        return $this->joinerRewards;
-    }
-
-    /**
-     * @param float $joinerRewards
-     * @return Product
-     */
-    public function setJoinerRewards($joinerRewards)
-    {
-        $this->joinerRewards = $joinerRewards;
+        $this->groupOrderRewards = $groupOrderRewards;
         return $this;
     }
 
     /**
      * @return float
      */
-    public function getParentRewards()
+    public function getGroupOrderUserRewards()
     {
-        return $this->parentRewards;
+        return $this->groupOrderUserRewards;
     }
 
     /**
-     * @param float $parentRewards
+     * @param float $groupOrderUserRewards
      * @return Product
      */
-    public function setParentRewards($parentRewards)
+    public function setGroupOrderUserRewards($groupOrderUserRewards): self
     {
-        $this->parentRewards = $parentRewards;
+        $this->groupOrderUserRewards = $groupOrderUserRewards;
         return $this;
     }
 
     /**
      * @return float
      */
-    public function getRegularRewards()
+    public function getRegularOrderRewards()
     {
-        return $this->regularRewards;
+        return $this->regularOrderRewards;
     }
 
     /**
-     * @param float $regularRewards
+     * @param float $regularOrderRewards
      * @return Product
      */
-    public function setRegularRewards($regularRewards)
+    public function setRegularOrderRewards($regularOrderRewards): self
     {
-        $this->regularRewards = $regularRewards;
+        $this->regularOrderRewards = $regularOrderRewards;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getRegularOrderUserRewards()
+    {
+        return $this->regularOrderUserRewards;
+    }
+
+    /**
+     * @param float $regularOrderUserRewards
+     * @return Product
+     */
+    public function setRegularOrderUserRewards($regularOrderUserRewards): self
+    {
+        $this->regularOrderUserRewards = $regularOrderUserRewards;
         return $this;
     }
 
