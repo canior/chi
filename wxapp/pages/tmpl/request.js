@@ -15,9 +15,15 @@ function confirmAddress(that, url, addressId) {
     success: (res) => {
       if (res.statusCode == 200 && res.data.code == 200) {
         //console.log(res.data.data)
-        wx.redirectTo({
-          url: '/pages/group/pay?orderId=' + groupUserOrderId,
-        })
+        if (that.data.groupUserOrder) {//来自pay,刷新数据
+          that.setData({
+            groupUserOrder: res.data.data.groupUserOrder
+          })
+        } else {//来自address,转回pay
+          wx.redirectTo({
+            url: '/pages/group/pay?orderId=' + groupUserOrderId,
+          })
+        }
       } else {
         console.log('wx.request return error', res.statusCode);
       }

@@ -5,6 +5,7 @@ var __data = {
 
 function init(that) {
   __enableBtn(that)
+  hideModal(that)
 }
 
 function __enableBtn(that) {
@@ -104,7 +105,7 @@ function __createGroup(that, url, productId) {
       wx.hideLoading();
       if (res.statusCode == 200 && res.data.code == 200) {
         //console.log(res.data.data)
-        wx.redirectTo({
+        wx.navigateTo({
           url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
         })
       } else {

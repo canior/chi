@@ -51,7 +51,12 @@ class GroupOrderController extends BackendController
             if (in_array($status, array_keys(GroupOrder::$statuses))
                 && !$groupOrder->$isMethod()) {
                 $setMethod = 'set' . ucwords($status);
-                $groupOrder->$setMethod();
+                try {
+                    $groupOrder->$setMethod();
+                } catch (\ArgumentCountError $e) {
+                    $this->addFlash('danger', '非法操作');
+                    return $this->redirectToRoute('group_order_info', ['id' => $groupOrder->getId()]);
+                }
 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($groupOrder);

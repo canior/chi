@@ -18,10 +18,9 @@ App({
               console.log('app:getUserInfo', res.userInfo);
               that.globalData.userInfo = res.userInfo
               that.login(res.userInfo, function () {
-                // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-                // 所以此处加入 callback 以防止这种情况
-                if (that.userInfoReadyCallback) {
-                  that.userInfoReadyCallback(res)
+                // 首页Page.onLoad的buriedPoint
+                if (that.userActivityCallback) {
+                  that.userActivityCallback(res)
                 }
               });
             }
@@ -29,7 +28,12 @@ App({
         } else {
           // 未授权或已取消授权
           console.log("app:authSetting['scope.userInfo']=false");
-          that.login();
+          that.login(null, function () {
+            // 首页Page.onLoad的buriedPoint
+            if (that.userActivityCallback) {
+              that.userActivityCallback(res)
+            }
+          });
         }
       }
     })
@@ -56,10 +60,11 @@ App({
           success: (res) => {
             console.log('app:wx.request /user/login', res);
             if (res.data.code == 200 && res.data.msg == 'login_success') {
-              wx.setStorageSync('thirdSession', res.data.data.thirdSession);
+              const thirdSession = res.data.data.thirdSession
+              wx.setStorageSync('thirdSession', thirdSession);
               that.globalData.isLogin = that.isLogin();
               that.globalData.user = res.data.data.user;
-              if (that.globalData.isLogin && callback) {
+              if (thirdSession && callback) {
                 callback()
               }
             }
@@ -134,6 +139,7 @@ App({
     var pages = getCurrentPages(); //页面栈
     var currentPageUrl = '/' + pages[pages.length - 1].route; //加载的页面url
     var that = this;
+    console.log('buriedPoint: url=' + currentPageUrl + ', thirdSession=' + wx.getStorageSync('thirdSession'))
     wx.request({
       url: that.globalData.baseUrl + '/user/activity/add',
       method: 'POST',

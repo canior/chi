@@ -4,7 +4,7 @@
   
   <view class="banner">
     <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
-      <swiper-item wx:for="{{banners}}" wx:key="index" wx:for-item="banner" bindtap="redirect">
+      <swiper-item wx:for="{{banners}}" wx:key="index" wx:for-item="banner" bindtap="redirect" data-url="{{banner.redirectUrl}}">
         <image src="{{imgUrlPrefix + '/' + banner.bannerFileId}}" />
       </swiper-item>
     </swiper>

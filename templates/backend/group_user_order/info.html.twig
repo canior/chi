@@ -34,6 +34,7 @@
                                                     <div class="media-body">
                                                         <div class="clearfix">
                                                             <h5>下单时间: {{ group_user_order.createdAt }}</h5>
+                                                            <h5>订单类型: {{ group_user_order.groupOrder ? '拼团订单' : '零售订单' }}</h5>
                                                             <h5>订单ID: {{ group_user_order.id }}</h5>
                                                             {% if group_user_order.groupOrder %}
                                                                 <h5>
@@ -59,11 +60,8 @@
                                                                 </h5>
                                                                 <h5>产品名: {{ group_user_order.product.title|default }}</h5>
                                                             {% endif %}
-                                                            {% if group_user_order.groupOrder %}
-                                                                <h5>拼团价格: ￥{{ group_user_order.product.groupPrice|default(0)|number_format }} <del>￥{{ group_user_order.product.originalPrice|default(0)|number_format }}</del></h5>
-                                                            {% else %}
-                                                                <h5>零售价格: ￥{{ group_user_order.product.price|default(0)|number_format }} <del>￥{{ group_user_order.product.originalPrice|default(0)|number_format }}</del></h5>
-                                                            {% endif %}
+                                                                <h5>拼团价: ￥{{ group_user_order.product.groupPrice|default(0)|number_format }} | 零售价: ￥{{ group_user_order.product.price|default(0)|number_format }} | 原价: <del>￥{{ group_user_order.product.originalPrice|default(0)|number_format }}</del></h5>
+                                                            <h5>支付金额: ￥{{ group_user_order.total|default(0)|number_format }}</h5>
                                                         </div>
                                                     </div>
                                                     <div class="media-right">

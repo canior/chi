@@ -115,7 +115,7 @@ class BackendController extends DefaultController
         ],
         [
             'path' => 'group_order_index',
-            'name' => '拼团管理',
+            'name' => '订单中心',
             'icon' => 'fa fa-shopping-bag',
             'active' => false,
             'role' => 'ROLE_ADMIN',

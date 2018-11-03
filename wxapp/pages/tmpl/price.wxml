@@ -1,7 +1,8 @@
 <template name="price">
     <view class="chi-price-container">
       <view class="price">拼团价￥<text>{{product.groupPrice}}</text></view>
-      <view class="ori-price">￥{{product.originalPrice}}</view>
-      <view class="freight">包邮</view>
+      <view class="ori-price" wx:if="{{product.originalPrice > 0}}">￥{{product.originalPrice}}</view>
+      <view class="freight" wx:if="{{product.freight == 0}}">包邮</view>
+      <view class="freight" wx:if="{{product.freight > 0}}">运费￥{{product.freight}}</view>
     </view>
 </template>

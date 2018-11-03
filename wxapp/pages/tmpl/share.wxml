@@ -7,7 +7,7 @@
       <button class="item" open-type="share" bindtap="wxSaveShareSource" data-type="refer">
         <image src="/images/share-wx.png"/><text>微信好友</text>
       </button>
-      <button class="item" open-type="share" bindtap="wxSaveShareSource" data-type="quan">
+      <button class="item" bindtap="wxSaveShareSource" data-type="quan">
         <image src="/images/share-moments.png"/><text>生成朋友圈图片</text>
       </button>
     </view>

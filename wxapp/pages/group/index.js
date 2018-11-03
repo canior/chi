@@ -27,10 +27,16 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    app.buriedPoint(options);
-    const id = options.id ? options.id : 10145;
+    const id = options.id;
     if (id) {
       this.getGroupOrder(id);      
+    }
+    app.userActivityCallback = res => {
+      app.buriedPoint(options)
+      this.setData({
+        isLogin: app.globalData.isLogin,
+        user: app.globalData.user
+      })
     }
   },
 
@@ -51,9 +57,11 @@ Page({
           const groupOrder = res.data.data.groupOrder;
           that.setGroupData(groupOrder);
           share.setShareSources(that, res.data.data.shareSources)          
-          if (groupOrder.status != 'completed') {
+          if (groupOrder.status == 'completed') {
             // 更多精彩拼团
-            that.getMoreProducts();
+            that.setData({
+              moreProducts: res.data.data.product.similarProducts
+            })
           } else {
             // 产品评价
             const url = app.globalData.baseUrl + '/products/' + groupOrder.product.id + '/reviews';
@@ -101,28 +109,6 @@ Page({
       userType: userType,
       openUserOrder: openUserOrder,
       joinUserOrder: joinUserOrder
-    })
-  },
-
-  // 更多精彩拼团:产品列表同/pages/product/index.js
-  getMoreProducts: function () {
-    const that = this;
-    wx.request({
-      url: app.globalData.baseUrl + '/products/',
-      data: {
-      },
-      success: (res) => {
-        if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
-          that.setData({
-            moreProducts: res.data.data.products
-          })
-        } else {
-          console.log('wx.request return error', res.statusCode);
-        }
-      },
-      fail(e) { },
-      complete(e) { }
     })
   },
 
@@ -200,22 +186,7 @@ Page({
   },
   wxSaveShareSource: function (e) {
     share.saveShareSource(this, e, app.globalData.baseUrl + '/user/shareSource/create')
-  },  
-
-  // 转地址管理
-  /*wxUserAddress: function (e) {
-    var orderId = null;
-    if (this.data.userType == 'open') {
-      orderId = this.data.openUserOrder.id
-    } else if (this.data.userType == 'join') {
-      orderId = this.data.joinUserOrder.id
-    }
-    if (orderId) {
-      wx.navigateTo({
-        url: '/pages/user/address/index?orderId=' + orderId,
-      })      
-    }
-  },*/  
+  },
 
   // 转首页
   toHome: function (e) {
