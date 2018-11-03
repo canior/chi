@@ -191,26 +191,6 @@ class UserController extends BaseController
         ]);
     }
 
-    /**
-     * 我的拼团详情
-     * @Route("/user/groupOrders/{groupOrderId}", name="myGroupOrder", methods="GET")
-     * @param Request $request
-     * @param $groupOrderId
-     * @param GroupOrderRepository $groupOrderRepository
-     * @return Response
-     */
-    public function getGroupOrderAction(Request $request, $groupOrderId, GroupOrderRepository $groupOrderRepository) : Response {
-        $data = json_decode($request->getContent(), true);
-        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
-
-        $user = $this->getWxUser($thirdSession);
-        $groupOrder = $groupOrderRepository->find($groupOrderId);
-
-        return $this->responseJson('success', 200, [
-            'groupOrder' => $groupOrder->getArray()
-        ]);
-    }
-
 
     /**
      * 我的订单列表
@@ -242,7 +222,7 @@ class UserController extends BaseController
 
         $paymentStatusArray = ['paid', 'refunding', 'refunded'];
 
-        $groupUserOrders = $groupUserOrderRepository->findBy(['user' => $user, 'status' => $groupUserOrderStatus, 'paymentStatus' => $paymentStatusArray]);
+        $groupUserOrders = $groupUserOrderRepository->findBy(['user' => $user, 'status' => $groupUserOrderStatus, 'paymentStatus' => $paymentStatusArray], ['id' => 'DESC']);
 
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
@@ -251,26 +231,6 @@ class UserController extends BaseController
 
         return $this->responseJson('success', 200, [
             'groupUserOrders' => $groupUserOrdersArray
-        ]);
-    }
-
-    /**
-     * 我的订单详情
-     * @Route("/user/groupUserOrder", name="myGroupUserOrder", methods="POST")
-     * @param Request $request
-     * @param GroupUserOrderRepository $groupUserOrderRepository
-     * @return Response
-     */
-    public function getGroupUserOrderAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) : Response {
-        $data = json_decode($request->getContent(), true);
-        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
-        $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
-
-        $user = $this->getWxUser($thirdSession);
-        $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
-
-        return $this->responseJson('success', 200, [
-            'groupUserOrder' => $groupUserOrder->getArray()
         ]);
     }
 
