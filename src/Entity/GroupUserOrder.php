@@ -102,18 +102,18 @@ class GroupUserOrder implements Dao
     private $prePayId;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderRewards", mappedBy="groupUserOrder", cascade="persist", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderRewards", mappedBy="groupUserOrder", cascade="persist", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $groupUserOrderRewards;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ProductReview", mappedBy="groupUserOrder", fetch="EXTRA_LAZY", cascade={"persist"} )
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductReview", mappedBy="groupUserOrder", fetch="EXTRA_LAZY", orphanRemoval=true, cascade={"persist"} )
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $productReviews;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderLog", mappedBy="groupUserOrder", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderLog", mappedBy="groupUserOrder", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $groupUserOrderLogs;
 
@@ -240,6 +240,7 @@ class GroupUserOrder implements Dao
         $this->addGroupUserOrderLog($log);
 
         //订单确认收货后，此时给上线传销返现
+
         if ($this->getUser()->getParentUser() != null) {
             $parentRewards = $this->getProduct()->getParentRewards();
             $userRewards = new GroupUserOrderRewards();
@@ -249,7 +250,7 @@ class GroupUserOrder implements Dao
             $this->addGroupUserOrderReward($userRewards);
 
             //发放传销返现
-            $this->getUser()->getParentUser()->increasePendingTotalRewards($userRewards);
+            $this->getUser()->getParentUser()->increasePendingTotalRewards($parentRewards);
             $this->getUser()->getParentUser()->getOrCreateTodayUserStatistics()->increaseUserRewardsTotal($this->getOrderRewards());
         }
 

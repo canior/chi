@@ -5,6 +5,7 @@ use App\Command\EnqueueCommand;
 use App\Command\Notification\NotifyPendingGroupOrderCommand;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
+use App\Entity\GroupUserOrderRewards;
 use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Entity\ProductReviewImage;
@@ -22,6 +23,7 @@ use App\Entity\UserStatistics;
 use App\Repository\FileRepository;
 use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
+use App\Repository\GroupUserOrderRewardsRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProjectBannerMetaRepository;
 use App\Repository\ProjectShareMetaRepository;
@@ -49,6 +51,7 @@ class UserController extends BaseController
      * @Route("/user/test", name="testUser", methods="POST")
      * @param Request $request
      * @param GroupOrderRepository $groupOrderRepository
+     * @param ProjectShareMetaRepository $projectShareMetaRepository
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function testAction(Request $request, GroupOrderRepository $groupOrderRepository, ProjectShareMetaRepository $projectShareMetaRepository) {
@@ -84,6 +87,7 @@ class UserController extends BaseController
 
         $data = json_decode($request->getContent(), true);
         $code = isset($data['code']) ? $data['code'] : null;
+        $this->getLog()->info("wx user code = " . $code);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $nickName = isset($data['nickName']) ? $data['nickName'] : $defaultNickname; //TODO 这里要添加文案
         $avatarUrl = isset($data['avatarUrl']) ? $data['avatarUrl'] : null; //需要一张默认的用户头像
@@ -629,17 +633,17 @@ class UserController extends BaseController
      *
      * @Route("/user/rewards/list", name="userRewardsList", methods="POST")
      * @param Request $request
+     * @param GroupUserOrderRewardsRepository $groupUserOrderRewardsRepository
      * @return Response
      */
-    public function listUserRewardsAction(Request $request) {
+    public function listUserRewardsAction(Request $request, GroupUserOrderRewardsRepository $groupUserOrderRewardsRepository) {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $user = $this->getWxUser($thirdSession);
 
-        return $this->responseJson('success', 200, [
-            'totalRewards' => $user->getTotalRewards(),
-            'children' => $user->getSharedUsersArray()
-        ]);
+        $subUsers = $groupUserOrderRewardsRepository->findSubUsers($user->getId(), true);
+
+        return $this->responseJson('success', 200, $subUsers);
     }
 
 

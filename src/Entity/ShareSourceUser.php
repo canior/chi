@@ -36,6 +36,7 @@ class ShareSourceUser implements Dao
         $this->setShareSource($shareSource);
         $this->setUser($user);
         $this->setCreatedAt();
+        $shareSource->getUser()->getOrCreateTodayUserStatistics()->increaseShareNum(1);
     }
 
     public function getUser(): ?User

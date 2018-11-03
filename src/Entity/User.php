@@ -95,28 +95,22 @@ class User extends BaseUser implements Dao
     private $userActivities;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserAddress", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\UserAddress", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $userAddresses;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GroupOrder", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupOrder", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $groupOrders;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrder", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrder", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $groupUserOrders;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderLog", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
-     * @ORM\OrderBy({"id" = "DESC"})
-     */
-    private $groupUserOrderLogs;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\GroupUserOrderRewards", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
@@ -125,19 +119,19 @@ class User extends BaseUser implements Dao
     private $groupUserOrderRewards;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $shareSources;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserStatistics", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\UserStatistics", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $userStatistics;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ShareSourceUser", mappedBy="user", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSourceUser", mappedBy="user", orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      * @var ArrayCollection $shareSourceUsers
      */
@@ -162,11 +156,16 @@ class User extends BaseUser implements Dao
         $this->userAddresses = new ArrayCollection();
         $this->groupOrders = new ArrayCollection();
         $this->groupUserOrders = new ArrayCollection();
-        $this->groupUserOrderLogs = new ArrayCollection();
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->shareSources = new ArrayCollection();
         $this->setUpdatedAt();
         $this->userStatistics = new ArrayCollection();
+        $this->shareSourceUsers = new ArrayCollection();
+    }
+
+    public function setId($id) {
+        $this->id = $id;
+        return $this;
     }
 
     public function getId()
@@ -419,37 +418,6 @@ class User extends BaseUser implements Dao
             // set the owning side to null (unless already changed)
             if ($groupBuying->getUser() === $this) {
                 $groupBuying->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|GroupUserOrderLog[]
-     */
-    public function getGroupUserOrderLogs(): Collection
-    {
-        return $this->groupUserOrderLogs;
-    }
-
-    public function addGroupUserOrderLog(GroupUserOrderLog $groupUserOrderLog): self
-    {
-        if (!$this->groupUserOrderLogs->contains($groupUserOrderLog)) {
-            $this->groupUserOrderLogs[] = $groupUserOrderLog;
-            $groupUserOrderLog->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGroupUserOrderLog(GroupUserOrderLog $groupUserOrderLog): self
-    {
-        if ($this->groupUserOrderLogs->contains($groupUserOrderLog)) {
-            $this->groupUserOrderLogs->removeElement($groupUserOrderLog);
-            // set the owning side to null (unless already changed)
-            if ($groupUserOrderLog->getUser() === $this) {
-                $groupUserOrderLog->setUser(null);
             }
         }
 

@@ -47,13 +47,13 @@ class GroupOrder implements Dao
     private $product;
 
     /**
-     * @ORM\OneToMany(targetEntity="GroupUserOrder", mappedBy="groupOrder", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="GroupUserOrder", mappedBy="groupOrder", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $groupUserOrders;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="groupOrder", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="groupOrder", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $shareSources;
@@ -210,7 +210,8 @@ class GroupOrder implements Dao
         $masterGroupUserOrder->setPending();
         $masterGroupUserOrder->setUpdatedAt();
 
-        $this->getUser()->getOrCreateTodayUserStatistics()->increaseGroupOrderJoinedNum(1);
+        $this->getUser()->getOrCreateTodayUserStatistics()->increaseChildrenNum(1);
+        $joiner->getOrCreateTodayUserStatistics()->increaseGroupOrderJoinedNum(1);
 
         $this->setUpdatedAt();
         return $this;

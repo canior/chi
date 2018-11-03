@@ -6,6 +6,7 @@ use App\Entity\ShareSource;
 use App\Entity\ShareSourceUser;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -106,4 +107,5 @@ class UserRepository extends ServiceEntityRepository
 
         return $query;
     }
+
 }

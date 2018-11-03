@@ -18,6 +18,16 @@ trait IdTrait
      */
     private $id;
 
+
+    /**
+     * @param $id
+     * @return IdTrait
+     */
+    public function setId($id) {
+        $this->id = $id;
+        return $this;
+    }
+
     /**
      * Get id
      *

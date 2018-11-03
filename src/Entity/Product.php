@@ -106,17 +106,17 @@ class Product implements Dao
     private $productSpecImages;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ProductReview", mappedBy="product", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductReview", mappedBy="product", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $productReviews;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="product", orphanRemoval=true)
      */
     private $shareSources;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ProductStatistics", mappedBy="product", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductStatistics", mappedBy="product", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $productStatistics;
