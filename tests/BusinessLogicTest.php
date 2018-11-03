@@ -25,12 +25,10 @@ class BusinessLogicTest extends BaseTestCase
      */
     public function testCompletedGroupOrder() {
         $product = $this->createProduct();
-
         $oldStock = $product->getStock();
-
         $captain = $this->createUser();
 
-        //创建拼团订单及团长客户订单
+        //1. 创建拼团订单及团长客户订单
         $groupOrder = new GroupOrder($captain, $product);
         $this->assertTrue($groupOrder->isCreated());
 
@@ -42,7 +40,7 @@ class BusinessLogicTest extends BaseTestCase
         $this->assertEquals($product->getGroupPrice(), $masterGroupUserOrder->getTotal());
         $this->assertEquals($product->getGroupOrderRewards(), $masterGroupUserOrder->getOrderRewards());
 
-        //团长支付成功
+        //2. 团长支付成功
         $groupOrder->setPending();
 
         $this->assertTrue($groupOrder->isPending());
@@ -51,8 +49,12 @@ class BusinessLogicTest extends BaseTestCase
 
         $captainStatistics = $captain->getUserStatistics()[0];
         $this->assertEquals($captainStatistics->getGroupOrderNum(), 1);
+        $this->assertEquals(0, $captain->getPendingTotalRewards());
+        $this->assertEquals(0, $captainStatistics->getOrderRewardsTotal());
+        $this->assertEquals(1, $captainStatistics->getGroupUserOrderNum());
 
-        //团长分享给团员
+
+        //3. 团长分享给团员
         $captainShareSource = $this->createShareSource($groupOrder, $product, $captain);
 
         //团员打开分享链接
@@ -63,7 +65,7 @@ class BusinessLogicTest extends BaseTestCase
         $this->assertEquals(1, $captainStatistics->getSharedNum());
         $this->assertNull($joiner->getParentUser()); //此时团员的有效上线为空
 
-        //团员创建拼团订单
+        //4. 团员创建拼团订单
         $slaveGroupUserOrder = new GroupUserOrder($joiner, $product, $groupOrder);
         $slaveGroupUserOrder->setGroupOrder($groupOrder);
         $slaveGroupUserOrder->setTotal($product->getGroupPrice());
@@ -78,7 +80,7 @@ class BusinessLogicTest extends BaseTestCase
         $this->assertEquals($product->getGroupPrice(), $slaveGroupUserOrder->getTotal());
         $this->assertEquals($product->getGroupOrderRewards(), $slaveGroupUserOrder->getOrderRewards());
 
-        //团员支付拼团订单
+        //5. 团员支付拼团订单
         $groupOrder->setCompleted($joiner);
 
         $this->assertTrue($groupOrder->isCompleted());
@@ -102,13 +104,54 @@ class BusinessLogicTest extends BaseTestCase
         $this->assertEquals(1, $joinerStatistics->getGroupUserOrderNum());
         $this->assertEquals($joiner->getPendingTotalRewards(), $joinerStatistics->getOrderRewardsTotal());
 
-        //团员订单发货，团员收货
+        //6. 团员订单发货，团员收货
         $slaveGroupUserOrder->setDelivered();
         $this->assertEquals($captain->getPendingTotalRewards(), $masterGroupUserOrder->getOrderRewards() + $slaveGroupUserOrder->getGroupUserOrderRewards()[0]->getUserRewards());
         $this->assertEquals(0, $captain->getTotalRewards());
 
         $this->assertEquals($joiner->getPendingTotalRewards(), $slaveGroupUserOrder->getOrderRewards());
         $this->assertEquals(0, $joiner->getTotalRewards());
+
+    }
+
+
+    /**
+     * 自然流量进来的开团成功后过期
+     * 1. 团长开团，支付，分享
+     * 2. 团员参团
+     * 3. 拼团过期
+     */
+    public function testExpiredGroupOrder() {
+
+        $product = $this->createProduct();
+        $oldStock = $product->getStock();
+        $captain = $this->createUser();
+
+        //1. 创建拼团订单及团长客户订单
+        $groupOrder = new GroupOrder($captain, $product);
+        $masterGroupUserOrder = $groupOrder->getMasterGroupUserOrder();
+
+        //2. 团长支付成功
+        $groupOrder->setPending();
+
+        //3. 拼团过期
+        $groupOrder->setExpired();
+
+        $this->assertTrue($masterGroupUserOrder->isCancelled());
+        $this->assertTrue($masterGroupUserOrder->isRefunding());
+        $this->assertTrue($groupOrder->isExpired());
+        $this->assertEquals($oldStock, $product->getStock());
+
+        $captainStatistics = $captain->getUserStatistics()[0];
+        $this->assertEquals(0, $captainStatistics->getChildrenNum());
+        $this->assertEquals(0, $captainStatistics->getSharedNum());
+        $this->assertEquals(1, $captainStatistics->getGroupOrderNum());
+        $this->assertEquals(0, $captainStatistics->getGroupOrderJoinedNum());
+        $this->assertEquals(1, $captainStatistics->getGroupUserOrderNum());
+        $this->assertEquals(0, $captainStatistics->getSpentTotal());
+        $this->assertEquals(0, $captainStatistics->getOrderRewardsTotal());
+        $this->assertEquals(0, $captainStatistics->getUserRewardsTotal());
+
 
     }
 }

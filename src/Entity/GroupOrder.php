@@ -247,8 +247,10 @@ class GroupOrder implements Dao
                 $groupUserOrder->setCancelled();
                 $groupUserOrder->setRefunding();
             }
-            $this->getProduct()->increaseStock();
+            $this->getProduct()->increaseStock(2);
         }
+
+        $this->getUser()->getOrCreateTodayUserStatistics()->increaseSpentTotal(-$this->getMasterGroupUserOrder()->getTotal());
         $this->setUpdatedAt();
         return $this;
     }

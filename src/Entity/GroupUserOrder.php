@@ -182,7 +182,8 @@ class GroupUserOrder implements Dao
         $log->setToStatus($newStatus);
         $this->addGroupUserOrderLog($log);
 
-        //拼团成功后订单状态变为待发货，此时给订单返现
+        //拼团成功后或者普通订单购买成功后，订单状态变为待发货，此时给订单返现
+        $this->getUser()->increasePendingTotalRewards($this->getOrderRewards());
         $this->getUser()->getOrCreateTodayUserStatistics()->increaseOrderRewardsTotal($this->getOrderRewards());
 
         return $this;
@@ -348,9 +349,6 @@ class GroupUserOrder implements Dao
 
         $this->getUser()->setParentUser($parentUser);
         $this->getUser()->addGroupUserOrder($this);
-
-        //发放订单返现
-        $this->getUser()->increasePendingTotalRewards($this->getOrderRewards());
 
         $log = new GroupUserOrderLog($this);
         $log->setFromPaymentStatus($oldStatus);
