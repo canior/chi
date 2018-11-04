@@ -29,7 +29,7 @@ Page({
   getGroupUserOrder: function (id) {
     const that = this;
     wx.request({
-      url: app.globalData.baseUrl + '/user/groupUserOrder',
+      url: app.globalData.baseUrl + '/groupUserOrder/view',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
         groupUserOrderId: id
