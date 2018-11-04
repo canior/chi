@@ -54,6 +54,13 @@ class SendOrderRewardsCommandHandler
         ]);
 
         $this->log->info("result : " . json_encode($result));
+
+        if ($result['status']) {
+            $user = $groupUserOrder->getUser();
+            $user->increasePendingTotalRewards(-$groupUserOrder->getOrderRewards());
+            $user->increaseTotalRewards($groupUserOrder->getOrderRewards());
+            $this->log->info("update user total rewards for order " . $groupUserOrder->getId());
+        }
     }
 
 }
