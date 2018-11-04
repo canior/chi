@@ -57,4 +57,34 @@ class ProductSimilar implements Dao
 
         return $this;
     }
+
+    public function getArray() {
+        $product = $this->getSimilarProduct();
+
+        $productImageArray = [];
+        foreach ($product->getProductImages() as $productImage) {
+            $productImageArray[] = $productImage->getArray();
+        }
+
+        $productSpecImagesArray = [];
+        foreach ($product->getProductSpecImages() as $productSpecImage) {
+            $productSpecImagesArray[] = $productSpecImage->getArray();
+        }
+
+        return [
+            'id' => $product->getId(),
+            'title' => $product->getTitle(),
+            'price' => $product->getPrice(),
+            'groupPrice' => $product->getGroupPrice(),
+            'originalPrice' => $product->getOriginalPrice(),
+            'freight' => $product->getFreight(),
+            'shortDescription' => $product->getShortDescription(),
+            'rewards' => $product->getRewards(),
+            'productImages' => $productImageArray,
+            'productSpecImages' => $productSpecImagesArray,
+            'stock' => $product->getStock(),
+            'soldNum' => 1000, //TODO 需要从product statistics里拿
+            'reviewsNum' => 500, //TODO 需要从product statistics里拿
+        ];
+    }
 }
