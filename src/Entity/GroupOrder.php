@@ -165,7 +165,7 @@ class GroupOrder implements Dao
             return $this;
         }
 
-        $this->setExpiredAt(time() + 24*3600); //TODO 需要再产品加入拼团配置
+        $this->setExpiredAt(time() + 72*3600); //TODO 需要再产品加入拼团配置
         $this->getProduct()->decreaseStock(2);//两人团减少2减库存
 
         $masterUserOrder = $this->getMasterGroupUserOrder();
