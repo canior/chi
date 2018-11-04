@@ -69,7 +69,7 @@
   height: 1px;
   width: 30%;
   position: absolute;
-  top: 45%;
+  top: 55%;
 }.group-container .status:before {
   left: 0;
 }.group-container .status:after {
