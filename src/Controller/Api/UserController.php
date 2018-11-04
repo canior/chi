@@ -600,9 +600,11 @@ class UserController extends BaseController
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $user = $this->getWxUser($thirdSession);
 
-        $subUsers = $groupUserOrderRewardsRepository->findSubUsers($user->getId(), true);
+        $children = $groupUserOrderRewardsRepository->findSubUsers($user->getId(), true);
 
-        return $this->responseJson('success', 200, $subUsers);
+        return $this->responseJson('success', 200, [
+            'children' => $children
+        ]);
     }
 
 
