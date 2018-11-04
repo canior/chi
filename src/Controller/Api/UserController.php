@@ -280,7 +280,7 @@ class UserController extends BaseController
         }
 
         $productReview->setGroupUserOrder($groupUserOrder);
-        $productReview->setProduct($groupUserOrder->getGroupOrder()->getProduct());
+        $productReview->setProduct($groupUserOrder->getProduct());
         $productReview->setRate($rate);
         $productReview->setReview($review);
 
