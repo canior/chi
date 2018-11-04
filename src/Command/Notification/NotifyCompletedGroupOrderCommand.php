@@ -10,6 +10,7 @@ namespace App\Command\Notification;
 
 
 use App\Command\SerializableCommandInterface;
+use App\Entity\GroupOrder;
 
 /**
  * 通知团长，团员拼团成功
@@ -22,11 +23,11 @@ class NotifyCompletedGroupOrderCommand implements SerializableCommandInterface
 
     /**
      * NotifyPendingGroupOrderCommand constructor.
-     * @param $groupOrderId
+     * @param GroupOrder $groupOrder
      */
-    function __construct($groupOrderId)
+    function __construct(GroupOrder $groupOrder)
     {
-        $this->groupOrderId = $groupOrderId;
+        $this->groupOrderId = $groupOrder->getId();
     }
 
     /**
@@ -41,7 +42,7 @@ class NotifyCompletedGroupOrderCommand implements SerializableCommandInterface
      */
     public function serialize()
     {
-        // TODO: Implement serialize() method.
+        return '{"groupOrderId":' . $this-> groupOrderId. ' }';
     }
 
     /**
@@ -50,6 +51,6 @@ class NotifyCompletedGroupOrderCommand implements SerializableCommandInterface
      */
     public function deserialize($json)
     {
-        // TODO: Implement deserialize() method.
+        return json_decode($json, true);
     }
 }

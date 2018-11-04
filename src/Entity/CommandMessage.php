@@ -2,6 +2,17 @@
 
 namespace App\Entity;
 
+use App\Command\Notification\NotifyCompletedGroupOrderCommand;
+use App\Command\Notification\NotifyExpiredGroupOrderCommand;
+use App\Command\Notification\NotifyExpiringGroupOrderCommand;
+use App\Command\Notification\NotifyOrderRewardsSentCommand;
+use App\Command\Notification\NotifyPendingGroupOrderCommand;
+use App\Command\Notification\NotifyUserRewardsSentCommand;
+use App\Command\Payment\RefundOrderCommand;
+use App\Command\Payment\SendGroupUserOrderRewardCommand;
+use App\Command\Payment\SendOrderRewardCommand;
+use App\Command\Payment\SendOrderRewardsCommand;
+use App\Command\Payment\SendUserRewardsCommand;
 use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\StatusTrait;
@@ -46,6 +57,13 @@ class CommandMessage implements Dao
      */
     private $multithread;
 
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="userCommands")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $user;
+
     /**
      * CommandMessage constructor.
      */
@@ -54,6 +72,15 @@ class CommandMessage implements Dao
         $this->setStatus(self::PENDING);
         $this->setCreatedAt(time());
         $this->setMultithread(0);
+    }
+
+    public function setUser(?User $user) {
+        $this->user = $user;
+        return $this;
+    }
+
+    public function getUser() {
+        return $this->user;
     }
 
     public function getCommandClass(): ?string
@@ -136,5 +163,131 @@ class CommandMessage implements Dao
     public function setCompleted() {
         $this->status = self::COMPLETED;
         $this->setCompletedAt(time());
+    }
+
+    /**
+     * 生成发放订单返现队列CommandMessage
+     * @param GroupUserOrder $groupUserOrder
+     * @return CommandMessage
+     */
+    public static function createSendOrderRewardsCommand(GroupUserOrder $groupUserOrder) {
+        $qCommand = new SendOrderRewardsCommand($groupUserOrder);
+        $commandMessage = new CommandMessage();
+        $commandMessage->setMultithread(true);
+        $commandMessage->setCommandClass(get_class($qCommand));
+        $commandMessage->setCommandData($qCommand->serialize());
+        return $commandMessage;
+    }
+
+    /**
+     * 生成发放传销返现队列CommandMessage
+     * @param GroupUserOrder $groupUserOrder
+     * @return CommandMessage
+     */
+    public static function createSendUserRewardsCommand(GroupUserOrder $groupUserOrder) {
+        $qCommand = new SendUserRewardsCommand($groupUserOrder);
+        $commandMessage = new CommandMessage();
+        $commandMessage->setMultithread(true);
+        $commandMessage->setCommandClass(get_class($qCommand));
+        $commandMessage->setCommandData($qCommand->serialize());
+        return $commandMessage;
+    }
+
+    /**
+     * 生成发放订单退款队列CommandMessage
+     * @param GroupUserOrder $groupUserOrder
+     * @return CommandMessage
+     */
+    public static function createRefundOrderCommand(GroupUserOrder $groupUserOrder) {
+        $qCommand = new RefundOrderCommand($groupUserOrder);
+        $commandMessage = new CommandMessage();
+        $commandMessage->setMultithread(true);
+        $commandMessage->setCommandClass(get_class($qCommand));
+        $commandMessage->setCommandData($qCommand->serialize());
+        return $commandMessage;
+    }
+
+    /**
+     * 生成拼团订单完成通知CommandMessage
+     * @param GroupOrder $groupOrder
+     * @return CommandMessage
+     */
+    public static function createNotifyCompletedGroupOrderCommand(GroupOrder $groupOrder) {
+        $qCommand = new NotifyCompletedGroupOrderCommand($groupOrder);
+        $commandMessage = new CommandMessage();
+        $commandMessage->setMultithread(true);
+        $commandMessage->setCommandClass(get_class($qCommand));
+        $commandMessage->setCommandData($qCommand->serialize());
+        return $commandMessage;
+    }
+
+    /**
+     * 生成拼团即将过期通知CommandMessage
+     * @param GroupOrder $groupOrder
+     * @return CommandMessage
+     */
+    public static function createNotifyExpiringGroupOrderCommand(GroupOrder $groupOrder) {
+        $qCommand = new NotifyExpiringGroupOrderCommand($groupOrder);
+        $commandMessage = new CommandMessage();
+        $commandMessage->setMultithread(true);
+        $commandMessage->setCommandClass(get_class($qCommand));
+        $commandMessage->setCommandData($qCommand->serialize());
+        return $commandMessage;
+    }
+
+    /**
+     * 生成拼团已经过期通知CommandMessage
+     * @param GroupOrder $groupOrder
+     * @return CommandMessage
+     */
+    public static function createNotifyExpiredGroupOrderCommand(GroupOrder $groupOrder) {
+        $qCommand = new NotifyExpiredGroupOrderCommand($groupOrder);
+        $commandMessage = new CommandMessage();
+        $commandMessage->setMultithread(true);
+        $commandMessage->setCommandClass(get_class($qCommand));
+        $commandMessage->setCommandData($qCommand->serialize());
+        return $commandMessage;
+    }
+
+    /**
+     * 生成订单返现通知CommandMessage
+     * @param GroupUserOrder $groupUserOrder
+     * @return CommandMessage
+     */
+    public static function createNotifyOrderRewardsSentCommand(GroupUserOrder $groupUserOrder) {
+        $qCommand = new NotifyOrderRewardsSentCommand($groupUserOrder);
+        $commandMessage = new CommandMessage();
+        $commandMessage->setMultithread(true);
+        $commandMessage->setCommandClass(get_class($qCommand));
+        $commandMessage->setCommandData($qCommand->serialize());
+        return $commandMessage;
+    }
+
+    /**
+     * 生成开团成功通知CommandMessage
+     * @param GroupOrder $groupOrder
+     * @return CommandMessage
+     */
+    public static function createNotifyPendingGroupOrderCommand(GroupOrder $groupOrder) {
+        $qCommand = new NotifyPendingGroupOrderCommand($groupOrder);
+        $commandMessage = new CommandMessage();
+        $commandMessage->setMultithread(true);
+        $commandMessage->setCommandClass(get_class($qCommand));
+        $commandMessage->setCommandData($qCommand->serialize());
+        return $commandMessage;
+    }
+
+    /**
+     * 生成用户传销返现通知CommandMessage
+     * @param GroupUserOrder $groupUserOrder
+     * @return CommandMessage
+     */
+    public static function createNotifyUserRewardsSentCommand(GroupUserOrder $groupUserOrder) {
+        $qCommand = new NotifyUserRewardsSentCommand($groupUserOrder);
+        $commandMessage = new CommandMessage();
+        $commandMessage->setMultithread(true);
+        $commandMessage->setCommandClass(get_class($qCommand));
+        $commandMessage->setCommandData($qCommand->serialize());
+        return $commandMessage;
     }
 }

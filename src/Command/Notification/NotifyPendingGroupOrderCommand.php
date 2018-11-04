@@ -9,6 +9,7 @@ namespace App\Command\Notification;
 
 use App\Command\CommandInterface;
 use App\Command\SerializableCommandInterface;
+use App\Entity\GroupOrder;
 
 /**
  * 团长开团通知
@@ -21,11 +22,11 @@ class NotifyPendingGroupOrderCommand implements SerializableCommandInterface
 
     /**
      * NotifyPendingGroupOrderCommand constructor.
-     * @param int $groupOrderId
+     * @param GroupOrder $groupOrder
      */
-    function __construct($groupOrderId)
+    function __construct(GroupOrder $groupOrder)
     {
-        $this->groupOrderId = $groupOrderId;
+        $this->groupOrderId = $groupOrder->getId();
     }
 
     /**

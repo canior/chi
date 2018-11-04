@@ -2,20 +2,23 @@
 /**
  * Created by PhpStorm.
  * User: tandy
- * Date: 2018-10-31
- * Time: 11:17 PM
+ * Date: 2018-11-04
+ * Time: 1:39 PM
  */
 
-namespace App\Command\Notification;
+namespace App\Command\Payment;
 
 
-use App\Command\SerializableCommandInterface;
 use App\Entity\GroupUserOrder;
 
-class NotifyOrderRewardsSentCommand implements SerializableCommandInterface
+class SendUserRewardsCommand
 {
     private $groupUserOrderId;
 
+    /**
+     * SendUserRewardsCommand constructor.
+     * @param GroupUserOrder $groupUserOrder
+     */
     public function __construct(GroupUserOrder $groupUserOrder)
     {
 

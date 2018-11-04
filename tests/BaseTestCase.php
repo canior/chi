@@ -9,6 +9,7 @@
 namespace App\Tests;
 
 
+use App\Entity\CommandMessage;
 use App\Entity\File;
 use App\Entity\Product;
 use App\Entity\ProductImage;
@@ -58,6 +59,13 @@ class BaseTestCase extends WebTestCase
         $productRepository = $this->getEntityManager()->getRepository(Product::class);
         foreach ($productRepository->findAll() as $product) {
             $this->getEntityManager()->remove($product);
+        }
+        $this->getEntityManager()->flush();
+
+
+        $commandMessageRepository = $this->getEntityManager()->getRepository(CommandMessage::class);
+        foreach ($commandMessageRepository->findAll() as $commandMessage) {
+            $this->getEntityManager()->remove($commandMessage);
         }
         $this->getEntityManager()->flush();
 

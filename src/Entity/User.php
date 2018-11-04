@@ -142,6 +142,12 @@ class User extends BaseUser implements Dao
      */
     private $pendingTotalRewards;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\CommandMessage", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $userCommands;
+
     public function __construct()
     {
         parent::__construct();
@@ -161,6 +167,7 @@ class User extends BaseUser implements Dao
         $this->setUpdatedAt();
         $this->userStatistics = new ArrayCollection();
         $this->shareSourceUsers = new ArrayCollection();
+        $this->userCommands = new ArrayCollection();
     }
 
     public function setId($id) {
@@ -693,6 +700,51 @@ class User extends BaseUser implements Dao
      */
     public function increasePendingTotalRewards($amount) {
         $this->pendingTotalRewards += $amount;
+        return $this;
+    }
+
+
+    /**
+     * @return Collection|CommandMessage[]
+     */
+    public function getCommandMessages(): Collection
+    {
+        return $this->userCommands;
+    }
+
+    /**
+     * @param CommandMessage $commandMessage
+     * @return CommandMessage|null
+     */
+    public function getCommandMessage(CommandMessage $commandMessage) {
+        foreach ($this->getCommandMessages() as $cm) {
+            if ($commandMessage->getId() == $cm->getId() and $commandMessage->getCommandClass() == $commandMessage->getCommandClass()) {
+                return $commandMessage;
+            }
+        }
+        return null;
+    }
+
+    public function addUserCommand(CommandMessage $commandMessage): self
+    {
+        if (!$this->userCommands->contains($commandMessage)) {
+            $commandMessage->setUser($this);
+            $this->userCommands[] = $commandMessage;
+        }
+
+        return $this;
+    }
+
+    public function removeUserCommand(CommandMessage $commandMessage): self
+    {
+        if ($this->userCommands->contains($commandMessage)) {
+            $this->userCommands->removeElement($commandMessage);
+            // set the owning side to null (unless already changed)
+            if ($commandMessage->getUser() === $this) {
+                $commandMessage->setUser(null);
+            }
+        }
+
         return $this;
     }
 }

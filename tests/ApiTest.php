@@ -80,6 +80,7 @@ class ApiTest extends BaseTestCase
         $this->assertEquals($this->product->getArray(), $data['data']['product']);
         $this->assertEquals(ShareSource::REFER, $data['data']['shareSources'][0]['type']);
         $this->assertEquals(ShareSource::QUAN, $data['data']['shareSources'][1]['type']);
+
     }
 
     /**

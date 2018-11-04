@@ -8,13 +8,49 @@
 
 namespace App\Command\Notification;
 
+use App\Command\SerializableCommandInterface;
+use App\Entity\GroupOrder;
+
 /**
  * 通知团长拼团过期通知, 并退款
  *
  * Class NotifyExpiredGroupOrderCommand
  * @package App\Command\Notification
  */
-class NotifyExpiredGroupOrderCommand
+class NotifyExpiredGroupOrderCommand implements SerializableCommandInterface
 {
+    private $groupOrderId;
 
+    /**
+     * NotifyPendingGroupOrderCommand constructor.
+     * @param GroupOrder $groupOrder
+     */
+    function __construct(GroupOrder $groupOrder)
+    {
+        $this->groupOrderId = $groupOrder->getId();
+    }
+
+    /**
+     * @return int
+     */
+    public function getGroupOrderId() : int {
+        return $this->groupOrderId;
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return '{"groupOrderId":' . $this-> groupOrderId. ' }';
+    }
+
+    /**
+     * @param $json
+     * @return $this
+     */
+    public function deserialize($json)
+    {
+        return json_decode($json, true);
+    }
 }

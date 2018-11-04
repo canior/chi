@@ -172,6 +172,8 @@ class GroupOrder implements Dao
         $masterUserOrder->setPaid();
 
         $this->getUser()->getOrCreateTodayUserStatistics()->increaseGroupOrderNum(1);
+        $this->getUser()->addUserCommand(CommandMessage::createNotifyPendingGroupOrderCommand($this));
+        $this->getUser()->addUserCommand(CommandMessage::createNotifyExpiringGroupOrderCommand($this));
 
         $this->setUpdatedAt();
         return $this;
@@ -196,6 +198,8 @@ class GroupOrder implements Dao
      */
     public function setCompleted(User $joiner) : self  {
         $this->status = self::COMPLETED;
+
+        $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedGroupOrderCommand($this));
 
         //如果已经有了支付过的参团订单则不做任何操作
         $slaveGroupUserOrder = $this->getSlaveGroupUserOrder($joiner);
@@ -246,6 +250,10 @@ class GroupOrder implements Dao
             if ($groupUserOrder->isPaid()) {
                 $groupUserOrder->setCancelled();
                 $groupUserOrder->setRefunding();
+
+
+                $this->getUser()->addUserCommand(CommandMessage::createNotifyExpiredGroupOrderCommand($this));
+
             }
             $this->getProduct()->increaseStock(2);
         }

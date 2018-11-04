@@ -3,6 +3,7 @@ namespace App\Controller\Api;
 
 use App\Command\EnqueueCommand;
 use App\Command\Notification\NotifyPendingGroupOrderCommand;
+use App\Entity\CommandMessage;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
 use App\Entity\GroupUserOrderRewards;
@@ -57,17 +58,12 @@ class UserController extends BaseController
     public function testAction(Request $request, GroupOrderRepository $groupOrderRepository, ProjectShareMetaRepository $projectShareMetaRepository) {
         if ($this->getEnvironment() != 'dev') exit;
 
-        $rewardsMeta = new ProjectRewardsMeta('rewards_config');
-        $rewardsMeta->setRewardsMeta(0.5, 0.4,0,0.1);
-        $this->getEntityManager()->persist($rewardsMeta);
+        $groupUserOrderId = 58;
+        $groupUserOrder = $this->getEntityManager()->getRepository(GroupUserOrder::class)->find($groupUserOrderId);
+        $user = $groupUserOrder->getUser();
+        $user->addUserCommand(CommandMessage::createSendOrderRewardsCommand($groupUserOrderId));
+        $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
-        exit;
-
-        $data = json_decode($request->getContent(), true);
-        $groupOrderId =  isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
-
-        $command = new EnqueueCommand(new NotifyPendingGroupOrderCommand($groupOrderId), true);
-        $this->getCommandBus()->handle($command);
 
         return $this->responseJson('success', 200, []);
     }

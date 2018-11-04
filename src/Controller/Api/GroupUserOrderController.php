@@ -243,16 +243,8 @@ class GroupUserOrderController extends BaseController
             $groupOrder = $groupUserOrder->getGroupOrder();
             if ($groupUserOrder->isMasterOrder()) {
                 $groupOrder->setPending();
-                //$command = new EnqueueCommand(new NotifyPendingGroupOrderCommand($groupOrder->getId()), true);
-                //$this->getCommandBus()->handle($command);
             } else {
                 $groupOrder->setCompleted($user);
-
-                //$command = new NotifyCompletedGroupOrderCommand($groupOrder->getId());
-                //$this->getCommandBus()->handle($command);
-
-                //$command = new NotifyOrderRewardsSentCommand($groupOrder->getId());
-                //$this->getCommandBus()->handle($command);
             }
             $this->getEntityManager()->persist($groupOrder);
             $this->getEntityManager()->flush();
@@ -261,9 +253,6 @@ class GroupUserOrderController extends BaseController
             $groupUserOrder->setPaid();
             $this->getEntityManager()->persist($groupUserOrder);
             $this->getEntityManager()->flush();
-
-            //$command = new NotifyOrderRewardsSentCommand($groupUserOrder->getId());
-            //$this->getCommandBus()->handle($command);
         }
 
         $data = [

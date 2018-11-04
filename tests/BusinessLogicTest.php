@@ -9,6 +9,7 @@
 namespace App\Tests;
 
 
+use App\Entity\CommandMessage;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
 use App\Entity\ShareSource;
@@ -39,6 +40,7 @@ class BusinessLogicTest extends BaseTestCase
         $this->assertTrue($masterGroupUserOrder->isMasterOrder());
         $this->assertEquals($product->getGroupPrice(), $masterGroupUserOrder->getTotal());
         $this->assertEquals($product->getGroupOrderRewards(), $masterGroupUserOrder->getOrderRewards());
+        $this->assertTrue($captain->getCommandMessages()->count() == 0);
 
         //2. 团长支付成功
         $groupOrder->setPending();
@@ -52,6 +54,9 @@ class BusinessLogicTest extends BaseTestCase
         $this->assertEquals(0, $captain->getPendingTotalRewards());
         $this->assertEquals(0, $captainStatistics->getOrderRewardsTotal());
         $this->assertEquals(1, $captainStatistics->getGroupUserOrderNum());
+
+        $this->assertNotNull($captain->getCommandMessage(CommandMessage::createNotifyPendingGroupOrderCommand($groupOrder)));
+        $this->assertNotNull($captain->getCommandMessage(CommandMessage::createNotifyExpiringGroupOrderCommand($groupOrder)));
 
 
         //3. 团长分享给团员
@@ -104,6 +109,14 @@ class BusinessLogicTest extends BaseTestCase
         $this->assertEquals(1, $joinerStatistics->getGroupUserOrderNum());
         $this->assertEquals($joiner->getPendingTotalRewards(), $joinerStatistics->getOrderRewardsTotal());
 
+        $this->assertNotNull($captain->getCommandMessage(CommandMessage::createNotifyCompletedGroupOrderCommand($groupOrder)));
+        $this->assertNotNull($captain->getCommandMessage(CommandMessage::createSendOrderRewardsCommand($masterGroupUserOrder)));
+        $this->assertNotNull($captain->getCommandMessage(CommandMessage::createNotifyOrderRewardsSentCommand($masterGroupUserOrder)));
+
+        $this->assertNotNull($joiner->getCommandMessage(CommandMessage::createNotifyOrderRewardsSentCommand($slaveGroupUserOrder)));
+        $this->assertNotNull($joiner->getCommandMessage(CommandMessage::createSendOrderRewardsCommand($slaveGroupUserOrder)));
+        $this->assertNotNull($joiner->getCommandMessage(CommandMessage::createNotifyOrderRewardsSentCommand($slaveGroupUserOrder)));
+
         //6. 团员订单发货，团员收货
         $slaveGroupUserOrder->setDelivered();
         $this->assertEquals($captain->getPendingTotalRewards(), $masterGroupUserOrder->getOrderRewards() + $slaveGroupUserOrder->getGroupUserOrderRewards()[0]->getUserRewards());
@@ -111,6 +124,9 @@ class BusinessLogicTest extends BaseTestCase
 
         $this->assertEquals($joiner->getPendingTotalRewards(), $slaveGroupUserOrder->getOrderRewards());
         $this->assertEquals(0, $joiner->getTotalRewards());
+
+        $this->assertNotNull($captain->getCommandMessage(CommandMessage::createNotifyUserRewardsSentCommand($slaveGroupUserOrder)));
+        $this->assertNotNull($captain->getCommandMessage(CommandMessage::createSendUserRewardsCommand($slaveGroupUserOrder)));
 
     }
 
@@ -152,6 +168,8 @@ class BusinessLogicTest extends BaseTestCase
         $this->assertEquals(0, $captainStatistics->getOrderRewardsTotal());
         $this->assertEquals(0, $captainStatistics->getUserRewardsTotal());
 
+        $this->assertNotNull($captain->getCommandMessage(CommandMessage::createNotifyExpiredGroupOrderCommand($groupOrder)));
+        $this->assertNotNull($captain->getCommandMessage(CommandMessage::createRefundOrderCommand($masterGroupUserOrder)));
 
     }
 }
