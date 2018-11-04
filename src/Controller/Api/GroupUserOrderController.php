@@ -148,7 +148,7 @@ class GroupUserOrderController extends BaseController
         $product = $productRepository->find($productId);
 
         $groupUserOrder = new GroupUserOrder($user, $product);
-        $groupUserOrder->setTotal($product->getPrice());
+        $groupUserOrder->setTotal($product->getPrice() + $product->getFreight());
         $this->getEntityManager()->persist($groupUserOrder);
         $this->getEntityManager()->flush();
 

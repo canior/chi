@@ -146,7 +146,12 @@ class UserAddress implements Dao
         return $this;
     }
 
-    public function getArray() : array {
+    public function getArray() : ?array {
+
+        if ($this->getIsDeleted()) {
+            return null;
+        }
+
         return [
             'id' => $this->getId(),
             'region' => $this->getRegion()->getArray(),

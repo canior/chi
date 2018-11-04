@@ -29,6 +29,19 @@ class ProductController extends BaseController
     /**
      * 获取产品列表
      *
+     * @Route("/products/introduction", name="productIntroduction", methods="GET")
+     * @param Request $request
+     * @return Response
+     */
+    public function introductionAction(Request $request) {
+        $data = [];
+        return $this->render('api/introduction.html.twig', $data);
+    }
+
+
+    /**
+     * 获取产品列表
+     *
      * @Route("/products/", name="productIndex", methods="GET")
      * @param Request $request
      * @param ProductRepository $productRepository
