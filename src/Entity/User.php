@@ -368,7 +368,7 @@ class User extends BaseUser implements Dao
     public function getActiveUserAddress() : Collection {
         $userAddresses = new ArrayCollection();
         foreach ($this->getUserAddresses() as $userAddress) {
-            if ($userAddress->getIsDeleted() != false) {
+            if (!$userAddress->getIsDeleted()) {
                 $userAddresses[] = $userAddress;
             }
         }
