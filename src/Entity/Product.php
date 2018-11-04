@@ -122,7 +122,7 @@ class Product implements Dao
     private $productStatistics;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ProductSimilar", mappedBy="product", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductSimilar", mappedBy="product", cascade={"persist"}, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $productSimilars;
@@ -469,7 +469,7 @@ class Product implements Dao
 
         $similarProductsArray = [];
         foreach ($this->getProductSimilars() as $similarProduct) {
-            $similarProductArray[] = $similarProduct->getArray();
+            $similarProductsArray[] = $similarProduct->getArray();
         }
 
         return [
