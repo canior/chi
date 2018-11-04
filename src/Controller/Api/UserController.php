@@ -598,9 +598,10 @@ class UserController extends BaseController
     public function listUserRewardsAction(Request $request, GroupUserOrderRewardsRepository $groupUserOrderRewardsRepository) {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $isValid = isset($data['isValid']) ? $data['isValid'] : null;
         $user = $this->getWxUser($thirdSession);
 
-        $children = $groupUserOrderRewardsRepository->findSubUsers($user->getId(), true);
+        $children = $groupUserOrderRewardsRepository->findSubUsers($user->getId(), $isValid);
 
         return $this->responseJson('success', 200, [
             'children' => $children
