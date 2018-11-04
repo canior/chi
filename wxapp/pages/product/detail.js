@@ -25,12 +25,13 @@ Page({
     this.getProduct(productId);
     const url = app.globalData.baseUrl + '/products/' + productId + '/reviews'
     productReview.init(this, url);
-    app.userActivityCallback = res => {
+    app.buriedPoint(options)
+    /*app.userActivityCallback = res => {
       app.buriedPoint(options)
       this.setData({
         isLogin: app.globalData.isLogin
       })
-    }
+    }*/
   },
 
   getProduct: function (id) {

@@ -32,7 +32,7 @@ Page({
     if (id) {
       this.getGroupOrder(id);      
     }
-    //move to onShow()
+    app.buriedPoint(options)
     /*app.userActivityCallback = res => {
       app.buriedPoint(options)
       this.setData({
@@ -296,14 +296,6 @@ Page({
     })
     bottom.init(this)
     share.init(this)
-    //---
-    app.userActivityCallback = res => {
-      app.buriedPoint(options)
-      this.setData({
-        isLogin: app.globalData.isLogin,
-        user: app.globalData.user
-      })
-    }
   },
 
   /**
