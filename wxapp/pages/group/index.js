@@ -32,13 +32,14 @@ Page({
     if (id) {
       this.getGroupOrder(id);      
     }
-    app.userActivityCallback = res => {
+    //move to onShow()
+    /*app.userActivityCallback = res => {
       app.buriedPoint(options)
       this.setData({
         isLogin: app.globalData.isLogin,
         user: app.globalData.user
       })
-    }
+    }*/
   },
 
   getGroupOrder: function(id) {
@@ -85,6 +86,7 @@ Page({
     const groupOrder = this.data.groupOrder
     const expiredAt = new Date(groupOrder.expiredAt);
     const now = new Date();
+    console.log('expiredAt:'+expiredAt+', now:'+now)
     var totalSecond = Math.floor((expiredAt - now) / 1000);
     if (groupOrder.status == 'pending') {
       var interval = setInterval(function () {
@@ -294,6 +296,14 @@ Page({
     })
     bottom.init(this)
     share.init(this)
+    //---
+    app.userActivityCallback = res => {
+      app.buriedPoint(options)
+      this.setData({
+        isLogin: app.globalData.isLogin,
+        user: app.globalData.user
+      })
+    }
   },
 
   /**
