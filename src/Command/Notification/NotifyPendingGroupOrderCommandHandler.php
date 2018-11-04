@@ -12,22 +12,24 @@ namespace App\Command\Notification;
 use App\Command\AbstractCommandHandler;
 use App\Command\CommandInterface;
 use App\Repository\GroupOrderRepository;
+use App\Repository\GroupUserOrderRepository;
 use App\Service\Wx\WxCommon;
 use Psr\Log\LoggerInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 
 class NotifyPendingGroupOrderCommandHandler // extends AbstractCommandHandler
 {
-    private $groupOrderRepository;
+    private $entityManager;
     private $log;
 
     /**
      * NotifyPendingGroupOrderCommandHandler constructor.
-     * @param GroupOrderRepository $groupOrderRepository
+     * @param ObjectManager $entityManager
      * @param LoggerInterface $logger
      */
-    public function __construct(GroupOrderRepository $groupOrderRepository, LoggerInterface $logger)
+    public function __construct(ObjectManager $entityManager, LoggerInterface $logger)
     {
-        $this->groupOrderRepository = $groupOrderRepository;
+        $this->entityManager = $entityManager;
         $this->log = $logger;
     }
 
@@ -38,7 +40,11 @@ class NotifyPendingGroupOrderCommandHandler // extends AbstractCommandHandler
     public function handle(NotifyPendingGroupOrderCommand $command)
     {
         $groupOrderId = $command->getGroupOrderId();
-        $groupOrder = $this->groupOrderRepository->find($groupOrderId);
+        /**
+         * @var GroupOrderRepository $groupOrderRepository
+         */
+        $groupOrderRepository = $this->entityManager->getRepository(GroupOrder::class);
+        $groupOrder = $groupOrderRepository->find($groupOrderId);
         $groupUserOrder = $groupOrder->getMasterGroupUserOrder();
 
         $formId = $groupUserOrder->getPrePayId();

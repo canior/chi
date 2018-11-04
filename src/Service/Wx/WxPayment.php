@@ -127,6 +127,7 @@ class WxPayment
      * 退款
      * https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_4
      * @param $info = ['outTradeNo', 'outRefundNo', 'totalFee', 'refundFee']
+     * @return array
      */
     public function refund($info)
     {
@@ -232,6 +233,7 @@ class WxPayment
     /**
      * 获取下发到小程序的订单数据
      * @param $prepayId
+     * @return array
      */
     public function getOrderDataToWxApp($prepayId)
     {
