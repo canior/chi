@@ -2,7 +2,7 @@
 <import src="/pages/tmpl/price.wxml"/>
 <view class="navbar">
   <block wx:for="{{menu}}" wx:key="index">
-    <view class="nav{{curStatus==item.status ? ' active' : ''}}" data-status="{{item.status}}"bindtap="tapMenu">{{item.name}}</view>
+    <view class="nav{{curStatus==item.status ? ' active' : ''}}" data-status="{{item.status}}" bindtap="tapMenu">{{item.name}}</view>
   </block>
 </view>
 <view class="split-brand"/>

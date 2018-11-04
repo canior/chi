@@ -52,7 +52,9 @@
     <block wx:if="{{groupOrder.status != 'completed'}}">
       <view class="hint" wx:if="{{userType == 'open'}}">仅剩<text>1</text>人，快呼唤小伙伴参加吧！</view>
       <view class="hint" wx:if="{{userType != 'open'}}">就差你了，快来助攻吧！</view>
-      <view class="count-down">剩余 <text class="hr">50</text>:<text class="min">00</text>:<text class="sec">00</text> 结束</view>
+      <block wx:if="{{groupOrder.status == 'pending'}}">
+        <view class="count-down">剩余 <text class="hr">{{countdown.hr}}</text>:<text class="min">{{countdown.min}}</text>:<text class="sec">{{countdown.sec}}</text> 结束</view>
+      </block>
     </block>
   </view>
 </view><!--拼团信息-->
@@ -136,7 +138,10 @@
 <view class="bottom-space"/>
 
 <!--拼团未完成-->
-<block wx:if="{{groupOrder.status != 'completed'}}">
+<block wx:if="{{groupOrder.status == 'expired'}}"><!--拼团已过期-->
+  <template is="bottom" data="{{product:groupOrder.product, ...bottomData}}"/>
+</block>
+<block wx:elif="{{groupOrder.status == 'pending'}}"><!--拼团进行中-->
   <block wx:if="{{userType == 'open'}}"><!--开团人-->
     <view class="bottom" bindtap="wxShowShareModal" wx:if="{{!shareData.showModal}}">
       <text>邀请好友参团</text>
@@ -159,7 +164,7 @@
       <button class="btn" bindtap="joinGroup" disabled="{{btnDisabled}}">￥{{groupOrder.product.groupPrice}} 我要参团</button>
     </view>
   </block>
-</block><!--拼团未完成-->
+</block><!--拼团进行中-->
 
 <!--拼团已完成-->
 <block wx:if="{{groupOrder.status == 'completed'}}">
@@ -173,6 +178,7 @@
     <template is="bottom" data="{{product:groupOrder.product, ...bottomData}}"/>
   </block>
 </block><!--拼团已完成-->
+
 
 <!--分享弹窗-->
 <template is="share" data="{{...shareData}}"/>
