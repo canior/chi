@@ -83,7 +83,7 @@ Page({
   // pending: 拼团倒计时
   countdown: function() {
     const groupOrder = this.data.groupOrder
-    const expiredAt = groupOrder.expiredAt;//new Date('2018-11-05 17:29');
+    const expiredAt = new Date(groupOrder.expiredAt);
     const now = new Date();
     var totalSecond = Math.floor((expiredAt - now) / 1000);
     if (groupOrder.status == 'pending') {
