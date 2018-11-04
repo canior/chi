@@ -693,6 +693,8 @@ class GroupUserOrder implements Dao
             'createdAt' => $this->getCreatedAt(true),
             'paymentTotal' => $this->getTotal(),
             'address' => $this->getUserAddress() == null ? null : $this->getUserAddress()->getArray(),
+            'carrierName' => $this->getCarrierName(),
+            'trackingNo' => $this->getTrackingNo(),
         ];
     }
 
