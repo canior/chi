@@ -403,6 +403,9 @@ class UserController extends BaseController
         } else {
             $userAddress = new UserAddress();
             $userAddress->setUser($user);
+            if ($user->getUserActivities()->count() == 0) {
+                $userAddress->setIsDefault(true);
+            }
         }
 
 
