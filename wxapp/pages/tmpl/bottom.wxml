@@ -12,7 +12,7 @@
         <image src="/images/service.png"/>
         <text>客服</text>
       </button>-->
-      <button class="item btn order" bindtap="wxShowModal" disabled="{{btnDisabled}}"><text>￥{{product.price}}</text><text>单独购买</text></button>    
+      <button class="item btn order" bindtap="wxShowModal" disabled="{{btnDisabled}}"><text>￥{{product.price}}</text><text>单独购买</text></button>
       <button class="item btn group" bindtap="wxCreateGroup" disabled="{{btnDisabled}}"><text>￥{{product.groupPrice}}</text><text>发起拼团</text></button>
   </view>
 
