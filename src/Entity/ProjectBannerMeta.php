@@ -19,7 +19,7 @@ class ProjectBannerMeta extends ProjectMeta
     const BANNER_HOME_2 = "banner_home_2";
     const BANNER_HOME_3 = "banner_home_3";
     const BANNER_LOGIN = 'banner_login';
-    const BANNER_GROUP_ORDER_DETAIL = "banner_group_order_detail";
+    const BANNER_GROUP_ORDER_INFO = "banner_group_order_info";
 
     public function isTextMeta()
     {

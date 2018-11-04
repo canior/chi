@@ -9,6 +9,7 @@
 namespace App\Command\Console;
 
 
+use App\Entity\ProjectBannerMeta;
 use App\Entity\ProjectRewardsMeta;
 use Psr\Log\LoggerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -44,6 +45,7 @@ class ProjectBootstrapConsoleCommand extends ContainerAwareCommand
      * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
+
         $projectRewardsMetaRepository = $this->entityManager->getRepository(ProjectRewardsMeta::class);
 
         $projectRewardsMeta = $projectRewardsMetaRepository->findOneBy(['metaKey'  => 'project_rewards']);
@@ -53,6 +55,15 @@ class ProjectBootstrapConsoleCommand extends ContainerAwareCommand
             $this->entityManager->persist($projectRewardsMeta);
             $this->entityManager->flush();
         }
+
+        $projectBannerMetaRepository = $this->entityManager->getRepository(ProjectBannerMeta::class);
+        $homeBanner1 = $projectBannerMetaRepository->findOneBy(['metaKey' => 'banner_home_1']);
+        $homeBanner2 = $projectBannerMetaRepository->findOneBy(['metaKey' => 'banner_home_2']);
+        $homeBanner3 = $projectBannerMetaRepository->findOneBy(['metaKey' => 'banner_home_3']);
+        $loginBanner = $projectBannerMetaRepository->findOneBy(['metaKey' => 'banner_login']);
+        $groupOrderInfoBanner = $projectBannerMetaRepository->findOneBy(['metaKey' => 'banner_group_order_info']);
+
+
     }
 
 }
