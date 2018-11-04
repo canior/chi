@@ -72,7 +72,7 @@ class ShareSource implements Dao
 
     public function __construct()
     {
-        $this->id = uniqid();
+        $this->id = uniqid(rand(10000,99999));
         $this->setCreatedAt();
         $this->shareSourceUsers = new ArrayCollection();
     }
