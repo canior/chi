@@ -12,6 +12,8 @@ use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
 use App\Repository\ProjectRewardsMetaRepository;
 use Endroid\QrCode\Factory\QrCodeFactory;
+use Knp\Bundle\SnappyBundle\Snappy\Response\JpegResponse;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -233,7 +235,7 @@ class ProductController extends BackendController
      */
     public function delete(Request $request, Product $product): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $product->getId(), $request->request->get('_token'))) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($product);
             $em->flush();
@@ -267,7 +269,7 @@ class ProductController extends BackendController
 
         $image->insert($qrCode->writeString(), 'bottom', 0, 50);
 
-        return new Response($image->response('png'), Response::HTTP_OK, ['Content-Disposition' => 'inline; filename="'. $product->getMainProductImage()->getFile()->getName() .'"', 'Content-Type' => 'image/png']);
+        return new Response($image->response('png'), Response::HTTP_OK, ['Content-Disposition' => 'inline; filename="' . $product->getMainProductImage()->getFile()->getName() . '"', 'Content-Type' => 'image/png']);
 
         /*
         $response = new Response();
@@ -277,5 +279,23 @@ class ProductController extends BackendController
         $response->setContent($image->response('png'));
         return $response;
         */
+    }
+
+    /**
+     * @Route("/product/snappy/{id}", name="product_snappy", methods="GET")
+     */
+    public function snappy(Product $product, QrCodeFactory $qrCodeFactory)
+    {
+        $data = [
+            'realWebPath' => realpath($this->container->getParameter('kernel.root_dir') . '/../'),
+            'product' => $product,
+            'qrCodeUri' => $qrCodeFactory->create('Test code')->writeDataUri()
+        ];
+        $html = $this->renderView('tests/snappy.html.twig', $data);
+
+        return new JpegResponse(
+            $this->get('knp_snappy.image')->getOutputFromHtml($html),
+            'snappy.jpg'
+        );
     }
 }

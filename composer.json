@@ -10,6 +10,7 @@
         "guzzlehttp/guzzle": "^6.3",
         "intervention/image": "^2.4",
         "knplabs/knp-paginator-bundle": "^2.8",
+        "knplabs/knp-snappy-bundle": "^1.5",
         "league/tactician-bundle": "^1.1",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "^4.1",
