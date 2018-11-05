@@ -18,29 +18,29 @@ class ProjectRewardsMetaType extends AbstractType
     {
         $builder
             ->add('memo', null, ['label' => '描述', 'attr' => ['rows' => 5]])
-            ->add('captainRewardsRate', null, [
-                'label' => '拼团订单【团长】返现此产品总返现金额(%)',
+            ->add('groupOrderRewardsRate', null, [
+                'label' => '拼团订单收益 返现此产品总返现金额(%)',
                 'constraints' => [
                     new NotBlank(['message' => '不能为空']),
                     new Range(['min' => 0.01, 'max' => 0.99, 'invalidMessage' => '请输入 0.01 ~ 0.99 范围内的数值'])
                 ]
             ])
-            ->add('joinerRewardsRate', null, [
-                'label' => '拼团订单【团员】返现此产品总返现金额(%)',
+            ->add('groupOrderUserRewardsRate', null, [
+                'label' => '拼团订单传销收益 返现此产品总返现金额(%)',
                 'constraints' => [
                     new NotBlank(['message' => '不能为空']),
                     new Range(['min' => 0.01, 'max' => 0.99, 'invalidMessage' => '请输入 0.01 ~ 0.99 范围内的数值'])
                 ]
             ])
-            ->add('regularRewardsRate', null, [
-                'label' => '【普通订单】返现此产品总返现金额(%)',
+            ->add('regularOrderRewardsRate', null, [
+                'label' => ' 普通订单收益 返现此产品总返现金额(%)',
                 'constraints' => [
                     new NotBlank(['message' => '不能为空']),
                     new Range(['min' => 0.01, 'max' => 0.99, 'invalidMessage' => '请输入 0.01 ~ 0.99 范围内的数值'])
                 ]
             ])
-            ->add('userRewardsRate', null, [
-                'label' => '【传销上线】返现此产品总返现金额(%)',
+            ->add('regularOrderUserRewardsRate', null, [
+                'label' => '普通订单传销收益 返现此产品总返现金额(%)',
                 'constraints' => [
                     new NotBlank(['message' => '不能为空']),
                     new Range(['min' => 0.01, 'max' => 0.99, 'invalidMessage' => '请输入 0.01 ~ 0.99 范围内的数值'])

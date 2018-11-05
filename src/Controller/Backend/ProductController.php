@@ -211,11 +211,10 @@ class ProductController extends BackendController
             return $this->redirectToRoute('product_edit', ['id' => $product->getId()]);
         }
 
-        $projectRewardsMetas = $projectRewardsMetaRepository->findAll();
         /**
          * @var ProjectRewardsMeta $projectRewardsMeta
          */
-        $projectRewardsMeta = !empty($projectRewardsMetas) ? $projectRewardsMetas[0] : null;
+        $projectRewardsMeta = $projectRewardsMetaRepository->findOneBy(['metaKey' => ProjectRewardsMeta::PROJECT_REWARDS]);
 
         return $this->render('backend/product/edit.html.twig', [
             'product' => $product,

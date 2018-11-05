@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ProjectRewardsMeta extends ProjectMeta
 {
-    const PRODUCT_REWARDS = "product_rewards";
+    const PROJECT_REWARDS = "project_rewards";
 
     public function isTextMeta()
     {

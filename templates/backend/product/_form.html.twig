@@ -88,34 +88,34 @@
             <!-- /.box-header -->
             <div class="box-body">
                 <div class="row">
-                    <div class="col-md-7">
+                    <div class="col-md-5">
                         <div class="chart-responsive">
                             <div class="chart" id="pieChart" style="height: 200px; position: relative;"></div>
                         </div>
                         <!-- ./chart-responsive -->
                     </div>
                     <!-- /.col -->
-                    <div class="col-md-5">
+                    <div class="col-md-7">
                         <ul class="chart-legend clearfix">
                             <li>
                                 <i class="fa fa-circle-o text-red"></i>
-                                团长返现({{ projectRewardsMeta.captainRewardsRate|default }}):
-                                ￥<span id="captainRewardsSpan">{{ product.captainRewards|default }}</span>
+                                拼团订单收益({{ projectRewardsMeta.groupOrderRewardsRate|default }}):
+                                ￥<span id="groupOrderRewardsSpan">{{ product.groupOrderRewards|default }}</span>
                             </li>
                             <li>
                                 <i class="fa fa-circle-o text-green"></i>
-                                团员返现({{ projectRewardsMeta.joinerRewardsRate|default }}):
-                                ￥<span id="joinerRewardsSpan">{{ product.joinerRewards|default }}</span>
+                                拼团订单传销收益({{ projectRewardsMeta.groupOrderUserRewardsRate|default }}):
+                                ￥<span id="groupOrderUserRewardsSpan">{{ product.groupOrderUserRewards|default }}</span>
                             </li>
                             <li>
                                 <i class="fa fa-circle-o text-yellow"></i>
-                                零售返现({{ projectRewardsMeta.regularRewardsRate|default }}):
-                                ￥<span id="regularRewardsSpan">{{ product.regularRewards|default }}</span>
+                                普通订单收益({{ projectRewardsMeta.regularOrderRewardsRate|default }}):
+                                ￥<span id="regularOrderRewardsSpan">{{ product.regularOrderRewards|default }}</span>
                             </li>
                             <li>
                                 <i class="fa fa-circle-o text-aqua"></i>
-                                上线返现({{ projectRewardsMeta.userRewardsRate|default }}):
-                                ￥<span id="parentRewardsSpan">{{ product.parentRewards|default }}</span>
+                                普通订单传销收益({{ projectRewardsMeta.regularOrderUserRewardsRate|default }}):
+                                ￥<span id="regularOrderUserRewardsSpan">{{ product.regularOrderUserRewards|default }}</span>
                             </li>
                         </ul>
                     </div>

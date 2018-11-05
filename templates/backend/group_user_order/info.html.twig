@@ -32,36 +32,49 @@
                                             <div class="box-body">
                                                 <div class="media">
                                                     <div class="media-body">
-                                                        <div class="clearfix">
-                                                            <h5>下单时间: {{ group_user_order.createdAt }}</h5>
-                                                            <h5>订单类型: {{ group_user_order.groupOrder ? '拼团订单' : '零售订单' }}</h5>
-                                                            <h5>订单ID: {{ group_user_order.id }}</h5>
-                                                            {% if group_user_order.groupOrder %}
-                                                                <h5>
-                                                                    拼团ID:
-                                                                    {% if group_user_order.groupOrder %}
-                                                                        <a href="{{ path('group_order_info', {id: group_user_order.groupOrder.id}) }}"
-                                                                           target="_blank"
-                                                                           class="btn btn-info btn-xs ad-click-event">
-                                                                            {{ group_user_order.groupOrder.id }}
-                                                                        </a>
-                                                                    {% endif %}
-                                                                </h5>
-                                                            {% endif %}
-                                                            <h5>订单状态: {{ group_user_order.statusText }}</h5>
-                                                            {% if group_user_order.product %}
-                                                                <h5>
-                                                                    产品ID:
-                                                                    <a href="{{ path('product_edit', {id: group_user_order.product.id}) }}"
+                                                        <div class="clearfix"></div>
+                                                        <h5>下单时间: {{ group_user_order.createdAt }}</h5>
+                                                        <h5>订单类型: {{ group_user_order.groupOrder ? '拼团订单' : '零售订单' }}</h5>
+                                                        <h5>订单ID: {{ group_user_order.id }}</h5>
+                                                        {% if group_user_order.groupOrder %}
+                                                            <h5>
+                                                                拼团ID:
+                                                                {% if group_user_order.groupOrder %}
+                                                                    <a href="{{ path('group_order_info', {id: group_user_order.groupOrder.id}) }}"
                                                                        target="_blank"
                                                                        class="btn btn-info btn-xs ad-click-event">
-                                                                        {{ group_user_order.product.id }}
+                                                                        {{ group_user_order.groupOrder.id }}
+                                                                    </a>
+                                                                {% endif %}
+                                                            </h5>
+                                                        {% endif %}
+                                                        <h5>订单状态: {{ group_user_order.statusText }}</h5>
+                                                        {% if group_user_order.product %}
+                                                            <h5>
+                                                                产品ID:
+                                                                <a href="{{ path('product_edit', {id: group_user_order.product.id}) }}"
+                                                                   target="_blank"
+                                                                   class="btn btn-info btn-xs ad-click-event">
+                                                                    {{ group_user_order.product.id }}
+                                                                </a>
+                                                            </h5>
+                                                            <h5>产品名: {{ group_user_order.product.title|default }}</h5>
+                                                        {% endif %}
+                                                            <h5>拼团价: ￥{{ group_user_order.product.groupPrice|default(0)|number_format }} | 零售价: ￥{{ group_user_order.product.price|default(0)|number_format }} | 原价: <del>￥{{ group_user_order.product.originalPrice|default(0)|number_format }}</del></h5>
+                                                        <h5>运费: ￥{{ group_user_order.product.freight|default(0)|number_format }}</h5>
+                                                        <h5>支付金额: ￥{{ group_user_order.total|default(0)|number_format }}</h5>
+
+                                                        <div class="well">
+                                                            <h5>拼团返现: ￥{{ group_user_order.orderRewards|default(0)|number_format }}</h5>
+                                                            {% if group_user_order.user.parentUser %}
+                                                                <h5>上线用户ID:
+                                                                    <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': group_user_order.user.parentUser.id}) }}" target="_blank" title="查看详情">
+                                                                        {{ group_user_order.user.parentUser.id|default }}
                                                                     </a>
                                                                 </h5>
-                                                                <h5>产品名: {{ group_user_order.product.title|default }}</h5>
+                                                                <h5>上线用户昵称: {{ group_user_order.user.parentUser.nickname|default }}</h5>
                                                             {% endif %}
-                                                                <h5>拼团价: ￥{{ group_user_order.product.groupPrice|default(0)|number_format }} | 零售价: ￥{{ group_user_order.product.price|default(0)|number_format }} | 原价: <del>￥{{ group_user_order.product.originalPrice|default(0)|number_format }}</del></h5>
-                                                            <h5>支付金额: ￥{{ group_user_order.total|default(0)|number_format }}</h5>
+                                                            <h5>传销返现: ￥{{ group_user_order.groupUserOrderRewards.first.userRewards|default(0)|number_format }}</h5>
                                                         </div>
                                                     </div>
                                                     <div class="media-right">

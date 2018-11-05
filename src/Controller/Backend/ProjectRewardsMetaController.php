@@ -21,9 +21,9 @@ class ProjectRewardsMetaController extends BackendController
      */
     public function index(ProjectRewardsMetaRepository $projectRewardsMetaRepository, Request $request): Response
     {
-        $projectRewardsMeta = $projectRewardsMetaRepository->findOneBy(['metaKey' => ProjectRewardsMeta::PRODUCT_REWARDS]);
+        $projectRewardsMeta = $projectRewardsMetaRepository->findOneBy(['metaKey' => ProjectRewardsMeta::PROJECT_REWARDS]);
         if (empty($projectRewardsMeta)) {
-            throw $this->createNotFoundException('ProjectRewardsMeta ' . ProjectRewardsMeta::PRODUCT_REWARDS . ' not found!');
+            throw $this->createNotFoundException('ProjectRewardsMeta ' . ProjectRewardsMeta::PROJECT_REWARDS . ' not found!');
         }
 
         $form = $this->createForm(ProjectRewardsMetaType::class, $projectRewardsMeta);

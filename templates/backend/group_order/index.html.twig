@@ -64,7 +64,7 @@
                                 <th width="10%">拼团价格</th>
                                 <th width="10%">拼团状态</th>
                                 <th width="10%">创建时间</th>
-                                <th width="10%">结束时间</th>
+                                <th width="10%">过期时间</th>
                                 <th width="10%" class="text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
@@ -102,7 +102,7 @@
                                         <td>{{ item.product.groupPrice }}</td>
                                         <td>{{ item.statusText }}</td>
                                         <td>{{ item.createdAt }}</td>
-                                        <td>{{ item.CompletedAt }}</td>
+                                        <td>{{ item.expiredAt }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
                                                 <a href="{{ path('group_order_info', {'id': item.id}) }}" title="查看详情">

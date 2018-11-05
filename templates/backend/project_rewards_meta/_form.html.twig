@@ -10,29 +10,29 @@
         {{ form_widget(form.memo) }}
         {{ form_help(form.memo) }}
     </div>
-    <div class="form-group{% if form.captainRewardsRate.vars.errors|length %} has-error{% endif %}">
-        {{ form_label(form.captainRewardsRate) }}
-        {{ form_errors(form.captainRewardsRate) }}
-        {{ form_widget(form.captainRewardsRate) }}
-        {{ form_help(form.captainRewardsRate) }}
+    <div class="form-group{% if form.groupOrderRewardsRate.vars.errors|length %} has-error{% endif %}">
+        {{ form_label(form.groupOrderRewardsRate) }}
+        {{ form_errors(form.groupOrderRewardsRate) }}
+        {{ form_widget(form.groupOrderRewardsRate) }}
+        {{ form_help(form.groupOrderRewardsRate) }}
     </div>
-    <div class="form-group{% if form.joinerRewardsRate.vars.errors|length %} has-error{% endif %}">
-        {{ form_label(form.joinerRewardsRate) }}
-        {{ form_errors(form.joinerRewardsRate) }}
-        {{ form_widget(form.joinerRewardsRate) }}
-        {{ form_help(form.joinerRewardsRate) }}
+    <div class="form-group{% if form.groupOrderUserRewardsRate.vars.errors|length %} has-error{% endif %}">
+        {{ form_label(form.groupOrderUserRewardsRate) }}
+        {{ form_errors(form.groupOrderUserRewardsRate) }}
+        {{ form_widget(form.groupOrderUserRewardsRate) }}
+        {{ form_help(form.groupOrderUserRewardsRate) }}
     </div>
-    <div class="form-group{% if form.regularRewardsRate.vars.errors|length %} has-error{% endif %}">
-        {{ form_label(form.regularRewardsRate) }}
-        {{ form_errors(form.regularRewardsRate) }}
-        {{ form_widget(form.regularRewardsRate) }}
-        {{ form_help(form.regularRewardsRate) }}
+    <div class="form-group{% if form.regularOrderRewardsRate.vars.errors|length %} has-error{% endif %}">
+        {{ form_label(form.regularOrderRewardsRate) }}
+        {{ form_errors(form.regularOrderRewardsRate) }}
+        {{ form_widget(form.regularOrderRewardsRate) }}
+        {{ form_help(form.regularOrderRewardsRate) }}
     </div>
-    <div class="form-group{% if form.userRewardsRate.vars.errors|length %} has-error{% endif %}">
-        {{ form_label(form.userRewardsRate) }}
-        {{ form_errors(form.userRewardsRate) }}
-        {{ form_widget(form.userRewardsRate) }}
-        {{ form_help(form.userRewardsRate) }}
+    <div class="form-group{% if form.regularOrderUserRewardsRate.vars.errors|length %} has-error{% endif %}">
+        {{ form_label(form.regularOrderUserRewardsRate) }}
+        {{ form_errors(form.regularOrderUserRewardsRate) }}
+        {{ form_widget(form.regularOrderUserRewardsRate) }}
+        {{ form_help(form.regularOrderUserRewardsRate) }}
     </div>
     {{ form_widget(form) }}
     <button class="btn btn-primary">{{ button_label|default('Save') }}</button>

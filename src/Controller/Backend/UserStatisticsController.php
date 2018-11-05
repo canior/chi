@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use App\Entity\User;
 use App\Entity\UserStatistics;
 use App\Form\UserStatisticsType;
+use App\Repository\GroupUserOrderRewardsRepository;
 use App\Repository\UserStatisticsRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,7 +42,7 @@ class UserStatisticsController extends BackendController
     /**
      * @Route("/user/statistics/info/{id}", name="user_statistics_info", methods="GET")
      */
-    public function info(Request $request, User $user, UserStatisticsRepository $userStatisticsRepository): Response
+    public function info(Request $request, User $user, UserStatisticsRepository $userStatisticsRepository, GroupUserOrderRewardsRepository $groupUserOrderRewardsRepository): Response
     {
         $queryBuilder = $userStatisticsRepository->findUserStatisticsQueryBuilder($user->getId());
         $userStatisticsTotal = $queryBuilder->getQuery()->getOneOrNullResult();
@@ -55,6 +56,7 @@ class UserStatisticsController extends BackendController
             'user' => $user,
             'userStatisticsTotal' => $userStatisticsTotal,
             'parentUserStatisticsTotal' => $parentUserStatisticsTotal,
+            'subUsers' => $groupUserOrderRewardsRepository->findSubUsers($user->getId()),
         ];
         return $this->render('backend/user_statistics/info.html.twig', $data);
     }

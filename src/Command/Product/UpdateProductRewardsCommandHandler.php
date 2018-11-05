@@ -58,12 +58,12 @@ class UpdateProductRewardsCommandHandler
          */
         $product = $this->em->getRepository(Product::class)->find($command->getProductId());
 
-        $projectRewardsMeta = $this->em->getRepository(ProjectRewardsMeta::class)->findOneBy(['metaKey' => ProjectRewardsMeta::PRODUCT_REWARDS]);
+        $projectRewardsMeta = $this->em->getRepository(ProjectRewardsMeta::class)->findOneBy(['metaKey' => ProjectRewardsMeta::PROJECT_REWARDS]);
         if ($projectRewardsMeta) {
-            $product->setCaptainRewards($product->getRewards() * $projectRewardsMeta->getCaptainRewardsRate());
-            $product->setJoinerRewards($product->getRewards() * $projectRewardsMeta->getJoinerRewardsRate());
-            $product->setRegularRewards($product->getRewards() * $projectRewardsMeta->getRegularRewardsRate());
-            $product->setParentRewards($product->getRewards() * $projectRewardsMeta->getUserRewardsRate());
+            $product->setGroupOrderRewards($product->getRewards() * $projectRewardsMeta->getGroupOrderRewardsRate());
+            $product->setGroupOrderUserRewards($product->getRewards() * $projectRewardsMeta->getGroupOrderUserRewardsRate());
+            $product->setRegularOrderRewards($product->getRewards() * $projectRewardsMeta->getRegularOrderRewardsRate());
+            $product->setRegularOrderUserRewards($product->getRewards() * $projectRewardsMeta->getRegularOrderUserRewardsRate());
             $this->em->persist($product);
             $this->em->flush();
         }

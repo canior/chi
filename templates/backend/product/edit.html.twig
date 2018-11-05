@@ -127,7 +127,7 @@
 
                     <div class="progress-group">
                         <span class="progress-text">好评率({{ (statistics.favorableRate * 100)|number_format(2, '.') }}%)</span>
-                        <span class="progress-number"><b>{{ statistics.totalRate5 }}</b>/{{ statistics.totalReviewed }}</span>
+                        <span class="progress-number"><b>{{ statistics.totalRate5|default(0) }}</b>/{{ statistics.totalReviewed|default(0) }}</span>
 
                         <div class="progress sm">
                             <div class="progress-bar progress-bar-yellow"
@@ -252,17 +252,17 @@
                 labels: ['Total'],
                 hideHover: 'auto'
             });
-            {% if product.captainRewards + product.joinerRewards + product.regularRewards + product.parentRewards > 0 %}
+            {% if product.groupOrderRewards + product.groupOrderUserRewards + product.regularOrderRewards + product.regularOrderUserRewards > 0 %}
             // Rewards DONUT CHART
             var donut = new Morris.Donut({
                 element: 'pieChart',
                 resize: true,
                 colors: ["#f56954", "#00a65a", "#f39c12", "#00c0ef"],
                 data: [
-                    {label: "团长返现", value: {{ product.captainRewards }}},
-                    {label: "团员返现", value: {{ product.joinerRewards }}},
-                    {label: "零售返现", value: {{ product.regularRewards }}},
-                    {label: "上线返现", value: {{ product.parentRewards }}}
+                    {label: "拼团订单收益", value: {{ product.groupOrderRewards }}},
+                    {label: "拼团订单传销收益", value: {{ product.groupOrderUserRewards }}},
+                    {label: "普通订单收益", value: {{ product.regularOrderRewards }}},
+                    {label: "普通订单传销收益", value: {{ product.regularOrderUserRewards }}}
                 ],
                 hideHover: 'auto'
             });
@@ -272,26 +272,26 @@
             $('#product_rewards').on('keyup', function (e) {
                 var rewards = $(this).val();
                 $('#rewardsSpan').text(rewards);
-                var captainRewards = (rewards * {{ projectRewardsMeta.captainRewardsRate }}).toFixed(2);
-                var joinerRewards = (rewards * {{ projectRewardsMeta.joinerRewardsRate }}).toFixed(2);
-                var regularRewards = (rewards * {{ projectRewardsMeta.regularRewardsRate }}).toFixed(2);
-                var parentRewards = (rewards * {{ projectRewardsMeta.userRewardsRate }}).toFixed(2);
+                var groupOrderRewards = (rewards * {{ projectRewardsMeta.groupOrderRewardsRate }}).toFixed(2);
+                var groupOrderUserRewards = (rewards * {{ projectRewardsMeta.groupOrderUserRewardsRate }}).toFixed(2);
+                var regularOrderRewards = (rewards * {{ projectRewardsMeta.regularOrderRewardsRate }}).toFixed(2);
+                var regularOrderUserRewards = (rewards * {{ projectRewardsMeta.regularOrderUserRewardsRate }}).toFixed(2);
                 new Morris.Donut({
                     element: 'pieChart',
                     resize: true,
                     colors: ["#f56954", "#00a65a", "#f39c12", "#00c0ef"],
                     data: [
-                        {label: "团长返现", value: captainRewards},
-                        {label: "团员返现", value: joinerRewards},
-                        {label: "零售返现", value: regularRewards},
-                        {label: "上线返现", value: parentRewards}
+                        {label: "拼团订单收益", value: groupOrderRewards},
+                        {label: "拼团订单传销收益", value: groupOrderUserRewards},
+                        {label: "普通订单收益", value: regularOrderRewards},
+                        {label: "普通订单传销收益", value: regularOrderUserRewards}
                     ],
                     hideHover: 'auto'
                 });
-                $('#captainRewardsSpan').text(captainRewards);
-                $('#joinerRewardsSpan').text(joinerRewards);
-                $('#regularRewardsSpan').text(regularRewards);
-                $('#parentRewardsSpan').text(parentRewards);
+                $('#groupOrderRewardsSpan').text(groupOrderRewards);
+                $('#groupOrderUserRewardsSpan').text(groupOrderUserRewards);
+                $('#regularOrderRewardsSpan').text(regularOrderRewards);
+                $('#regularOrderUserRewardsSpan').text(regularOrderUserRewards);
             });
             {% endif %}
         });
