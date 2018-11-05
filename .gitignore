@@ -26,3 +26,7 @@ yarn-error.log
 /.idea/
 /public/upload/
 !/public/build/
+
+###> phpunit/phpunit ###
+/phpunit.xml
+###< phpunit/phpunit ###

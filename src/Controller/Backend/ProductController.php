@@ -6,15 +6,18 @@ use App\Command\Product\Image\CreateOrUpdateProductImagesCommand;
 use App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommand;
 use App\Command\Product\UpdateProductRewardsCommand;
 use App\Entity\Product;
-use App\Entity\ProjectMeta;
 use App\Entity\ProjectRewardsMeta;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
 use App\Repository\ProjectRewardsMetaRepository;
+use Endroid\QrCode\Factory\QrCodeFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
+use Intervention\Image\AbstractFont;
+use Intervention\Image\ImageManagerStatic as Image;
 
 /**
  * @Route("/backend")
@@ -238,5 +241,41 @@ class ProductController extends BackendController
         }
 
         return $this->redirectToRoute('product_index');
+    }
+
+    /**
+     * @Route("/product/intervention/{id}", name="product_intervention", methods="GET")
+     */
+    public function intervention(Product $product, QrCodeFactory $qrCodeFactory)
+    {
+//        Image::configure(['driver' => 'imagick']);
+        $image = Image::make($product->getMainProductImage()->getFile()->getAbsolutePath())
+            ->resize(800, 800)
+            ->text('Price: $' . $product->getPrice(), 400, 400, function (AbstractFont $font) {
+                // 指定字体文件
+//                $font->file('/System/Library/Fonts/STHeiti Light.ttc');
+                $font->file(5);
+                $font->size(64);
+                $font->color('#0EBEAE');
+                $font->align('center');
+                $font->valign('top');
+//                $font->angle(10);
+            });
+
+        $qrCode = $qrCodeFactory->create('Test code');
+//        return new Response($qrCode->writeString(), Response::HTTP_OK, ['Content-Type' => $qrCode->getContentType()]);
+
+        $image->insert($qrCode->writeString(), 'bottom', 0, 50);
+
+        return new Response($image->response('png'), Response::HTTP_OK, ['Content-Disposition' => 'inline; filename="'. $product->getMainProductImage()->getFile()->getName() .'"', 'Content-Type' => 'image/png']);
+
+        /*
+        $response = new Response();
+        $disposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $product->getMainProductImage()->getFile()->getName());
+        $response->headers->set('Content-Disposition', $disposition);
+        $response->headers->set('Content-Type', 'image/png');
+        $response->setContent($image->response('png'));
+        return $response;
+        */
     }
 }
