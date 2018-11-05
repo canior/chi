@@ -28,7 +28,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const id = options.id;
+    const id = options.id ? options.id : 10216;
     if (id) {
       this.getGroupOrder(id);      
     }
@@ -56,7 +56,9 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          const groupOrder = res.data.data.groupOrder;
+          var groupOrder = res.data.data.groupOrder;
+          groupOrder.product.realPrice = app.roundFixed(parseFloat(groupOrder.product.price) + parseFloat(groupOrder.product.freight), 2);
+          groupOrder.product.realGroupPrice = app.roundFixed(parseFloat(groupOrder.product.groupPrice) + parseFloat(groupOrder.product.freight), 2);
           that.setGroupData(groupOrder);
           share.setShareSources(that, res.data.data.shareSources)          
           if (groupOrder.status == 'completed') {//拼团完成

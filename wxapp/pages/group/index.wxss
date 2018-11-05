@@ -2,6 +2,53 @@
 @import "/pages/tmpl/address.wxss";
 @import "/pages/tmpl/bottom.wxss";
 @import "/pages/tmpl/share.wxss";
+/*产品信息*/
+.chi-item {
+  position: relative;
+}
+.chi-item .status {
+  height: 234rpx;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;  
+}
+.chi-item .status image {
+  width: 134rpx;
+  height: 134rpx;
+}
+.chi-reward-container {
+  padding-left: 25rpx;
+  position: relative;
+}
+.chi-reward-container .gohome {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ff5353;
+  border-radius: 50rpx 0 0 50rpx;
+  padding: 10rpx;
+  width: 126rpx;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.chi-reward-container .gohome .go {
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #ff5353;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 10rpx;
+  margin-right: 10rpx;
+}
+.chi-reward-container .gohome text {
+  font-size: 20rpx;
+  color: #fff;
+  line-height: 22rpx;
+}
 /*拼团信息*/
 .group-user {
   display: flex;

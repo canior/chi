@@ -33,9 +33,12 @@
 <view class="container">
   <view class="specs">
     <view class="title">商品详情</view>
-    <view class="img" wx:for="{{product.productSpecImages}}" wx:key="id" wx:for-item="productSpecImage">
-      <image src="{{imgUrlPrefix + '/' + productSpecImage.fileId}}"/>
-    </view>
+    <block wx:for="{{product.productSpecImages}}" wx:key="id" wx:for-item="productSpecImage">
+      <view class="img">
+        <image src="{{imgUrlPrefix + '/' + productSpecImage.fileId}}" bindload="imgLoadDone" data-index="{{index}}"/>
+        <image class="loading" src="/images/loading.gif" wx:if="{{productSpecImage.loading}}"/>
+      </view>
+    </block>
   </view>
 </view>
 <view class="split-line"/>

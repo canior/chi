@@ -6,8 +6,12 @@ Page({
    * 页面的初始数据
    */
   data: {
-    menu: ['好友贡献', '活跃', '失效'],
-    curIndex: 0,
+    menu: [
+      { name: '好友贡献', isValid: null },
+      { name: '活跃', isValid: true },
+      { name: '失效', isValid: false }
+    ],
+    isValid: null,
     isLogin: null,
     user: null,
     rewardList: [],
@@ -21,12 +25,11 @@ Page({
   },
 
   tapMenu: function (e) {
-    this.setData({
-      curIndex: e.currentTarget.dataset.index
-    })
+    console.log(e)
+    this.getRewardList(e.currentTarget.dataset.isvalid)
   },
   
-  getRewardList: function() {
+  getRewardList: function (isValid) {
     const that = this;
     wx.showLoading({
       title: '载入中',
@@ -34,14 +37,16 @@ Page({
     wx.request({
       url: app.globalData.baseUrl + '/user/rewards/list',
       data: {
-        thirdSession: wx.getStorageSync('thirdSession')
+        thirdSession: wx.getStorageSync('thirdSession'),
+        isValid: isValid
       },
       method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           that.setData({
-            rewardList: res.data.data.children
+            rewardList: res.data.data.children,
+            isValid: isValid
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -70,7 +75,7 @@ Page({
       user: app.globalData.user
     })
     if (this.data.isLogin) {
-      this.getRewardList()
+      this.getRewardList(this.data.isValid)
     }
   },
 

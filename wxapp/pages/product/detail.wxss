@@ -57,8 +57,17 @@
 }
 .specs .img {
   text-align: center;
+  position: relative;
 }
-.specs image {
+.specs .img image {
   width: 690rpx;
   height: 450rpx;
 }
+.specs .img image.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+

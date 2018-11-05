@@ -14,6 +14,7 @@ Page({
     productReviewData: {},
     bottomData: {},
     shareData: {},
+    loading: true,
   },
 
   /**
@@ -46,8 +47,14 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
+          var product = res.data.data.product
+          product.realPrice = product.price + product.freight;
+          product.realGroupPrice = product.groupPrice + product.freight;
+          product.productSpecImages.forEach((item)=>{
+            item.loading = true
+          })
           that.setData({
-            product: res.data.data.product
+            product: product
           })
           share.setShareSources(that, res.data.data.shareSources)
         } else {
@@ -97,6 +104,14 @@ Page({
   },
   wxSaveShareSource: function (e) {
     share.saveShareSource(this, e, app.globalData.baseUrl + '/user/shareSource/create')
+  },
+
+  imgLoadDone: function (e) {
+    //console.log('bindload:imgLoadDone', e)
+    const index = e.currentTarget.dataset.index
+    this.setData({
+      ['product.productSpecImages['+index+'].loading']: false
+    })
   },
 
   /**

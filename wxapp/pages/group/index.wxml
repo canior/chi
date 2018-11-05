@@ -22,11 +22,19 @@
       <view class="line desc">2人团 还剩{{groupOrder.product.stock}}份</view>
       <template is="price" data="{{...groupOrder}}"/>
     </view>
+    <view class="status">
+      <image src="/images/group-completed.png" wx:if="{{groupOrder.status == 'completed'}}"/>
+      <image src="/images/group-expired.png" wx:if="{{groupOrder.status == 'expired'}}"/>
+      <image src="/images/group-pending.png" wx:if="{{groupOrder.status == 'pending'}}"/>
+    </view>
   </view>
-  <view class="chi-reward-container">
+</view>
+<view class="chi-reward-container">
     <view class="line reward">团长返现￥{{groupOrder.product.rewards}}</view>
     <view class="line btn" bindtap="toWhere?">查看详情></view>
-  </view>
+    <view class="gohome" bindtap="wxHome">
+      <view class="go">GO</view><text>返回\n首页</text>
+    </view>
 </view><!--产品信息-->
 
 <!--拼团信息-->
@@ -79,7 +87,7 @@
 <block wx:if="{{groupOrder.status == 'completed'}}">
   <view class="container">
     <block wx:if="{{userType == 'open' || userType == 'join'}}">
-      <view class="reward-in">恭喜您！¥20已到账 <text>请查看>></text></view>
+      <view class="reward-in">恭喜您！¥{{userType == 'open' ? openUserOrder.rewards : joinUserOrder.rewards}} 返现已到账</view>
     </block>
     <block wx:else>
       <view class="reward-in" bindtap="wxCreateGroup">我要当团长</view>
@@ -168,7 +176,7 @@
 
 <!--拼团已完成-->
 <block wx:if="{{groupOrder.status == 'completed'}}">
-  <block wx:if="{{usetType == 'open' && userType == 'join'}}">
+  <block wx:if="{{usetType == 'open' || userType == 'join'}}">
     <view class="bottom-done"><!--开团人和参团人-->
       <view class="left" bindtap="toProductDetail">继续拼团</view>
       <view class="right" bindtap="wxShowShareModal">邀请好友</view>
