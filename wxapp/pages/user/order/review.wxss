@@ -22,6 +22,10 @@
   font-size: 24rpx;
   color: #b2b2b2;
   line-height: 30rpx;
+  width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;  
 }
 .row .chi-price-container {
   display: flex;

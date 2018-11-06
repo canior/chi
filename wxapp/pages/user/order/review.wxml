@@ -17,27 +17,27 @@
   <view class="comment">
     <view class="title">商品评价</view>
     <view class="rate-container">
-      <image wx:if="{{rate < 1}}" data-idx="1" data-val="off" bindtap="{{groupUserOrder.productReviews.length == 0 ? 'rate' : ''}}" src="/images/star.png"/>
-      <image wx:if="{{rate > 0}}" data-idx="1" data-val="on" bindtap="{{groupUserOrder.productReviews.length == 0 ? 'rate' : ''}}" src="/images/star-selected.png"/>
-      <image wx:if="{{rate < 2}}" data-idx="2" data-val="off" bindtap="{{groupUserOrder.productReviews.length == 0 ? 'rate' : ''}}" src="/images/star.png"/>
-      <image wx:if="{{rate > 1}}" data-idx="2" data-val="on" bindtap="{{groupUserOrder.productReviews.length == 0 ? 'rate' : ''}}" src="/images/star-selected.png"/>
-      <image wx:if="{{rate < 3}}" data-idx="3" data-val="off" bindtap="{{groupUserOrder.productReviews.length == 0 ? 'rate' : ''}}" src="/images/star.png"/>
-      <image wx:if="{{rate > 2}}" data-idx="3" data-val="on" bindtap="{{groupUserOrder.productReviews.length == 0 ? 'rate' : ''}}" src="/images/star-selected.png"/>
-      <image wx:if="{{rate < 4}}" data-idx="4" data-val="off" bindtap="{{groupUserOrder.productReviews.length == 0 ? 'rate' : ''}}" src="/images/star.png"/>
-      <image wx:if="{{rate > 3}}" data-idx="4" data-val="on" bindtap="{{groupUserOrder.productReviews.length == 0 ? 'rate' : ''}}" src="/images/star-selected.png"/>
-      <image wx:if="{{rate < 5}}" data-idx="5" data-val="off" bindtap="{{groupUserOrder.productReviews.length == 0 ? 'rate' : ''}}" src="/images/star.png"/>
-      <image wx:if="{{rate > 4}}" data-idx="5" data-val="on" bindtap="{{groupUserOrder.productReviews.length == 0 ? 'rate' : ''}}" src="/images/star-selected.png"/>
+      <image wx:if="{{rate < 1}}" data-idx="1" data-val="off" bindtap="{{editable ? 'rate' : ''}}" src="/images/star.png"/>
+      <image wx:if="{{rate > 0}}" data-idx="1" data-val="on" bindtap="{{editable ? 'rate' : ''}}" src="/images/star-selected.png"/>
+      <image wx:if="{{rate < 2}}" data-idx="2" data-val="off" bindtap="{{editable ? 'rate' : ''}}" src="/images/star.png"/>
+      <image wx:if="{{rate > 1}}" data-idx="2" data-val="on" bindtap="{{editable ? 'rate' : ''}}" src="/images/star-selected.png"/>
+      <image wx:if="{{rate < 3}}" data-idx="3" data-val="off" bindtap="{{editable ? 'rate' : ''}}" src="/images/star.png"/>
+      <image wx:if="{{rate > 2}}" data-idx="3" data-val="on" bindtap="{{editable ? 'rate' : ''}}" src="/images/star-selected.png"/>
+      <image wx:if="{{rate < 4}}" data-idx="4" data-val="off" bindtap="{{editable ? 'rate' : ''}}" src="/images/star.png"/>
+      <image wx:if="{{rate > 3}}" data-idx="4" data-val="on" bindtap="{{editable ? 'rate' : ''}}" src="/images/star-selected.png"/>
+      <image wx:if="{{rate < 5}}" data-idx="5" data-val="off" bindtap="{{editable ? 'rate' : ''}}" src="/images/star.png"/>
+      <image wx:if="{{rate > 4}}" data-idx="5" data-val="on" bindtap="{{editable ? 'rate' : ''}}" src="/images/star-selected.png"/>
     </view>
 
     <view class="upload-row">
-      <view class="upload-box" wx:for="{{uploadStack}}" wx:key="index" data-index="{{index}}" bindtap="{{index == stackIndex && groupUserOrder.productReviews.length == 0 ? 'upload' : ''}}" wx:if="{{index <= stackIndex}}">
+      <view class="upload-box" wx:for="{{uploadStack}}" wx:key="index" data-index="{{index}}" bindtap="{{index == stackIndex && editable ? 'upload' : ''}}" wx:if="{{index <= stackIndex}}">
           <view class="tl"/><view class="tr"/><view class="bl"/><view class="br"/>
           <block wx:if="{{!item.tmpImageFilePath}}">
               <image class="camera" src="/images/camera.png"/>
               <text>上传照片</text>
           </block>
           <image wx:if="{{item.tmpImageFilePath}}" src="{{item.tmpImageFilePath}}" mode='aspectFit'/>
-          <icon type="clear" size="20" data-index="{{index}}" catchtap="remove" wx:if="{{item.tmpImageFilePath && groupUserOrder.productReviews.length == 0}}"/>
+          <icon type="clear" size="20" data-index="{{index}}" catchtap="remove" wx:if="{{item.tmpImageFilePath && editable}}"/>
       </view>
     </view>
 
@@ -47,4 +47,4 @@
   </view>
 </view>
 
-<view class="bottom" bindtap="submit" wx:if="{{groupUserOrder.productReviews.length == 0}}">提交</view>
+<view class="bottom" bindtap="submit" wx:if="{{editable}}">提交</view>

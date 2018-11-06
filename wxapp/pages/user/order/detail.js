@@ -6,6 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    options: null,
     groupUserOrder: null,
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
   },
@@ -15,7 +16,10 @@ Page({
    */
   onLoad: function (options) {
     app.buriedPoint(options)
-    this.getGroupUserOrder(options.id)
+    //this.getGroupUserOrder(options.id)
+    this.setData({
+      options: options
+    })
   },
 
   getGroupUserOrder: function (id) {
@@ -104,7 +108,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.getGroupUserOrder(this.data.options.id)
   },
 
   /**

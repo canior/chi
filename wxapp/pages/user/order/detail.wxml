@@ -3,6 +3,8 @@
 <view class="top">
   <view>下单时间：{{groupUserOrder.createdAt}}</view>
   <view wx:if="{{groupUserOrder.groupOrderId}}">拼团编号：{{groupUserOrder.groupOrderId}}</view>
+  <view>快递公司：{{groupUserOrder.carrierName}}</view>
+  <view>快递单号：{{groupUserOrder.trackingNo}}</view>
 </view>
 <view class="split-brand"/>
 
@@ -21,7 +23,10 @@
     </view>
   </view>
   <view class="row">
-    <button bindtap="toUserComment" wx:if="{{groupUserOrder.status == 'delivered'}}">商品评价</button>
+    <block wx:if="{{groupUserOrder.status != 'delivered'}}">
+      <button bindtap="toUserComment" wx:if="{{groupUserOrder.productReviews.length == 0}}">商品评价</button>
+      <button bindtap="toUserComment" wx:if="{{groupUserOrder.productReviews.length > 0}}">查看评价</button>
+    </block>
     <button open-type="contact">客服咨询</button>
     <button bindtap="deliver" wx:if="{{groupUserOrder.status == 'shipping'}}">确认收货</button>
   </view>

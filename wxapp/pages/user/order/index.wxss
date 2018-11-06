@@ -24,14 +24,8 @@
   color: #888;
   display: flex;
   align-items: center;
-}.row .left.pending {
+}.row .left.status {
   color: #ffc018;
-}.row .left.shipping {
-  color: #353535;
-}.row .left.delivered {
-  color: #353535;
-}.row .left.completed {
-  color: #ff4d42;
 }
 .row .left image {
   width: 135rpx;

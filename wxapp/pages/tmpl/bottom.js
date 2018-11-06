@@ -63,7 +63,7 @@ function __createOrder(that, url, productId) {
       wx.hideLoading();
       if (res.statusCode == 200 && res.data.code == 200) {
         //console.log(res.data.data)
-        wx.redirectTo({
+        wx.navigateTo({
           url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
         })
       } else {

@@ -48,9 +48,9 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           var product = res.data.data.product
-          product.realPrice = product.price + product.freight;
-          product.realGroupPrice = product.groupPrice + product.freight;
-          product.productSpecImages.forEach((item)=>{
+          product.realPrice = app.roundFixed(parseFloat(product.price) + parseFloat(product.freight), 2);
+          product.realGroupPrice = app.roundFixed(parseFloat(product.groupPrice) + parseFloat(product.freight), 2);
+          product.productSpecImages.forEach((item) => {
             item.loading = true
           })
           that.setData({
@@ -77,6 +77,13 @@ Page({
     wx.switchTab({
       url: '/pages/product/index',
     })
+  },
+
+  // 转产品返现详情
+  toProductReward: function() {
+    wx.navigateTo({
+      url: "/pages/product/reward"
+    });
   },
 
   // 单独购买提醒弹窗

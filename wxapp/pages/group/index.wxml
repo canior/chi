@@ -31,7 +31,7 @@
 </view>
 <view class="chi-reward-container">
     <view class="line reward">团长返现￥{{groupOrder.product.rewards}}</view>
-    <view class="line btn" bindtap="toWhere?">查看详情></view>
+    <view class="line btn" bindtap="toProductReward">查看详情></view>
     <view class="gohome" bindtap="wxHome">
       <view class="go">GO</view><text>返回\n首页</text>
     </view>

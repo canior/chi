@@ -16,6 +16,7 @@ Page({
       { tmpImageFilePath: '', fileId: null },
     ],
     stackIndex: 0,
+    editable: true,
   },
 
   /**

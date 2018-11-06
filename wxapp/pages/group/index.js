@@ -264,6 +264,13 @@ Page({
     })
   },
 
+  // 转产品返现详情
+  toProductReward: function () {
+    wx.navigateTo({
+      url: "/pages/product/reward"
+    });
+  },
+  
   // 单独购买提醒弹窗
   wxShowModal: function (e) {
     bottom.showModal(this)

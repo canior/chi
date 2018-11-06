@@ -66,6 +66,14 @@ Page({
     })
   },
 
+  // 转产品详情
+  toProductDetail: function (e) {
+    const productId = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: '/pages/product/detail?id=' + productId,
+    })
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
