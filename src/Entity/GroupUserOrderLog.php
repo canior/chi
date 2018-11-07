@@ -21,7 +21,7 @@ class GroupUserOrderLog implements Dao
     private $groupUserOrder;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="groupUserOrderLogs")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=true)
      */
     private $user;
