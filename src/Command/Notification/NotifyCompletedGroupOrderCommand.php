@@ -8,9 +8,8 @@
 
 namespace App\Command\Notification;
 
-
 use App\Command\SerializableCommandInterface;
-use App\Entity\GroupOrder;
+use App\Command\Traits\SerializerTrait;
 
 /**
  * 通知团长，团员拼团成功
@@ -19,38 +18,24 @@ use App\Entity\GroupOrder;
  */
 class NotifyCompletedGroupOrderCommand implements SerializableCommandInterface
 {
+    use SerializerTrait;
+
     private $groupOrderId;
 
     /**
      * NotifyPendingGroupOrderCommand constructor.
-     * @param GroupOrder $groupOrder
+     * @param int $groupOrderId
      */
-    function __construct(GroupOrder $groupOrder)
+    function __construct($groupOrderId)
     {
-        $this->groupOrderId = $groupOrder->getId();
+        $this->groupOrderId = $groupOrderId;
     }
 
     /**
      * @return int
      */
-    public function getGroupOrderId() : int {
+    public function getGroupOrderId(): int
+    {
         return $this->groupOrderId;
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize()
-    {
-        return '{"groupOrderId":' . $this-> groupOrderId. ' }';
-    }
-
-    /**
-     * @param $json
-     * @return $this
-     */
-    public function deserialize($json)
-    {
-        return json_decode($json, true);
     }
 }

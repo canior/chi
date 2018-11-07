@@ -8,37 +8,26 @@
 
 namespace App\Command\Payment;
 
+use App\Command\SerializableCommandInterface;
+use App\Command\Traits\SerializerTrait;
 
-use App\Entity\GroupUserOrder;
-
-class RefundOrderCommand
+class RefundOrderCommand implements SerializableCommandInterface
 {
+    use SerializerTrait;
+
     private $groupUserOrderId;
 
-    public function __construct(GroupUserOrder $groupUserOrder)
+    /**
+     * RefundOrderCommand constructor.
+     * @param int $groupUserOrderId
+     */
+    public function __construct($groupUserOrderId)
     {
-
-        $this->groupUserOrderId = $groupUserOrder->getId();
+        $this->groupUserOrderId = $groupUserOrderId;
     }
 
-    public function getGroupUserOrderId() {
+    public function getGroupUserOrderId()
+    {
         return $this->groupUserOrderId;
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize()
-    {
-        return '{"groupUserOrderId":' . $this->groupUserOrderId. ' }';
-    }
-
-    /**
-     * @param $json
-     * @return $this
-     */
-    public function deserialize($json)
-    {
-        return json_decode($json, true);
     }
 }

@@ -8,9 +8,8 @@
 
 namespace App\Command\Notification;
 
-
 use App\Command\SerializableCommandInterface;
-use App\Entity\GroupUserOrder;
+use App\Command\Traits\SerializerTrait;
 
 /**
  * 订单返现通知
@@ -21,36 +20,21 @@ use App\Entity\GroupUserOrder;
  */
 class NotifyUserRewardsSentCommand implements SerializableCommandInterface
 {
+    use SerializerTrait;
+
     private $groupUserOrderId;
 
     /**
      * NotifyUserRewardsSentCommand constructor.
-     * @param GroupUserOrder $groupUserOrder
+     * @param int $groupUserOrderId
      */
-    public function __construct(GroupUserOrder $groupUserOrder)
+    public function __construct($groupUserOrderId)
     {
-
-        $this->groupUserOrderId = $groupUserOrder->getId();
+        $this->groupUserOrderId = $groupUserOrderId;
     }
 
-    public function getGroupUserOrderId() {
+    public function getGroupUserOrderId()
+    {
         return $this->groupUserOrderId;
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize()
-    {
-        return '{"groupUserOrderId":' . $this->groupUserOrderId. ' }';
-    }
-
-    /**
-     * @param $json
-     * @return $this
-     */
-    public function deserialize($json)
-    {
-        return json_decode($json, true);
     }
 }

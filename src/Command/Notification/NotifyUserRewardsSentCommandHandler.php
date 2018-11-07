@@ -69,13 +69,15 @@ class NotifyUserRewardsSentCommandHandler
             $templateId = "8FIIkmMlRQmluP1qszxpVKiVYhVCXY5qV5LGwJN6jkg";
             $page = "pages/user/reward/index";
             $toUser = $groupUserOrderReward->getUser()->getWxOpenId();
-            $data = [['keyword1' => ['value' => $groupUserOrder->getProduct()->getTitle()]],
-                ['keyword2' => ['value' => $groupUserOrder->getId()]],
-                ['keyword3' => ['value' => $groupUserOrderReward->getUserRewards()]],
-                ['keyword4' => ['value' => $groupUserOrder->getCompletedAt()]],
-                ['keyword4' => ['value' => '用户拼团返现收益']],
-                ['keyword6' => ['value' => $groupUserOrder->getUser()->getNickname() . '的拼团返现已发放到微信零钱，请注意查收!']]];
-            $emphasisKeyword = "keyword3.DATA";
+            $data = [
+                'keyword1' => ['value' => $groupUserOrder->getProduct()->getTitle()],
+                'keyword2' => ['value' => $groupUserOrder->getId()],
+                'keyword3' => ['value' => $groupUserOrderReward->getUserRewards()],
+                'keyword4' => ['value' => $groupUserOrder->getCompletedAt()],
+                'keyword5' => ['value' => '用户拼团返现收益'],
+                'keyword6' => ['value' => $groupUserOrder->getUser()->getNickname() . '的拼团返现已发放到微信零钱，请注意查收!']
+            ];
+            $emphasisKeyword = "";
 
             $wxApi = new WxCommon($this->log);
             $wxApi->sendMessage($toUser, $templateId, $page, $formId, $data, $emphasisKeyword);

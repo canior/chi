@@ -64,14 +64,15 @@ class NotifyCompletedGroupOrderCommandHandler
             $page = "pages/group/index?id=" . $groupOrderId;
             $toUser = $groupUserOrder->getUser()->getWxOpenId();
             $data = [
-                ['keyword1' => ['value' => $groupOrder->getProduct()->getTitle()]],
-                ['keyword2' => ['value' => $groupOrder->getProduct()->getOriginalPrice()]],
-                ['keyword3' => ['value' => $groupOrder->getProduct()->getGroupPrice()]],
-                ['keyword4' => ['value' => $groupUserOrder->getCreatedAt()]],
-                ['keyword5' => ['value' => $groupOrder->getCreatedAt()]],
-                ['keyword6' => ['value' => $groupUserOrder->getId()]],
-                ['keyword8' => ['value' => $groupUserOrder->getStatusText()]]];
-            $emphasisKeyword = "keyword7.DATA";
+                'keyword1' => ['value' => $groupOrder->getProduct()->getTitle()],
+                'keyword2' => ['value' => $groupOrder->getProduct()->getOriginalPrice()],
+                'keyword3' => ['value' => $groupOrder->getProduct()->getGroupPrice()],
+                'keyword4' => ['value' => $groupUserOrder->getCreatedAt()],
+                'keyword5' => ['value' => $groupOrder->getCreatedAt()],
+                'keyword6' => ['value' => $groupUserOrder->getId()],
+                'keyword7' => ['value' => $groupUserOrder->getStatusText()]
+            ];
+            $emphasisKeyword = "";
 
             $wxApi = new WxCommon($this->log);
             $wxApi->sendMessage($toUser, $templateId, $page, $formId, $data, $emphasisKeyword);
