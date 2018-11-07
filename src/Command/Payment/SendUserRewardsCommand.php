@@ -8,41 +8,26 @@
 
 namespace App\Command\Payment;
 
+use App\Command\SerializableCommandInterface;
+use App\Command\Traits\SerializerTrait;
 
-use App\Entity\GroupUserOrder;
-
-class SendUserRewardsCommand
+class SendUserRewardsCommand implements SerializableCommandInterface
 {
+    use SerializerTrait;
+
     private $groupUserOrderId;
 
     /**
      * SendUserRewardsCommand constructor.
-     * @param GroupUserOrder $groupUserOrder
+     * @param int $groupUserOrderId
      */
-    public function __construct(GroupUserOrder $groupUserOrder)
+    public function __construct($groupUserOrderId)
     {
-
-        $this->groupUserOrderId = $groupUserOrder->getId();
+        $this->groupUserOrderId = $groupUserOrderId;
     }
 
-    public function getGroupUserOrderId() {
+    public function getGroupUserOrderId()
+    {
         return $this->groupUserOrderId;
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize()
-    {
-        return '{"groupUserOrderId":' . $this->groupUserOrderId. ' }';
-    }
-
-    /**
-     * @param $json
-     * @return $this
-     */
-    public function deserialize($json)
-    {
-        return json_decode($json, true);
     }
 }

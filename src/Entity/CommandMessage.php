@@ -171,7 +171,7 @@ class CommandMessage implements Dao
      * @return CommandMessage
      */
     public static function createSendOrderRewardsCommand(GroupUserOrder $groupUserOrder) {
-        $qCommand = new SendOrderRewardsCommand($groupUserOrder);
+        $qCommand = new SendOrderRewardsCommand($groupUserOrder->getId());
         $commandMessage = new CommandMessage();
         $commandMessage->setMultithread(true);
         $commandMessage->setCommandClass(get_class($qCommand));
@@ -185,7 +185,7 @@ class CommandMessage implements Dao
      * @return CommandMessage
      */
     public static function createSendUserRewardsCommand(GroupUserOrder $groupUserOrder) {
-        $qCommand = new SendUserRewardsCommand($groupUserOrder);
+        $qCommand = new SendUserRewardsCommand($groupUserOrder->getId());
         $commandMessage = new CommandMessage();
         $commandMessage->setMultithread(true);
         $commandMessage->setCommandClass(get_class($qCommand));
@@ -199,7 +199,7 @@ class CommandMessage implements Dao
      * @return CommandMessage
      */
     public static function createRefundOrderCommand(GroupUserOrder $groupUserOrder) {
-        $qCommand = new RefundOrderCommand($groupUserOrder);
+        $qCommand = new RefundOrderCommand($groupUserOrder->getId());
         $commandMessage = new CommandMessage();
         $commandMessage->setMultithread(true);
         $commandMessage->setCommandClass(get_class($qCommand));
@@ -213,7 +213,7 @@ class CommandMessage implements Dao
      * @return CommandMessage
      */
     public static function createNotifyCompletedGroupOrderCommand(GroupOrder $groupOrder) {
-        $qCommand = new NotifyCompletedGroupOrderCommand($groupOrder);
+        $qCommand = new NotifyCompletedGroupOrderCommand($groupOrder->getId());
         $commandMessage = new CommandMessage();
         $commandMessage->setMultithread(true);
         $commandMessage->setCommandClass(get_class($qCommand));
@@ -227,7 +227,7 @@ class CommandMessage implements Dao
      * @return CommandMessage
      */
     public static function createNotifyExpiringGroupOrderCommand(GroupOrder $groupOrder) {
-        $qCommand = new NotifyExpiringGroupOrderCommand($groupOrder);
+        $qCommand = new NotifyExpiringGroupOrderCommand($groupOrder->getId());
         $commandMessage = new CommandMessage();
         $commandMessage->setMultithread(true);
         $commandMessage->setCommandClass(get_class($qCommand));
@@ -241,7 +241,7 @@ class CommandMessage implements Dao
      * @return CommandMessage
      */
     public static function createNotifyExpiredGroupOrderCommand(GroupOrder $groupOrder) {
-        $qCommand = new NotifyExpiredGroupOrderCommand($groupOrder);
+        $qCommand = new NotifyExpiredGroupOrderCommand($groupOrder->getId());
         $commandMessage = new CommandMessage();
         $commandMessage->setMultithread(true);
         $commandMessage->setCommandClass(get_class($qCommand));
@@ -255,7 +255,7 @@ class CommandMessage implements Dao
      * @return CommandMessage
      */
     public static function createNotifyOrderRewardsSentCommand(GroupUserOrder $groupUserOrder) {
-        $qCommand = new NotifyOrderRewardsSentCommand($groupUserOrder);
+        $qCommand = new NotifyOrderRewardsSentCommand($groupUserOrder->getId());
         $commandMessage = new CommandMessage();
         $commandMessage->setMultithread(true);
         $commandMessage->setCommandClass(get_class($qCommand));
@@ -283,7 +283,7 @@ class CommandMessage implements Dao
      * @return CommandMessage
      */
     public static function createNotifyUserRewardsSentCommand(GroupUserOrder $groupUserOrder) {
-        $qCommand = new NotifyUserRewardsSentCommand($groupUserOrder);
+        $qCommand = new NotifyUserRewardsSentCommand($groupUserOrder->getId());
         $commandMessage = new CommandMessage();
         $commandMessage->setMultithread(true);
         $commandMessage->setCommandClass(get_class($qCommand));

@@ -61,11 +61,13 @@ class NotifyExpiringGroupOrderCommandHandler
         $templateId = "e3Up2LoLjskeL1gHIp3EQhTBGQ-qkm7qLfWWm0LzeTI";
         $page = "pages/group/index?id=" . $groupOrderId;
         $toUser = $groupUserOrder->getUser()->getWxOpenId();
-        $data = [['keyword1' => ['value' => $groupOrder->getProduct()->getTitle()]],
-            ['keyword2' => ['value' => $groupUserOrder->getTotal()]],
-            ['keyword3' => ['value' => $groupOrder->getExpiredAt()]],
-            ['keyword4' => ['value' => '您发起的拼团即将过期，快找人来帮忙拼团吧!']]];
-        $emphasisKeyword = "keyword4.DATA";
+        $data = [
+            'keyword1' => ['value' => $groupOrder->getProduct()->getTitle()],
+            'keyword2' => ['value' => $groupUserOrder->getTotal()],
+            'keyword3' => ['value' => $groupOrder->getExpiredAt()],
+            'keyword4' => ['value' => '您发起的拼团即将过期，快找人来帮忙拼团吧!']
+        ];
+        $emphasisKeyword = "";
 
         $wxApi = new WxCommon($this->log);
         $wxApi->sendMessage($toUser, $templateId, $page, $formId, $data, $emphasisKeyword);

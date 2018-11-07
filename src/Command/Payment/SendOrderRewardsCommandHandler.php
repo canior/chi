@@ -8,8 +8,8 @@
 
 namespace App\Command\Payment;
 
-
 use App\Command\CommandInterface;
+use App\Entity\GroupUserOrder;
 use App\Repository\GroupUserOrderRepository;
 use App\Service\Wx\WxPayment;
 use Psr\Log\LoggerInterface;
@@ -62,5 +62,4 @@ class SendOrderRewardsCommandHandler
             $this->log->info("update user total rewards for order " . $groupUserOrder->getId());
         }
     }
-
 }

@@ -63,7 +63,7 @@ class NotifyPendingGroupOrderCommandHandler // extends AbstractCommandHandler
             'keyword3' => ['value' => 1],
             'keyword4' => ['value' => $groupOrder->getExpiredAt(true)]
         ];
-        $emphasisKeyword = "keyword3.DATA";
+        $emphasisKeyword = "";
 
         $wxApi = new WxCommon($this->log);
         $wxApi->sendMessage($toUser, $templateId, $page, $formId, $data, $emphasisKeyword);
