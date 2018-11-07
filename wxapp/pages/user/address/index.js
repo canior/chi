@@ -9,7 +9,8 @@ Page({
   data: {
     addresses: [],
     delBtnWidth: 80, //删除按钮宽度(px)
-    groupUserOrderId: null, //从支付页选地址过来的
+    groupUserOrderId: null, //从支付页因选地址而转来
+    address: null, //微信导入的地址
   },
 
   /**
@@ -17,7 +18,7 @@ Page({
    */
   onLoad: function (options) {
     app.buriedPoint(options)
-    if (options.orderId) {
+    if (options.orderId) {//从支付页因选地址而转来
       this.setData({
         groupUserOrderId: options.orderId
       })
@@ -31,6 +32,7 @@ Page({
     request.confirmAddress(this, url, this.data.addresses[index].id)
   },
 
+  // 获取地址列表
   getAddresses: function() {
     const that = this;
     wx.request({
@@ -56,13 +58,15 @@ Page({
     })
   },
 
-  editAddress: function(e) {
+  // 新建地址
+  addAddress: function(e) {
     const id = e.currentTarget.dataset.id ? e.currentTarget.dataset.id : '';
     wx.navigateTo({
       url: '/pages/user/address/edit?id=' + id,
     })
   },
 
+  // 删除地址
   delAddress: function(e) {
     const id = e.currentTarget.dataset.id;
     const that = this;
@@ -97,21 +101,18 @@ Page({
     })
   },
 
-  importAddress: function (e) {
+  import: function (e) {
+    const that = this;
+    const baseUrl = app.globalData.baseUrl
     app.unifiedAuth(
       'scope.address',
       '需要使用您的通讯地址，是否允许？',
       function () {
         wx.chooseAddress({
           success: (res) => {
-            console.log(res);
-            app.globalData.addressInfo = res;
-            wx.navigateTo({
-              url: '/pages/user/address/edit?id=import',
-              success: function(res) {},
-              fail: function(res) {},
-              complete: function(res) {},
-            })
+            //console.log(res)
+            request.importAddress(that, res)
+            request.saveAddress(that, baseUrl, true)
           },
           fail: function (err) {
             console.log('wx.chooseAddress fail', err)

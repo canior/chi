@@ -1,9 +1,9 @@
 /* pages/user/order/detail.wxss */
 .top {
-  font-size: 30rpx;
+  font-size: 24rpx;
   color: #888;
   border-top: 1px solid #ececec;
-  padding: 20rpx 40rpx;
+  padding: 20rpx 40rpx 10rpx;
 }
 .row {
   display: flex;
