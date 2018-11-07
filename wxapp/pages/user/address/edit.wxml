@@ -1,22 +1,22 @@
 <!--pages/user/address/edit.wxml-->
 <view class="container">
   <view class="row">
-    <input placeholder="姓名" value="{{name}}" bindblur="inputName"/>
+    <input placeholder="姓名" value="{{address.name}}" bindblur="inputName"/>
   </view>
   <view class="row">
-    <input placeholder="手机号码" value="{{phone}}" bindblur="inputPhone"/>
+    <input placeholder="手机号码" value="{{address.phone}}" bindblur="inputPhone"/>
   </view>
   <view class="row">
-    <picker mode="region" bindchange="bindRegionChange" value="{{region}}" custom-item="{{customItem}}">
-      <input placeholder="省市、区县" value="{{regionText}}" disabled="true"/>
-    </picker>    
+    <picker mode="region" bindchange="bindRegionChange" value="{{address.region}}" custom-item="{{address.customItem}}">
+      <input placeholder="省市、区县" value="{{address.regionText}}" disabled="true"/>
+    </picker>
   </view>
   <view class="row">
-    <input placeholder="详细地址" value="{{address}}" bindblur="inputAddress"/>
+    <input placeholder="详细地址" value="{{address.address}}" bindblur="inputAddress"/>
   </view>
-  <!--<view class="row" wx:if="{{!isDefault}}">
-    <checkbox-group bindchange="setDefault" data-setdefault="{{setDefault}}">
-      <checkbox checked="{{setDefault}}"/>设为默认地址
+  <!--<view class="row" wx:if="{{!address.isDefault}}">
+    <checkbox-group bindchange="setDefault" data-setdefault="{{address.setDefault}}">
+      <checkbox checked="{{address.setDefault}}"/>设为默认地址
     </checkbox-group>
   </view>-->
 </view>

@@ -3,8 +3,8 @@
 <view class="top">
   <view>下单时间：{{groupUserOrder.createdAt}}</view>
   <view wx:if="{{groupUserOrder.groupOrderId}}">拼团编号：{{groupUserOrder.groupOrderId}}</view>
-  <view>快递公司：{{groupUserOrder.carrierName}}</view>
-  <view>快递单号：{{groupUserOrder.trackingNo}}</view>
+  <view wx:if="{{groupUserOrder.carrierName}}">快递公司：{{groupUserOrder.carrierName}}</view>
+  <view wx:if="{{groupUserOrder.trackingNo}}">快递单号：{{groupUserOrder.trackingNo}}</view>
 </view>
 <view class="split-brand"/>
 

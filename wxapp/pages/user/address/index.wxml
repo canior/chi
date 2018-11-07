@@ -22,6 +22,6 @@
 </view>
 
 <view class="bottom">
-  <view class="left" bindtap="editAddress">＋新建地址</view>
-  <view class="right" bindtap="importAddress"><image src="/images/wx.png"/>微信导入地址</view>
+  <view class="left" bindtap="addAddress">＋新建地址</view>
+  <view class="right" bindtap="import"><image src="/images/wx.png"/>微信导入地址</view>
 </view>
