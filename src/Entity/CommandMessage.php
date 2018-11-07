@@ -269,7 +269,7 @@ class CommandMessage implements Dao
      * @return CommandMessage
      */
     public static function createNotifyPendingGroupOrderCommand(GroupOrder $groupOrder) {
-        $qCommand = new NotifyPendingGroupOrderCommand($groupOrder);
+        $qCommand = new NotifyPendingGroupOrderCommand($groupOrder->getId());
         $commandMessage = new CommandMessage();
         $commandMessage->setMultithread(true);
         $commandMessage->setCommandClass(get_class($qCommand));
