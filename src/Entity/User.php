@@ -288,6 +288,11 @@ class User extends BaseUser implements Dao
 
     public function setParentUser(?self $parentUser): self
     {
+        if ($parentUser == null) {
+            $this->parentUser = null;
+            return $this;
+        }
+        
         if ($parentUser->getId() != $this->getId())
             $this->parentUser = $parentUser;
 
