@@ -34,7 +34,7 @@
                                                     <div class="media-body">
                                                         <div class="clearfix"></div>
                                                         <h5>下单时间: {{ group_user_order.createdAt }}</h5>
-                                                        <h5>订单类型: {{ group_user_order.groupOrder ? '拼团订单' : '零售订单' }}</h5>
+                                                        <h5>订单类型: {{ group_user_order.groupOrder ? '拼团订单' : '普通订单' }}</h5>
                                                         <h5>订单ID: {{ group_user_order.id }}</h5>
                                                         {% if group_user_order.groupOrder %}
                                                             <h5>
@@ -183,6 +183,7 @@
                         </div>
                     </div>
                     <div class="row">
+                        {% if group_user_order.groupOrder %}
                         <div class="col-sm-12 col-md-12">
                             <!-- BAR CHART -->
                             <div class="box box-warning">
@@ -269,6 +270,7 @@
                             </div>
                             <!-- /.box -->
                         </div>
+                        {% endif %}
                         <div class="col-sm-12 col-md-12">
                             <!-- BAR CHART -->
                             <div class="box box-warning">

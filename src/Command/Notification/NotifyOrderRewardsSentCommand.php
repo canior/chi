@@ -12,6 +12,11 @@ namespace App\Command\Notification;
 use App\Command\SerializableCommandInterface;
 use App\Entity\GroupUserOrder;
 
+/**
+ * 拼团/普通订单收益到账通知
+ * Class NotifyOrderRewardsSentCommand
+ * @package App\Command\Notification
+ */
 class NotifyOrderRewardsSentCommand implements SerializableCommandInterface
 {
     private $groupUserOrderId;
