@@ -57,10 +57,12 @@ class NotifyPendingGroupOrderCommandHandler // extends AbstractCommandHandler
         $templateId = "9RLVQOC7gP3qJipiFX2efKvz2oSYuJRs0dDaY2UeDIA";
         $page = "pages/group/index?id=" . $groupOrderId;
         $toUser = $groupUserOrder->getUser()->getWxOpenId();
-        $data = [['keyword1' => ['value' => $groupOrder->getProduct()->getTitle()]],
-            ['keyword2' => ['value' => $groupOrder->getProduct()->getPrice()]],
-            ['keyword3' => ['value' => 1]],
-            ['keyword4' => ['value' => $groupOrder->getExpiredAt(true)]]];
+        $data = [
+            'keyword1' => ['value' => $groupOrder->getProduct()->getTitle()],
+            'keyword2' => ['value' => $groupOrder->getProduct()->getPrice()],
+            'keyword3' => ['value' => 1],
+            'keyword4' => ['value' => $groupOrder->getExpiredAt(true)]
+        ];
         $emphasisKeyword = "keyword3.DATA";
 
         $wxApi = new WxCommon($this->log);
