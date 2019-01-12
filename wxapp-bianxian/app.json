@@ -4,7 +4,10 @@
     "pages/product/detail",
     "pages/group/pay",
     "pages/user/index",
-    
+    "pages/user/signin",
+    "pages/user/reward/index",
+    "pages/user/referral/index",
+    "pages/user/quota/index",
 
     "pages/product/reward",
     "pages/group/index",
@@ -16,7 +19,6 @@
     "pages/user/order/index",
     "pages/user/order/detail",
     "pages/user/order/review",
-    "pages/user/reward/index",
     "pages/share/moment"
   ],
   "window":{
@@ -39,7 +41,7 @@
         "selectedIconPath": "images/home-active.png"
       },
       {
-        "pagePath": "pages/user/index",
+        "pagePath": "pages/user/signin",
         "text": "扫一扫",
         "iconPath": "images/reward.png",
         "selectedIconPath": "images/reward-active.png"

@@ -1,0 +1,4 @@
+<!--pages/user/signin.wxml-->
+<view class="container">
+  <text>报到、签到</text>
+</view>

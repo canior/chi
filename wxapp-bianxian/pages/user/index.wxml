@@ -18,13 +18,13 @@
     </view>    
   </view>
   <view class="row">
-    <view class="step" bindtap="toUserOrder" data-status="created">
+    <view class="step" bindtap="toMyAccount" data-status="created">
       <text>我的账户</text><text>￥10</text>
     </view>
-    <view class="step" bindtap="toUserOrder" data-status="pending">
+    <view class="step" bindtap="toReferral" data-status="pending">
       <text>我的推荐</text><text>1人</text>
     </view>
-    <view class="step" bindtap="toUserOrder" data-status="shipping">
+    <view class="step" bindtap="toQuota" data-status="shipping">
       <text>我的名额</text><text>1/100</text>
     </view>
   </view>

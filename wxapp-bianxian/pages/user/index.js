@@ -14,7 +14,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    app.buriedPoint(options)
+    //app.buriedPoint(options)
   },
 
   // 转我的拼团
@@ -68,6 +68,24 @@ Page({
   toMyInfo: function () {
     wx.navigateTo({
       url: '/pages/user/address/edit',
+    })
+  },
+  // 转我的账户
+  toMyAccount: function () {
+    wx.navigateTo({
+      url: '/pages/user/reward/index',
+    })
+  },
+  // 转我的推荐
+  toReferral: function () {
+    wx.navigateTo({
+      url: '/pages/user/referral/index',
+    })
+  },
+  // 转我的名额
+  toQuota: function () {
+    wx.navigateTo({
+      url: '/pages/user/quota/index',
     })
   },
 
