@@ -1,12 +1,13 @@
 {
-  "pages":[
+  "pages":[    
     "pages/product/index",
     "pages/product/detail",
     "pages/group/pay",
+    "pages/user/index",
     
+
     "pages/product/reward",
     "pages/group/index",
-    "pages/user/index",
     "pages/user/login",
     "pages/user/mobile/login",
     "pages/user/address/index",
@@ -38,14 +39,14 @@
         "selectedIconPath": "images/home-active.png"
       },
       {
-        "pagePath": "pages/user/reward/index",
+        "pagePath": "pages/user/index",
         "text": "扫一扫",
         "iconPath": "images/reward.png",
         "selectedIconPath": "images/reward-active.png"
       },
       {
         "pagePath": "pages/user/index",
-        "text": "我的",
+        "text": "个人中心",
         "iconPath": "images/mine.png",
         "selectedIconPath": "images/mine-active.png"
       }

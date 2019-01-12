@@ -13,7 +13,7 @@
           <view class="addr">{{item.region.fullname}} {{item.address}}</view>
         </view>
       </view>
-      <view class="right" bindtap="editAddress" data-id="{{item.id}}">
+      <view class="right" bindtap="addAddress" data-id="{{item.id}}">
         <image src="/images/edit.png"/>
       </view>
     </view>

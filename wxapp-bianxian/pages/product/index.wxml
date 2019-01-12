@@ -16,7 +16,7 @@
   <view class="section">
     <view class="row">
       <view class="left">
-        <image src="/images/demo/product.jpg"/>
+        <image src="/images/demo/course1.jpg"/>
       </view>
       <view class="right">
           <view class="line name">变现思维课</view>

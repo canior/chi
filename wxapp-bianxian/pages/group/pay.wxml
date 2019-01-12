@@ -9,7 +9,7 @@
 </view>-->
 <view class="container">
   <view class="chi-item">
-    <view class="left"><image src="/images/demo/product.jpg"/></view>
+    <view class="left"><image src="/images/demo/course1.jpg"/></view>
     <view class="right">
       <view class="line title">变现思维课</view>
       <view class="line desc">2019.01.20 - 2019.01.22<text>￥380</text></view>
@@ -21,7 +21,7 @@
 <view class="container form">
   <view class="split-line"/>
   <view class="title">个人信息</view>
-  <view class="chi-item">
+  <view class="chi-item" bindtap="toMyInfo">
     <view class="left"><image src="/images/demo/group-user.png"/></view>
     <view class="right">
       <view class="line">姓名：唐亚迪</view>
@@ -34,7 +34,7 @@
 <view class="container form">
   <view class="split-line"/>
   <view class="title">推荐人</view>
-  <view class="chi-item">
+  <view class="chi-item" bindtap="toReferee">
     <view class="left"><image src="/images/demo/group-user.png"/></view>
     <view class="right">
       <view class="line">姓名：唐亚迪</view>

@@ -19,6 +19,7 @@ Page({
       setDefault: false,
     },
     groupUserOrderId: null, //从支付页因无地址而转来
+    referee: null,
   },
 
   /**
@@ -33,9 +34,15 @@ Page({
     }
     if (options.id) {//编辑
       this.getAddress(options.id)
-      wx.setNavigationBarTitle({ title: '编辑地址' })
+      wx.setNavigationBarTitle({ title: '个人资料' })
     } else {//新建
-      wx.setNavigationBarTitle({ title: '新建地址' })
+      wx.setNavigationBarTitle({ title: '个人资料' })
+      if (options.referee) {
+        wx.setNavigationBarTitle({ title: '推荐人' })
+        this.setData({
+          referee: 1
+        })
+      }
     }
   },
 

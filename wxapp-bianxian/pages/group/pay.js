@@ -172,6 +172,19 @@ Page({
     })
   },
 
+  // 转个人资料
+  toMyInfo: function () {
+    wx.navigateTo({
+      url: '/pages/user/address/edit',
+    })
+  },
+  // 转推荐人
+  toReferee: function () {
+    wx.navigateTo({
+      url: '/pages/user/address/edit?referee=1',
+    })
+  },
+
   /**
    * 生命周期函数--监听页面显示
    */

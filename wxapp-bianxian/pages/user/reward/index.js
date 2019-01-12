@@ -21,7 +21,18 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    app.buriedPoint(options)
+    //app.buriedPoint(options)
+    wx.scanCode({
+      onlyFromCamera: true,
+      success: (res) => {
+        console.log(res);
+        var tmp = res.result.split('id=');
+        var id = tmp[1];
+        wx.navigateTo({
+          url: '../using/using?id=' + id + '&qr=1', //qr=1表示扫码进入
+        });
+      }
+    });    
   },
 
   tapMenu: function (e) {

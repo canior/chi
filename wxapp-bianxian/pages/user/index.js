@@ -64,6 +64,13 @@ Page({
     })
   },
 
+  // 转个人资料
+  toMyInfo: function () {
+    wx.navigateTo({
+      url: '/pages/user/address/edit',
+    })
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
