@@ -1,0 +1,33 @@
+<template name="bottom">
+  <view class="chi-bottom">
+      <view class="item home" bindtap="wxHome">
+        <image src="/images/home2.png"/>
+        <text>首页</text>
+      </view>
+      <view class="item service" bindtap="wxShowShareModal">
+        <image src="/images/share.png"/>
+        <text>分享</text>
+      </view>
+      <!--<button class="item service btn-clear" open-type='contact'>
+        <image src="/images/service.png"/>
+        <text>客服</text>
+      </button>-->
+      <button class="item btn order" bindtap="wxShowModal" disabled="{{btnDisabled}}"><text>￥{{product.realPrice}}</text><text>单独购买</text></button>
+      <button class="item btn group" bindtap="wxCreateGroup" disabled="{{btnDisabled}}"><text>￥{{product.realGroupPrice}}</text><text>发起拼团</text></button>
+  </view>
+
+  <!--单独购买弹窗-->
+  <view class="chi-mask" wx:if="{{showModal}}" bindtap="wxHideModal"/>
+  <view class="chi-modal" wx:if="{{showModal}}">
+    <view class="title">提醒</view>
+    <view class="body">
+      <view>您确定花费￥{{product.realPrice}}直接购买吗？</view>
+      <view>两人拼团只需￥{{product.realGroupPrice}}喔〜</view>
+    </view>
+    <view class="foot" bindtap="wxHideModal">
+      <button class="btn" bindtap="wxCreateOrder">继续支付</button>
+      <button class="btn group" bindtap="wxCreateGroup">我要拼团</button>
+    </view>
+  </view>
+
+</template>

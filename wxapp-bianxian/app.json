@@ -32,13 +32,13 @@
     "list": [
       {
         "pagePath": "pages/product/index",
-        "text": "首页",
+        "text": "变现课程",
         "iconPath": "images/home.png",
         "selectedIconPath": "images/home-active.png"
       },
       {
         "pagePath": "pages/user/reward/index",
-        "text": "收益",
+        "text": "扫一扫",
         "iconPath": "images/reward.png",
         "selectedIconPath": "images/reward-active.png"
       },

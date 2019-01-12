@@ -1,0 +1,2 @@
+<!--pages/product/reward.wxml-->
+<web-view src="{{url}}"></web-view>

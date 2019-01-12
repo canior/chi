@@ -1,0 +1,34 @@
+<!--pages/user/group/index.wxml-->
+<import src="/pages/tmpl/price.wxml"/>
+<view class="navbar">
+  <block wx:for="{{menu}}" wx:key="index">
+    <view class="nav{{curStatus==item.status ? ' active' : ''}}" data-status="{{item.status}}" bindtap="tapMenu">{{item.name}}</view>
+  </block>
+</view>
+<view class="split-brand"/>
+
+<block wx:for="{{groupOrders}}" wx:key="index">
+  <view class="section">
+    <view class="row">
+      <view class="left">拼团编号：{{item.id}}</view>
+      <view class="right pending">{{item.statusText}}</view>
+    </view>
+    <view class="row">
+      <view class="left">
+        <image src="{{imgUrlPrefix + '/' + item.product.productImages[0].fileId}}"/>
+        <view>
+          <view class="line name">{{item.product.title}}</view>
+          <template is="price" data="{{...item}}"/>
+        </view>
+      </view>
+    </view>
+    <view class="row">
+      <view class="left">{{item.createdAt}}</view>
+      <view class="right">
+        <button bindtap="toOrderDetail" data-id="{{item.groupUserOrders[0].id}}">订单详情</button>
+        <button bindtap="toGroupDetail" data-id="{{item.id}}">拼团详情</button>
+      </view>
+    </view>
+  </view>
+  <view class="split-brand"/>
+</block>

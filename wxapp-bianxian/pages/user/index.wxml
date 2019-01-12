@@ -1,0 +1,58 @@
+<!--pages/user/index.wxml-->
+<view class="container">
+  <view class="top">
+    <view class="left">
+      <view class="avatar">
+        <image src="{{user.avatarUrl}}" wx:if="{{isLogin}}"/>
+      </view>
+      <text>{{isLogin ? user.nickname : '未登录'}}</text>
+    </view>
+    <view class="right" wx:if="{{isLogin}}">
+      <view>{{user.totalRewards}}</view>
+      <view class="myreward" bindtap="toUserReward">
+        <image src="/images/my-reward.png"/>我的收益
+      </view>
+    </view>
+    <view class="right" wx:if="{{!isLogin}}">
+      <navigator url="/pages/user/login">请登录</navigator>
+    </view>    
+  </view>
+  <view class="row">
+    <view class="left">我的订单</view>
+    <view class="right" bindtap="toUserOrder" data-status="">查看全部<view class="arrow-right"/></view>
+  </view>
+  <view class="row">
+    <view class="step" bindtap="toUserOrder" data-status="created">
+      <image src="/images/my-review.png"/><text>待成团</text>
+    </view>
+    <view class="step" bindtap="toUserOrder" data-status="pending">
+      <image src="/images/my-pending.png"/><text>待发货</text>
+    </view>
+    <view class="step" bindtap="toUserOrder" data-status="shipping">
+      <image src="/images/my-ship.png"/><text>已发货</text>
+    </view>
+    <view class="step" bindtap="toUserOrder" data-status="delivered">
+      <image src="/images/my-receive.png"/><text>已收货</text>
+    </view>
+  </view>
+</view>
+<view class="split-brand"/>
+<view class="container">
+  <view class="row" bindtap="toUserGroup">
+    <view class="left">我的拼团</view>
+    <view class="right"><view class="arrow-right"/></view>
+  </view>
+  <view class="split-line"/>
+  <view class="row" bindtap="toUserAddress">
+    <view class="left">地址管理</view>
+    <view class="right"><view class="arrow-right"/></view>
+  </view>
+  <view class="split-line"/>
+  <button class="row btn-clear" open-type='contact'>
+    <view class="left">客服咨询</view>
+    <view class="right"><view class="arrow-right"/></view>
+  </button>
+  <view class="split-line"/>
+
+
+</view>
