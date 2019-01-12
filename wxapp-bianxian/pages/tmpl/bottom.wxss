@@ -22,9 +22,9 @@
   align-items: center;
   line-height: 40rpx;
 }.chi-bottom .item.home, .chi-bottom .item.service {
-  width: 15%;
+  width: 25%;
 }.chi-bottom .item.btn {
-  width: 35%;
+  width: 60%;
 }
 .chi-bottom .home {
   font-size: 24rpx;

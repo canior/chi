@@ -1,5 +1,5 @@
 <!--pages/product/detail.wxml-->
-<import src="/pages/tmpl/price.wxml"/>
+
 <import src="/pages/tmpl/productReview.wxml"/>
 <import src="/pages/tmpl/share.wxml"/>
 <import src="/pages/tmpl/bottom.wxml"/>
@@ -11,28 +11,31 @@
         <image src="{{imgUrlPrefix + '/' + productImage.fileId}}" />
       </swiper-item>
     </swiper>
-    <view class="tip"><text>两人</text><text>拼团</text></view>    
   </view>
 
-  <view class="line">
-    <template is="price" data="{{product}}"/>
-    <view class="sold">已售{{product.soldNum}}份</view>
+  <view class="section">
+    <view class="line name">变现思维课</view>
+    <view class="line date">时间：2019.01.20 - 2019.01.22<view class="price">￥380</view></view>
+    <view class="line addr">地点：上海市松江区漕河泾双子楼</view>
   </view>
 
-  <view class="name">{{product.title}}</view>
-
-  <view class="desc">{{product.shortDescription}}</view>
-
-  <view class="chi-reward-container">
-    <view class="line reward">团长返现￥{{product.rewards}}</view>
-    <view class="line btn" bindtap="toProductReward">查看详情></view>
+  <view class="section">
+    <view class="chi-item">
+      <view class="left"><image src="/images/demo/group-user.png"/></view>
+      <view class="right">
+        <view class="line title">讲师：张三丰</view>
+        <view class="line desc">
+          太极宗师武当掌门太极宗师武当掌门太极宗师武当掌门
+        </view>
+      </view>
+    </view>
   </view>
 </view>
 <view class="split-line"/>
 
 <view class="container">
   <view class="specs">
-    <view class="title">商品详情</view>
+    <view class="title">课程详情</view>
     <block wx:for="{{product.productSpecImages}}" wx:key="id" wx:for-item="productSpecImage">
       <view class="img">
         <image src="{{imgUrlPrefix + '/' + productSpecImage.fileId}}" bindload="imgLoadDone" data-index="{{index}}"/>

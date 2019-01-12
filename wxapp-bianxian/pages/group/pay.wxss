@@ -26,6 +26,13 @@ page {
 }.chi-item .right .line.title text {
   font-weight: normal;
   color: #888;
+}.chi-item .right .line.desc {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}.chi-item .right .line.desc text {
+  font-size: 30rpx;
+  color: #333;
 }
 .bottom {
   display: flex;

@@ -43,7 +43,7 @@ function __saveShareSource(that, url, shareSourceType) {
       url: currentPageUrl,
       shareSourceType: shareSourceType,
       shareSourceId: shareSource.id,
-      title: shareSource.title ? shareSource.title : '食咖',
+      title: shareSource.title ? shareSource.title : '变现商学院',
       bannerFileId: shareSource.bannerFileId,
       productId: that.data.product ? that.data.product.id : null,
       groupOrderId: that.data.groupOrder ? that.data.groupOrder.id : null
@@ -74,7 +74,8 @@ function shareObject(that, res) {
   if (that.data.product) id = that.data.product.id
   else if (that.data.groupOrder) id = that.data.groupOrder.id
   return {
-    title: shareSource.title,
+    //title: shareSource.title,
+    title: '【推荐人名字】邀请您来参加变现思维课',
     imageUrl: that.data.imgUrlPrefix + '/' + shareSource.bannerFileId,
     path: shareSource.page + '&id=' + id
   }

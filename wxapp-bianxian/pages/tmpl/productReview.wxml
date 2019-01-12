@@ -1,6 +1,6 @@
 <template name="productReview">
   <view class="chi-review-container">
-    <view class="title">商品评价（{{product.reviewsNum}}）</view>
+    <view class="title">课程评价（{{product.reviewsNum}}）</view>
     <view class="chi-review" wx:for="{{productReviews}}" wx:key="index" wx:for-item="productReview">
       <view class="user">
         <view class="avatar"><image src="{{productReview.user.avatarUrl}}"/></view>

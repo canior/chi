@@ -1,25 +1,28 @@
 <!--pages/group/pay.wxml-->
 <import src="/pages/tmpl/price.wxml"/>
 <import src="/pages/tmpl/address.wxml"/>
-<template is="address" data="{{address:groupUserOrder.address, unpaid:true}}"/>
 <!--<view class="total">
   <view>总计付费</view><view>￥{{groupUserOrder.paymentTotal}}</view>
 </view>-->
 <view class="container">
   <view class="chi-item">
-    <view class="left"><image src="{{imgUrlPrefix + '/' + groupUserOrder.product.productImages[0].fileId}}"/></view>
+    <view class="left"><image src="/images/demo/product.jpg"/></view>
     <view class="right">
-      <view class="line title"><view>{{groupUserOrder.product.title}}</view><text>X1</text></view>
-      <view class="line">
-        <template is="price" data="{{product:groupUserOrder.product}}"/>
-      </view>
+      <view class="line title">变现思维课</view>
+      <view class="line desc">2019.01.20 - 2019.01.22<text>￥380</text></view>
+      <view class="line desc">上海市松江区漕河泾双子楼</view>
     </view>
   </view>
 </view>
 
+<view class="split-line"/>
+<template is="address" data="{{address:groupUserOrder.address, unpaid:true, type:1}}"/>
+<view class="split-line"/>
+<template is="address" data="{{address:groupUserOrder.address, unpaid:true, type:2}}"/>
+
 <view class="bottom">
-  <view>实付：<text>￥{{groupUserOrder.paymentTotal}}</text></view>
-  <button class="btn" bindtap="tapPay" disabled="{{btnDisabled}}">付款</button>
+  <view>实付：<text>￥380</text></view>
+  <button class="btn" bindtap="tapPay" disabled="{{btnDisabled}}">支付</button>
 </view>
 
 
