@@ -1,8 +1,8 @@
 {
   "pages":[
-    "pages/group/pay",
     "pages/product/index",
     "pages/product/detail",
+    "pages/group/pay",
     
     "pages/product/reward",
     "pages/group/index",

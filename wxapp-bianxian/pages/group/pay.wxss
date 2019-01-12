@@ -63,3 +63,10 @@ page {
   height: 110rpx;
   line-height: 110rpx;
 }
+.arrow-right {
+  border-top: 3px solid #888;
+  border-right: 3px solid #888;
+  width: 25rpx;
+  height: 25rpx;
+  transform: rotate(45deg);
+}
