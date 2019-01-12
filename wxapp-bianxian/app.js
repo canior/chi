@@ -216,7 +216,7 @@ App({
   },
 
   globalData: {
-    appName: '食咖',
+    appName: '变现商学院',
     baseUrl: 'https://laowantong.yunlishuju.com/wxapi',
     imgUrlPrefix: 'https://laowantong.yunlishuju.com/image/preview',
     isLogin: false,   //是否授权并登录

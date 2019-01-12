@@ -4,39 +4,33 @@
   
   <view class="banner">
     <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
-      <swiper-item wx:for="{{banners}}" wx:key="index" wx:for-item="banner" bindtap="redirect" data-url="{{banner.redirectUrl}}">
-        <image src="{{imgUrlPrefix + '/' + banner.bannerFileId}}" />
+      <swiper-item wx:for="123" wx:key="index" wx:for-item="banner" bindtap="redirect" data-url="{{banner.redirectUrl}}">
+        <image src="/images/demo/banner.jpg" />
       </swiper-item>
     </swiper>
   </view>
 
-  <view class="product-container">
-  
-    <view class="product" wx:for="{{products}}" wx:for-item="product" wx:key="id" bindtap="toProductDetail" data-id="{{product.id}}">
-      
-      <view class="img">
-            <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
-              <swiper-item wx:for="{{product.productImages}}" wx:key="id" wx:for-item="productImage">
-                <image src="{{imgUrlPrefix + '/' + productImage.fileId}}" />
-              </swiper-item>
-            </swiper>
-        <view class="tip"><text>两人</text><text>拼团</text></view>
-        <view class="stock">已售{{product.soldNum}}件</view>
-      </view>
+<view class="split-line"/>
 
-      <view class="line">
-        <view class="name">{{product.title}}</view>
-        <view class="reward">团长返现￥{{product.rewards}}</view>
+<block wx:for="1" wx:key="index">
+  <view class="section">
+    <view class="row">
+      <view class="left">
+        <image src="/images/demo/product.jpg"/>
       </view>
-      <view class="line">
-        <view>
-          <view class="desc">{{product.shortDescription}}</view>
-          <template is="price" data="{{product}}"/>
-        </view>
-        <view class="btn" catchtap="toProductDetail" data-id="{{product.id}}">我要拼团</view>
+      <view class="right">
+          <view class="line name">变现思维课</view>
+          <view class="line desc">开课日期：2019-01-02 至 2019-01-05</view>
+          <view class="line desc">地址：上海市松江区漕河泾开发区双子楼</view>
+          <view class="line price"><text>￥380</text><button bindtap="toProductDetail" data-id="{{'2'}}">我要报名</button></view>
       </view>
     </view>
+  </view>
+  <view class="split-line"/>
+</block>
 
-   </view>
+
+ 
+<view class="btn" catchtap="toProductDetail" data-id="{{product.id}}"/>
 
 </view>

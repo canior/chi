@@ -10,81 +10,48 @@
   /*width: 690rpx;*/
   height: 340rpx;
 }
-.product {
-  margin-top: 80rpx;
-}
-.product:first-child {
-  margin-top: 50rpx;
-}
-.product:last-child {
-  margin-bottom: 80rpx;
-}
-.product swiper {
-  height: 381rpx;  
-}
-.product image {
-  width: 100%;
-  /*width: 692rpx;*/
-  height: 381rpx;
-}
-.product .img {
-  background-color: #f1f1f1;
-  text-align: center;
-  position: relative;
-}
-.product .img .tip {
-  font-size: 24rpx;
-  color: #353535;
-  background-color: #ffdd00;
-  width: 80rpx;
-  height: 106rpx;
-  border-radius: 0 0 40rpx 40rpx;
+.row {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  line-height: 30rpx;
-  position: absolute;
-  top: -4rpx;
-  left: 30rpx;
+  align-items: center;
+  padding: 20rpx 0;
 }
-.product .img .stock {
-  font-size: 24rpx;
-  color: #888;
-  background-color: #fff;
-  padding: 10rpx 20rpx;
-  border: 1px solid #f5f5f5;
-  border-radius: 0 30rpx 30rpx 0;
-  position: absolute;
-  left: 0;
-  bottom: 40rpx;
-}
-.product .line {
+.row .left {
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
-.product .line .name {
-  font-size: 30rpx;
+.row .left image {
+  width: 200rpx;
+  height: 200rpx;
+}
+.row .right {
+  display: flex;
+  flex-direction: column;
+  font-size: 24rpx;
+  margin-left: 20rpx;
+  position: relative;
+}
+.row .line {
+  display: flex;
+  align-items: center;
+}
+.row .line.name {
+  font-size: 32rpx;
   font-weight: bold;
   color: #333;
 }
-.product .line .reward {
-  font-size: 22rpx;
-  color: #ff4d42;
+.row .line.price {
+  margin-top: 10rpx;
 }
-.product .line .desc {
-  font-size: 24rpx;
-  color: #b2b2b2;
-  line-height: 30rpx;
-  width: 240px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;  
-}
-.product .line .btn {
-  font-size: 30rpx;
+.row .line.price text {
+  font-size: 32rpx;
   font-weight: bold;
-  background-color: #ffdf00;
-  border-radius: 30rpx;
-  padding: 15rpx 40rpx;
+  color: #333;
+}
+.row .right button {
+  font-size: 24rpx;
+  background-color: #fff;
+  position: absolute;
+  right: 0;
+}.row .right button::after {
+  border-color: #000;
 }
