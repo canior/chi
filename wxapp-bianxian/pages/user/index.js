@@ -106,6 +106,12 @@ Page({
       url: '/pages/user/upgrade/index',
     })
   },
+  // 扫一扫
+  toScan: function () {
+    wx.navigateTo({
+      url: '/pages/user/signin',
+    })
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成

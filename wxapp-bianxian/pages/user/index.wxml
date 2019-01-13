@@ -46,6 +46,11 @@
     <view class="right">60人<view class="arrow-right"/></view>
   </view>
   <view class="split-line"/>
+  <view class="row" bindtap="toScan">
+    <view class="left">扫一扫</view>
+    <view class="right"><view class="arrow-right"/></view>
+  </view>
+  <view class="split-line"/>
   <button class="row btn-clear" open-type='contact'>
     <view class="left">客服咨询</view>
     <view class="right"><view class="arrow-right"/></view>

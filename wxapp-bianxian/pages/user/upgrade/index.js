@@ -16,6 +16,20 @@ Page({
 
   },
 
+  // 选择筛选条件
+  tapFilter: function (e) {
+    //console.log(e.currentTarget.dataset);
+    const type = e.currentTarget.dataset.type;
+    const index = e.currentTarget.dataset.index;
+    //改变筛选条件需要刷新玩咖列表
+    if (index != this.data.curFilterIndexes[type]) {
+      this.setData({
+        ['curFilterIndexes[' + type + ']']: index,
+        isRefresh: true
+      })
+    }
+  },
+
   // 申请升级
   tapApply: function (e) {
     const that = this;

@@ -45,8 +45,8 @@
         "selectedIconPath": "images/home-active.png"
       },
       {
-        "pagePath": "pages/user/signin",
-        "text": "扫一扫",
+        "pagePath": "pages/user/course/index",
+        "text": "我的课程",
         "iconPath": "images/reward.png",
         "selectedIconPath": "images/reward-active.png"
       },

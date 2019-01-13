@@ -66,3 +66,85 @@
   height: 25rpx;
   transform: rotate(45deg);
 }
+.filter-content {
+    position: fixed;
+    top: 160rpx;
+    left: 0;
+    z-index: 99;
+    width: 100%;
+    background-color: #fff;
+}
+.filter-content .sort {
+    font-size: 28rpx;
+    color: #888;
+    padding: 0 25rpx;
+}
+.filter-content .sort .item {
+    display: flex;
+    justify-content: space-between;
+    height: 90rpx;
+    line-height: 90rpx;
+    border-bottom: 1px solid #ddd;
+}
+.filter-content .sort .item.active {
+    color: #f23560;
+}
+.filter-content .sort .item icon {
+    margin-top: 20rpx;
+}
+.filter-content .filter {
+    text-align: left;
+    padding: 30rpx 20rpx 5rpx;
+}
+.filter-content .filter .item-container {
+    margin-bottom: 25rpx;
+}
+.filter-content .filter .title {
+    font-size: 26rpx;
+    color: #888;
+    padding: 0 10rpx;
+}
+.filter-content .filter .items {
+    text-align:center;
+    font-size: 30rpx;
+    color: #353535;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+.filter-content .filter .item {
+    width: 150rpx;
+    height: 56rpx;
+    line-height: 56rpx;
+    border: 1px solid #ddd;
+    margin: 10rpx;
+    overflow: hidden;
+}
+.filter-content .filter .item.active {
+    color: #f23560;
+    background-color: #fcedf4;
+    border: 1px solid #f23560;
+}
+.filter-content .filter .btn {
+    display: flex;
+    justify-content: space-between;
+}
+.filter-content .filter .btn .item {
+    height: 80rpx;
+    line-height: 80rpx;
+    font-size: 30rpx;
+    text-align: center;
+    border: 2px solid #f23560;
+    border-radius: 10rpx;
+    box-sizing: border-box;
+}
+.filter-content .filter .btn .item.reset {
+    width: 200rpx;
+    color: #f23560;
+}
+.filter-content .filter .btn .item.submit {
+    width: 460rpx;
+    color: #fff;
+    background-color: #f23560;
+}
