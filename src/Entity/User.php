@@ -148,6 +148,55 @@ class User extends BaseUser implements Dao
      */
     private $userCommands;
 
+
+    /**
+     * @var Teacher
+     * @ORM\OneToOne(targetEntity="App\Entity\Teacher", inversedBy="user", cascade={"persist"})
+     */
+    private $teacher;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=50, nullable=false)
+     */
+    private $userLevel;
+
+    /**
+     * @var float
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=false)
+     */
+    private $userAccountTotal;
+
+    /**
+     * @var float
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=false)
+     */
+    private $recommandStock;
+
+    /**
+     * @var UserAccountOrder[]
+     * @ORM\OneToMany(targetEntity="App\Entity\UserAccountOrder", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $userAccountOrders;
+
+    /**
+     * @var UpgradeUserOrder[]
+     * @ORM\OneToMany(targetEntity="App\Entity\UpgradeUserOrder", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $upgradeUserOrders;
+
+
+
+    /**
+     * @var CourseStudent[]
+     * @ORM\OneToMany(targetEntity="App\Entity\CourseStudent", mappedBy="studentUser", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $courseStudents;
+
+
     public function __construct()
     {
         parent::__construct();
@@ -168,6 +217,14 @@ class User extends BaseUser implements Dao
         $this->userStatistics = new ArrayCollection();
         $this->shareSourceUsers = new ArrayCollection();
         $this->userCommands = new ArrayCollection();
+
+        $this->setUserLevel(UserLevel::VISITOR);
+        $this->setUserAccountTotal(0);
+        $this->setRecommandStock(0);
+
+        $this->upgradeUserOrders = new ArrayCollection();
+        $this->userAccountOrders = new ArrayCollection();
+        $this->courseStudents = new ArrayCollection();
     }
 
     public function setId($id) {
@@ -178,6 +235,34 @@ class User extends BaseUser implements Dao
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTeacher() {
+        return $this->getTeacher() == null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVisitorUser() {
+        return $this->getUserLevel() == UserLevel::VISITOR;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdvancedUser() {
+        return $this->getUserLevel() == UserLevel::ADVANCED;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPartnerUser() {
+        return $this->getUserLevel() == UserLevel::PARTNER;
     }
 
     public function getRoleText()
@@ -767,4 +852,179 @@ class User extends BaseUser implements Dao
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getUserLevel(): string
+    {
+        return $this->userLevel;
+    }
+
+    /**
+     * @param string $userLevel
+     */
+    public function setUserLevel(string $userLevel): void
+    {
+        $this->userLevel = $userLevel;
+    }
+
+    /**
+     * @return float
+     */
+    public function getUserAccountTotal(): float
+    {
+        return $this->userAccountTotal;
+    }
+
+    /**
+     * @param float $userAccountTotal
+     */
+    public function setUserAccountTotal(float $userAccountTotal): void
+    {
+        $this->userAccountTotal = $userAccountTotal;
+    }
+
+    /**
+     * @return float
+     */
+    public function getRecommandStock(): float
+    {
+        return $this->recommandStock;
+    }
+
+    /**
+     * @param float $recommandStock
+     */
+    public function setRecommandStock(float $recommandStock): void
+    {
+        $this->recommandStock = $recommandStock;
+    }
+
+    /**
+     * @return Teacher
+     */
+    public function getTeacher(): Teacher
+    {
+        return $this->teacher;
+    }
+
+    /**
+     * @param Teacher $teacher
+     */
+    public function setTeacher(Teacher $teacher): void
+    {
+        $this->teacher = $teacher;
+    }
+
+    /**
+     * @return UserAccountOrder[]
+     */
+    public function getUserAccountOrders()
+    {
+        return $this->userAccountOrders;
+    }
+
+    /**
+     * @param UserAccountOrder[] $userAccountOrders
+     */
+    public function setUserAccountOrders($userAccountOrders): void
+    {
+        $this->userAccountOrders = $userAccountOrders;
+    }
+
+    /**
+     * @return UpgradeUserOrder[]
+     */
+    public function getUpgradeUserOrders()
+    {
+        return $this->upgradeUserOrders;
+    }
+
+    /**
+     * @param UpgradeUserOrder[] $upgradeUserOrders
+     */
+    public function setUpgradeUserOrders($upgradeUserOrders): void
+    {
+        $this->upgradeUserOrders = $upgradeUserOrders;
+    }
+
+    /**
+     * 创建升级会员订单
+     * @param string $userLevel
+     * @return UpgradeUserOrder
+     */
+    public function createUpgradeUserOrder($userLevel) {
+        $upgradeUserOrder = new UpgradeUserOrder($this, $userLevel, UserLevel::$userLevelPriceArray[$userLevel]);
+        $this->upgradeUserOrders->add($upgradeUserOrder);
+        return $upgradeUserOrder;
+    }
+
+    /**
+     * 创建推荐人佣金订单或提现订单
+     * @param string $userAccountOrderType
+     * @param float $amount
+     * @param UpgradeUserOrder|null $upgradeUserOrder
+     * @return UserAccountOrder
+     */
+    public function createUserAccountOrder($userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null) {
+        $userAccountOrder = new UserAccountOrder($this, $userAccountOrderType, $amount, $upgradeUserOrder);
+        $this->userAccountOrders->add($userAccountOrder);
+        return $userAccountOrder;
+    }
+
+    /**
+     * 增加推荐名额
+     * @param $qty
+     */
+    public function increaseRecommandStock($qty) {
+        $this->recommandStock += $qty;
+    }
+
+    /**
+     * 增加用户账户钱
+     * @param $amount
+     */
+    public function increaseUserAccountTotal($amount) {
+        $this->userAccountTotal += $amount;
+    }
+
+    /**
+     * 升级到合伙人
+     * 1. 增加推荐名额
+     *
+     * @param $userLevel
+     */
+    public function upgradeUserLevel($userLevel) {
+        $this->setUserLevel($userLevel);
+        $this->increaseRecommandStock(UserLevel::$userLevelRecommanderStockArray[$userLevel]);
+        $this->setUpdatedAt();
+    }
+
+    /**
+     * 返回最近一次上的输入的课，如果为空则返回最近一次的课
+     *
+     * @param string $subject
+     * @return Course | null
+     */
+    public function getLatestCourse($subject = null) {
+        $course = null;
+
+        if ($subject == null) {
+            foreach ($this->courseStudents as $courseStudent) {
+                if ($courseStudent->getStudentUser() == $this) {
+                    return $courseStudent->getCourse();
+                }
+            }
+        } else {
+            foreach ($this->courseStudents as $courseStudent) {
+                if ($courseStudent->getStudentUser() == $this and $courseStudent->getCourse()->getSubject() == $subject) {
+                    return $courseStudent->getCourse();
+                }
+            }
+        }
+
+        return $course;
+    }
+
 }

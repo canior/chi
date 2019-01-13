@@ -2,52 +2,112 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\CreatedAtTrait;
+use App\Entity\Traits\IdTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * CourseStudent
  *
  * @ORM\Table(name="course_student")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\CourseStudentRepository")
  */
-class CourseStudent
+class CourseStudent implements Dao
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
+    const REGISTERED = 'registered';
+    const WELCOME = 'welcome';
+    const SIGNIN = 'completed';
+
+    public static $statuses = [
+        self::REGISTERED => '注册',
+        self::WELCOME => '报到',
+        self::SIGNIN => '签到',
+    ];
+
+
+    use IdTrait;
+    use CreatedAtTrait;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="course_id", type="integer", nullable=false)
+     * @var Course
+     * @ORM\ManyToOne(targetEntity="App\Entity\Course", cascade={"persist"}, inversedBy="courseStudents")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $courseId;
+    private $course;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="student_user_id", type="integer", nullable=false)
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", cascade={"persist"}, inversedBy="courseStudents")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $studentUserId;
+    private $studentUser;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="status", type="string", length=50, nullable=false)
+     * @ORM\Column(type="string", length=50, nullable=false)
      */
     private $status;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="created_at", type="integer", nullable=false)
+     * CourseStudent constructor.
+     * @param Course $course
+     * @param User $studentUser
+     * @param $status
      */
-    private $createdAt;
+    public function __construct(Course $course, User $studentUser, $status)
+    {
+        $this->setCourse($course);
+        $this->setStudentUser($studentUser);
+        $this->setStatus($status);
+        $this->setCreatedAt();
+    }
 
+    /**
+     * @return Course
+     */
+    public function getCourse(): Course
+    {
+        return $this->course;
+    }
+
+    /**
+     * @param Course $course
+     */
+    public function setCourse(Course $course): void
+    {
+        $this->course = $course;
+    }
+
+    /**
+     * @return User
+     */
+    public function getStudentUser(): User
+    {
+        return $this->studentUser;
+    }
+
+    /**
+     * @param User $studentUser
+     */
+    public function setStudentUser(User $studentUser): void
+    {
+        $this->studentUser = $studentUser;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus(string $status): void
+    {
+        $this->status = $status;
+    }
 
 }

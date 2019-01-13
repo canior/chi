@@ -40,9 +40,16 @@ class Teacher implements Dao
     /**
      * @var File
      * @ORM\ManyToOne(targetEntity="App\Entity\File")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $teacherAvatarFile;
+
+    /**
+     * @var User
+     * @ORM\OneToOne(targetEntity="App\Entity\User", mappedBy="teacher", cascade={"persist"})
+     */
+    private $user;
+
 
     /**
      * Teacher constructor.
@@ -115,5 +122,20 @@ class Teacher implements Dao
     public function setTeacherAvatarFile(File $teacherAvatarFile): void
     {
         $this->teacherAvatarFile = $teacherAvatarFile;
+    }
+    /**
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
     }
 }

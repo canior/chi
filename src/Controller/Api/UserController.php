@@ -5,6 +5,7 @@ use App\Command\EnqueueCommand;
 use App\Command\Notification\NotifyPendingGroupOrderCommand;
 use App\Entity\CommandMessage;
 use App\Entity\Course;
+use App\Entity\CourseStudent;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
 use App\Entity\GroupUserOrderRewards;
@@ -20,9 +21,12 @@ use App\Entity\ShareSource;
 use App\Entity\ShareSourceUser;
 use App\Entity\Subject;
 use App\Entity\Teacher;
+use App\Entity\UpgradeUserOrder;
 use App\Entity\User;
+use App\Entity\UserAccountOrder;
 use App\Entity\UserActivity;
 use App\Entity\UserAddress;
+use App\Entity\UserLevel;
 use App\Entity\UserStatistics;
 use App\Repository\FileRepository;
 use App\Repository\GroupOrderRepository;
@@ -61,24 +65,78 @@ class UserController extends BaseController
     public function testAction(Request $request, GroupOrderRepository $groupOrderRepository, ProjectShareMetaRepository $projectShareMetaRepository) {
         if ($this->getEnvironment() != 'dev') exit;
 
-//        $product = new Product();
-//        $product->setTitle('test course');
-//        $this->getEntityManager()->persist($product);
-//        $this->getEntityManager()->flush();
-//        $teacher = new Teacher('tandy');
-//        $this->getEntityManager()->persist($teacher);
+        /**
+         * @var Region $region
+         */
+        $region = $this->getEntityManager()->getRepository(Region::class)->find(1);
+        /**
+         * @var Teacher $teacher
+         */
+        $teacher = $this->getEntityManager()->getRepository(Teacher::class)->find(1);
+
+        /**
+         * @var Course $systemCourse
+         */
+        $systemCourse = $this->getEntityManager()->getRepository(Course::class)->find(4);
+        /**
+         * @var User $advancedUser
+         */
+        $advancedUser = $this->getEntityManager()->getRepository(User::class)->find(3);
+//echo $advancedUser->getLatestCourse()->getTitle();exit;
+//        $systemCourse->registerStudent($advancedUser);
+//        $systemCourse->welcomeStudent($advancedUser);
+//        $systemCourse->signInStudent($advancedUser);
+//
+//        $this->getEntityManager()->persist($systemCourse);
 //        $this->getEntityManager()->flush();
 
-        //$product = $this->getEntityManager()->getRepository(Product::class)->find(1);
-//        $region = $this->getEntityManager()->getRepository(Region::class)->find(1);
+//        $upgradeUserOrder = $advancedUser->createUpgradeUserOrder(UserLevel::PARTNER);
+//        $this->getEntityManager()->persist($upgradeUserOrder);
+//        $this->getEntityManager()->flush();
+//        echo $upgradeUserOrder->getId();
+        /**
+         * @var UpgradeUserOrder $upgradeUserOrder
+         */
+        $upgradeUserOrder = $this->getEntityManager()->getRepository(UpgradeUserOrder::class)->find(4);
+        $upgradeUserOrder->setApproved();
+        $this->getEntityManager()->persist($upgradeUserOrder);
+        $this->getEntityManager()->flush();
+
+//        /**
+//         * @var User $partnerUser
+//         */
+//        $partnerUser = $this->getEntityManager()->getRepository(User::class)->find(2);
+//        $partnerUser->upgradeUserLevel(UserLevel::PARTNER);
+//
+
+//
+//        $this->getEntityManager()->persist($partnerUser);
+//        $this->getEntityManager()->persist($advancedUser);
+//        $this->getEntityManager()->flush();
+
+        //$system = new Course('变现系统一', 'system', 500, Subject::SYSTEM_1, $teacher, time(), time(), $region, 'test address');
+        //$this->getEntityManager()->persist($system);
+        //$this->getEntityManager()->flush();
+
+//        /**
+//         * @var Teacher $teacher
+//         */
 //        $teacher = $this->getEntityManager()->getRepository(Teacher::class)->find(1);
-//        $course = new Course('name title','short description', 300, Subject::THINKING, $teacher, time(), time(), $region, "test address");
+//        /**
+//         * @var Course $course
+//         */
+//        $course = $this->getEntityManager()->getRepository(Course::class)->find(3);
+//        $course->welcomeStudent($user);
 //        $this->getEntityManager()->persist($course);
 //        $this->getEntityManager()->flush();
 
-        $courseRepository = $this->getEntityManager()->getRepository(Course::class);
-        $course = $courseRepository->find(3);
-        echo $course->getShortDescription();
+//        $upgradeUserOrder = $user->createUpgradePartnerUserOrder();
+//        $this->getEntityManager()->persist($user);
+//        $this->getEntityManager()->flush();
+//
+//        $upgradeUserOrder->addPayment(10, 'test');
+//        $this->getEntityManager()->persist($upgradeUserOrder);
+//        $this->getEntityManager()->flush();
 
 exit;
 

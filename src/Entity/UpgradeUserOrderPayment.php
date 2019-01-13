@@ -7,6 +7,7 @@
  */
 
 namespace App\Entity;
+
 use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\UpgradeUserOrder;
@@ -33,6 +34,25 @@ class UpgradeUserOrderPayment implements Dao
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $amount;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    private $memo;
+
+    /**
+     * UpgradeUserOrderPayment constructor.
+     * @param UpgradeUserOrder $upgradeUserOrder
+     * @param float $amount
+     * @param string $memo
+     */
+    public function __construct(UpgradeUserOrder $upgradeUserOrder, $amount, $memo = null) {
+        $this->setUpgradeUserOrder($upgradeUserOrder);
+        $this->setAmount($amount);
+        $this->setMemo($memo);
+        $this->setCreatedAt();
+    }
 
     /**
      * @return UpgradeUserOrder
@@ -64,5 +84,21 @@ class UpgradeUserOrderPayment implements Dao
     public function setAmount(float $amount): void
     {
         $this->amount = $amount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMemo(): string
+    {
+        return $this->memo;
+    }
+
+    /**
+     * @param string|null  $memo
+     */
+    public function setMemo($memo)
+    {
+        $this->memo = $memo;
     }
 }

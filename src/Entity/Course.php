@@ -9,6 +9,7 @@
 namespace App\Entity;
 
 use App\Entity\Traits\IdTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -63,6 +64,13 @@ class Course implements Dao
     private $address;
 
     /**
+     * @var CourseStudent[]
+     * @ORM\OneToMany(targetEntity="CourseStudent", mappedBy="course", indexBy="studentUser", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $courseStudents;
+
+    /**
      * @param string $title
      * @param string $shortDescription
      * @param float $price
@@ -86,6 +94,8 @@ class Course implements Dao
         $this->setEndDate($endDate);
         $this->setRegion($region);
         $this->setAddress($address);
+
+        $this->courseStudents = new ArrayCollection();
     }
 
     /**
@@ -225,4 +235,60 @@ class Course implements Dao
         $this->getProduct()->setInActive();
     }
 
+    /**
+     * @return CourseStudent[]
+     */
+    public function getCourseStudents()
+    {
+        return $this->courseStudents;
+    }
+
+    /**
+     * @param CourseStudent[] $courseStudents
+     */
+    public function setCourseStudents($courseStudents): void
+    {
+        $this->courseStudents = $courseStudents;
+    }
+
+    /**
+     * 学生注册，报到，签到
+     *
+     * @param User $studentUser
+     * @param $courseStatus
+     */
+    private function addStudentUser(User $studentUser, $courseStatus) {
+        foreach ($this->getCourseStudents() as $courseStudent) {
+            if ($courseStudent->getStudentUser() == $studentUser and $courseStudent->getStatus() == $courseStatus) {
+                return;
+            }
+        }
+
+        $courseStudent = new CourseStudent($this, $studentUser, $courseStatus);
+        $this->courseStudents->add($courseStudent);
+    }
+
+    /**
+     * 学生注册
+     * @param $studentUser
+     */
+    public function registerStudent($studentUser) {
+        $this->addStudentUser($studentUser, CourseStudent::REGISTERED);
+    }
+
+    /**
+     * 学生报到
+     * @param $studentUser
+     */
+    public function welcomeStudent($studentUser) {
+        $this->addStudentUser($studentUser, CourseStudent::WELCOME);
+    }
+
+    /**
+     * 学生签到
+     * @param $studentUser
+     */
+    public function signInStudent($studentUser) {
+        $this->addStudentUser($studentUser, CourseStudent::SIGNIN);
+    }
 }

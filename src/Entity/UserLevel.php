@@ -22,14 +22,22 @@ class UserLevel
     ];
 
     /* 学员身份的推荐资格 */
-    public static $userLevelRecommanderStock = [
+    public static $userLevelPriceArray = [
+        self::VISITOR => 0,
+        self::ADVANCED => 10000,
+        self::PARTNER => 100000
+    ];
+
+
+    /* 学员身份的推荐资格 */
+    public static $userLevelRecommanderStockArray = [
         self::VISITOR => 0,
         self::ADVANCED => 0,
         self::PARTNER => 100
     ];
 
     /* 推荐人的佣金 */
-    public static $userLevelRecommanderRewards = [
+    public static $userLevelRecommanderRewardsArray = [
         self::VISITOR => 0,
         self::ADVANCED => 9000,
         self::PARTNER => 30000

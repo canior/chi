@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Course;
+use App\Entity\UpgradeUserOrder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 

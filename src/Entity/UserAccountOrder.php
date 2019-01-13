@@ -2,73 +2,174 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\CreatedAtTrait;
+use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\UpdatedAtTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * UserAccountOrder
  *
- * @ORM\Table(name="user_account_order")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\UserAccountOrderRepository")
  */
-class UserAccountOrder
+class UserAccountOrder implements Dao
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
+    use IdTrait;
+    use CreatedAtTrait;
+    use UpdatedAtTrait;
+
+    const PAID = 'paid';
+    const UNPAID = 'unpaid';
+
+    public static $paymentStatuses = [
+        self::PAID => '已支付',
+        self::UNPAID => '未支付',
+    ];
+
+    const OLD_TEACHER_REWARDS = 'old_teacher_rewards';
+    const TEACHER_REWARDS = 'teacher_rewards';
+    const RECOMMAND_REWARDS = 'recommand_rewards';
+    const WITHDRAW = 'withdraw';
+
+    public static $userAccountOrderTypes = [
+        self::OLD_TEACHER_REWARDS => '间接讲师佣金',
+        self::TEACHER_REWARDS => '直接讲师佣金',
+        self::RECOMMAND_REWARDS => '推荐佣金',
+        self::WITHDRAW => '提现',
+    ];
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="user_id", type="integer", nullable=false)
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="userAccountOrders", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $userId;
+    private $user;
 
     /**
-     * @var string|null
+     * @var string
      *
-     * @ORM\Column(name="user_account_order_type", type="string", length=50, nullable=true)
+     * @ORM\Column(name="user_account_order_type", type="string", length=50, nullable=false)
      */
     private $userAccountOrderType;
 
     /**
-     * @var string|null
+     * @var float
      *
-     * @ORM\Column(name="amount", type="decimal", precision=10, scale=2, nullable=true)
+     * @ORM\Column(name="amount", type="decimal", precision=10, scale=2, nullable=false)
      */
     private $amount;
 
     /**
-     * @var int|null
-     *
-     * @ORM\Column(name="user_upgrade_order_rewards_id", type="integer", nullable=true)
+     * @var UpgradeUserOrder
+     * @ORM\ManyToOne(targetEntity="App\Entity\UpgradeUserOrder")
      */
-    private $userUpgradeOrderRewardsId;
+    private $upgradeUserOrder;
+
 
     /**
-     * @var string|null
+     * @var string
      *
-     * @ORM\Column(name="payment_status", type="string", length=50, nullable=true)
+     * @ORM\Column(name="payment_status", type="string", length=50, nullable=false)
      */
     private $paymentStatus;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="created_at", type="integer", nullable=false)
+     * UserAccountOrder constructor.
+     * @param User $user
+     * @param string $userAccountOrderType
+     * @param float $amount
+     * @param UpgradeUserOrder|null $upgradeUserOrder
      */
-    private $createdAt;
+    public function __construct(User $user, $userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null)
+    {
+        $this->setUser($user);
+        $this->setUserAccountOrderType($userAccountOrderType);
+        $this->setAmount($amount);
+        $this->setPaymentStatus(self::UNPAID);
+        $user->setUserAccountTotal($amount);
+        $this->setCreatedAt();
+        $this->setUpdatedAt();
+        $this->setUpgradeUserOrder($upgradeUserOrder);
+    }
+
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="updated_at", type="integer", nullable=false)
+     * @return User
      */
-    private $updatedAt;
+    public function getUser(): User
+    {
+        return $this->user;
+    }
 
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
+    }
 
+    /**
+     * @return string
+     */
+    public function getUserAccountOrderType(): string
+    {
+        return $this->userAccountOrderType;
+    }
+
+    /**
+     * @param string $userAccountOrderType
+     */
+    public function setUserAccountOrderType(string $userAccountOrderType): void
+    {
+        $this->userAccountOrderType = $userAccountOrderType;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAmount(): float
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @param float $amount
+     */
+    public function setAmount(float $amount): void
+    {
+        $this->amount = $amount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentStatus(): string
+    {
+        return $this->paymentStatus;
+    }
+
+    /**
+     * @param string $paymentStatus
+     */
+    public function setPaymentStatus(string $paymentStatus): void
+    {
+        $this->paymentStatus = $paymentStatus;
+    }
+
+    /**
+     * @return UpgradeUserOrder
+     */
+    public function getUpgradeUserOrder(): UpgradeUserOrder
+    {
+        return $this->upgradeUserOrder;
+    }
+
+    /**
+     * @param UpgradeUserOrder $upgradeUserOrder
+     */
+    public function setUpgradeUserOrder(UpgradeUserOrder $upgradeUserOrder): void
+    {
+        $this->upgradeUserOrder = $upgradeUserOrder;
+    }
 }
