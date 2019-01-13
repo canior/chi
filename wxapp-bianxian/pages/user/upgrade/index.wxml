@@ -1,13 +1,10 @@
 <!--pages/user/upgrade/index.wxml-->
 <view class="container">
-  <view class="chi-item">
-    <view class="left"><image src="/images/demo/course1.jpg"/></view>
-    <view class="right">
-      <view class="line title">变现思维课</view>
-      <view class="line desc">2019.01.20 - 2019.01.22<text>￥380</text></view>
-      <view class="line desc">上海市松江区漕河泾双子楼</view>
+    <!--排序筛选body-->
+    <view class="filter">
+        <view class="item{{upindex == 1 ? ' active' : ''}}" wx:for="1" wx:key="index" data-index="1" bindtap="tapFilter">高级会员</view>
+        <view class="item{{upindex == 2 ? ' active' : ''}}" wx:for="1" wx:key="index" data-index="2" bindtap="tapFilter">合伙人</view>
     </view>
-  </view>
 </view>
 
 <view class="container form">

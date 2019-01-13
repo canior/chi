@@ -5,6 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    upindex: null,
     uptext: '高级学员',
     btnText: '申请',
   },
@@ -16,20 +17,28 @@ Page({
 
   },
 
-  // 选择筛选条件
+  // 选择升级通道
   tapFilter: function (e) {
-    //console.log(e.currentTarget.dataset);
-    const type = e.currentTarget.dataset.type;
     const index = e.currentTarget.dataset.index;
-    //改变筛选条件需要刷新玩咖列表
-    if (index != this.data.curFilterIndexes[type]) {
-      this.setData({
-        ['curFilterIndexes[' + type + ']']: index,
-        isRefresh: true
-      })
-    }
+    this.setData({
+      upindex: index,
+      uptext: index == 1 ? '高级学员' : '合伙人'
+    })
   },
 
+  // 转个人资料
+  toMyInfo: function () {
+    wx.navigateTo({
+      url: '/pages/user/address/edit',
+    })
+  },
+  // 转推荐人
+  toReferee: function () {
+    wx.navigateTo({
+      url: '/pages/user/address/edit?referee=1',
+    })
+  },
+  
   // 申请升级
   tapApply: function (e) {
     const that = this;
