@@ -1,0 +1,73 @@
+/* pages/user/trainee/list.wxss */
+.chi-item .left image {
+  width: 135rpx;
+  height: 135rpx;
+}
+.chi-item .right .line.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}.chi-item .right .line.title text {
+  font-weight: normal;
+  color: #888;
+}.chi-item .right .line.desc {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}.chi-item .right .line.desc text {
+  font-size: 30rpx;
+  color: #333;
+}
+.rank .title {
+  font-size: 30rpx;
+  color: #353535;
+  text-align: center;
+  padding: 20rpx 0;
+}
+.rank .title image {
+  width: 27rpx;
+  height: 31rpx;
+  margin-right: 10rpx;
+  vertical-align: text-top;
+}
+.table {
+  margin-bottom: 40rpx;
+}
+.table .tr {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid #f5f5f5;  
+}
+.table .th, .table .td {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20rpx 0;
+}.table .th.idx, .table .td.idx {
+  width: 60%;
+}
+.table .th {
+  font-size: 24rpx;
+  color: #888;
+  background-color: #f5f5f5;
+}
+.table .td {
+  font-size: 30rpx;
+  color: #888;
+}
+.table .tr .td.idx image {
+  width: 38rpx;
+  height: 57rpx;
+}
+.table .tr .td.user image {
+  width: 86rpx;
+  height: 86rpx;
+  margin-right: 5rpx;
+  border-radius: 50%;
+}
+.table .tr .td.user text {
+  width: 150rpx;
+}

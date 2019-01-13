@@ -36,15 +36,15 @@
     <view class="right"><view class="arrow-right"/></view>
   </view>
   <view class="split-line"/>
-  <view class="row" bindtap="toUserAddress">
+  <view class="row" bindtap="toMyCourse">
     <view class="left">我的课程</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>
   <view class="split-line"/>
-  <view class="row" bindtap="toUserAddress">
+  <view class="row" bindtap="toMyTrainee">
     <view class="left">我的学员</view>
-    <view class="right">30人<view class="arrow-right"/></view>
-  </view>  
+    <view class="right">60人<view class="arrow-right"/></view>
+  </view>
   <view class="split-line"/>
   <button class="row btn-clear" open-type='contact'>
     <view class="left">客服咨询</view>

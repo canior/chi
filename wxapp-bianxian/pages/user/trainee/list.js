@@ -1,20 +1,11 @@
-// pages/user/trainee/index.js
-const app = getApp()
+// pages/user/trainee/list.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    menu: [
-      { name: '好友贡献', isValid: null },
-      { name: '活跃', isValid: true },
-      { name: '失效', isValid: false }
-    ],
-    isValid: null,
-    isLogin: null,
-    user: null,
-    rewardList: [],
+
   },
 
   /**
@@ -35,17 +26,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.setData({
-      isLogin: app.globalData.isLogin,
-      user: app.globalData.user
-    })
-  },
 
-  //转我的学员列表
-  toMyTraineeList: function () {
-    wx.navigateTo({
-      url: '/pages/user/trainee/list',
-    })
   },
 
   /**

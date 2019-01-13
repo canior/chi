@@ -88,6 +88,18 @@ Page({
       url: '/pages/user/quota/index',
     })
   },
+  // 转我的课程
+  toMyCourse: function () {
+    wx.navigateTo({
+      url: '/pages/user/course/index',
+    })
+  },
+  // 转我的学员
+  toMyTrainee: function () {
+    wx.navigateTo({
+      url: '/pages/user/trainee/index',
+    })
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成

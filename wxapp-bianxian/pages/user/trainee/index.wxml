@@ -1,2 +1,32 @@
 <!--pages/user/trainee/index.wxml-->
-<text>pages/user/trainee/index.wxml</text>
+<block wx:if="{{isLogin}}">
+  <view class="top-container">
+    <view class="top">
+      <view class="title">我的学员(人)</view>
+      <view class="total">60</view>
+      <view class="tip"/>
+    </view>
+  </view>
+  <view class="split-brand"/>
+</block>
+
+<block wx:for="123" wx:key="index" wx:if="{{isLogin}}">
+<view class="section">
+  <view class="row">
+    <view class="left">
+      <image src="/images/demo/course1.jpg"/>
+      <view>
+        <view class="line title">变现思维课</view>
+        <view class="line">2019.01.20 - 2019.01.22</view>
+        <view class="line">上海市松江区漕河泾双子楼</view>
+      </view>
+    </view>
+    <view class="right" bindtap="toMyTraineeList">
+      <view class="reward">20人</view>
+      <view class="btn">学员列表</view>
+    </view>
+  </view>
+</view>
+<view class="split-brand"/>
+</block>
+

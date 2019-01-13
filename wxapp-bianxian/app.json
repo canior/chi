@@ -11,7 +11,8 @@
     "pages/user/course/index",
     "pages/user/course/log",
     "pages/user/trainee/index",
-
+    "pages/user/trainee/list",
+    
     "pages/product/reward",
     "pages/group/index",
     "pages/user/login",
