@@ -100,6 +100,12 @@ Page({
       url: '/pages/user/trainee/index',
     })
   },
+  // 转学员升级
+  toUpgrade: function () {
+    wx.navigateTo({
+      url: '/pages/user/upgrade/index',
+    })
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
