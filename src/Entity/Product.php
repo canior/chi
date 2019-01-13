@@ -150,6 +150,12 @@ class Product implements Dao
         $this->productStatistics = new ArrayCollection([new ProductStatistics($this)]);
         $this->productSimilars = new ArrayCollection();
         $this->groupUserOrders = new ArrayCollection();
+
+        $this->setTitle('');
+        $this->setGroupOrderRewards(0);
+        $this->setGroupOrderUserRewards(0);
+        $this->setRegularOrderRewards(0);
+        $this->setRegularOrderUserRewards(0);
     }
 
     public function getSku(): ?string

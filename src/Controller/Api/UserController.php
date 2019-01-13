@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 use App\Command\EnqueueCommand;
 use App\Command\Notification\NotifyPendingGroupOrderCommand;
 use App\Entity\CommandMessage;
+use App\Entity\Course;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
 use App\Entity\GroupUserOrderRewards;
@@ -17,6 +18,8 @@ use App\Entity\ProjectTextMeta;
 use App\Entity\Region;
 use App\Entity\ShareSource;
 use App\Entity\ShareSourceUser;
+use App\Entity\Subject;
+use App\Entity\Teacher;
 use App\Entity\User;
 use App\Entity\UserActivity;
 use App\Entity\UserAddress;
@@ -49,7 +52,7 @@ class UserController extends BaseController
 
     /**
      * 测试推送信息
-     * @Route("/user/test", name="testUser", methods="POST")
+     * @Route("/user/test", name="testUser", methods="GET")
      * @param Request $request
      * @param GroupOrderRepository $groupOrderRepository
      * @param ProjectShareMetaRepository $projectShareMetaRepository
@@ -58,12 +61,33 @@ class UserController extends BaseController
     public function testAction(Request $request, GroupOrderRepository $groupOrderRepository, ProjectShareMetaRepository $projectShareMetaRepository) {
         if ($this->getEnvironment() != 'dev') exit;
 
-        $groupUserOrderId = 58;
-        $groupUserOrder = $this->getEntityManager()->getRepository(GroupUserOrder::class)->find($groupUserOrderId);
-        $user = $groupUserOrder->getUser();
-        $user->addUserCommand(CommandMessage::createSendOrderRewardsCommand($groupUserOrderId));
-        $this->getEntityManager()->persist($user);
-        $this->getEntityManager()->flush();
+//        $product = new Product();
+//        $product->setTitle('test course');
+//        $this->getEntityManager()->persist($product);
+//        $this->getEntityManager()->flush();
+//        $teacher = new Teacher('tandy');
+//        $this->getEntityManager()->persist($teacher);
+//        $this->getEntityManager()->flush();
+
+        //$product = $this->getEntityManager()->getRepository(Product::class)->find(1);
+//        $region = $this->getEntityManager()->getRepository(Region::class)->find(1);
+//        $teacher = $this->getEntityManager()->getRepository(Teacher::class)->find(1);
+//        $course = new Course('name title','short description', 300, Subject::THINKING, $teacher, time(), time(), $region, "test address");
+//        $this->getEntityManager()->persist($course);
+//        $this->getEntityManager()->flush();
+
+        $courseRepository = $this->getEntityManager()->getRepository(Course::class);
+        $course = $courseRepository->find(3);
+        echo $course->getShortDescription();
+
+exit;
+
+//        $groupUserOrderId = 58;
+//        $groupUserOrder = $this->getEntityManager()->getRepository(GroupUserOrder::class)->find($groupUserOrderId);
+//        $user = $groupUserOrder->getUser();
+//        $user->addUserCommand(CommandMessage::createSendOrderRewardsCommand($groupUserOrderId));
+//        $this->getEntityManager()->persist($user);
+//        $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, []);
     }
@@ -87,7 +111,7 @@ class UserController extends BaseController
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $nickName = isset($data['nickName']) ? $data['nickName'] : $defaultNickname; //TODO 这里要添加文案
         $avatarUrl = isset($data['avatarUrl']) ? $data['avatarUrl'] : null; //需要一张默认的用户头像
-        //$userInfo = isset($data['userInfo']) ? json_decode($data['userInfo'], true) : null;
+        $phone = isset($data['phone']) ? $data['phone'] : null;
 
         $user = null;
         $msg = "";

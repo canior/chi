@@ -292,7 +292,7 @@ class User extends BaseUser implements Dao
             $this->parentUser = null;
             return $this;
         }
-        
+
         if ($parentUser->getId() != $this->getId())
             $this->parentUser = $parentUser;
 
