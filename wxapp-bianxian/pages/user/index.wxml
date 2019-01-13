@@ -31,7 +31,7 @@
 </view>
 <view class="split-brand"/>
 <view class="container">
-  <view class="row" bindtap="toUserGroup">
+  <view class="row" bindtap="toUserOrder" data-status="">
     <view class="left">学员升级</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>

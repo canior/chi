@@ -3,19 +3,19 @@
 <view class="container">
   <view class="row">
     <view class="left">
-      <image src="{{imgUrlPrefix + '/' + groupUserOrder.product.productImages[0].fileId}}"/>
+      <image src="/images/demo/course1.jpg"/>
     </view>
     <view class="right">
-      <view class="name">{{groupUserOrder.product.title}}</view>
-      <view class="desc">{{groupUserOrder.product.shortDescription}}</view>
-      <template is="price" data="{{...groupUserOrder}}"/>
+      <view class="name">变现思维课</view>
+      <view class="line desc">2019.01.20 - 2019.01.22</view>
+      <view class="line desc">上海市松江区漕河泾双子楼</view>
     </view>
   </view>
 </view>
 <view class="split-line"/>
 <view class="container">
   <view class="comment">
-    <view class="title">商品评价</view>
+    <view class="title">课程评价</view>
     <view class="rate-container">
       <image wx:if="{{rate < 1}}" data-idx="1" data-val="off" bindtap="{{editable ? 'rate' : ''}}" src="/images/star.png"/>
       <image wx:if="{{rate > 0}}" data-idx="1" data-val="on" bindtap="{{editable ? 'rate' : ''}}" src="/images/star-selected.png"/>
@@ -42,7 +42,7 @@
     </view>
 
     <view class="review">  
-      <textarea placeholder="亲，商品质量如何？" value="{{review}}" maxlength="200" placeholder-style="font-size:24rpx;color:#888" bindblur="review" disabled="{{groupUserOrder.productReviews.length > 0}}"></textarea>
+      <textarea placeholder="亲，请提出您的意见和建议" value="{{review}}" maxlength="200" placeholder-style="font-size:24rpx;color:#888" bindblur="review" disabled="{{groupUserOrder.productReviews.length > 0}}"></textarea>
     </view>
   </view>
 </view>

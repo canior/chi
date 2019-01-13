@@ -19,7 +19,6 @@
     "pages/user/mobile/login",
     "pages/user/address/index",
     "pages/user/address/edit",
-    "pages/user/group/index",
     "pages/user/order/index",
     "pages/user/order/detail",
     "pages/user/order/review",
