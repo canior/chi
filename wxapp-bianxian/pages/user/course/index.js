@@ -1,18 +1,11 @@
-// pages/user/quota/index.js
-const app = getApp()
+// pages/user/course/index.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    menu: [
-      { name: '已用名额（3人）剩余名额（97人）', isValid: null },
-    ],
-    isValid: null,
-    isLogin: null,
-    user: null,
-    rewardList: [],
+
   },
 
   /**
@@ -33,13 +26,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.setData({
-      isLogin: app.globalData.isLogin,
-      user: app.globalData.user
-    })
-    if (this.data.isLogin) {
-      //this.getRewardList(this.data.isValid)
-    }
+
   },
 
   /**

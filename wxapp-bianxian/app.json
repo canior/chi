@@ -8,6 +8,9 @@
     "pages/user/reward/index",
     "pages/user/referral/index",
     "pages/user/quota/index",
+    "pages/user/course/index",
+    "pages/user/course/log",
+    "pages/user/trainee/index",
 
     "pages/product/reward",
     "pages/group/index",

@@ -7,9 +7,9 @@ Page({
    */
   data: {
     menu: [
-      { name: '好友贡献', isValid: null },
-      { name: '活跃', isValid: true },
-      { name: '失效', isValid: false }
+      { name: '全部', isValid: null },
+      { name: '高级学员', isValid: true },
+      { name: '合伙人', isValid: false }
     ],
     isValid: null,
     isLogin: null,
@@ -35,7 +35,13 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.setData({
+      isLogin: app.globalData.isLogin,
+      user: app.globalData.user
+    })
+    if (this.data.isLogin) {
+      //this.getRewardList(this.data.isValid)
+    }
   },
 
   /**
