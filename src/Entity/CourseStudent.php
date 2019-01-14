@@ -16,7 +16,7 @@ class CourseStudent implements Dao
 {
     const REGISTERED = 'registered';
     const WELCOME = 'welcome';
-    const SIGNIN = 'completed';
+    const SIGNIN = 'signin';
 
     public static $statusTexts = [
         self::REGISTERED => '已注册',

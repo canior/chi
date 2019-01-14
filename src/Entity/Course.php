@@ -273,12 +273,6 @@ class Course implements Dao
      * @param $courseStatus
      */
     private function addStudentUser(User $studentUser, $courseStatus) {
-        foreach ($this->getCourseStudents() as $courseStudent) {
-            if ($courseStudent->getStudentUser() == $studentUser and $courseStudent->getStatus() == $courseStatus) {
-                return;
-            }
-        }
-
         $courseStudent = new CourseStudent($this, $studentUser, $courseStatus);
         $this->courseStudents->add($courseStudent);
     }

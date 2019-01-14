@@ -983,6 +983,7 @@ class UserController extends BaseController
         $company = isset($data['company']) ? $data['company'] : null;
         $idNum = isset($data['idNum']) ? $data['idNum'] : null;
         $wechat = isset($data['wechat']) ? $data['wechat'] : null;
+
         $user = $this->getWxUser($thirdSession);
 
         $user->setName($name);
@@ -996,6 +997,39 @@ class UserController extends BaseController
 
         return $this->responseJson('success', 200, [
             'user' => $user->getArray(),
+        ]);
+    }
+
+
+
+    /**
+     * 扫一扫报到，签到课程
+     * @Route("/user/signInCourse", name="signInCourse", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function createCourseStudent(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $courseId = isset($data['courseId']) ? $data['courseId'] : null;
+        $courseStudentStatus = isset($data['courseStudentStatus']) ? $data['courseStudentStatus'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        /**
+         * @var Course $course
+         */
+        $course = $this->getEntityManager()->getRepository(Course::class)->find($courseId);
+        if ($courseStudentStatus == CourseStudent::WELCOME) {
+            $course->welcomeStudent($user);
+        } else if ($courseStudentStatus == CourseStudent::SIGNIN) {
+            $course->signInStudent($user);
+        }
+
+        $this->getEntityManager()->persist($course);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, [
+            'course' => $course->getArray()
         ]);
     }
 }
