@@ -19,22 +19,4 @@ class ShareSourceUserRepository extends ServiceEntityRepository
         parent::__construct($registry, ShareSourceUser::class);
     }
 
-    /**
-     * @param $userId
-     * @return ShareSourceUser[]
-     */
-    public function findUnderlingUsers($userId)
-    {
-        // TODO: fix this query
-        return $this->createQueryBuilder('ssu')
-            ->addSelect('SUM(guor.userRewards) AS userRewardsTotal')
-            ->leftJoin('ssu.shareSource', 'ss')
-            ->leftJoin('App\Entity\GroupUserOrder', 'guo', 'WITH', 'guo.user = ssu.user')
-            ->leftJoin('guo.groupUserOrderRewards', 'guor')
-            ->where('ss.user = :userId')
-            ->andWhere('guor.user = :userId')
-            ->setParameter('userId', $userId)
-            ->groupBy('ssu.user')
-            ->getQuery()->getResult();
-    }
 }

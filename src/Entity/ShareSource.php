@@ -48,7 +48,7 @@ class ShareSource implements Dao
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\File")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $bannerFile;
 
@@ -222,7 +222,7 @@ class ShareSource implements Dao
             'userId' => $this->getUser() ? $this->getUser()->getId() : null,
             'type' => $this->type,
             'title' => $this->title,
-            'bannerFileId' => $this->getBannerFile()->getId(),
+            'bannerFileId' => $this->getBannerFile() ? $this->getBannerFile()->getId() : null,
             'page' => $this->getPage(),
         ];
     }

@@ -8,6 +8,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\IdTrait;
 
@@ -50,6 +51,13 @@ class Teacher implements Dao
      */
     private $user;
 
+    /**
+     * @var Course[]
+     * @ORM\OneToMany(targetEntity="App\Entity\Course", mappedBy="teacher", cascade={"persist"}, fetch="LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $courses;
+
 
     /**
      * Teacher constructor.
@@ -57,6 +65,7 @@ class Teacher implements Dao
      */
     public function __construct($name) {
         $this->setName($name);
+        $this->courses = new ArrayCollection();
     }
 
 
@@ -77,9 +86,9 @@ class Teacher implements Dao
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -93,9 +102,9 @@ class Teacher implements Dao
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -109,9 +118,9 @@ class Teacher implements Dao
     }
 
     /**
-     * @return File
+     * @return null|File
      */
-    public function getTeacherAvatarFile(): File
+    public function getTeacherAvatarFile(): ?File
     {
         return $this->teacherAvatarFile;
     }
@@ -137,5 +146,34 @@ class Teacher implements Dao
     public function setUser(User $user): void
     {
         $this->user = $user;
+    }
+
+    /**
+     * @return Course[]
+     */
+    public function getCourses()
+    {
+        return $this->courses;
+    }
+
+    /**
+     * @param Course[] $courses
+     */
+    public function setCourses($courses): void
+    {
+        $this->courses = $courses;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArray() {
+        return [
+            'id' => $this->id,
+            'name' => $this->getName(),
+            'title' => $this->getTitle(),
+            'description' => $this->getDescription(),
+            'avatarFileId' => $this->getTeacherAvatarFile() ? $this->getTeacherAvatarFile()->getId() : null
+        ];
     }
 }

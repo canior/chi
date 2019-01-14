@@ -86,12 +86,43 @@ class UserAccountOrder implements Dao
         $this->setUserAccountOrderType($userAccountOrderType);
         $this->setAmount($amount);
         $this->setPaymentStatus(self::UNPAID);
-        $user->setUserAccountTotal($amount);
+
         $this->setCreatedAt();
         $this->setUpdatedAt();
         $this->setUpgradeUserOrder($upgradeUserOrder);
     }
 
+    /**
+     * @return bool
+     */
+    public function isWithdraw() {
+        return $this->getUserAccountOrderType() == self::WITHDRAW;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRecommandRewards() {
+        return $this->getUserAccountOrderType() == self::RECOMMAND_REWARDS;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTeacherRewards() {
+        return $this->getUserAccountOrderType() == self::TEACHER_REWARDS;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOldTeacherRewards() {
+        return $this->getUserAccountOrderType() == self::OLD_TEACHER_REWARDS;
+    }
+
+    public function isPaid() {
+        return $this->getPaymentStatus() == self::PAID;
+    }
 
     /**
      * @return User
@@ -158,18 +189,43 @@ class UserAccountOrder implements Dao
     }
 
     /**
-     * @return UpgradeUserOrder
+     * @return UpgradeUserOrder|null
      */
-    public function getUpgradeUserOrder(): UpgradeUserOrder
+    public function getUpgradeUserOrder(): ?UpgradeUserOrder
     {
         return $this->upgradeUserOrder;
     }
 
     /**
-     * @param UpgradeUserOrder $upgradeUserOrder
+     * @param UpgradeUserOrder|null $upgradeUserOrder
      */
-    public function setUpgradeUserOrder(UpgradeUserOrder $upgradeUserOrder): void
+    public function setUpgradeUserOrder(UpgradeUserOrder $upgradeUserOrder = null): void
     {
         $this->upgradeUserOrder = $upgradeUserOrder;
+    }
+
+    public function setPaid() {
+        $this->paymentStatus = self::PAID;
+
+        if ($this->isWithdraw()) {
+            $this->getUser()->increaseUserAccountTotal(-$this->getAmount());
+        } else {
+            $this->getUser()->increaseUserAccountTotal($this->getAmount());
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getArray() {
+        return [
+            'id' => $this->getId(),
+            'user' => $this->getUser()->getArray(),
+            'type' => self::$userAccountOrderTypes[$this->getUserAccountOrderType()],
+            'amount' => $this->getAmount(),
+            'paymentStatus' => self::$paymentStatuses[$this->getPaymentStatus()],
+            'createdAt' => $this->getCreatedAt(true),
+            'upgradeUserOrder' => $this->getUpgradeUserOrder() ? $this->getUpgradeUserOrder()->getArray() : null,
+        ];
     }
 }

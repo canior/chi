@@ -32,7 +32,7 @@ class UpgradeUserOrder implements Dao
     const REJECTED = 'rejected';
 
 
-    public static $statuses = [
+    public static $statusTexts = [
         self::CREATED => '已创建',
         self::PENDING => '处理中',
         self::APPROVED => '已通过',
@@ -45,7 +45,7 @@ class UpgradeUserOrder implements Dao
     const REFUNDING = 'refunding';
     const REFUNDED = 'refunded';
 
-    public static $paymentStatuses = [
+    public static $paymentStatusTexts = [
         self::PAID => '已支付',
         self::UNPAID => '未支付',
         self::REFUNDING => '退款中',
@@ -120,7 +120,7 @@ class UpgradeUserOrder implements Dao
     /**
      * @return UpgradeUserOrderPayment[]
      */
-    public function getUpgradeUserOrderPayments(): array
+    public function getUpgradeUserOrderPayments()
     {
         return $this->upgradeUserOrderPayments;
     }
@@ -310,6 +310,25 @@ class UpgradeUserOrder implements Dao
     public function setUserAccountOrders($userAccountOrders): void
     {
         $this->userAccountOrders = $userAccountOrders;
+    }
+
+    public function getArray() {
+
+        $upgradeUserOrderPaymentArray = [];
+        foreach ($this->getUpgradeUserOrderPayments() as $payment) {
+            $upgradeUserOrderPaymentArray[] = $payment->getArray();
+        }
+        return [
+            'id' => $this->getId(),
+            'user' => $this->getUser()->getArray(),
+            'userLevel' => UserLevel::$userLevelTextArray[$this->getUserLevel()],
+            'total' => $this->getTotal(),
+            'status' => self::$statusTexts[$this->getStatus()],
+            'paymentStatus' => self::$paymentStatusTexts[$this->getPaymentStatus()],
+            'upgradeUserOrderPayments' => $upgradeUserOrderPaymentArray,
+            'createdAt' => $this->getCreatedAt(true),
+            'updatedAt' => $this->getUpdatedAt(true)
+        ];
     }
 
 }

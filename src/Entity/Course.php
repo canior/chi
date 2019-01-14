@@ -21,8 +21,8 @@ class Course implements Dao
     use IdTrait;
 
     /**
-     * @var Product $product
-     * @ORM\OneToOne(targetEntity="App\Entity\Product", cascade={"persist", "remove"})
+     * @var Product
+     * @ORM\OneToOne(targetEntity="App\Entity\Product", mappedBy="course", cascade={"persist"})
      */
     private $product;
 
@@ -244,6 +244,21 @@ class Course implements Dao
     }
 
     /**
+     * 返回课程学生列表（无重复）
+     *
+     * @return User[]
+     */
+    public function getStudentUsers(){
+        $students = [];
+        foreach ($this->getCourseStudents() as $courseStudent) {
+            if (!in_array($courseStudent->getStudentUser(), $students)) {
+                $students[] = $courseStudent->getStudentUser();
+            }
+        }
+        return $students;
+    }
+
+    /**
      * @param CourseStudent[] $courseStudents
      */
     public function setCourseStudents($courseStudents): void
@@ -290,5 +305,35 @@ class Course implements Dao
      */
     public function signInStudent($studentUser) {
         $this->addStudentUser($studentUser, CourseStudent::SIGNIN);
+    }
+
+    /**
+     * @return array
+     */
+    public function getArray() : array {
+        $courseImageArray = [];
+        foreach ($this->getProduct()->getProductImages() as $productImage) {
+            $courseImageArray[] = $productImage->getArray();
+        }
+
+        $courseSpecImagesArray = [];
+        foreach ($this->getProduct()->getProductSpecImages() as $productSpecImage) {
+            $courseSpecImagesArray[] = $productSpecImage->getArray();
+        }
+
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getProduct()->getTitle(),
+            'subjectText' => Subject::$subjectTextArray[$this->getSubject()],
+            'price' => $this->getProduct()->getPrice(),
+            'shortDescription' => $this->getProduct()->getShortDescription(),
+            'startDate' =>  date(self::DATE_FORMAT, $this->getStartDate()),
+            'endDate' =>  date(self::DATE_FORMAT, $this->getEndDate()),
+            'address' => $this->getAddress(),
+            'region' => $this->getRegion()->getArray(),
+            'teacher' => $this->getTeacher()->getArray(),
+            'courseImages' => $courseImageArray,
+            'courseSpecImages' => $courseSpecImagesArray,
+        ];
     }
 }

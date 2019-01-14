@@ -647,4 +647,267 @@ class UserController extends BaseController
         return $shareSources;
     }
 
+    /**
+     * 查看最近一张提交学员升级订单，如果没有则显示表单
+     *
+     * @Route("/user/upgradeUserOrder/view", name="viewUpgradeUserOrder", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function viewUpgradeUserOrderAction(Request $request) : Response {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+        $upgradeUserOrder = $user->getLatestUpgradeUserOrder();
+        $upgradeUserOrderArray = [];
+        if ($upgradeUserOrder) {
+            $upgradeUserOrderArray = $upgradeUserOrder->getArray();
+        }
+
+        return $this->responseJson('success', 200, [
+            'upgradeUserOrder' => $upgradeUserOrderArray,
+            'user' => $user->getArray(),
+            'userLevels' => UserLevel::$userLevelTextArray
+        ]);
+    }
+
+    /**
+     * 提交学员升级订单
+     *
+     * @Route("/user/upgradeUserOrder/create", name="createUpgradeUserOrder", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function createUpgradeUserOrderAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $userLevel = isset($data['userLevel']) ? $data['userLevel'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        $upgradeUserOrder = $user->createUpgradeUserOrder($userLevel);
+        $this->getEntityManager()->persist($upgradeUserOrder);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, [
+            'upgradeUserOrder' => $upgradeUserOrder->getArray()
+        ]);
+    }
+
+    /**
+     * 创建提现订单
+     *
+     * @Route("/user/account/withdraw", name="createWithdrawUserAccountOrder", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function createWithdrawUserAccountOrderAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $amount = isset($data['amount']) ? $data['amount'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        if ($user->getUserAccountTotal() < $amount) {
+            return $this->responseJson('failed', 200, []);
+        }
+
+        $withdrawOrder = $user->createUserAccountOrder(UserAccountOrder::WITHDRAW, $amount);
+        $this->getEntityManager()->persist($withdrawOrder);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, [
+            'withdrawOrder' => $withdrawOrder->getArray()
+        ]);
+    }
+
+    /**
+     * 查看用户账户
+     *
+     * @Route("/user/account/view", name="viewUserAccount", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function viewUserAccountAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        $accountBalance = $user->getUserAccountTotal();
+        $withdrawedTotal = $user->getWithDrawedTotal();
+        $withdrawingTotal = $user->getWithDrawingTotal();
+
+        $userAccountOrderArray = [];
+        foreach ($user->getUserAccountOrders() as $userAccountOrder) {
+            $userAccountOrderArray[] = $userAccountOrder->getArray();
+        }
+
+        return $this->responseJson('success', 200, [
+            'balance' => $accountBalance,
+            'withdrawedTotal' => $withdrawedTotal,
+            'withdrawingTotal' => $withdrawingTotal,
+            'userAccountOrders' => $userAccountOrderArray
+        ]);
+    }
+
+    /**
+     * 查看用户推荐名额
+     *
+     * @Route("/user/recommandStock/view", name="viewUserRecommandStock", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function viewUserRecommandStockAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        $stockBalance = $user->getRecommandStock();
+
+        $usedStockTotal = 0;
+        $recommandChildrenArray = [];
+        foreach ($user->getSubUsers() as $child) {
+            $usedStockTotal++;
+            $recommandChildrenArray[] = $child->getArray();
+        }
+
+        return $this->responseJson('success', 200, [
+            'stockBalance' => $stockBalance,
+            'childrenNum' => $usedStockTotal,
+            'totalStock' => $stockBalance + $usedStockTotal,
+            'recommandChildren' => $recommandChildrenArray
+        ]);
+    }
+
+    /**
+     * 查看用户最近的分享记录
+     *
+     * @Route("/user/shareUser", name="viewShareUsers", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function viewShareUsersAction(Request $request, UserRepository $userRepository) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $userLevel = isset($data['userLevel']) ? $data['userLevel'] : null;
+        $page = isset($data['page']) ? $data['page'] : 1;
+
+        $user = $this->getWxUser($thirdSession);
+        $totalShareSourceUsers = $userRepository->findTotalShareUsers($user->getId(), $userLevel);
+        $shareSourceUsers = $userRepository->findShareUsers($user->getId(), $userLevel, $page, self::PAGE_LIMIT);
+
+        $shareSourceUserArray = [];
+        foreach($shareSourceUsers as $shareSourceUser) {
+            $shareSourceUserArray[] = $shareSourceUser->getArray();
+        }
+
+        return $this->responseJson('success', 200, [
+            'shareSourceUsersTotal' => $totalShareSourceUsers,
+            'shareSourceUsers' => $shareSourceUserArray
+        ]);
+    }
+
+    /**
+     * 查看用户推荐人
+     *
+     * @Route("/user/parent/view", name="viewUserParent", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function viewUserParentAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        $recommanderArray = [];
+        if ($user->getParentUser() != null) {
+            $recommanderArray = $user->getParentUser()->getArray();
+        }
+
+        return $this->responseJson('success', 200, [
+            'recommander' => $recommanderArray
+        ]);
+    }
+
+    /**
+     * 更新用户推荐人
+     * @Route("/user/parent/update", name="updateUserParent", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function updateUserParentAction(Request $request) : Response {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $recommanderUserId = isset($data['recommanderUserId']) ? $data['recommanderUserId'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        /**
+         * @var User $recommander
+         */
+        $recommander = $this->getEntityManager()->getRepository(User::class)->find($recommanderUserId);
+        $user->setParentUser($recommander);
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, []);
+    }
+
+    /**
+     * 讲师交过的课程列表
+     * @Route("/user/teacher/course", name="listTeacherCourses", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function listTeacherCoursesAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        if (!$user->isTeacher()) {
+            return $this->responseJson('invalid', 200, []);
+        }
+
+        $courses = $user->getTeacher()->getCourses();
+        $courseArray = [];
+        foreach ($courses as $course) {
+            $courseArray[] = $course->getArray();
+        }
+
+        return $this->responseJson('success', 200, [
+            'courses' => $courseArray
+        ]);
+    }
+
+    /**
+     * 讲师交过的课程学生列表
+     * @Route("/user/teacher/course/student", name="listTeacherStudents", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function listTeacherStudentsAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $courseId = isset($data['courseId']) ? $data['courseId'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        if (!$user->isTeacher()) {
+            return $this->responseJson('invalid', 200, []);
+        }
+
+        /**
+         * @var Course $course
+         */
+        $course = $this->getEntityManager()->getRepository(Course::class)->find($courseId);
+
+        $studentArray = [];
+        foreach ($course->getStudentUsers() as $studentUser) {
+            $studentArray[] = $studentUser->getArray();
+        }
+
+        return $this->responseJson('success', 200, [
+            'course' => $course->getArray(),
+            'students' => $studentArray
+        ]);
+    }
+
 }

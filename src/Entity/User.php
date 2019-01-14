@@ -174,14 +174,14 @@ class User extends BaseUser implements Dao
     private $recommandStock;
 
     /**
-     * @var UserAccountOrder[]
+     * @var UserAccountOrder[]|Collection
      * @ORM\OneToMany(targetEntity="App\Entity\UserAccountOrder", mappedBy="user", cascade={"persist"}, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $userAccountOrders;
 
     /**
-     * @var UpgradeUserOrder[]
+     * @var UpgradeUserOrder[]|Collection
      * @ORM\OneToMany(targetEntity="App\Entity\UpgradeUserOrder", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
@@ -190,7 +190,7 @@ class User extends BaseUser implements Dao
 
 
     /**
-     * @var CourseStudent[]
+     * @var CourseStudent[]|Collection
      * @ORM\OneToMany(targetEntity="App\Entity\CourseStudent", mappedBy="studentUser", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
@@ -241,7 +241,7 @@ class User extends BaseUser implements Dao
      * @return bool
      */
     public function isTeacher() {
-        return $this->getTeacher() == null;
+        return $this->getTeacher() != null;
     }
 
     /**
@@ -599,13 +599,24 @@ class User extends BaseUser implements Dao
      */
     public function getArray(): array
     {
+        $recommanderArray = [];
+        if ($this->getParentUser() != null) {
+            $recommanderArray = [
+                'id' => $this->getParentUser()->getId(),
+                'avatarUrl' => $this->getParentUser()->getAvatarUrl(),
+                'nickname' => $this->getParentUser()->getNickname(),
+            ];
+        }
+
         return [
             'id' => $this->getId(),
             'nickname' => $this->getNickname(),
+            'userLevel' => $this->getUserLevel() ? UserLevel::$userLevelTextArray[$this->getUserLevel()] : null,
             'avatarUrl' => $this->getAvatarUrl(),
             'totalRewards' => $this->getTotalRewards(),
             'defaultAddress' => $this->getDefaultUserAddress() != null ? $this->getDefaultUserAddress()->getArray() : null,
-            'lastLogin' => $this->getLastLogin()
+            'lastLogin' => $this->getLastLogin(),
+            'recommander' => $recommanderArray
         ];
     }
 
@@ -708,48 +719,6 @@ class User extends BaseUser implements Dao
         }
 
         return $this;
-    }
-
-    /**
-     * 返回所有有效下线列表
-     * TODO: 这里未来需要用SQL替换
-     *
-     * @return User[]
-     */
-    public function getSharedUsersArray() {
-        $childrenArray = [];
-        foreach ($this->getShareSources() as $shareSource) {
-            foreach ($shareSource->getShareSourceUsers() as $shareSourceUser) {
-                $child = $shareSourceUser->getUser();
-                $totalUserOrderNum = 0;
-                $totalUserOrderAmount = 0;
-                $totalUserRewards = 0;
-
-                $childArray = $child->getArray();
-
-                foreach($child->getGroupUserOrders() as $groupUserOrder) {
-                    foreach($groupUserOrder->getGroupUserOrderRewards() as $groupUserOrderRewards) {
-                        if ($groupUserOrderRewards->getUser()->getId() == $child->getId()) {
-                            $totalUserRewards += $groupUserOrderRewards;
-                        }
-                    }
-                    $totalUserOrderNum ++;
-                    $totalUserOrderAmount += $groupUserOrder->getTotal();
-                }
-                $childArray['totalUserOrderNum'] = $totalUserOrderNum;
-                $childArray['totalUserOrderAmount'] = $totalUserOrderAmount;
-                $childArray['totalUserRewards'] = $totalUserRewards;
-
-                if ($child->getParentUser() && $child->getParentUser()->getId() == $this->getId()) {
-                    $childArray['valid'] = true;
-                } else {
-                    $childArray['valid'] = false;
-                }
-
-                $childrenArray[] = $childArray;
-            }
-        }
-        return $childrenArray;
     }
 
     /**
@@ -902,9 +871,9 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @return Teacher
+     * @return null|Teacher
      */
-    public function getTeacher(): Teacher
+    public function getTeacher(): ?Teacher
     {
         return $this->teacher;
     }
@@ -918,7 +887,7 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @return UserAccountOrder[]
+     * @return UserAccountOrder[]|Collection
      */
     public function getUserAccountOrders()
     {
@@ -934,11 +903,21 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @return UpgradeUserOrder[]
+     * @return UpgradeUserOrder[]|Collection
      */
     public function getUpgradeUserOrders()
     {
         return $this->upgradeUserOrders;
+    }
+
+    /**
+     * @return UpgradeUserOrder | null
+     */
+    public function getLatestUpgradeUserOrder() {
+        foreach ($this->getUpgradeUserOrders() as $upgradeUserOrder) {
+            return $upgradeUserOrder;
+        }
+        return null;
     }
 
     /**
@@ -1025,6 +1004,34 @@ class User extends BaseUser implements Dao
         }
 
         return $course;
+    }
+
+    /**
+     * 已经提现的总数
+     * @return float|int
+     */
+    public function getWithDrawedTotal() {
+        $withdrawTotal = 0;
+        foreach($this->getUserAccountOrders() as $userAccountOrder) {
+            if ($userAccountOrder->isWithdraw() and $userAccountOrder->isPaid()) {
+                $withdrawTotal += $userAccountOrder->getAmount();
+            }
+        }
+        return $withdrawTotal;
+    }
+
+    /**
+     * 已经提现的总数
+     * @return float|int
+     */
+    public function getWithDrawingTotal() {
+        $withdrawingTotal = 0;
+        foreach($this->getUserAccountOrders() as $userAccountOrder) {
+            if ($userAccountOrder->isWithdraw() and !$userAccountOrder->isPaid()) {
+                $withdrawingTotal += $userAccountOrder->getAmount();
+            }
+        }
+        return $withdrawingTotal;
     }
 
 }

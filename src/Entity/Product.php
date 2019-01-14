@@ -135,6 +135,13 @@ class Product implements Dao
 
 
     /**
+     * @var null|Course
+     * @ORM\OneToOne(targetEntity="App\Entity\Course", inversedBy="product", cascade={"persist"})
+     */
+    private $course;
+
+
+    /**
      * Product constructor.
      */
     public function __construct()
@@ -463,6 +470,11 @@ class Product implements Dao
      * @return array
      */
     public function getArray() : array {
+
+        if ($this->isCourseProduct()) {
+            return $this->getCourse()->getArray();
+        }
+
         $productImageArray = [];
         foreach ($this->getProductImages() as $productImage) {
             $productImageArray[] = $productImage->getArray();
@@ -649,4 +661,28 @@ class Product implements Dao
         $this->addProductStatistic($productStatistic);
         return $productStatistic;
     }
+
+    /**
+     * @return Course|null
+     */
+    public function getCourse(): ?Course
+    {
+        return $this->course;
+    }
+
+    /**
+     * @param Course|null $course
+     */
+    public function setCourse(?Course $course): void
+    {
+        $this->course = $course;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCourseProduct() {
+        return $this->getCourse() != null;
+    }
+
 }

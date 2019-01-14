@@ -101,4 +101,17 @@ class UpgradeUserOrderPayment implements Dao
     {
         $this->memo = $memo;
     }
+
+    /**
+     * @return array
+     */
+    public function getArray() {
+        return [
+            'id' => $this->getId(),
+            'upgradeUserOrderId' => $this->getUpgradeUserOrder()->getId(),
+            'amount' => $this->getAmount(),
+            'memo' => $this->getMemo(),
+            'createdAt' => $this->getCreatedAt(true)
+        ];
+    }
 }

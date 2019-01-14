@@ -122,12 +122,12 @@ class ProductController extends BaseController
         $referShareSource = new ShareSource();
         $referShareSource->setType(ShareSource::REFER);
         $referShareSource->setTitle($product->getTitle());
-        $referShareSource->setBannerFile($product->getMainProductImage()->getFile());
+        $referShareSource->setBannerFile($product->getMainProductImage() ? $product->getMainProductImage()->getFile() : null);
         $referShareSource->setPage($page, true);
 
         $quanShareSource = new ShareSource();
         $quanShareSource->setType(ShareSource::QUAN);
-        $quanShareSource->setBannerFile($product->getMainProductImage()->getFile());
+        $quanShareSource->setBannerFile($product->getMainProductImage() ? $product->getMainProductImage()->getFile() : null);
         $quanShareSource->setPage($page, true);
 
         $shareSources[] = $referShareSource->getArray();

@@ -8,6 +8,13 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Course;
+use App\Entity\Teacher;
+use App\Entity\User;
+use App\Entity\UpgradeUserOrder;
+use App\Entity\ShareSource;
+
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,9 +32,14 @@ class TestController extends BaseController
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
 
-        echo "test";
+        /**
+         * @var UserRepository $userRepository
+         */
+        $userRepository = $this->getEntityManager()->getRepository(User::class);
 
-        return $this->responseJson('success', 200, []);
+        echo $userRepository->findTotalShareUsers(1, 'PARTNER');
+
+        return $this->responseRaw("");
     }
 
 }

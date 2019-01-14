@@ -41,6 +41,12 @@ class GroupUserOrder implements Dao
         self::RMA_RECEIVED => '收到退货'
     ];
 
+    public static $courseStatuses = [
+        self::CREATED => '待注册',
+        self::CANCELLED => '已取消',
+        self::DELIVERED => '已注册',
+    ];
+
     const PAID = 'paid';
     const UNPAID = 'unpaid';
     const REFUNDING = 'refunding';
