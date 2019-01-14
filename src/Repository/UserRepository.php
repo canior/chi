@@ -149,10 +149,10 @@ class UserRepository extends ServiceEntityRepository
     /**
      * @param $userId
      * @param $userLevel
-     * @return mixed
+     * @return int
      * @throws NonUniqueResultException
      */
-    public function findTotalShareUsers($userId, $userLevel) {
+    public function findTotalShareUsers($userId, $userLevel = null) {
         /**
          * @var QueryBuilder $query
          */

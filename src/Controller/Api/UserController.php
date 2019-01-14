@@ -39,6 +39,7 @@ use App\Repository\ProjectTextMetaRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ShareSourceRepository;
 use App\Repository\ShareSourceUserRepository;
+use App\Repository\TeacherRepository;
 use App\Repository\UserActivityRepository;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
@@ -59,9 +60,11 @@ class UserController extends BaseController
      * @Route("/user/login", name="userLogin", methods="POST")
      * @param Request $request
      * @param UserRepository $userRepository
+     * @param TeacherRepository $teacherRepository
      * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function loginAction(Request $request, UserRepository $userRepository) : Response {
+    public function loginAction(Request $request, UserRepository $userRepository, TeacherRepository $teacherRepository) : Response {
 
         $defaultNickname = '未知用户';
         $defaultAvatarUrl = null;
@@ -72,7 +75,6 @@ class UserController extends BaseController
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $nickName = isset($data['nickName']) ? $data['nickName'] : $defaultNickname; //TODO 这里要添加文案
         $avatarUrl = isset($data['avatarUrl']) ? $data['avatarUrl'] : null; //需要一张默认的用户头像
-        $phone = isset($data['phone']) ? $data['phone'] : null;
 
         $user = null;
         $msg = "";
@@ -128,9 +130,19 @@ class UserController extends BaseController
             }
         }
 
+        $totalShares = $userRepository->findTotalShareUsers($user->getId());
+
+        $totalStudents = 0;
+        if ($user->isTeacher()) {
+            $totalStudents = $teacherRepository->findTotalStudents($user->getId());
+        }
+
+
         return $this->responseJson($msg, 200, [
             'thirdSession' => $thirdSession,
-            'user' => $user->getArray()
+            'user' => $user->getArray(),
+            'totalShares' => $totalShares,
+            'totalStudents' => $totalStudents
         ]);
 
     }
@@ -640,8 +652,8 @@ class UserController extends BaseController
         $quanShareSource->setBannerFile(null);
         $quanShareSource->setPage($page, true);
 
-        $shareSources[] = $referShareSource->getArray();
-        $shareSources[] = $quanShareSource->getArray();
+        $shareSources[ShareSource::REFER] = $referShareSource->getArray();
+        $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();
 
 
         return $shareSources;
@@ -790,6 +802,7 @@ class UserController extends BaseController
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $userLevel = isset($data['userLevel']) ? $data['userLevel'] : null;
+        $url = isset($data['url']) ? $data['url'] : null;
         $page = isset($data['page']) ? $data['page'] : 1;
 
         $user = $this->getWxUser($thirdSession);
@@ -802,8 +815,10 @@ class UserController extends BaseController
         }
 
         return $this->responseJson('success', 200, [
+            'userLevels' => UserLevel::$userLevelTextArray,
             'shareSourceUsersTotal' => $totalShareSourceUsers,
-            'shareSourceUsers' => $shareSourceUserArray
+            'shareSourceUsers' => $shareSourceUserArray,
+            'shareSources' => $this->createShareSource($user, $url)
         ]);
     }
 
@@ -849,11 +864,13 @@ class UserController extends BaseController
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
 
-        return $this->responseJson('success', 200, []);
+        return $this->responseJson('success', 200, [
+            'recommander' => $recommander->getArray()
+        ]);
     }
 
     /**
-     * 讲师交过的课程列表
+     * 讲师教过的课程列表
      * @Route("/user/teacher/course", name="listTeacherCourses", methods="POST")
      * @param Request $request
      * @return Response
@@ -910,4 +927,75 @@ class UserController extends BaseController
         ]);
     }
 
+
+    /**
+     * 我的名额
+     * @Route("/user/children", name="userChildren", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function getChildrenAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        $totalChildren = $user->getSubUsers()->count();
+        $childrenArray = [];
+        foreach ($user->getSubUsers() as $child) {
+            $childrenArray[] = $child->getArray();
+        }
+
+        return $this->responseJson('success', 200, [
+            'recommandStock' => $user->getRecommandStock(),
+            'usedStock' => $totalChildren,
+            'totalStock' => $user->getRecommandStock() + $totalChildren,
+            'children' => $childrenArray
+        ]);
+    }
+
+    /**
+     * 我的个人资料
+     * @Route("/user/personal/view", name="viewUserPersonal", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function viewUserPersonalAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        return $this->responseJson('success', 200, [
+            'user' => $user->getArray(),
+        ]);
+    }
+
+    /**
+     * 更新我的个人资料
+     * @Route("/user/personal/update", name="updateUserPersonal", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function updateUserPersonalAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $name = isset($data['name']) ? $data['name'] : null;
+        $phone = isset($data['phone']) ? $data['phone'] : null;
+        $company = isset($data['company']) ? $data['company'] : null;
+        $idNum = isset($data['idNum']) ? $data['idNum'] : null;
+        $wechat = isset($data['wechat']) ? $data['wechat'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        $user->setName($name);
+        $user->setPhone($phone);
+        $user->setCompany($company);
+        $user->setIdNum($idNum);
+        $user->setWechat($wechat);
+
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, [
+            'user' => $user->getArray(),
+        ]);
+    }
 }

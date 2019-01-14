@@ -13,6 +13,7 @@ use App\Command\EnqueueCommand;
 use App\Command\Notification\NotifyCompletedGroupOrderCommand;
 use App\Command\Notification\NotifyOrderRewardsSentCommand;
 use App\Command\Notification\NotifyPendingGroupOrderCommand;
+use App\Entity\CourseStudent;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
 use App\Entity\Product;
@@ -29,6 +30,7 @@ use App\Service\Wx\WxPayment;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\ShareSource;
 
 /**
  * @Route("/wxapi")
@@ -86,13 +88,29 @@ class GroupUserOrderController extends BaseController
     public function viewAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
         $data = json_decode($request->getContent(), true);
         $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
+        $url = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
 
         /**
          * @var GroupUserOrder $groupUserOrder
          */
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+        $user = $groupUserOrder->getUser();
+
+        $courseStudentArray = [];
+        if ($groupUserOrder->getProduct()->isCourseProduct()) {
+            /**
+             * @var CourseStudent[] $courseStudents
+             */
+            $courseStudents = $this->getEntityManager()->getRepository(CourseStudent::class)->findBy(["studentUser" => $user]);
+            foreach ($courseStudents as $courseStudent) {
+                $courseStudentArray[] = $courseStudent->getArray();
+            }
+        }
+
         $data = [
-            'groupUserOrder' => $groupUserOrder->getArray()
+            'groupUserOrder' => $groupUserOrder->getArray(),
+            'courseStudents' => $courseStudentArray,
+            'shareSources' => $this->createShareSource($groupUserOrder->getProduct(), $url)
         ];
 
         return $this->responseJson('success', 200, $data);
@@ -260,5 +278,35 @@ class GroupUserOrderController extends BaseController
         ];
         return $this->responseJson('success', 200, $data);
 
+    }
+
+    /**
+     * //TODO 需要确定转发配置
+     * 返回转发和朋友圈的shareSource
+     *
+     * @param Product $product
+     * @param $page
+     * @return array
+     */
+    public function createShareSource(Product $product, $page) {
+
+        $shareSources = [];
+
+        $referShareSource = new ShareSource();
+        $referShareSource->setType(ShareSource::REFER);
+        $referShareSource->setTitle($product->getTitle());
+        $referShareSource->setBannerFile($product->getMainProductImage() ? $product->getMainProductImage()->getFile() : null);
+        $referShareSource->setPage($page, true);
+
+        $quanShareSource = new ShareSource();
+        $quanShareSource->setType(ShareSource::QUAN);
+        $quanShareSource->setBannerFile($product->getMainProductImage() ? $product->getMainProductImage()->getFile() : null);
+        $quanShareSource->setPage($page, true);
+
+        $shareSources[] = $referShareSource->getArray();
+        $shareSources[] = $quanShareSource->getArray();
+
+
+        return $shareSources;
     }
 }

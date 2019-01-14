@@ -18,9 +18,9 @@ class CourseStudent implements Dao
     const WELCOME = 'welcome';
     const SIGNIN = 'completed';
 
-    public static $statuses = [
-        self::REGISTERED => '注册',
-        self::WELCOME => '报到',
+    public static $statusTexts = [
+        self::REGISTERED => '已注册',
+        self::WELCOME => '已报到',
         self::SIGNIN => '签到',
     ];
 
@@ -108,6 +108,18 @@ class CourseStudent implements Dao
     public function setStatus(string $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArray() {
+        return [
+            'id' => $this->getId(),
+            'statusText' => self::$statusTexts[$this->getStatus()],
+            'courseId' => $this->getCourse()->getId(),
+            'createdAt' => $this->getCreatedAt(true)
+        ];
     }
 
 }

@@ -14,6 +14,7 @@ use App\Entity\User;
 use App\Entity\UpgradeUserOrder;
 use App\Entity\ShareSource;
 
+use App\Repository\TeacherRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,16 +29,17 @@ class TestController extends BaseController
      * @Route("/test", name="test", methods="GET")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
 
         /**
-         * @var UserRepository $userRepository
+         * @var TeacherRepository $teacherRepository
          */
-        $userRepository = $this->getEntityManager()->getRepository(User::class);
+        $teacherRepository = $this->getEntityManager()->getRepository(Teacher::class);
 
-        echo $userRepository->findTotalShareUsers(1, 'PARTNER');
+        echo $teacherRepository->findTotalStudents(1, 4);
 
         return $this->responseRaw("");
     }

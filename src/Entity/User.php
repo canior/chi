@@ -197,6 +197,36 @@ class User extends BaseUser implements Dao
     private $courseStudents;
 
 
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $name;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $phone;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $company;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $idNum;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $wechat;
+
     public function __construct()
     {
         parent::__construct();
@@ -605,6 +635,7 @@ class User extends BaseUser implements Dao
                 'id' => $this->getParentUser()->getId(),
                 'avatarUrl' => $this->getParentUser()->getAvatarUrl(),
                 'nickname' => $this->getParentUser()->getNickname(),
+                'name' => $this->getName()
             ];
         }
 
@@ -612,11 +643,20 @@ class User extends BaseUser implements Dao
             'id' => $this->getId(),
             'nickname' => $this->getNickname(),
             'userLevel' => $this->getUserLevel() ? UserLevel::$userLevelTextArray[$this->getUserLevel()] : null,
+            'userAccountTotal' => $this->getUserAccountTotal(),
+            'userRecommandStock' => $this->getRecommandStock(),
             'avatarUrl' => $this->getAvatarUrl(),
             'totalRewards' => $this->getTotalRewards(),
             'defaultAddress' => $this->getDefaultUserAddress() != null ? $this->getDefaultUserAddress()->getArray() : null,
             'lastLogin' => $this->getLastLogin(),
-            'recommander' => $recommanderArray
+            'recommander' => $recommanderArray,
+            'isTeacher' => $this->isTeacher(),
+            'isCompletedPersonalInfo' => $this->isCompletedPersonalInfo(),
+            'name' => $this->getName(),
+            'company' => $this->getCompany(),
+            'phone' => $this->getPhone(),
+            'idNum' => $this->getIdNum(),
+            'wechat' => $this->getWechat()
         ];
     }
 
@@ -1032,6 +1072,93 @@ class User extends BaseUser implements Dao
             }
         }
         return $withdrawingTotal;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getCompany(): ?string
+    {
+        return $this->company;
+    }
+
+    /**
+     * @param null|string $company
+     */
+    public function setCompany(?string $company): void
+    {
+        $this->company = $company;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param null|string $name
+     */
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param null|string $phone
+     */
+    public function setPhone(?string $phone): void
+    {
+        $this->phone = $phone;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getIdNum(): ?string
+    {
+        return $this->idNum;
+    }
+
+    /**
+     * @param null|string $idNum
+     */
+    public function setIdNum(?string $idNum): void
+    {
+        $this->idNum = $idNum;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getWechat(): ?string
+    {
+        return $this->wechat;
+    }
+
+    /**
+     * @param null|string $wechat
+     */
+    public function setWechat(?string $wechat): void
+    {
+        $this->wechat = $wechat;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCompletedPersonalInfo() {
+        return $this->getName() and $this->getIdNum() and $this->getPhone();
     }
 
 }

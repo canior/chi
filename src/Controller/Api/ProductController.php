@@ -130,8 +130,8 @@ class ProductController extends BaseController
         $quanShareSource->setBannerFile($product->getMainProductImage() ? $product->getMainProductImage()->getFile() : null);
         $quanShareSource->setPage($page, true);
 
-        $shareSources[] = $referShareSource->getArray();
-        $shareSources[] = $quanShareSource->getArray();
+        $shareSources[ShareSource::REFER] = $referShareSource->getArray();
+        $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();
 
 
         return $shareSources;
