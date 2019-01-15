@@ -897,7 +897,7 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @param float $userAccountTotal
+     * @param float|null $userAccountTotal
      */
     public function setUserAccountTotal(float $userAccountTotal): void
     {
@@ -905,15 +905,15 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getRecommandStock(): float
+    public function getRecommandStock(): ?float
     {
         return $this->recommandStock;
     }
 
     /**
-     * @param float $recommandStock
+     * @param float|null $recommandStock
      */
     public function setRecommandStock(float $recommandStock): void
     {
