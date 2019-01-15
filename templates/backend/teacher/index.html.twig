@@ -1,0 +1,100 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}讲师管理{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
+                    <a href="{{ path('teacher_new') }}" type="button" class="btn btn-info pull-right">添加</a>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <form class="cmxform" id="myForm">
+                            <div class="col-md-3 form-group">
+                                <label>讲师姓名</label>
+                                <input type="text" name="name" class="form-control" value="{{ form.name }}"
+                                       placeholder="按 姓名 查询">
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label>&nbsp;</label>
+                                <input class="form-control btn btn-primary" type="submit" value="搜索"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th class="col-md-1">ID</th>
+                                <th class="col-md-1">头像</th>
+                                <th class="col-md-1">姓名</th>
+                                <th class="col-md-1">职称</th>
+                                <th class="col-md-6">简介</th>
+                                <th class="col-md-2 text-center hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if pagination.getTotalItemCount %}
+                                {% for item in pagination %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>
+                                            {% if item.teacherAvatarFile %}
+                                                <img src="{{ path('imagePreview', {fileId: item.teacherAvatarFile.id}) }}" width=""60px" height="60px" />
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.title }}</td>
+                                        <td>{{ item.description }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('teacher_edit', {'id': item.id}) }}" title="修改">
+                                                    <span class="fa fa-edit"></span>
+                                                </a>&nbsp;
+                                                <a class="delete" data-toggle="modal" data-target="#modal-delete"
+                                                   data-url="{{ path('teacher_delete', {'id': item.id}) }}"
+                                                   data-item='{"name": "{{ macros.cut(item.name, 30) }}"}'
+                                                   data-token="{{ csrf_token('delete' ~ item.id) }}"
+                                                   title="删除">
+                                                    <span class="fa fa-trash"></span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="alert">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <div class="no-margin pull-right">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: 'Teacher'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include '/backend/includes/delete.js.html.twig' with {title: 'Teacher'} %}
+{% endblock %}

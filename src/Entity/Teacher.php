@@ -126,24 +126,24 @@ class Teacher implements Dao
     }
 
     /**
-     * @param File $teacherAvatarFile
+     * @param File|null $teacherAvatarFile
      */
     public function setTeacherAvatarFile(File $teacherAvatarFile): void
     {
         $this->teacherAvatarFile = $teacherAvatarFile;
     }
     /**
-     * @return User
+     * @return null|User
      */
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
      */
-    public function setUser(User $user): void
+    public function setUser($user): void
     {
         $this->user = $user;
     }
