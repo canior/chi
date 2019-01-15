@@ -84,6 +84,17 @@ class BackendController extends DefaultController
                         'product_new',
                         'product_edit',
                     ],
+                    'name' => '产品管理',
+                    'icon' => 'fa fa-database',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        'course_index',
+                        'course_new',
+                        'course_edit',
+                    ],
                     'name' => '课程管理',
                     'icon' => 'fa fa-database',
                     'active' => false,

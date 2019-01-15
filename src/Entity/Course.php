@@ -10,6 +10,7 @@ namespace App\Entity;
 
 use App\Entity\Traits\IdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -70,6 +71,14 @@ class Course implements Dao
      */
     private $courseStudents;
 
+
+    public function __construct() {
+        $product = new Product();
+        $product->setCourse($this);
+        $this->setProduct($product);
+        $this->courseStudents = new ArrayCollection();
+    }
+
     /**
      * @param string $title
      * @param string $shortDescription
@@ -80,44 +89,47 @@ class Course implements Dao
      * @param int $endDate
      * @param Region $region
      * @param string|null $address
+     * @return Course
      */
-    public function __construct($title, $shortDescription, $price, $subject, Teacher $teacher, $startDate, $endDate, Region $region, $address = null) {
+    public static function factory($title, $shortDescription, $price, $subject, Teacher $teacher, $startDate, $endDate, Region $region, $address = null) {
+        $course = new Course();
+
         $product = new Product();
         $product->setTitle($title);
         $product->setShortDescription($shortDescription);
         $product->setPrice($price);
-        $this->setProduct($product);
 
-        $this->setSubject($subject);
-        $this->setTeacher($teacher);
-        $this->setStartDate($startDate);
-        $this->setEndDate($endDate);
-        $this->setRegion($region);
-        $this->setAddress($address);
+        $course->setProduct($product);
 
-        $this->courseStudents = new ArrayCollection();
+        $course->setSubject($subject);
+        $course->setTeacher($teacher);
+        $course->setStartDate($startDate);
+        $course->setEndDate($endDate);
+        $course->setRegion($region);
+        $course->setAddress($address);
+        return $course;
     }
 
     /**
-     * @return Product
+     * @return Product|null
      */
-    public function getProduct(): Product
+    public function getProduct(): ?Product
     {
         return $this->product;
     }
 
     /**
-     * @param Product $product
+     * @param Product|null $product
      */
-    public function setProduct(Product $product): void
+    public function setProduct(?Product $product): void
     {
         $this->product = $product;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSubject(): string
+    public function getSubject(): ?string
     {
         return $this->subject;
     }
@@ -131,41 +143,55 @@ class Course implements Dao
     }
 
     /**
-     * @return Teacher
+     * @return Teacher|null
      */
-    public function getTeacher(): Teacher
+    public function getTeacher(): ?Teacher
     {
         return $this->teacher;
     }
 
     /**
-     * @param Teacher $teacher
+     * @param Teacher|null $teacher
      */
-    public function setTeacher(Teacher $teacher): void
+    public function setTeacher(?Teacher $teacher): void
     {
         $this->teacher = $teacher;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getStartDate(): int
+    public function getStartDate(): ?int
     {
         return $this->startDate;
     }
 
     /**
-     * @param int $startDate
+     * @return string
      */
-    public function setStartDate(int $startDate): void
+    public function getStartDateFormatted() {
+        return date(DAO::DATE_FORMAT, $this->startDate);
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndDateFormatted() {
+        return date(DAO::DATE_FORMAT, $this->endDate);
+    }
+
+    /**
+     * @param int|null $startDate
+     */
+    public function setStartDate(?int $startDate): void
     {
         $this->startDate = $startDate;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getEndDate(): int
+    public function getEndDate(): ?int
     {
         return $this->endDate;
     }
@@ -173,41 +199,48 @@ class Course implements Dao
     /**
      * @param int $endDate
      */
-    public function setEndDate(int $endDate): void
+    public function setEndDate(?int $endDate): void
     {
         $this->endDate = $endDate;
     }
 
     /**
-     * @return Region
+     * @return Region|null
      */
-    public function getRegion(): Region
+    public function getRegion(): ?Region
     {
         return $this->region;
     }
 
     /**
-     * @param Region $region
+     * @param Region|null $region
      */
-    public function setRegion(Region $region): void
+    public function setRegion(?Region $region): void
     {
         $this->region = $region;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getAddress(): string
+    public function getAddress(): ?string
     {
         return $this->address;
     }
 
     /**
-     * @param string $address
+     * @param string|null $address
      */
-    public function setAddress(string $address): void
+    public function setAddress(?string $address): void
     {
         $this->address = $address;
+    }
+
+    /**
+     * @param string|null $title
+     */
+    public function setTitle($title) {
+        $this->getProduct()->setTitle($title);
     }
 
     /**
@@ -218,10 +251,24 @@ class Course implements Dao
     }
 
     /**
+     * @param $price
+     */
+    public function setPrice($price) {
+        $this->getProduct()->setPrice($price);
+    }
+
+    /**
      * @return float
      */
     public function getPrice() {
         return $this->getProduct()->getPrice();
+    }
+
+    /**
+     * @param $shortDescription
+     */
+    public function setShortDescription($shortDescription) {
+        $this->getProduct()->setShortDescription($shortDescription);
     }
 
     /**
@@ -231,8 +278,29 @@ class Course implements Dao
         return $this->getProduct()->getShortDescription();
     }
 
+    /**
+     * @param $status
+     */
+    public function setStatus($status) {
+        $this->getProduct()->setStatus($status);
+    }
+
     public function setInActive() {
         $this->getProduct()->setInActive();
+    }
+
+    /**
+     * @param $productImages
+     */
+    public function setCourseImages($productImages) {
+        $this->getProduct()->setProductImages($productImages);
+    }
+
+    /**
+     * @return ProductImage[]|ArrayCollection
+     */
+    public function getCourseImages() {
+        return $this->getProduct()->getProductImages();
     }
 
     /**
@@ -299,6 +367,14 @@ class Course implements Dao
      */
     public function signInStudent($studentUser) {
         $this->addStudentUser($studentUser, CourseStudent::SIGNIN);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubjectText() : string
+    {
+        return isset(Subject::$subjectTextArray) && isset(Subject::$subjectTextArray[$this->subject]) ? Subject::$subjectTextArray[$this->subject] : $this->subject;
     }
 
     /**

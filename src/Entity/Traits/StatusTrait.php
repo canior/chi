@@ -33,7 +33,7 @@ trait StatusTrait
      *
      * @return $this
      */
-    private function setStatus($status) : self
+    public function setStatus($status) : self
     {
         $this->status = $status;
         return $this;

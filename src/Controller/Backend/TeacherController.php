@@ -42,7 +42,7 @@ class TeacherController extends BackendController
      */
     public function new(Request $request): Response
     {
-        $teacher = new Teacher("");
+        $teacher = new Teacher();
         $form = $this->createForm(TeacherType::class, $teacher);
 
         $form->handleRequest($request);

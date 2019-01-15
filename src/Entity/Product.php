@@ -19,8 +19,8 @@ class Product implements Dao
     const INACTIVE = 'inactive';
 
     public static $statuses = [
-        self::ACTIVE => '已上货',
-        self::INACTIVE => '未上货'
+        self::ACTIVE => '已发布',
+        self::INACTIVE => '未发布'
     ];
 
     use IdTrait,
@@ -371,6 +371,14 @@ class Product implements Dao
     public function getProductImages(): Collection
     {
         return $this->productImages;
+    }
+
+    /**
+     * @param Collection|ProductImage[]
+     */
+    public function setProductImages($images)
+    {
+        $this->productImages = $images;
     }
 
     /**

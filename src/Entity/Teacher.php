@@ -59,15 +59,20 @@ class Teacher implements Dao
     private $courses;
 
 
-    /**
-     * Teacher constructor.
-     * @param string $name
-     */
-    public function __construct($name) {
-        $this->setName($name);
+    public function __construct() {
         $this->courses = new ArrayCollection();
     }
 
+    /**
+     * Teacher constructor.
+     * @param string $name
+     * @return Teacher
+     */
+    public static function factory($name) {
+        $teacher = new Teacher();
+        $teacher->setName($name);
+        return $teacher;
+    }
 
     /**
      * @return string
