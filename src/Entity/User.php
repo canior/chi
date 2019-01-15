@@ -863,9 +863,9 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUserLevel(): string
+    public function getUserLevel(): ?string
     {
         return $this->userLevel;
     }
