@@ -314,16 +314,46 @@ class Course implements Dao
     /**
      * 返回课程学生列表（无重复）
      *
+     * @param string $status
      * @return User[]
      */
-    public function getStudentUsers(){
+    public function getStudentUsers($status = null){
         $students = [];
         foreach ($this->getCourseStudents() as $courseStudent) {
             if (!in_array($courseStudent->getStudentUser(), $students)) {
-                $students[] = $courseStudent->getStudentUser();
+                if ($status == null) {
+                    $students[] = $courseStudent->getStudentUser();
+                } else if ($status == $courseStudent->getStatus()) {
+                    $students[] = $courseStudent->getStudentUser();
+                }
             }
         }
         return $students;
+    }
+
+    /**
+     * 全部注册学生 （无重复）
+     * @return int
+     */
+    public function getTotalStudentUsers() {
+        return count($this->getStudentUsers());
+    }
+
+    /**
+     * 全部报到学生 （无重复）
+     * @return int
+     */
+    public function getTotalWelcomeStudentUsers() {
+        return count($this->getStudentUsers(CourseStudent::WELCOME));
+    }
+
+
+    /**
+     * 全部签到学生 （无重复）
+     * @return int
+     */
+    public function getTotalSignInStudentUsers() {
+        return count($this->getStudentUsers(CourseStudent::SIGNIN));
     }
 
     /**

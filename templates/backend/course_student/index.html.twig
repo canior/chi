@@ -1,0 +1,133 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}报到管理{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">课程详情</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="table-responsive col-md-8 ">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th class="col-md-2">课程ID</th>
+                                <td>{{ course.id }}</td>
+                            </tr>
+                            <tr>
+                                <th class="col-md-2">科目</th>
+                                <td>{{ course.subjectText }}</td>
+                            </tr>
+                            <tr>
+                                <th class="col-md-2">讲师</th>
+                                <td>{{ course.teacher.name }}</td>
+                            </tr>
+                            <tr>
+                                <th class="col-md-2">开始日期</th>
+                                <td>{{ course.startDateFormatted }}</td>
+                            </tr>
+                            <tr>
+                                <th class="col-md-2">结束日期</th>
+                                <td>{{ course.endDateFormatted }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div>
+                            <b class="box-title">扫码报到、签到</b>
+                        </div>
+                        <div>
+                            <img src="http://api.zhangyuxinxi.com/backend/room/qrcode/44">
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">报到签到记录</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th class="col-md-2">时间</th>
+                                <th class="col-md-2">用户ID</th>
+                                <th class="col-md-2">学生昵称</th>
+                                <th class="col-md-2">学生姓名</th>
+                                <th class="col-md-2">会员等级</th>
+                                <th class="col-md-1">状态</th>
+                                <th class="col-md-1 text-center hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if pagination.getTotalItemCount %}
+                                {% for item in pagination %}
+                                    <tr>
+                                        <td>{{ item.createdAtFormatted }}</td>
+                                        <td>{{ item.studentUser.id }}</td>
+                                        <td>{{ item.studentUser.nickname }}</td>
+                                        <td>{{ item.studentUser.name }}</td>
+                                        <td>{{ item.studentUser.userLevelText }}</td>
+                                        <td>{{ item.statusText }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('course_student_edit', {'id': item.id}) }}" title="修改">
+                                                    <span class="fa fa-edit"></span>
+                                                </a>&nbsp;
+                                            </div>
+                                            <a class="delete" data-toggle="modal" data-target="#modal-delete"
+                                               data-url="{{ path('course_student_delete', {'id': item.id}) }}"
+                                               data-item='{"name": "{{ macros.cut(item.studentUser.name, 30) }}"}'
+                                               data-token="{{ csrf_token('delete' ~ item.id) }}"
+                                               title="删除">
+                                                <span class="fa fa-trash"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="alert">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <div class="no-margin pull-right">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: '报到签到记录'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include '/backend/includes/delete.js.html.twig' with {title: '报到签到记录'} %}
+{% endblock %}

@@ -80,23 +80,12 @@ class BackendController extends DefaultController
             'subMenus' => [
                 [
                     'path' => [
-                        'product_index',
-                        'product_new',
-                        'product_edit',
-                    ],
-                    'name' => '产品管理',
-                    'icon' => 'fa fa-database',
-                    'active' => false,
-                    'role' => 'ROLE_ADMIN',
-                ],
-                [
-                    'path' => [
                         'course_index',
                         'course_new',
                         'course_edit',
                     ],
                     'name' => '课程管理',
-                    'icon' => 'fa fa-database',
+                    'icon' => 'fa fa-calendar',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
@@ -108,6 +97,17 @@ class BackendController extends DefaultController
                     ],
                     'name' => '讲师管理',
                     'icon' => 'fa fa-user',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        'course_student_statistic_index',
+                        'course_student_new',
+                        'course_student_edit',
+                    ],
+                    'name' => '报到管理',
+                    'icon' => 'fa fa-calendar-check-o',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],

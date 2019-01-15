@@ -103,6 +103,13 @@ class CourseStudent implements Dao
     }
 
     /**
+     * @return string
+     */
+    public function getStatusText() {
+        return self::$statusTexts[$this->getStatus()];
+    }
+
+    /**
      * @param string $status
      */
     public function setStatus(string $status): void

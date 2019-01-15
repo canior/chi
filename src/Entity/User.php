@@ -871,6 +871,16 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * @return string
+     */
+    public function getUserLevelText(): string
+    {
+        if ($this->getUserLevel())
+            return UserLevel::$userLevelTextArray[$this->userLevel];
+        return "";
+    }
+
+    /**
      * @param string $userLevel
      */
     public function setUserLevel(string $userLevel): void

@@ -31,6 +31,13 @@ trait CreatedAtTrait
     }
 
     /**
+     * @return string
+     */
+    public function getCreatedAtFormatted() {
+        return $this->getCreatedAt(true);
+    }
+
+    /**
      * Set createdAt
      *
      * @param int $createdAt | null
