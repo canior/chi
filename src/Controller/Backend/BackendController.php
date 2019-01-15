@@ -42,6 +42,17 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
+                        'user_account_order_statistic',
+                        'user_account_order_index',
+                        'user_account_order_edit',
+                    ],
+                    'name' => '账户管理',
+                    'icon' => 'fa fa-rmb',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
                         'share_source_index',
                         'share_source_info',
                     ],
@@ -103,6 +114,7 @@ class BackendController extends DefaultController
                 [
                     'path' => [
                         'course_student_statistic_index',
+                        'course_student_index',
                         'course_student_new',
                         'course_student_edit',
                     ],

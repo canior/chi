@@ -1,0 +1,92 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}账户管理{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
+                    <a href="{{ path('user_account_order_new') }}" type="button" class="btn btn-info pull-right">添加</a>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <form class="cmxform" id="myForm">
+                            <div class="col-md-3 form-group">
+                                <label>用户姓名</label>
+                                <input type="text" name="name" class="form-control" value="{{ form.name }}"
+                                       placeholder="按姓名查询">
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label>&nbsp;</label>
+                                <input class="form-control btn btn-primary" type="submit" value="搜索"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th class="col-md-1">用户ID</th>
+                                <th class="col-md-2">姓名</th>
+                                <th class="col-md-2">用户等级</th>
+                                <th class="col-md-2">已提现总额</th>
+                                <th class="col-md-2">提现中数额</th>
+                                <th class="col-md-2">账户余额</th>
+                                <th class="col-md-1 text-center hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if pagination.getTotalItemCount %}
+                                {% for item in pagination %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.userLevelText }}</td>
+                                        <td>￥{{ item.withDrawedTotal}}</td>
+                                        <td>￥{{ item.withdrawingTotal }}</td>
+                                        <td>￥{{ item.userAccountTotal }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('user_account_order_index', {'userId': item.id}) }}"
+                                                   title="详情">
+                                                    <span class="fa fa-database"></span>
+                                                </a>&nbsp;
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="alert">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <div class="no-margin pull-right">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: 'UserAccountOrder'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include '/backend/includes/delete.js.html.twig' with {title: 'UserAccountOrder'} %}
+{% endblock %}

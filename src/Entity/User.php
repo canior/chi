@@ -889,9 +889,9 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getUserAccountTotal(): float
+    public function getUserAccountTotal(): ?float
     {
         return $this->userAccountTotal;
     }
