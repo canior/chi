@@ -103,9 +103,14 @@ class CourseStudentController extends BackendController
     public function edit(Request $request, CourseStudent $courseStudent): Response
     {
         $form = $this->createForm(CourseStudentType::class, $courseStudent);
+        $form->get('status')->setData(array_search($courseStudent->getStatusText(), CourseStudent::$statusTexts));
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $status = $request->request->get('course_student')['status'];
+            $courseStudent->setStatus($status);
+
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');
             return $this->redirectToRoute('course_student_edit', ['id' => $courseStudent->getId()]);
@@ -113,16 +118,20 @@ class CourseStudentController extends BackendController
 
         return $this->render('backend/course_student/edit.html.twig', [
             'course_student' => $courseStudent,
-            'title' => '修改 CourseStudent',
+            'title' => '修改课程报到签到记录',
             'form' => $form->createView(),
         ]);
     }
 
     /**
      * @Route("/course/student/{id}", name="course_student_delete", methods="DELETE")
+     * @param Request $request
+     * @param CourseStudent $courseStudent
+     * @return Response
      */
     public function delete(Request $request, CourseStudent $courseStudent): Response
     {
+        $courseId = $courseStudent->getCourse()->getId();
         if ($this->isCsrfTokenValid('delete'.$courseStudent->getId(), $request->request->get('_token'))) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($courseStudent);
@@ -130,6 +139,6 @@ class CourseStudentController extends BackendController
             $this->addFlash('notice', '删除成功');
         }
 
-        return $this->redirectToRoute('course_student_index');
+        return $this->redirectToRoute('course_student_index', ['courseId' => $courseId]);
     }
 }

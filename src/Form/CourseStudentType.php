@@ -16,12 +16,13 @@ class CourseStudentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('id', null, ['label' => '报到签到ID', 'disabled' => true])
             ->add('course', EntityType::class, [
                 'label' => '课程',
                 'attr' => ['class' => 'form-control chosen'],
                 'class' => Course::class,
                 'choice_label' => function (Course $course) {
-                    return $course->getSubjectText() . ' ' . $course->getStartDateFormatted() . '-' . $course->getEndDateFormatted();
+                    return $course->getId() . ' ' . $course->getSubjectText() . ' ' . $course->getStartDateFormatted() . '-' . $course->getEndDateFormatted();
                 }
             ])
             ->add('studentUser', EntityType::class, [
@@ -29,10 +30,10 @@ class CourseStudentType extends AbstractType
                 'attr' => ['class' => 'form-control chosen'],
                 'class' => User::class,
                 'choice_label' => function (User $user) {
-                    return $user->getNickname() . ' ' . $user->getName();
+                    return $user->getId() . ' ' . $user->getNickname() . ' ' . $user->getName();
                 }
             ])
-            ->add('subject', ChoiceType::class, [
+            ->add('status', ChoiceType::class, [
                 'label' => '科目',
                 'mapped' => false,
                 'choices' => array_flip(CourseStudent::$statusTexts),
