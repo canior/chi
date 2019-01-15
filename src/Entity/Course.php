@@ -434,7 +434,7 @@ class Course implements Dao
             'teacher' => $this->getTeacher()->getArray(),
             'courseImages' => $courseImageArray,
             'courseSpecImages' => $courseSpecImagesArray,
-            'reviewsNum' => 500, //TODO 需要从product statistics里拿
+            'reviewsNum' => $this->getProduct()->getTotalReviews()
         ];
     }
 }

@@ -451,6 +451,13 @@ class Product implements Dao
         return $this->productReviews;
     }
 
+    /**
+     * @return int
+     */
+    public function getTotalReviews() {
+        return $this->getProductReviews()->count();
+    }
+
     public function addProductReview(ProductReview $productReview): self
     {
         if (!$this->productReviews->contains($productReview)) {
@@ -512,7 +519,7 @@ class Product implements Dao
             'stock' => $this->getStock(),
             'similarProducts' => $similarProductsArray,
             'soldNum' => 1000, //TODO 需要从product statistics里拿
-            'reviewsNum' => 500, //TODO 需要从product statistics里拿
+            'reviewsNum' => $this->getTotalReviews(),
         ];
     }
 
