@@ -9,6 +9,7 @@ use App\Form\Type\DropzoneType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,32 +18,14 @@ class ProductReviewType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('rate', null, [
-                'label' => '评分'
-            ])
-            ->add('review', null, [
-                'label' => '评价'
-            ])
-            ->add('status', ChoiceType::class, [
-                'label' => '状态',
+            ->add('rate', ChoiceType::class, [
+                'label' => '评分',
                 'mapped' => false,
-                'choices' => array_flip(ProductReview::$statuses)
+                'choices' => array_flip(ProductReview::$rates),
+                'required' => true
             ])
-            ->add('product', EntityType::class, [
-                'label' => '产品',
-                'class' => Product::class,
-                'choice_label' => 'title',
-                'attr' => [
-                    'class' => 'chosen'
-                ]
-            ])
-            ->add('groupUserOrder', EntityType::class, [
-                'label' => '订单',
-                'class' => GroupUserOrder::class,
-                'choice_label' => 'id',
-                'attr' => [
-                    'class' => 'chosen'
-                ]
+            ->add('review', TextareaType::class, [
+                'label' => '评价'
             ])
             ->add('images', DropzoneType::class, [
                 'label' => '图片',
@@ -50,6 +33,11 @@ class ProductReviewType extends AbstractType
                 'priority' => false,
                 'data_class' => null,
                 'mapped' => false,
+            ])
+            ->add('status', ChoiceType::class, [
+                'label' => '状态',
+                'mapped' => false,
+                'choices' => array_flip(ProductReview::$statuses)
             ])
         ;
     }

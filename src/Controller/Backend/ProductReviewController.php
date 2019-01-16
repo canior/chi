@@ -29,7 +29,7 @@ class ProductReviewController extends BackendController
         $data = [
             'title' => '产品评价',
             'form' => [
-                'subject' => $request->query->getInt('subject', null),
+                'subject' => $request->query->get('subject', null),
                 'rate' => $request->query->getInt('rate', null),
                 'status' => $request->query->get('status', null),
                 'page' => $request->query->getInt('page', 1)
@@ -38,6 +38,7 @@ class ProductReviewController extends BackendController
             'rates' => ProductReview::$rates,
             'subjects' => Subject::$subjectTextArray,
         ];
+
         $data['data'] = $productReviewRepository->findProductReviewsQueryBuilder(null, $data['form']['rate'], $data['form']['status'], $data['form']['subject']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/product_review/index.html.twig', $data);
