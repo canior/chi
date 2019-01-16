@@ -147,20 +147,21 @@ class BackendController extends DefaultController
             'subMenus' => [
                 [
                     'path' => [
-                        'group_order_index',
-                        'group_order_info',
+                        'group_user_order_index',
+                        'group_user_order_info',
                     ],
-                    'name' => '拼团订单',
-                    'icon' => 'fa fa-list-ol',
+                    'name' => '课程订单',
+                    'icon' => 'fa fa-list-ul',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
                 [
                     'path' => [
-                        'group_user_order_index',
-                        'group_user_order_info',
+                        'upgrade_user_order_index',
+                        'upgrade_user_order_edit',
+                        'upgrade_user_order_payment_new',
                     ],
-                    'name' => '用户订单',
+                    'name' => '会员升级',
                     'icon' => 'fa fa-list-ul',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',

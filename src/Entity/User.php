@@ -1185,4 +1185,11 @@ class User extends BaseUser implements Dao
         return $this->getName() and $this->getIdNum() and $this->getPhone();
     }
 
+    public function __toString()
+    {
+       return '用户ID: ' . $this->getIdNum()
+           . ' 用户昵称: ' . $this->getNickname()
+           . ' 会员等级: ' . $this->getUserLevelText();
+    }
+
 }

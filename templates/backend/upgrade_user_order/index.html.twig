@@ -1,0 +1,145 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}会员升级订单管理{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <form class="cmxform" id="myForm">
+                            <div class="col-md-3 form-group">
+                                <label>会员升级订单号</label>
+                                <input type="text" name="id" class="form-control" value="{{ form.id }}"
+                                       placeholder="按订单号查询">
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label>用户ID</label>
+                                <input type="text" name="userId" class="form-control" value="{{ form.userId }}"
+                                       placeholder="用户ID">
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label>姓名</label>
+                                <input type="text" name="name" class="form-control" value="{{ form.name }}"
+                                       placeholder="用户姓名">
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label>旧会员等级</label>
+                                <select name="oldUserLevel" class="form-control chosen">
+                                    <option value="">全部</option>
+                                    {% for userLevel, text in userLevels %}
+                                        <option value="{{ userLevel }}"{% if userLevel == form.oldUserLevel %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label>会员等级</label>
+                                <select name="userLevel" class="form-control chosen">
+                                    <option value="">全部</option>
+                                    {% for userLevel, text in userLevels %}
+                                        <option value="{{ userLevel }}"{% if userLevel == form.userLevel %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label>订单状态</label>
+                                <select name="status" class="form-control chosen">
+                                    <option value="">全部</option>
+                                    {% for status, text in statuses %}
+                                        <option value="{{ status }}"{% if status == form.status %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label>支付状态</label>
+                                <select name="paymentStatus" class="form-control chosen">
+                                    <option value="">全部</option>
+                                    {% for paymentStatus, text in paymentStatuses %}
+                                        <option value="{{ paymentStatus }}"{% if paymentStatus == form.paymentStatus %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label>&nbsp</label>
+                                <input class="form-control btn btn-primary" type="submit" value="搜索"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th class="col-md-1">升级订单号</th>
+                                <th class="col-md-2">创建时间</th>
+                                <th class="col-md-1">用户ID</th>
+                                <th class="col-md-1">姓名</th>
+                                <th class="col-md-1">旧会员等级</th>
+                                <th class="col-md-1">新会员等级</th>
+                                <th class="col-md-1">订单金额</th>
+                                <th class="col-md-1">订单状态</th>
+                                <th class="col-md-1">支付状态</th>
+                                <th class="col-md-1">更新时间</th>
+                                <th class="col-md-1 text-center hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if pagination.getTotalItemCount %}
+                                {% for item in pagination %}
+                                    <tr>
+                                        <td>{{ item.UpgradeUserOrder.id }}</td>
+                                        <td>{{ item.UpgradeUserOrder.createdAtFormatted }}</td>
+                                        <td>{{ item.UpgradeUserOrder.user.id }}</td>
+                                        <td>{{ item.UpgradeUserOrder.user.name }}</td>
+                                        <td>{{ item.UpgradeUserOrder.oldUserLevelText }}</td>
+                                        <td>{{ item.UpgradeUserOrder.userLevelText }}</td>
+                                        <td>￥{{ item.UpgradeUserOrder.total }}</td>
+                                        <td>{{ item.UpgradeUserOrder.statusText }}</td>
+                                        <td>{{ item.UpgradeUserOrder.paymentStatusText }}</td>
+                                        <td>{{ item.UpgradeUserOrder.updatedAtFormatted }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('upgrade_user_order_edit', {'id': item.UpgradeUserOrder.id}) }}"
+                                                   title="修改">
+                                                    <span class="fa fa-edit"></span>
+                                                </a>&nbsp;
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="11" class="alert">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <div class="no-margin pull-right">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: 'UpgradeUserOrder'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include '/backend/includes/delete.js.html.twig' with {title: 'UpgradeUserOrder'} %}
+{% endblock %}

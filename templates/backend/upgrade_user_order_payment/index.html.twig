@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UpgradeUserOrderPayment{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">支付列表 ({{ dataCount }})</h3>
+                    <a href="{{ path('upgrade_user_order_payment_new', {'upgradeUserOrderId': upgradeUserOrderId}) }}" type="button"
+                       class="btn btn-info pull-right">添加支付记录</a>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th class="col-md-2">交易ID</th>
+                                <th class="col-md-2">创建时间</th>
+                                <th class="col-md-2">金额</th>
+                                <th class="col-md-6">备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if dataCount %}
+                                {% for item in data %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>{{ item.createdAtFormatted }}</td>
+                                        <td>￥{{ item.amount }}</td>
+                                        <td>{{ item.memo }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="alert">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: 'UpgradeUserOrderPayment'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include '/backend/includes/delete.js.html.twig' with {title: 'UpgradeUserOrderPayment'} %}
+{% endblock %}

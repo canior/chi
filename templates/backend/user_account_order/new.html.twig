@@ -25,7 +25,7 @@
                             </tr>
                             <tr>
                                 <th>账户余额</th>
-                                <td>{{ user.userAccountTotal }}</td>
+                                <td>￥{{ user.userAccountTotal }}</td>
                             </tr>
                         </table>
                     </div>
@@ -34,19 +34,19 @@
                         <table class="table table-bordered table-striped">
                             <tr>
                                 <th>用户ID</th>
-                                <td>{{ user.parentUser ? user.parentUser.id }}</td>
+                                <td>{{ user.parentUser ? user.parentUser.id  : null }}</td>
                             </tr>
                             <tr>
                                 <th>姓名</th>
-                                <td>{{ user.parentUser ? user.parentUser.avatarUrl }}</td>
+                                <td>{{ user.parentUser ? user.parentUser.name  : null }}</td>
                             </tr>
                             <tr>
                                 <th>电话</th>
-                                <td>{{ user.parentUser ? user.parentUser.phone }}</td>
+                                <td>{{ user.parentUser ? user.parentUser.phone  : null}}</td>
                             </tr>
                             <tr>
                                 <th>账户余额</th>
-                                <td>{{ user.parentUser ? user.parentUser.userAccountTotal }}</td>
+                                <td>￥{{ user.parentUser ? user.parentUser.userAccountTotal  : null}}</td>
                             </tr>
                         </table>
                     </div>

@@ -46,18 +46,26 @@ class UpgradeUserOrderPayment implements Dao
      * @param UpgradeUserOrder $upgradeUserOrder
      * @param float $amount
      * @param string $memo
+     * @return UpgradeUserOrder
      */
-    public function __construct(UpgradeUserOrder $upgradeUserOrder, $amount, $memo = null) {
-        $this->setUpgradeUserOrder($upgradeUserOrder);
-        $this->setAmount($amount);
-        $this->setMemo($memo);
+    public static function factory(UpgradeUserOrder $upgradeUserOrder, $amount, $memo = null) {
+        $upgradeUserOrderPayment = new UpgradeUserOrderPayment();
+        $upgradeUserOrderPayment->setUpgradeUserOrder($upgradeUserOrder);
+        $upgradeUserOrderPayment->setAmount($amount);
+        $upgradeUserOrderPayment->setMemo($memo);
+        return $upgradeUserOrder;
+    }
+
+    public function __construct()
+    {
         $this->setCreatedAt();
+        $this->setAmount(0);
     }
 
     /**
-     * @return UpgradeUserOrder
+     * @return UpgradeUserOrder|null
      */
-    public function getUpgradeUserOrder(): UpgradeUserOrder
+    public function getUpgradeUserOrder(): ?UpgradeUserOrder
     {
         return $this->upgradeUserOrder;
     }
@@ -87,9 +95,9 @@ class UpgradeUserOrderPayment implements Dao
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMemo(): string
+    public function getMemo(): ?string
     {
         return $this->memo;
     }

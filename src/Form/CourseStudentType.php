@@ -29,9 +29,6 @@ class CourseStudentType extends AbstractType
                 'label' => '学生',
                 'attr' => ['class' => 'form-control chosen'],
                 'class' => User::class,
-                'choice_label' => function (User $user) {
-                    return $user->getId() . ' ' . $user->getNickname() . ' ' . $user->getName();
-                }
             ])
             ->add('status', ChoiceType::class, [
                 'label' => '科目',

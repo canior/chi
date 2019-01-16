@@ -1,0 +1,5 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <a class="btn btn-danger" href="{{ path('upgrade_user_order_edit', {id: upgradeUserOrder.id}) }}">{{ '返回会员升级订单'|trans }}</a>
+    <button class="btn btn-primary">{{ button_label|default('提交') }}</button>
+{{ form_end(form) }}

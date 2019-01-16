@@ -98,23 +98,63 @@ class UpgradeUserOrder implements Dao
      */
     private $userAccountOrders;
 
+
+    /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    private $oldUserLevel;
+
+    public function __construct()
+    {
+        $this->setTotal(0);
+        $this->setCreatedAt();
+        $this->setUpdatedAt();
+        $this->upgradeUserOrderPayments = new ArrayCollection();
+        $this->userAccountOrders = new ArrayCollection();
+    }
+
     /**
      * UpgradeUserOrder constructor.
      * @param User $user
      * @param $userLevel
      * @param $total
+     * @return UpgradeUserOrder
      */
-    public function __construct(User $user, $userLevel, $total) {
-        $this->setUser($user);
-        $this->setUserLevel($userLevel);
-        $this->setTotal($total);
-        $this->setStatus(self::CREATED);
-        $this->setPaymentStatus(self::UNPAID);
-        $this->setUserLevel($userLevel);
-        $this->setCreatedAt();
-        $this->setUpdatedAt();
-        $this->upgradeUserOrderPayments = new ArrayCollection();
-        $this->userAccountOrders = new ArrayCollection();
+    public static function factory(User $user, $userLevel, $total) {
+        $upgradeUserOrder = new UpgradeUserOrder();
+        $upgradeUserOrder->setUser($user);
+        $upgradeUserOrder->setOldUserLevel($user->getUserLevel());
+        $upgradeUserOrder->setUserLevel($userLevel);
+        $upgradeUserOrder->setTotal($total);
+        $upgradeUserOrder->setStatus(self::CREATED);
+        $upgradeUserOrder->setPaymentStatus(self::UNPAID);
+        $upgradeUserOrder->setUserLevel($userLevel);
+        return $upgradeUserOrder;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getOldUserLevel(): string
+    {
+        return $this->oldUserLevel;
+    }
+
+    /**
+     * @param string $oldUserLevel
+     */
+    public function setOldUserLevel(string $oldUserLevel): void
+    {
+        $this->oldUserLevel = $oldUserLevel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOldUserLevelText() {
+        return UserLevel::$userLevelTextArray[$this->getOldUserLevel()];
     }
 
     /**
@@ -134,9 +174,9 @@ class UpgradeUserOrder implements Dao
     }
 
     /**
-     * @return User
+     * @return User|null
      */
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
@@ -155,6 +195,13 @@ class UpgradeUserOrder implements Dao
     public function getUserLevel(): string
     {
         return $this->userLevel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserLevelText() {
+        return UserLevel::$userLevelTextArray[$this->getUserLevel()];
     }
 
     /**
@@ -335,10 +382,15 @@ class UpgradeUserOrder implements Dao
         return [
             'id' => $this->getId(),
             'user' => $this->getUser()->getArray(),
-            'userLevel' => UserLevel::$userLevelTextArray[$this->getUserLevel()],
+            'oldUserLevel' => $this->getOldUserLevel(),
+            'oldUserLevelText' => $this->getOldUserLevelText(),
+            'userLevel' => $this->getUserLevel(),
+            'userLevelText' => $this->getUserLevelText(),
             'total' => $this->getTotal(),
-            'status' => self::$statusTexts[$this->getStatus()],
-            'paymentStatus' => self::$paymentStatusTexts[$this->getPaymentStatus()],
+            'status' => $this->getStatus(),
+            'statusText' => $this->getStatusText(),
+            'paymentStatus' => $this->getPaymentStatus(),
+            'paymentStatusText' => $this->getPaymentStatusText(),
             'upgradeUserOrderPayments' => $upgradeUserOrderPaymentArray,
             'createdAt' => $this->getCreatedAt(true),
             'updatedAt' => $this->getUpdatedAt(true)
