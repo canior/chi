@@ -15,6 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\Type\DropzoneType;
 use App\Entity\UserLevel;
 use App\Entity\User;
+use App\Entity\Teacher;
 
 class UserPersonalType extends AbstractType
 {
@@ -26,6 +27,14 @@ class UserPersonalType extends AbstractType
                 'mapped' => false,
                 'choices' => array_flip(UserLevel::$userLevelTextArray),
                 'required' => true
+            ])
+            ->add('parentUser', EntityType::class, [
+                'label' => '推荐人',
+                'placeholder' => '请选择推荐人',
+                'empty_data' => null,
+                'attr' => ['class' => 'form-control chosen'],
+                'class' => User::class,
+                'required' => false,
             ])
             ->add('name', TextType::class, [
                 'label' => '姓名',
@@ -47,12 +56,12 @@ class UserPersonalType extends AbstractType
                 'label' => '身份证',
                 'required' => false,
             ])
-            ->add('parentUser', EntityType::class, [
-                'label' => '推荐人',
-                'placeholder' => '请选择推荐人',
+            ->add('teacher', EntityType::class, [
+                'label' => '讲师身份',
+                'placeholder' => '请匹配讲师',
                 'empty_data' => null,
                 'attr' => ['class' => 'form-control chosen'],
-                'class' => User::class,
+                'class' => Teacher::class,
                 'required' => false,
             ])
 

@@ -181,4 +181,14 @@ class Teacher implements Dao
             'avatarFileId' => $this->getTeacherAvatarFile() ? $this->getTeacherAvatarFile()->getId() : null
         ];
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return '讲师ID: ' . $this->getId()
+            . ' 姓名: ' . $this->getName()
+            . ' 职称: ' . $this->getTitle();
+    }
 }

@@ -8,7 +8,7 @@
             <div class="box">
                 <div class="box-body">
 
-                    <div class="table-responsive col-md-6">
+                    <div class="col-md-6 table-responsive">
                         <h3 class="box-title">微信登录信息</h3>
                         <table class="table table-bordered table-striped">
                             <tr>
@@ -39,37 +39,52 @@
                         </table>
                     </div>
 
-                    <div class="table-responsive col-md-6">
-                        <h3 class="box-title">关联讲师</h3>
-                        {% if (user.teacher) %}
-                            <table class="table table-bordered table-striped">
-                                <tr>
-                                    <th class="col-md-3">讲师ID</th>
-                                    <td class="col-md-9">{{ user.teacher.id }}</td>
-                                </tr>
-                                <tr>
-                                    <th>姓名</th>
-                                    <td>{{ user.teacher.name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>头像</th>
-                                    <td>
-                                        {{ user.teacher.teacheravatarfile ? user.teacher.teacheravatarfile.id : null }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>职称</th>
-                                    <td>{{ user.teacher.title }}</td>
-                                </tr>
-                                <tr>
-                                    <th>简介</th>
-                                    <td>{{ user.teacher.description }}</td>
-                                </tr>
-                            </table>
-                        {% else %}
-                            <button class="btn btn-primary">{{ button_label|default('关联讲师') }}</button>
-                        {% endif %}
+                    <div class="col-md-3 table-responsive">
+                        <h3 class="box-title">账户信息</h3>
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th class="col-md-3">账户余额</th>
+                                <td class="col-md-9">￥{{ user.userAccountTotal }}</td>
+                            </tr>
+                            <tr>
+                                <th>已提现</th>
+                                <td>￥{{ user.withdrawedTotal }}</td>
+                            </tr>
+                            <tr>
+                                <th>提现中</th>
+                                <td>￥{{ user.withdrawingTotal }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <a class="btn btn-danger" href="{{ path('user_account_order_index', {userId: user.id}) }}">{{ '账户详情'|trans }}</a>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
+
+                    <div class="col-md-3 table-responsive">
+                        <h3 class="box-title">名额信息</h3>
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th class="col-md-3">剩余名额</th>
+                                <td class="col-md-9">{{ user.recommandStock }}</td>
+                            </tr>
+                            <tr>
+                                <th>已用名额</th>
+                                <td>{{ user.totalChildren }}</td>
+                            </tr>
+                            <tr>
+                                <th>总名额</th>
+                                <td>{{ user.totalRecommandStock }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <a class="btn btn-danger" href="{{ path('user_stock_index', {userId: user.id}) }}">{{ '名额详情'|trans }}</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
                 </div>
             </div>
             <!-- general form elements disabled -->

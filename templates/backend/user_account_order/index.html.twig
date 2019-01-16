@@ -26,14 +26,14 @@
                     </tr>
                     <tr>
                         <th>账户余额</th>
-                        <td>{{ user.userAccountTotal }}</td>
+                        <td>￥{{ user.userAccountTotal }}</td>
                     </tr>
                     <tr>
-                        <th>已提现总数</th>
-                        <td>{{ user.withdrawedTotal }}</td>
+                        <th>已提现金额</th>
+                        <td>￥{{ user.withdrawedTotal }}</td>
                     </tr>
                     <tr>
-                        <th>提现中</th>
+                        <th>提现中金额</th>
                         <td>￥{{ user.withdrawingTotal }}</td>
                     </tr>
                 </table>
@@ -55,14 +55,14 @@
                     </tr>
                     <tr>
                         <th>账户余额</th>
-                        <td>{{ user.parentUser ? user.parentUser.userAccountTotal }}</td>
+                        <td>￥{{ user.parentUser ? user.parentUser.userAccountTotal }}</td>
                     </tr>
                     <tr>
-                        <th>已提现总数</th>
-                        <td>{{ user.parentUser ? user.parentUser.withdrawedTotal }}</td>
+                        <th>已提现金额</th>
+                        <td>￥{{ user.parentUser ? user.parentUser.withdrawedTotal }}</td>
                     </tr>
                     <tr>
-                        <th>提现中</th>
+                        <th>提现中金额</th>
                         <td>￥{{ user.parentUser ? user.parentUser.withdrawingTotal }}</td>
                     </tr>
                 </table>

@@ -98,7 +98,7 @@ class UserController extends BackendController
 
         return $this->render('backend/user/personal.edit.html.twig', [
             'user' => $user,
-            'title' => '编辑个人资料',
+            'title' => '用户详情',
             'form' => $form->createView(),
         ]);
     }
