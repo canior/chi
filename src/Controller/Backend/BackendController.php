@@ -64,6 +64,16 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
+                        'user_stock_statistic',
+                        'user_stock_index',
+                    ],
+                    'name' => '用户名额',
+                    'icon' => 'fa fa-paper-plane',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
                         'user_activity_index',
                     ],
                     'name' => '用户行为',

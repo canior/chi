@@ -168,7 +168,7 @@ class User extends BaseUser implements Dao
     private $userAccountTotal;
 
     /**
-     * @var float
+     * @var int
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=false)
      */
     private $recommandStock;
@@ -422,6 +422,20 @@ class User extends BaseUser implements Dao
     public function getSubUsers(): Collection
     {
         return $this->subUsers;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalChildren() {
+        return $this->getSubUsers()->count();
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalRecommandStock() {
+        return $this->getRecommandStock() + $this->getTotalChildren();
     }
 
     public function addSubUser(User $subUser): self
@@ -905,9 +919,9 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @return float|null
+     * @return int|null
      */
-    public function getRecommandStock(): ?float
+    public function getRecommandStock(): ?int
     {
         return $this->recommandStock;
     }
@@ -997,7 +1011,7 @@ class User extends BaseUser implements Dao
      * @return UserAccountOrder
      */
     public function createUserAccountOrder($userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null) {
-        $userAccountOrder = new UserAccountOrder($this, $userAccountOrderType, $amount, $upgradeUserOrder);
+        $userAccountOrder = UserAccountOrder::factory($this, $userAccountOrderType, $amount, $upgradeUserOrder);
         $this->userAccountOrders->add($userAccountOrder);
         return $userAccountOrder;
     }
