@@ -51,6 +51,18 @@
                 </div>
             </div>
             <!-- general form elements disabled -->
+
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">认证推荐人</h3>                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    {{ include('backend/user/_form.verifyParent.html.twig', {'button_label': '提交'}) }}
+                </div>
+                <!-- /.box-body -->
+            </div>
+
             <div class="box">
                 <div class="box-header with-border">
                     {% include "backend/includes/app.session.flashbag.html.twig" %}
@@ -59,11 +71,12 @@
                 <!-- /.box-header -->
                 <div class="box-body">
 
-
                     {{ include('backend/upgrade_user_order/_form.edit.html.twig', {'button_label': '提交'}) }}
                 </div>
                 <!-- /.box-body -->
             </div>
+
+
             <!-- /.box -->
         </div>
         <!--/.col (right) -->

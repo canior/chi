@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\EditUpgradeUserOrderType;
+use App\Form\VerifyParentUserType;
 
 /**
  * @Route("/backend")
@@ -62,11 +63,15 @@ class UpgradeUserOrderController extends BackendController
      */
     public function edit(Request $request, UpgradeUserOrder $upgradeUserOrder): Response
     {
+        $user = $upgradeUserOrder->getUser();
         $form = $this->createForm(EditUpgradeUserOrderType::class, $upgradeUserOrder);
         $form->get('status')->setData($upgradeUserOrder->getStatus());
         $form->get('paymentStatus')->setData($upgradeUserOrder->getPaymentStatus());
 
         $form->handleRequest($request);
+
+        $verifyParentForm = $this->createForm(VerifyParentUserType::class, $user);
+        $verifyParentForm->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $upgradeUserOrder->setStatus($form->get('status')->getData());
@@ -77,11 +82,18 @@ class UpgradeUserOrderController extends BackendController
             return $this->redirectToRoute('upgrade_user_order_edit', ['id' => $upgradeUserOrder->getId()]);
         }
 
+        if ($verifyParentForm->isSubmitted() && $verifyParentForm->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('notice', '修改成功');
+            return $this->redirectToRoute('upgrade_user_order_edit', ['id' => $upgradeUserOrder->getId()]);
+        }
+
         return $this->render('backend/upgrade_user_order/edit.html.twig', [
             'upgrade_user_order' => $upgradeUserOrder,
             'title' => '编辑会员升级订单',
             'form' => $form->createView(),
-            'user' => $upgradeUserOrder->getUser(),
+            'user' => $user,
+            'verifyParentForm' => $verifyParentForm->createView()
         ]);
     }
 
