@@ -226,15 +226,6 @@ class BackendController extends DefaultController
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
-                [
-                    'path' => [
-                        'project_rewards_meta_index',
-                    ],
-                    'name' => '返现配置',
-                    'icon' => 'fa fa-rmb',
-                    'active' => false,
-                    'role' => 'ROLE_ADMIN',
-                ],
             ]
         ],
     ];
