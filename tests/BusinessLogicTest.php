@@ -31,6 +31,7 @@ class BusinessLogicTest extends BaseTestCase
 
         //1. 创建拼团订单及团长客户订单
         $groupOrder = new GroupOrder($captain, $product);
+        $groupOrder->setId(rand());
         $this->assertTrue($groupOrder->isCreated());
 
         $masterGroupUserOrder = $groupOrder->getMasterGroupUserOrder();
@@ -71,7 +72,8 @@ class BusinessLogicTest extends BaseTestCase
         $this->assertNull($joiner->getParentUser()); //此时团员的有效上线为空
 
         //4. 团员创建拼团订单
-        $slaveGroupUserOrder = new GroupUserOrder($joiner, $product, $groupOrder);
+        $slaveGroupUserOrder = GroupUserOrder::factory($joiner, $product, $groupOrder);
+
         $slaveGroupUserOrder->setGroupOrder($groupOrder);
         $slaveGroupUserOrder->setTotal($product->getGroupPrice());
         $groupOrder->addGroupUserOrder($slaveGroupUserOrder);
@@ -145,6 +147,7 @@ class BusinessLogicTest extends BaseTestCase
 
         //1. 创建拼团订单及团长客户订单
         $groupOrder = new GroupOrder($captain, $product);
+        $groupOrder->setId(rand());
         $masterGroupUserOrder = $groupOrder->getMasterGroupUserOrder();
 
         //2. 团长支付成功

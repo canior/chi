@@ -18,6 +18,7 @@ use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\ShareSourceRepository;
 use App\Repository\ShareSourceUserRepository;
+use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -78,8 +79,8 @@ class ApiTest extends BaseTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals($this->product->getArray(), $data['data']['product']);
-        $this->assertEquals(ShareSource::REFER, $data['data']['shareSources'][0]['type']);
-        $this->assertEquals(ShareSource::QUAN, $data['data']['shareSources'][1]['type']);
+        $this->assertEquals(ShareSource::REFER, $data['data']['shareSources'][ShareSource::REFER]['type']);
+        $this->assertEquals(ShareSource::QUAN, $data['data']['shareSources'][ShareSource::QUAN]['type']);
 
     }
 
@@ -224,7 +225,7 @@ class ApiTest extends BaseTestCase
         $this->assertEquals(200, $joinerClient->getResponse()->getStatusCode());
         $data = json_decode($captainClient->getResponse()->getContent(), true);
 
-        $this->assertEquals($this->joiner->getId(), $data['data'][0]['id']);
+        $this->assertEquals($this->joiner->getId(), $data['data']['children'][0]['id']);
 
     }
 
