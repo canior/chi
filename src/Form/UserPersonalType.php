@@ -21,7 +21,6 @@ class UserPersonalType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('id', null, ['label' => 'ID', 'disabled' => true])
             ->add('userLevel', ChoiceType::class, [
                 'label' => '会员等级',
                 'mapped' => false,

@@ -5,6 +5,39 @@
 {% block body %}
     <div class="row">
         <div class="col-xs-12">
+            <div class="box">
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <h3 class="box-title">微信登录信息</h3>
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>用户ID</th>
+                                <td>{{ user.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>微信昵称</th>
+                                <td>{{ user.nickname }}</td>
+                            </tr>
+                            <tr>
+                                <th>头像</th>
+                                <td>
+                                    {% if (user.avatarUrl)  %}
+                                    <img class="img img-responsive" width="220px" height="220px" src="{{ user.avatarUrl }}">
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>创建时间</th>
+                                <td>{{ user.createdAt }}</td>
+                            </tr>
+                            <tr>
+                                <th>上次登录时间</th>
+                                <td>{{ user.lastLogin ? user.lastLogin|date : '' }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
             <!-- general form elements disabled -->
             <div class="box">
                 <div class="box-header with-border">

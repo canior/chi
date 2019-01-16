@@ -25,7 +25,7 @@
         <!-- /.search form -->
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">MAIN NAVIGATION</li>
+            <li class="header">菜单</li>
             {% for menu in menus %}
                 {% if is_granted(menu.role) %}
                     <li class="{% if menu.active %}active menu-open{% endif %}{% if menu.subMenus is defined %} treeview{% endif %}">
@@ -75,7 +75,7 @@
                 {% endif %}
             {% endfor %}
             <li class="header">LABELS</li>
-            <li><a href="{{ path('fos_user_security_logout') }}"><i class="fa fa-circle-o text-red"></i> <span>Sign out</span></a></li>
+            <li><a href="{{ path('fos_user_security_logout') }}"><i class="fa fa-circle-o text-red"></i> <span>退出登录</span></a></li>
         </ul>
     </section>
     <!-- /.sidebar -->

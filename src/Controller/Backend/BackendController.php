@@ -237,55 +237,6 @@ class BackendController extends DefaultController
                 ],
             ]
         ],
-        [
-            'path' => 'backendIndex',
-            'name' => '人工智能',
-            'icon' => 'fa fa-user-secret',
-            'active' => false,
-            'role' => 'ROLE_ADMIN',
-            'subMenus' => [
-                [
-                    'path' => [
-                        '_twig_error_test',
-                    ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:生成用户',
-                    'icon' => 'fa fa-user',
-                    'active' => false,
-                    'role' => 'ROLE_ADMIN',
-                ],
-                [
-                    'path' => [
-                        '_twig_error_test',
-                    ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:生成订单',
-                    'icon' => 'fa fa-shopping-cart',
-                    'active' => false,
-                    'role' => 'ROLE_ADMIN',
-                ],
-                [
-                    'path' => [
-                        '_twig_error_test',
-                    ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:生成评价',
-                    'icon' => 'fa fa-comment',
-                    'active' => false,
-                    'role' => 'ROLE_ADMIN',
-                ],
-                [
-                    'path' => [
-                        '_twig_error_test',
-                    ],
-                    'params' => ['code' => 404],
-                    'name' => 'TODO:生成收益',
-                    'icon' => 'fa fa-rmb',
-                    'active' => false,
-                    'role' => 'ROLE_ADMIN',
-                ],
-            ]
-        ],
     ];
 
     /**
@@ -293,7 +244,7 @@ class BackendController extends DefaultController
      */
     public function indexAction()
     {
-        $data = ['title' => 'Dashboard', 'intro' => ''];
+        $data = ['title' => '仪表盘', 'intro' => ''];
 
         return $this->render('backend/index.html.twig', $data);
     }
