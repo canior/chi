@@ -128,12 +128,6 @@ class GroupUserOrder implements Dao
      */
     private $product;
 
-    /**
-     * @var string|null
-     * @ORM\Column(type="string")
-     */
-    private $recommanderName;
-
     public function __construct() {
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
@@ -728,21 +722,5 @@ class GroupUserOrder implements Dao
         $this->product = $product;
 
         return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getRecommanderName(): ?string
-    {
-        return $this->recommanderName;
-    }
-
-    /**
-     * @param null|string $recommanderName
-     */
-    public function setRecommanderName(?string $recommanderName): void
-    {
-        $this->recommanderName = $recommanderName;
     }
 }

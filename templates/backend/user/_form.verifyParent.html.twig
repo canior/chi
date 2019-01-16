@@ -1,0 +1,16 @@
+{{ form_start(verifyParentForm) }}
+    <h3 class="box-title">
+        推荐人
+        {% if user.isRecommanderVerified %}
+             <span class="fa fa-check-square icon-cog text-green ">
+                已认证
+             </span>
+        {% else %}
+             <span class="fa fa-window-close icon-cog text-red ">
+                未认证
+             </span>
+         {% endif %}
+    </h3>
+    {{ form_widget(verifyParentForm) }}
+    <button class="btn btn-primary">{{ button_label|default('提交') }}</button>
+{{ form_end(verifyParentForm) }}

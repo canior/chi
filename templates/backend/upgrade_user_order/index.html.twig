@@ -81,12 +81,11 @@
                                 <th class="col-md-2">创建时间</th>
                                 <th class="col-md-1">用户ID</th>
                                 <th class="col-md-1">姓名</th>
-                                <th class="col-md-1">旧会员等级</th>
-                                <th class="col-md-1">新会员等级</th>
+                                <th class="col-md-2">会员等级</th>
                                 <th class="col-md-1">订单金额</th>
                                 <th class="col-md-1">订单状态</th>
                                 <th class="col-md-1">支付状态</th>
-                                <th class="col-md-1">更新时间</th>
+                                <th class="col-md-1">推荐人</th>
                                 <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
@@ -98,12 +97,21 @@
                                         <td>{{ item.UpgradeUserOrder.createdAtFormatted }}</td>
                                         <td>{{ item.UpgradeUserOrder.user.id }}</td>
                                         <td>{{ item.UpgradeUserOrder.user.name }}</td>
-                                        <td>{{ item.UpgradeUserOrder.oldUserLevelText }}</td>
-                                        <td>{{ item.UpgradeUserOrder.userLevelText }}</td>
+                                        <td>{{ item.UpgradeUserOrder.oldUserLevelText }} - {{ item.UpgradeUserOrder.userLevelText }}</td>
                                         <td>￥{{ item.UpgradeUserOrder.total }}</td>
                                         <td>{{ item.UpgradeUserOrder.statusText }}</td>
                                         <td>{{ item.UpgradeUserOrder.paymentStatusText }}</td>
-                                        <td>{{ item.UpgradeUserOrder.updatedAtFormatted }}</td>
+                                        <td>
+                                            {% if item.UpgradeUserOrder.user.isRecommanderVerified %}
+                                                <span class="fa fa-check-square icon-cog text-green ">
+                                                </span>
+                                                {{ item.UpgradeUserOrder.user.parentUser }}
+                                            {% else %}
+                                                <span class="fa fa-window-close icon-cog text-red ">
+                                                </span>
+                                                {{ item.UpgradeUserOrder.user.recommanderName }}
+                                            {% endif %}
+                                        </td>
                                         <td class="text-center">
                                             <div class="btn-group">
                                                 <a href="{{ path('upgrade_user_order_edit', {'id': item.UpgradeUserOrder.id}) }}"

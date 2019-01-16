@@ -83,7 +83,7 @@ class User extends BaseUser implements Dao
     private $region;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="subUsers")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="subUsers", cascade={"persist"})
      * @ORM\JoinColumn(name="parent_user_id", referencedColumnName="id")
      */
     private $parentUser;
@@ -701,7 +701,8 @@ class User extends BaseUser implements Dao
             'company' => $this->getCompany(),
             'phone' => $this->getPhone(),
             'idNum' => $this->getIdNum(),
-            'wechat' => $this->getWechat()
+            'wechat' => $this->getWechat(),
+            'recommanderName' => $this->getRecommanderName()
         ];
     }
 
@@ -1026,11 +1027,10 @@ class User extends BaseUser implements Dao
     /**
      * 创建升级会员订单
      * @param string $userLevel
-     * @param $recommanderName
      * @return UpgradeUserOrder
      */
-    public function createUpgradeUserOrder($userLevel, $recommanderName) {
-        $upgradeUserOrder = UpgradeUserOrder::factory($this, $userLevel, UserLevel::$userLevelPriceArray[$userLevel], $recommanderName);
+    public function createUpgradeUserOrder($userLevel) {
+        $upgradeUserOrder = UpgradeUserOrder::factory($this, $userLevel, UserLevel::$userLevelPriceArray[$userLevel]);
         $this->upgradeUserOrders->add($upgradeUserOrder);
         return $upgradeUserOrder;
     }
@@ -1231,6 +1231,18 @@ class User extends BaseUser implements Dao
     public function setRecommanderName(?string $recommanderName): void
     {
         $this->recommanderName = $recommanderName;
+    }
+
+    /**
+     * 是否已认证推荐人
+     * @return bool
+     */
+    public function isRecommanderVerified() {
+        if (!empty($this->getRecommanderName()) and $this->getParentUser() == null) {
+            return false;
+        }
+
+        return true;
     }
 
     public function __toString()

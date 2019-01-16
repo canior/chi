@@ -8,7 +8,7 @@
             <div class="box">
                 <div class="box-body">
 
-                    <div class="col-md-6 table-responsive">
+                    <div class="col-md-4 table-responsive">
                         <h3 class="box-title">微信登录信息</h3>
                         <table class="table table-bordered table-striped">
                             <tr>
@@ -39,7 +39,7 @@
                         </table>
                     </div>
 
-                    <div class="col-md-3 table-responsive">
+                    <div class="col-md-4 table-responsive">
                         <h3 class="box-title">账户信息</h3>
                         <table class="table table-bordered table-striped">
                             <tr>
@@ -62,7 +62,7 @@
                         </table>
                     </div>
 
-                    <div class="col-md-3 table-responsive">
+                    <div class="col-md-4 table-responsive">
                         <h3 class="box-title">名额信息</h3>
                         <table class="table table-bordered table-striped">
                             <tr>
@@ -87,6 +87,21 @@
 
                 </div>
             </div>
+
+            <!-- general form elements disabled -->
+            <div class="box">
+                <div class="box-header with-border">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    {{ include('backend/user/_form.verifyParent.html.twig', {'button_label': '提交'}) }}
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+
+
             <!-- general form elements disabled -->
             <div class="box">
                 <div class="box-header with-border">

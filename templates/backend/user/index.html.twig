@@ -19,7 +19,8 @@
                         <form class="cmxform" id="myForm">
                             <div class="col-md-2 form-group">
                                 <label>用户ID</label>
-                                <input type="number" name="userId" class="form-control" value="{{ form.userId > 0 ? form.userId : '' }}"
+                                <input type="number" name="userId" class="form-control"
+                                       value="{{ form.userId > 0 ? form.userId : '' }}"
                                        placeholder="按 用户ID 查询">
                             </div>
                             <div class="col-md-2 form-group">
@@ -49,12 +50,14 @@
                                 <label>创建时间</label>
                                 <div class="row">
                                     <div class="col-xs-5">
-                                        <input type="text" name="createdAtStart" class="form-control" value="{{ form.createdAtStart }}"
+                                        <input type="text" name="createdAtStart" class="form-control"
+                                               value="{{ form.createdAtStart }}"
                                                placeholder="开始时间" autocomplete="off">
                                     </div>
-                                    <div class="col-xs-1"> ~ </div>
+                                    <div class="col-xs-1"> ~</div>
                                     <div class="col-xs-5">
-                                        <input type="text" name="createdAtEnd" class="form-control" value="{{ form.createdAtEnd }}"
+                                        <input type="text" name="createdAtEnd" class="form-control"
+                                               value="{{ form.createdAtEnd }}"
                                                placeholder="结束时间" autocomplete="off">
                                     </div>
                                 </div>
@@ -70,11 +73,11 @@
                             <thead>
                             <tr>
                                 <th width="10%">用户ID</th>
-                                <th width="10%">推荐人</th>
                                 <th width="10%">昵称</th>
                                 <th width="10%">姓名</th>
                                 <th width="10%">电话</th>
                                 <th width="10%">会员等级</th>
+                                <th width="10%">推荐人</th>
                                 <th width="10%">用户角色</th>
                                 <th width="10%">上次登录时间</th>
                                 <th width="10%">创建时间</th>
@@ -86,21 +89,30 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>{{ item.user.id }}</td>
-                                        <td>
-                                            {% if item.user.parentUser %}
-                                                {{ item.user.parentUser }}
-                                            {% endif %}
-                                        </td>
                                         <td>{{ item.user.nickname }}</td>
                                         <td>{{ item.user.name }}</td>
                                         <td>{{ item.user.phone }}</td>
                                         <td>{{ item.user.userLevelText }}</td>
+                                        <td>
+
+                                            {% if item.user.isRecommanderVerified %}
+                                                <span class="fa fa-check-square icon-cog text-green ">
+                                                </span>
+                                                {{ item.user.parentUser }}
+                                            {% else %}
+                                                <span class="fa fa-window-close icon-cog text-red ">
+                                                </span>
+                                                {{ item.user.recommanderName }}
+                                            {% endif %}
+
+                                        </td>
                                         <td>{{ item.user.roleText }}</td>
                                         <td>{{ item.user.lastLogin ? item.user.lastLogin|date : '' }}</td>
                                         <td>{{ item.user.createdAt }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{ path('user_personal_edit', {'id': item.user.id}) }}" title="查看详情">
+                                                <a href="{{ path('user_personal_edit', {'id': item.user.id}) }}"
+                                                   title="查看详情">
                                                     <span class="fa fa-address-card"></span>
                                                 </a>
                                                 &nbsp;

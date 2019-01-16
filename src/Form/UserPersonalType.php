@@ -28,14 +28,6 @@ class UserPersonalType extends AbstractType
                 'choices' => array_flip(UserLevel::$userLevelTextArray),
                 'required' => true
             ])
-            ->add('parentUser', EntityType::class, [
-                'label' => '推荐人',
-                'placeholder' => '请选择推荐人',
-                'empty_data' => null,
-                'attr' => ['class' => 'form-control chosen'],
-                'class' => User::class,
-                'required' => false,
-            ])
             ->add('name', TextType::class, [
                 'label' => '姓名',
                 'required' => true

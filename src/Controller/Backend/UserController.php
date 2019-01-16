@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\UserLevel;
 use App\Form\UserRoleType;
 use App\Form\UserType;
+use App\Form\VerifyParentUserType;
 use App\Repository\ProductReviewRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatisticsRepository;
@@ -75,6 +76,8 @@ class UserController extends BackendController
         ]);
     }
 
+
+
     /**
      * @Route("/user/personal/{id}/edit", name="user_personal_edit", methods="GET|POST")
      *
@@ -87,6 +90,9 @@ class UserController extends BackendController
         $form->get('userLevel')->setData(array_search($user->getUserLevelText(), UserLevel::$userLevelTextArray));
         $form->handleRequest($request);
 
+        $verifyParentForm = $this->createForm(VerifyParentUserType::class, $user);
+        $verifyParentForm->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user->setUserLevel($form->get('userLevel')->getData());
@@ -96,9 +102,43 @@ class UserController extends BackendController
             return $this->redirectToRoute('user_personal_edit', ['id' => $user->getId()]);
         }
 
+        if ($verifyParentForm->isSubmitted() && $verifyParentForm->isValid()) {
+            $this->getEntityManager()->persist($user);
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('notice', '修改成功');
+            return $this->redirectToRoute('user_personal_edit', ['id' => $user->getId()]);
+        }
+
+
         return $this->render('backend/user/personal.edit.html.twig', [
             'user' => $user,
             'title' => '用户详情',
+            'form' => $form->createView(),
+            'verifyParentForm' => $verifyParentForm->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/user/parent/{id}/edit", name="user_parent_edit", methods="GET|POST")
+     *
+     * @param Request $request
+     * @param User $user
+     * @return Response
+     */
+    public function editParentUser(Request $request, User $user) {
+        $form = $this->createForm(VerifyParentUserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('notice', '修改成功');
+            return $this->redirectToRoute('user_personal_edit', ['id' => $user->getId()]);
+        }
+
+        return $this->render('backend/user/_form.verifyParent.html.twig', [
+            'user' => $user,
             'form' => $form->createView(),
         ]);
     }
