@@ -18,14 +18,22 @@
                     <div class="row">
                         <form class="cmxform" id="myForm">
                             <div class="col-md-2 form-group">
-                                <label>产品ID</label>
-                                <input type="number" name="productId" class="form-control" value="{{ form.productId > 0 ? form.productId : '' }}"
-                                       placeholder="按 产品ID 查询">
+                                <label>科目</label>
+                                <select name="subject" class="form-control chosen">
+                                    <option value="">全部</option>
+                                    {% for subject, text in subjects %}
+                                        <option value="{{ subject }}"{% if subject == form.subject %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="col-md-2 form-group">
                                 <label>评分</label>
-                                <input type="number" name="rate" class="form-control" value="{{ form.rate > 0 ? form.rate : '' }}"
-                                       placeholder="按 评分 查询">
+                                <select name="rate" class="form-control chosen">
+                                    <option value="">全部</option>
+                                    {% for rate, text in rates %}
+                                        <option value="{{ rate }}"{% if rate == form.rate %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="col-md-2 form-group">
                                 <label>状态</label>
@@ -46,17 +54,17 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th width="5%">ID</th>
-                                <th width="5%">课程ID</th>
-                                <th width="10%">课程</th>
-                                <th width="5%">课程订单号</th>
-                                <th width="5%">用户ID</th>
-                                <th width="10%">姓名</th>
-                                <th width="10%">评分</th>
-                                <th width="10%">评价</th>
-                                <th width="10%">状态</th>
-                                <th width="10%">创建时间</th>
-                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                <th class="col-md-1">评价ID</th>
+                                <th class="col-md-1">课程订单号</th>
+                                <th class="col-md-1">科目</th>
+                                <th class="col-md-1">讲师</th>
+                                <th class="col-md-1">用户ID</th>
+                                <th class="col-md-1">姓名</th>
+                                <th class="col-md-1">评分</th>
+                                <th class="col-md-1">评价</th>
+                                <th class="col-md-1">状态</th>
+                                <th class="col-md-1">创建时间</th>
+                                <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -65,35 +73,19 @@
                                     <tr>
                                         <td>{{ item.id }}</td>
                                         <td>
-                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.product.id }}
-                                            </a>
+                                            {{ item.groupUserOrder.id }}
                                         </td>
                                         <td>
-                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.product.title }}
-                                            </a>
+                                            {{ item.product.course.subjectText }}
                                         </td>
                                         <td>
-                                            {% if item.groupUserOrder %}
-                                                <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {'id': item.groupUserOrder.id}) }}" target="_blank" title="查看详情">
-                                                    {{ item.groupUserOrder.id }}
-                                                </a>
-                                            {% endif %}
+                                            {{ item.product.course.teacher.name }}
                                         </td>
                                         <td>
-                                            {% if item.groupUserOrder %}
-                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.groupUserOrder.user.id}) }}" target="_blank" title="查看详情">
-                                                    {{ item.groupUserOrder.user.id }}
-                                                </a>
-                                            {% endif %}
+                                            {{ item.groupUserOrder.user.id}}
                                         </td>
                                         <td>
-                                            {% if item.groupUserOrder %}
-                                                <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.groupUserOrder.user.id}) }}" target="_blank" title="查看详情">
-                                                    {{ item.groupUserOrder.user.nickname }}
-                                                </a>
-                                            {% endif %}
+                                            {{ item.groupUserOrder.user.name }}
                                         </td>
                                         <td>{{ item.rate }}</td>
                                         <td>{{ item.review }}</td>

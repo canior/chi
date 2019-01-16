@@ -134,8 +134,6 @@ class GroupUserOrder implements Dao
         $this->groupUserOrderLogs = new ArrayCollection();
         $this->setCreatedAt();
         $this->setUpdatedAt();
-        $this->setCreated();
-        $this->setUnPaid();
     }
 
     /**
@@ -150,6 +148,8 @@ class GroupUserOrder implements Dao
         $groupUserOrder = new GroupUserOrder();
         $groupUserOrder->setUser($user);
         $groupUserOrder->setProduct($product);
+        $groupUserOrder->setCreated();
+        $groupUserOrder->setUnPaid();
 
         if ($groupOrder) {
             $groupUserOrder->setOrderRewards($groupOrder->getProduct()->getGroupOrderRewards());
@@ -708,7 +708,6 @@ class GroupUserOrder implements Dao
             'address' => $this->getUserAddress() == null ? null : $this->getUserAddress()->getArray(),
             'carrierName' => $this->getCarrierName(),
             'trackingNo' => $this->getTrackingNo(),
-            'recommanderName' => $this->getRecommanderName(),
         ];
     }
 

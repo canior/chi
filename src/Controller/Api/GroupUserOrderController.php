@@ -55,7 +55,7 @@ class GroupUserOrderController extends BaseController
         $product = $productRepository->find($productId);
 
         //创建支付订单
-        $groupUserOrder = new GroupUserOrder($user, $product);
+        $groupUserOrder = GroupUserOrder::factory($user, $product);
         $groupUserOrder->setTotal($product->getPrice());
 
         //完成支付
@@ -165,7 +165,7 @@ class GroupUserOrderController extends BaseController
         $user = $this->getWxUser($thirdSession);
         $product = $productRepository->find($productId);
 
-        $groupUserOrder = new GroupUserOrder($user, $product);
+        $groupUserOrder = GroupUserOrder::factory($user, $product);
         $groupUserOrder->setTotal($product->getPrice() + $product->getFreight());
         $this->getEntityManager()->persist($groupUserOrder);
         $this->getEntityManager()->flush();
@@ -188,11 +188,9 @@ class GroupUserOrderController extends BaseController
 
         $groupUserOrderId =  isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
-        $recommanderName =  isset($data['recommanderName']) ? $data['recommanderName'] : null;
 
         $user = $this->getWxUser($thirdSession);
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
-        $groupUserOrder->setRecommanderName($recommanderName);
 
         /**
          * 如果是拼团订单，并且是已完成或者已过期，则把当前订单取消不让支付继续

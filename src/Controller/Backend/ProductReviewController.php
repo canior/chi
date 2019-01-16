@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use App\Command\Product\Review\CreateOrUpdateProductReviewImagesCommand;
 use App\Entity\Product;
 use App\Entity\ProductReview;
+use App\Entity\Subject;
 use App\Form\ProductReviewType;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
@@ -19,20 +20,25 @@ class ProductReviewController extends BackendController
 {
     /**
      * @Route("/product/review/", name="product_review_index", methods="GET")
+     * @param ProductReviewRepository $productReviewRepository
+     * @param Request $request
+     * @return Response
      */
     public function index(ProductReviewRepository $productReviewRepository, Request $request): Response
     {
         $data = [
             'title' => '产品评价',
             'form' => [
-                'productId' => $request->query->getInt('productId', null),
+                'subject' => $request->query->getInt('subject', null),
                 'rate' => $request->query->getInt('rate', null),
                 'status' => $request->query->get('status', null),
                 'page' => $request->query->getInt('page', 1)
             ],
-            'statuses' => ProductReview::$statuses
+            'statuses' => ProductReview::$statuses,
+            'rates' => ProductReview::$rates,
+            'subjects' => Subject::$subjectTextArray,
         ];
-        $data['data'] = $productReviewRepository->findProductReviewsQueryBuilder($data['form']['productId'], $data['form']['rate'], $data['form']['status']);
+        $data['data'] = $productReviewRepository->findProductReviewsQueryBuilder(null, $data['form']['rate'], $data['form']['status'], $data['form']['subject']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/product_review/index.html.twig', $data);
     }

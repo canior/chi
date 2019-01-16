@@ -430,7 +430,7 @@ class Course implements Dao
             'startDate' =>  date(self::DATE_FORMAT, $this->getStartDate()),
             'endDate' =>  date(self::DATE_FORMAT, $this->getEndDate()),
             'address' => $this->getAddress(),
-            'region' => $this->getRegion()->getArray(),
+            'region' => $this->getRegion() ? $this->getRegion()->getArray() : null,
             'teacher' => $this->getTeacher()->getArray(),
             'courseImages' => $courseImageArray,
             'courseSpecImages' => $courseSpecImagesArray,

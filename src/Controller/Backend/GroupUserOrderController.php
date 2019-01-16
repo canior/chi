@@ -3,7 +3,9 @@
 namespace App\Controller\Backend;
 
 use App\Entity\GroupUserOrder;
+use App\Form\EditGroupUserOrderType;
 use App\Form\GroupUserOrderType;
+use App\Form\VerifyParentUserType;
 use App\Repository\GroupUserOrderRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -105,13 +107,31 @@ class GroupUserOrderController extends BackendController
 
     /**
      * @Route("/group/user/order/{id}/edit", name="group_user_order_edit", methods="GET|POST")
+     * @param Request $request
+     * @param GroupUserOrder $groupUserOrder
+     * @return Response
      */
     public function edit(Request $request, GroupUserOrder $groupUserOrder): Response
     {
-        $form = $this->createForm(GroupUserOrderType::class, $groupUserOrder);
+        $form = $this->createForm(EditGroupUserOrderType::class, $groupUserOrder);
+        $form->get('status')->setData(array_search($groupUserOrder->getStatusText(), GroupUserOrder::$courseStatuses));
+        $form->get('paymentStatus')->setData(array_search($groupUserOrder->getPaymentStatusText(), GroupUserOrder::$paymentStatuses));
         $form->handleRequest($request);
 
+        $user = $groupUserOrder->getUser();
+        $verifyParentForm = $this->createForm(VerifyParentUserType::class, $user);
+        $verifyParentForm->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $groupUserOrder->setStatus($form->get('status')->getData());
+            $groupUserOrder->setPaymentStatus($form->get('paymentStatus')->getData());
+
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('notice', '修改成功');
+            return $this->redirectToRoute('group_user_order_edit', ['id' => $groupUserOrder->getId()]);
+        }
+
+        if ($verifyParentForm->isSubmitted() && $verifyParentForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');
             return $this->redirectToRoute('group_user_order_edit', ['id' => $groupUserOrder->getId()]);
@@ -119,8 +139,10 @@ class GroupUserOrderController extends BackendController
 
         return $this->render('backend/group_user_order/edit.html.twig', [
             'group_user_order' => $groupUserOrder,
-            'title' => '修改 GroupUserOrder',
+            'title' => '编辑课程订单',
             'form' => $form->createView(),
+            'verifyParentForm' => $verifyParentForm->createView(),
+            'user' => $user
         ]);
     }
 

@@ -20,7 +20,7 @@ trait PaymentStatusTrait
         return $this->paymentStatus;
     }
 
-    private function setPaymentStatus(string $paymentStatus): self
+    public function setPaymentStatus(string $paymentStatus): self
     {
         $this->paymentStatus = $paymentStatus;
 

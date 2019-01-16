@@ -1,6 +1,6 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}GroupUserOrder{% endblock %}
+{% block title %}课程订单{% endblock %}
 
 {% import 'form/macros.html.twig' as macros %}
 
@@ -11,45 +11,30 @@
                 <div class="box-header">
                     {% include "backend/includes/app.session.flashbag.html.twig" %}
                     <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
-                    <a href="{{ path('group_user_order_new') }}" type="button" class="btn btn-info pull-right">添加</a>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
                         <form class="cmxform" id="myForm">
                             <div class="col-md-2 form-group">
-                                <label>拼团ID</label>
-                                <input type="number" name="groupOrderId" class="form-control"
-                                       value="{{ form.groupOrderId > 0 ? form.groupOrderId : '' }}"
-                                       placeholder="按 拼团ID 查询">
-                            </div>
-                            <div class="col-md-2 form-group">
-                                <label>订单ID</label>
+                                <label>课程订单号</label>
                                 <input type="number" name="groupUserOrderId" class="form-control"
                                        value="{{ form.groupUserOrderId > 0 ? form.groupUserOrderId : '' }}"
                                        placeholder="按 订单ID 查询">
                             </div>
                             <div class="col-md-2 form-group">
-                                <label>拼团用户ID</label>
-                                <input type="number" name="userId" class="form-control" value="{{ form.userId > 0 ? form.userId : '' }}"
+                                <label>用户ID</label>
+                                <input type="number" name="userId" class="form-control"
+                                       value="{{ form.userId > 0 ? form.userId : '' }}"
                                        placeholder="按 拼团用户ID 查询">
                             </div>
                             <div class="col-md-2 form-group">
-                                <label>产品名</label>
+                                <label>课程名称</label>
                                 <input type="text" name="productName" class="form-control"
                                        value="{{ form.productName }}"
-                                       placeholder="按 产品名 查询">
+                                       placeholder="按课程名称查询">
                             </div>
-                            <div class="col-md-1 form-group">
-                                <label>订单类型</label>
-                                <select name="type" class="form-control chosen">
-                                    <option value="">全部</option>
-                                    {% for type, text in types %}
-                                        <option value="{{ type }}"{% if type == form.type %} selected{% endif %}>{{ text }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-1 form-group">
+                            <div class="col-md-2 form-group">
                                 <label>订单状态</label>
                                 <select name="status" class="form-control chosen">
                                     <option value="">全部</option>
@@ -58,7 +43,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-1 form-group">
+                            <div class="col-md-2 form-group">
                                 <label>支付状态</label>
                                 <select name="paymentStatus" class="form-control chosen">
                                     <option value="">全部</option>
@@ -67,7 +52,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-1 form-group">
+                            <div class="col-md-2 form-group">
                                 <label>&nbsp;</label>
                                 <input class="form-control btn btn-primary" type="submit" value="搜索"/>
                             </div>
@@ -77,17 +62,15 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th width="5%">订单ID</th>
-                                <th width="5%">拼团ID</th>
-                                <th width="5%">用户ID</th>
-                                <th width="10%">用户昵称</th>
-                                <th width="10%">产品名</th>
-                                <th width="10%">支付金额</th>
-                                <th width="10%">订单类型</th>
-                                <th width="10%">订单状态</th>
-                                <th width="10%">支付状态</th>
-                                <th width="10%">更新时间</th>
-                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                <th class="col-md-1">课程订单号</th>
+                                <th class="col-md-2">创建时间</th>
+                                <th class="col-md-2">课程</th>
+                                <th class="col-md-1">用户ID</th>
+                                <th class="col-md-1">姓名</th>
+                                <th class="col-md-1">支付金额</th>
+                                <th class="col-md-1">订单状态</th>
+                                <th class="col-md-1">支付状态</th>
+                                <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -95,39 +78,25 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>{{ item.id }}</td>
+                                        <td>{{ item.createdAtFormatted }}</td>
                                         <td>
-                                            {% if item.groupOrder %}
-                                            <a class="btn btn-info btn-xs" href="{{ path('group_order_info', {'id': item.groupOrder.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.groupOrder.id }}
-                                            </a>
-                                            {% endif %}
+                                            {{ item.product.title }}
                                         </td>
                                         <td>
-                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.user.id }}
-                                            </a>
+                                            {{ item.user.id }}
                                         </td>
                                         <td>
-                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.user.nickname }}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            {% if item.product %}
-                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.product.title }}
-                                            </a>
-                                            {% endif %}
+                                            {{ item.user.name }}
                                         </td>
                                         <td>{{ item.total }}</td>
-                                        <td>{{ item.groupOrder ? types['NOT NULL'] : types['NULL'] }}</td>
                                         <td>{{ item.statusText }}</td>
                                         <td>{{ item.paymentStatusText }}</td>
-                                        <td>{{ item.updatedAt }}</td>
+
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{ path('group_user_order_info', {'id': item.id}) }}" title="查看详情">
-                                                    <span class="fa fa-arrow-circle-right"></span>
+                                                <a href="{{ path('group_user_order_edit', {'id': item.id}) }}"
+                                                   title="查看详情">
+                                                    <span class="fa fa-edit"></span>
                                                 </a>
                                             </div>
                                         </td>

@@ -1,18 +1,87 @@
-{% extends 'base.html.twig' %}
+{% extends 'backend/base.html.twig' %}
 
-{% block title %}GroupUserOrder{% endblock %}
+{% block title %}课程订单{% endblock %}
 
 {% block body %}
     <div class="row">
         <div class="col-xs-12">
+
+            <div class="box">
+            <div class="box-body">
+                <div class="table-responsive">
+                    <h3 class="box-title">交易信息</h3>
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <th>课程订单号</th>
+                            <td>{{ group_user_order.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>课程ID</th>
+                            <td>{{ group_user_order.product.course.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>课程</th>
+                            <td>{{ group_user_order.product.title }}</td>
+                        </tr>
+                        <tr>
+                            <th>科目</th>
+                            <td>{{ group_user_order.product.course.subjectText }}</td>
+                        </tr>
+                        <tr>
+                            <th>讲师</th>
+                            <td>{{ group_user_order.product.course.teacher.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>金额</th>
+                            <td>￥{{ group_user_order.total }}</td>
+                        </tr>
+                        <tr>
+                            <th>用户ID</th>
+                            <td>{{ group_user_order.user.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>姓名</th>
+                            <td>{{ group_user_order.user.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>电话</th>
+                            <td>{{ group_user_order.user.phone }}</td>
+                        </tr>
+                        <tr>
+                            <th>创建时间</th>
+                            <td>{{ group_user_order.createdAtFormatted }}</td>
+                        </tr>
+                        <tr>
+                            <th>更新时间</th>
+                            <td>{{ group_user_order.updatedAtFormatted }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
             <!-- general form elements disabled -->
+
             <div class="box">
                 <div class="box-header with-border">
                     {% include "backend/includes/app.session.flashbag.html.twig" %}
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    {{ include('backend/group_user_order/_form.html.twig', {'button_label': 'Update'}) }}
+                    {{ include('backend/user/_form.verifyParent.html.twig', {'button_label': '提交'}) }}
+                </div>
+                <!-- /.box-body -->
+            </div>
+
+
+            <div class="box">
+                <div class="box-header with-border">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    {{ include('backend/group_user_order/_form.html.twig', {'button_label': '提交'}) }}
                 </div>
                 <!-- /.box-body -->
             </div>

@@ -27,7 +27,7 @@ class VerifyParentUserType extends AbstractType
             ->add('parentUser', EntityType::class, [
                 'label' => '认证推荐人',
                 'empty_data' => null,
-                'placeholder' => '请选择推荐人',
+                'placeholder' => '无',
                 'attr' => ['class' => 'form-control chosen'],
                 'class' => User::class,
                 'required' => false,

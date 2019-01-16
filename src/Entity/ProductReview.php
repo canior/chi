@@ -23,6 +23,14 @@ class ProductReview implements Dao
         self::INACTIVE => '未发布'
     ];
 
+    public static $rates = [
+        1 => 1,
+        2 => 2,
+        3 => 3,
+        4 => 4,
+        5 => 5
+    ];
+
     use IdTrait,
         StatusTrait,
         CreatedAtTrait,

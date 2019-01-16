@@ -150,7 +150,7 @@ class BackendController extends DefaultController
                 [
                     'path' => [
                         'group_user_order_index',
-                        'group_user_order_info',
+                        'group_user_order_edit',
                     ],
                     'name' => '课程订单',
                     'icon' => 'fa fa-list-ul',
@@ -170,25 +170,6 @@ class BackendController extends DefaultController
                 ],
             ]
         ],
-//        [
-//            'path' => 'backendIndex',
-//            'name' => '运营分析',
-//            'icon' => 'fa fa-line-chart',
-//            'active' => false,
-//            'role' => 'ROLE_ADMIN',
-//            'subMenus' => [
-//                [
-//                    'path' => [
-//                        '_twig_error_test',
-//                    ],
-//                    'params' => ['code' => 404],
-//                    'name' => 'TODO:用户画像',
-//                    'icon' => 'fa fa-image',
-//                    'active' => false,
-//                    'role' => 'ROLE_ADMIN',
-//                ],
-//            ]
-//        ],
         [
             'path' => 'project_meta_index',
             'name' => '配置中心',
