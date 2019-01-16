@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\File;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use App\Entity\UserAccountOrder;
 
 /**
  * @method UserAccountOrder|null find($id, $lockMode = null, $lockVersion = null)

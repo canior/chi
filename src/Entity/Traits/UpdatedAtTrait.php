@@ -31,6 +31,13 @@ trait UpdatedAtTrait
     }
 
     /**
+     * @return string
+     */
+    public function getUpdatedAtFormatted() {
+        return $this->getUpdatedAt(true);
+    }
+
+    /**
      * Set updatedAt
      *
      * @param int $updatedAt|null

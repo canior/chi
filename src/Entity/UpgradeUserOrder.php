@@ -190,6 +190,20 @@ class UpgradeUserOrder implements Dao
     }
 
     /**
+     * @return string
+     */
+    public function getStatusText() {
+        return self::$statusTexts[$this->getStatus()];
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentStatusText() {
+        return self::$paymentStatusTexts[$this->getPaymentStatus()];
+    }
+
+    /**
      * @param string $status
      */
     public function setStatus(string $status): void
@@ -331,4 +345,14 @@ class UpgradeUserOrder implements Dao
         ];
     }
 
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return '订单号: ' . $this->getId()
+            . ' , 金额: ￥' . $this->getTotal()
+            . ' , 状态:'. $this->getStatusText()
+            . ' , 支付状态:'. $this->getPaymentStatusText();
+    }
 }

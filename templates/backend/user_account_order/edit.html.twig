@@ -1,19 +1,68 @@
-{% extends 'base.html.twig' %}
+{% extends 'backend/base.html.twig' %}
 
-{% block title %}UserAccountOrder{% endblock %}
+{% block title %}编辑用户交易账单{% endblock %}
 
 {% block body %}
     <div class="row">
         <div class="col-xs-12">
             <!-- general form elements disabled -->
             <div class="box">
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <h3 class="box-title">交易信息</h3>
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>交易ID</th>
+                                <td>{{ user_account_order.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>交易类型</th>
+                                <td>{{ user_account_order.userAccountOrderTypeText }}</td>
+                            </tr>
+                            <tr>
+                                <th>金额</th>
+                                <td>￥{{ user_account_order.amount }}</td>
+                            </tr>
+                            <tr>
+                                <th>会员升级订单</th>
+                                <td>{{ user_account_order.upgradeUserOrder ? user_account_order.upgradeUserOrder : null }}</td>
+                            </tr>
+                            <tr>
+                                <th>用户ID</th>
+                                <td>{{ user.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>姓名</th>
+                                <td>{{ user.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>电话</th>
+                                <td>{{ user.phone }}</td>
+                            </tr>
+                            <tr>
+                                <th>账户余额</th>
+                                <td>￥{{ user.userAccountTotal }}</td>
+                            </tr>
+                            <tr>
+                                <th>创建时间</th>
+                                <td>{{ user_account_order.createdAtFormatted }}</td>
+                            </tr>
+                            <tr>
+                                <th>更新时间</th>
+                                <td>{{ user_account_order.updatedAtFormatted }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
                 <div class="box-header with-border">
                     {% include "backend/includes/app.session.flashbag.html.twig" %}
-                    <h3 class="box-title">Edit UserAccountOrder</h3>
+                    <h3 class="box-title">编辑用户交易账单</h3>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    {{ include('backend/user_account_order/_form.html.twig', {'button_label': 'Update'}) }}
+                    {{ include('backend/user_account_order/_form.edit.html.twig', {'button_label': '提交'}) }}
                 </div>
                 <!-- /.box-body -->
             </div>

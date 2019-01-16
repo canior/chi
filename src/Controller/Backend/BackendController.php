@@ -44,6 +44,7 @@ class BackendController extends DefaultController
                     'path' => [
                         'user_account_order_statistic',
                         'user_account_order_index',
+                        'user_account_order_new',
                         'user_account_order_edit',
                     ],
                     'name' => '账户管理',
@@ -58,16 +59,6 @@ class BackendController extends DefaultController
                     ],
                     'name' => '用户分享',
                     'icon' => 'fa fa-share-alt',
-                    'active' => false,
-                    'role' => 'ROLE_ADMIN',
-                ],
-                [
-                    'path' => [
-                        'user_statistics_index',
-                        'user_statistics_info',
-                    ],
-                    'name' => '用户收益',
-                    'icon' => 'fa fa-rmb',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],

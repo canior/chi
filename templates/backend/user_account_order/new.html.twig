@@ -1,19 +1,66 @@
-{% extends 'base.html.twig' %}
+{% extends 'backend/base.html.twig' %}
 
-{% block title %}UserAccountOrder{% endblock %}
+{% block title %}账户管理{% endblock %}
 
 {% block body %}
     <div class="row">
         <div class="col-xs-12">
             <!-- general form elements disabled -->
             <div class="box">
+                <div class="box-body">
+                    <div class="table-responsive col-md-6">
+                        <h3 class="box-title">用户信息</h3>
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>用户ID</th>
+                                <td>{{ user.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>姓名</th>
+                                <td>{{ user.avatarUrl }}</td>
+                            </tr>
+                            <tr>
+                                <th>电话</th>
+                                <td>{{ user.phone }}</td>
+                            </tr>
+                            <tr>
+                                <th>账户余额</th>
+                                <td>{{ user.userAccountTotal }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="table-responsive col-md-6">
+                        <h3 class="box-title">推荐人信息</h3>
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>用户ID</th>
+                                <td>{{ user.parentUser ? user.parentUser.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>姓名</th>
+                                <td>{{ user.parentUser ? user.parentUser.avatarUrl }}</td>
+                            </tr>
+                            <tr>
+                                <th>电话</th>
+                                <td>{{ user.parentUser ? user.parentUser.phone }}</td>
+                            </tr>
+                            <tr>
+                                <th>账户余额</th>
+                                <td>{{ user.parentUser ? user.parentUser.userAccountTotal }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box">
                 <div class="box-header with-border">
                     {% include "backend/includes/app.session.flashbag.html.twig" %}
-                    <h3 class="box-title">Create new UserAccountOrder</h3>
+                    <h3 class="box-title">创建交易记录</h3>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    {{ include('backend/user_account_order/_form.html.twig') }}
+                    {{ include('backend/user_account_order/_form.new.html.twig', {'button_label': '提交'}) }}
                 </div>
                 <!-- /.box-body -->
             </div>

@@ -74,22 +74,36 @@ class UserAccountOrder implements Dao
     private $paymentStatus;
 
     /**
-     * UserAccountOrder constructor.
-     * @param User $user
-     * @param string $userAccountOrderType
-     * @param float $amount
-     * @param UpgradeUserOrder|null $upgradeUserOrder
+     * @var string|null
+     *
+     * @ORM\Column(name="memo", type="string")
      */
-    public function __construct(User $user, $userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null)
-    {
-        $this->setUser($user);
-        $this->setUserAccountOrderType($userAccountOrderType);
-        $this->setAmount($amount);
-        $this->setPaymentStatus(self::UNPAID);
+    private $memo;
 
+    /**
+     * @param User $user
+     * @param $userAccountOrderType
+     * @param $amount
+     * @param UpgradeUserOrder|null $upgradeUserOrder
+     * @return UserAccountOrder
+     */
+    public static function factory(User $user, $userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null) {
+        $userAccountOrder = new UserAccountOrder();
+        $userAccountOrder->setUser($user);
+        $userAccountOrder->setAmount($amount);
+        $userAccountOrder->setUserAccountOrderType($userAccountOrderType);
+        $userAccountOrder->setUpgradeUserOrder($upgradeUserOrder);
+        return $userAccountOrder;
+    }
+
+    /**
+     * UserAccountOrder constructor.
+     */
+    public function __construct()
+    {
+        $this->setPaymentStatus(self::UNPAID);
         $this->setCreatedAt();
         $this->setUpdatedAt();
-        $this->setUpgradeUserOrder($upgradeUserOrder);
     }
 
     /**
@@ -125,9 +139,9 @@ class UserAccountOrder implements Dao
     }
 
     /**
-     * @return User
+     * @return User|null
      */
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
@@ -157,9 +171,9 @@ class UserAccountOrder implements Dao
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getAmount(): float
+    public function getAmount(): ?float
     {
         return $this->amount;
     }
@@ -175,9 +189,23 @@ class UserAccountOrder implements Dao
     /**
      * @return string
      */
+    public function getUserAccountOrderTypeText() {
+        return self::$userAccountOrderTypes[$this->getUserAccountOrderType()];
+    }
+
+    /**
+     * @return string
+     */
     public function getPaymentStatus(): string
     {
         return $this->paymentStatus;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentStatusText() {
+        return self::$paymentStatuses[$this->getPaymentStatus()];
     }
 
     /**
@@ -186,6 +214,7 @@ class UserAccountOrder implements Dao
     public function setPaymentStatus(string $paymentStatus): void
     {
         $this->paymentStatus = $paymentStatus;
+        $this->setUpdatedAt();
     }
 
     /**
@@ -212,6 +241,22 @@ class UserAccountOrder implements Dao
         } else {
             $this->getUser()->increaseUserAccountTotal($this->getAmount());
         }
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getMemo(): ?string
+    {
+        return $this->memo;
+    }
+
+    /**
+     * @param null|string $memo
+     */
+    public function setMemo(?string $memo): void
+    {
+        $this->memo = $memo;
     }
 
     /**

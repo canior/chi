@@ -3,12 +3,14 @@
 namespace App\Controller\Backend;
 
 use App\Entity\UserAccountOrder;
-use App\Form\UserAccountOrderType;
+use App\Form\EditUserAccountOrderType;
 use App\Repository\UserAccountOrderRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\User;
+use App\Form\NewUserAccountOrderType;
 
 /**
  * @Route("/backend")
@@ -54,52 +56,73 @@ class UserAccountOrderController extends BackendController
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
+        $user = $this->getEntityManager()->getRepository(User::class)->find($userId);
+        $data['user'] = $user;
         $data['data'] = $userAccountOrderRepository->findBy(['user' => $userId]);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/user_account_order/index.html.twig', $data);
     }
 
     /**
-     * @Route("/user/account/order/new", name="user_account_order_new", methods="GET|POST")
+     * @Route("/user/account/order/{userId}/new", name="user_account_order_new", methods="GET|POST")
+     * @param Request $request
+     * @param $userId
+     * @return Response
      */
-    public function new(Request $request): Response
+    public function new(Request $request, $userId): Response
     {
         $userAccountOrder = new UserAccountOrder();
-        $form = $this->createForm(UserAccountOrderType::class, $userAccountOrder);
+
+        $form = $this->createForm(NewUserAccountOrderType::class, $userAccountOrder);
         $form->handleRequest($request);
 
+        $user = $this->getEntityManager()->getRepository(User::class)->find($userId);
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->getEntityManager()->getRepository(User::class)->find($userId);
+            $userAccountOrder->setUser($user);
+            $userAccountOrder->setUserAccountOrderType($form->get('userAccountOrderType')->getData());
+            $userAccountOrder->setPaymentStatus($form->get('paymentStatus')->getData());
             $em = $this->getDoctrine()->getManager();
             $em->persist($userAccountOrder);
             $em->flush();
             $this->addFlash('notice', '添加成功');
-            return $this->redirectToRoute('user_account_order_index');
+            return $this->redirectToRoute('user_account_order_index', ['userId' => $userAccountOrder->getUser()->getId()]);
         }
 
         return $this->render('backend/user_account_order/new.html.twig', [
+            'user' => $user,
             'user_account_order' => $userAccountOrder,
-            'title' => '添加 UserAccountOrder',
+            'title' => '创建交易记录',
             'form' => $form->createView(),
         ]);
     }
 
     /**
      * @Route("/user/account/order/{id}/edit", name="user_account_order_edit", methods="GET|POST")
+     * @param Request $request
+     * @param UserAccountOrder $userAccountOrder
+     * @return Response
      */
     public function edit(Request $request, UserAccountOrder $userAccountOrder): Response
     {
-        $form = $this->createForm(UserAccountOrderType::class, $userAccountOrder);
+        $form = $this->createForm(EditUserAccountOrderType::class, $userAccountOrder);
+        $form->get('paymentStatus')->setData(array_search($userAccountOrder->getPaymentStatusText(), UserAccountOrder::$paymentStatuses));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $userAccountOrder->setPaymentStatus($form->get('paymentStatus')->getData());
+
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');
             return $this->redirectToRoute('user_account_order_edit', ['id' => $userAccountOrder->getId()]);
         }
 
         return $this->render('backend/user_account_order/edit.html.twig', [
+            'user' => $userAccountOrder->getUser(),
             'user_account_order' => $userAccountOrder,
-            'title' => '修改 UserAccountOrder',
+            'title' => '编辑用户交易账单',
             'form' => $form->createView(),
         ]);
     }

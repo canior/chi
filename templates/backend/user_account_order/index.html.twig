@@ -1,76 +1,127 @@
-{% extends 'base.html.twig' %}
+{% extends 'backend/base.html.twig' %}
 
-{% block title %}UserAccountOrder{% endblock %}
+{% block title %}账户管理{% endblock %}
 
 {% import 'form/macros.html.twig' as macros %}
 
 {% block body %}
+
+
+    <div class="row">
+        <div class="box">
+            <div class="box-body">
+                <div class="table-responsive col-md-6">
+                    <h3 class="box-title">用户信息</h3>
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <th>用户ID</th>
+                            <td>{{ user.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>姓名</th>
+                            <td>{{ user.avatarUrl }}</td>
+                        </tr>
+                        <tr>
+                            <th>电话</th>
+                            <td>{{ user.phone }}</td>
+                        </tr>
+                        <tr>
+                            <th>账户余额</th>
+                            <td>{{ user.userAccountTotal }}</td>
+                        </tr>
+                        <tr>
+                            <th>已提现总数</th>
+                            <td>{{ user.withdrawedTotal }}</td>
+                        </tr>
+                        <tr>
+                            <th>提现中</th>
+                            <td>￥{{ user.withdrawingTotal }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="table-responsive col-md-6">
+                    <h3 class="box-title">推荐人信息</h3>
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <th>用户ID</th>
+                            <td>{{ user.parentUser ? user.parentUser.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>姓名</th>
+                            <td>{{ user.parentUser ? user.parentUser.avatarUrl }}</td>
+                        </tr>
+                        <tr>
+                            <th>电话</th>
+                            <td>{{ user.parentUser ? user.parentUser.phone }}</td>
+                        </tr>
+                        <tr>
+                            <th>账户余额</th>
+                            <td>{{ user.parentUser ? user.parentUser.userAccountTotal }}</td>
+                        </tr>
+                        <tr>
+                            <th>已提现总数</th>
+                            <td>{{ user.parentUser ? user.parentUser.withdrawedTotal }}</td>
+                        </tr>
+                        <tr>
+                            <th>提现中</th>
+                            <td>￥{{ user.parentUser ? user.parentUser.withdrawingTotal }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header">
                     {% include "backend/includes/app.session.flashbag.html.twig" %}
-                    <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
-                    <a href="{{ path('user_account_order_new') }}" type="button" class="btn btn-info pull-right">添加</a>
+                    <h3 class="box-title">交易总计 ({{ pagination.getTotalItemCount }})</h3>
+                    <a href="{{ path('user_account_order_new', {'userId': user.id}) }}" type="button" class="btn btn-info pull-right">添加</a>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <div class="row">
-                        <form class="cmxform" id="myForm">
-                            <div class="col-md-3 form-group">
-                                <label>关键词</label>
-                                <input type="text" name="keyword" class="form-control" value="{{ form.keyword }}"
-                                       placeholder="按 name 查询">
-                            </div>
-                            <div class="col-md-3 form-group">
-                                <label>&nbsp;</label>
-                                <input class="form-control btn btn-primary" type="submit" value="搜索"/>
-                            </div>
-                        </form>
-                    </div>
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                                            <th width="10%">UserAccountOrderType</th>
-                                                            <th width="10%">Amount</th>
-                                                            <th width="10%">PaymentStatus</th>
-                                                            <th width="10%">Id</th>
-                                                            <th width="10%">CreatedAt</th>
-                                                            <th width="10%">UpdatedAt</th>
-                                                            <th width="10%" class="text-center hidden-xs">操作</th>
+                                <th class="col-md-1">交易ID</th>
+                                <th class="col-md-2">创建时间</th>
+                                <th class="col-md-2">更新时间</th>
+                                <th class="col-md-1">交易类型</th>
+                                <th class="col-md-1">金额</th>
+                                <th class="col-md-1">支付状态</th>
+                                <th class="col-md-1">会员升级订单</th>
+                                <th class="col-md-2">备注</th>
+                                <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% if pagination.getTotalItemCount %}
-                            {% for item in pagination %}
-                            <tr>
-                                                            <td>{{ item.userAccountOrderType }}</td>
-                                                            <td>{{ item.amount }}</td>
-                                                            <td>{{ item.paymentStatus }}</td>
-                                                            <td>{{ item.id }}</td>
-                                                            <td>{{ item.createdAt }}</td>
-                                                            <td>{{ item.updatedAt }}</td>
-                                                            <td class="text-center">
-                                    <div class="btn-group">
-                                        <a href="{{ path('user_account_order_edit', {'id': item.id}) }}" title="修改">
-                                        <span class="fa fa-edit"></span>
-                                        </a>&nbsp;
-                                        <a class="delete" data-toggle="modal" data-target="#modal-delete"
-                                           data-url="{{ path('user_account_order_delete', {'id': item.id}) }}"
-                                           data-item='{"name": "{{ macros.cut(item.name, 30) }}"}'
-                                           data-token="{{ csrf_token('delete' ~ item.id) }}"
-                                           title="删除">
-                                            <span class="fa fa-trash"></span>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
+                                {% for item in pagination %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>{{ item.createdAtFormatted }}</td>
+                                        <td>{{ item.updatedAtFormatted }}</td>
+                                        <td>{{ item.userAccountOrderTypeText }}</td>
+                                        <td>￥{{ item.amount }}</td>
+                                        <td>{{ item.paymentStatusText }}</td>
+                                        <td>{{ item.upgradeUserOrder ? item.upgradeUserOrder.id : null }}</td>
+                                        <td>{{ item.memo }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('user_account_order_edit', {'id': item.id}) }}"
+                                                   title="修改">
+                                                    <span class="fa fa-edit"></span>
+                                                </a>&nbsp;
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             {% else %}
-                            <tr>
-                                <td colspan="7" class="alert">no records found</td>
-                            </tr>
+                                <tr>
+                                    <td colspan="8" class="alert">no records found</td>
+                                </tr>
                             {% endif %}
                             </tbody>
                         </table>
@@ -84,6 +135,9 @@
                 </div>
             </div>
             <!-- /.box -->
+            <div>
+                <a class="btn btn-danger" href="{{ path('user_account_order_statistic') }}">{{ '返回账户管理'|trans }}</a>
+            </div>
         </div>
         <!-- /.col -->
     </div>
