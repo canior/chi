@@ -21,10 +21,10 @@ class ShareSourceRepository extends ServiceEntityRepository
 
     /**
      * @param null $userId
-     * @param null $username
+     * @param null $nameWildCard
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findShareSourcesQueryBuilder($userId = null, $username = null)
+    public function findShareSourcesQueryBuilder($userId = null, $nameWildCard = null)
     {
         $query = $this->createQueryBuilder('ss')
             ->orderBy('ss.id', 'DESC');
@@ -34,11 +34,12 @@ class ShareSourceRepository extends ServiceEntityRepository
                 ->setParameter('userId', $userId);
         }
 
-        if ($username) {
+        if ($nameWildCard) {
             $orX = $query->expr()->orX();
-            $literal = $query->expr()->literal("%$username%");
+            $literal = $query->expr()->literal("%$nameWildCard%");
             $orX->add($query->expr()->like('u.username', $literal));
             $orX->add($query->expr()->like('u.nickname', $literal));
+            $orX->add($query->expr()->like('u.name', $literal));
             $query->leftJoin('ss.user', 'u')
                 ->andWhere($orX);
         }

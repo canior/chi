@@ -16,6 +16,9 @@ class ShareSourceController extends BackendController
 {
     /**
      * @Route("/share/source/", name="share_source_index", methods="GET")
+     * @param ShareSourceRepository $shareSourceRepository
+     * @param Request $request
+     * @return Response
      */
     public function index(ShareSourceRepository $shareSourceRepository, Request $request): Response
     {
@@ -23,11 +26,11 @@ class ShareSourceController extends BackendController
             'title' => '用户分享',
             'form' => [
                 'userId' => $request->query->get('userId', null),
-                'username' => $request->query->get('username', null),
+                'nameWildCard' => $request->query->get('nameWildCard', null),
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
-        $data['data'] = $shareSourceRepository->findShareSourcesQueryBuilder($data['form']['userId'], $data['form']['username']);
+        $data['data'] = $shareSourceRepository->findShareSourcesQueryBuilder($data['form']['userId'], $data['form']['nameWildCard']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/share_source/index.html.twig', $data);
     }

@@ -26,6 +26,12 @@ class User extends BaseUser implements Dao
         self::ROLE_SUPER_ADMIN => '超级管理员'
     ];
 
+    public static $adminRoleTexts = [
+        self::ROLE_CUSTOMER_SERVICE => '客服',
+        self::ROLE_ADMIN => '管理员',
+        self::ROLE_SUPER_ADMIN => '超级管理员'
+    ];
+
     use CreatedAtTrait,
         UpdatedAtTrait;
 
@@ -284,8 +290,25 @@ class User extends BaseUser implements Dao
     /**
      * @return bool
      */
+    public function hasAdminRoles()
+    {
+        return $this->hasRole(static::ROLE_SUPER_ADMIN)
+            or $this->hasRole(static::ROLE_ADMIN)
+            or $this->hasRole(static::ROLE_CUSTOMER_SERVICE);
+    }
+
+    /**
+     * @return bool
+     */
     public function isAdvancedUser() {
         return $this->getUserLevel() == UserLevel::ADVANCED;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLocked() {
+        return !$this->isEnabled();
     }
 
     /**
@@ -1187,8 +1210,9 @@ class User extends BaseUser implements Dao
 
     public function __toString()
     {
-       return '用户ID: ' . $this->getIdNum()
+       return '用户ID: ' . $this->getId()
            . ' 用户昵称: ' . $this->getNickname()
+           . ' 姓名: ' . $this->getName()
            . ' 会员等级: ' . $this->getUserLevelText();
     }
 

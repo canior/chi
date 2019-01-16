@@ -33,7 +33,9 @@ class BackendController extends DefaultController
                 [
                     'path' => [
                         'user_index',
-                        'user_info',
+                        'user_new',
+                        'user_edit',
+                        'user_personal_edit',
                     ],
                     'name' => '用户管理',
                     'icon' => 'fa fa-user',

@@ -22,9 +22,10 @@
                                        placeholder="按 用户ID 查询">
                             </div>
                             <div class="col-md-3 form-group">
-                                <label>用户名</label>
-                                <input type="text" name="username" class="form-control" value="{{ form.username }}"
-                                       placeholder="按 用户名 查询">
+                                <label>姓名及昵称</label>
+                                <input type="text" name="nameWildCard" class="form-control"
+                                       value="{{ form.nameWildCard }}"
+                                       placeholder="按姓名，昵称查询">
                             </div>
                             <div class="col-md-3 form-group">
                                 <label>&nbsp;</label>
@@ -36,15 +37,14 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th width="10%">ID</th>
+                                <th width="10%">分享源ID</th>
                                 <th width="10%">用户ID</th>
-                                <th width="10%">用户昵称</th>
-                                <th width="10%">产品ID</th>
-                                <th width="10%">产品名</th>
+                                <th width="10%">昵称</th>
+                                <th width="10%">姓名</th>
+                                <th width="10%">科目</th>
+                                <th width="10%">课程</th>
                                 <th width="10%">分享类型</th>
                                 <th width="10%">分享名称</th>
-                                <th width="10%">分享图片</th>
-                                <th width="10%">跳转页面</th>
                                 <th width="10%">分享时间</th>
                                 <th width="10%" class="text-center hidden-xs">操作</th>
                             </tr>
@@ -55,37 +55,34 @@
                                     <tr>
                                         <td>{{ item.id }}</td>
                                         <td>
-                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
+                                            <a class="btn btn-info btn-xs"
+                                               href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank"
+                                               title="查看详情">
                                                 {{ item.user.id }}
                                             </a>
                                         </td>
                                         <td>
-                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.user.nickname }}
-                                            </a>
+                                            {{ item.user.nickname }}
+                                        </td>
+                                        <td>
+                                            {{ item.user.name }}
                                         </td>
                                         <td>
                                             {% if item.product %}
-                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.product.id }}
-                                            </a>
+                                                {% if item.product.course %}
+                                                    {{ item.product.course.subjectText }}
+                                                {% endif %}
                                             {% endif %}
                                         </td>
                                         <td>
                                             {% if item.product %}
-                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.product.title }}
-                                            </a>
+                                                {% if item.product.course %}
+                                                    {{ item.product.title }}
+                                                {% endif %}
                                             {% endif %}
                                         </td>
                                         <td>{{ item.typeText }}</td>
                                         <td>{{ item.title }}</td>
-                                        <td>
-                                            {% if item.bannerFile %}
-                                                <img src="{{ path('imagePreview', {fileId: item.bannerFile.id}) }}" width="40" height="40"/>
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ item.page }}</td>
                                         <td>{{ item.createdAt }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">

@@ -3,6 +3,7 @@
 namespace App\Controller\Backend;
 
 use App\Entity\User;
+use App\Entity\UserLevel;
 use App\Form\UserRoleType;
 use App\Form\UserType;
 use App\Repository\ProductReviewRepository;
@@ -12,6 +13,7 @@ use FOS\UserBundle\Model\UserManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Form\UserPersonalType;
 
 /**
  * @Route("/backend")
@@ -20,6 +22,9 @@ class UserController extends BackendController
 {
     /**
      * @Route("/user/", name="user_index", methods="GET")
+     * @param UserRepository $userRepository
+     * @param Request $request
+     * @return Response
      */
     public function index(UserRepository $userRepository, Request $request): Response
     {
@@ -28,14 +33,16 @@ class UserController extends BackendController
             'form' => [
                 'userId' => $request->query->getInt('userId', null),
                 'username' => $request->query->get('username', null),
-                'role' => $request->query->get('role', User::ROLE_CUSTOMER),
+                'userLevel' => $request->query->get('userLevel', null),
+                'role' => $request->query->get('role', null),
                 'createdAtStart' => $request->query->get('createdAtStart', null),
                 'createdAtEnd' => $request->query->get('createdAtEnd', null),
                 'page' => $request->query->getInt('page', 1)
             ],
-            'roles' => User::$roleTexts
+            'roles' => User::$roleTexts,
+            'userLevels' => UserLevel::$userLevelTextArray,
         ];
-        $data['data'] = $userRepository->findUsersQueryBuilder($data['form']['userId'], $data['form']['username'], $data['form']['role'], $data['form']['createdAtStart'], $data['form']['createdAtEnd']);
+        $data['data'] = $userRepository->findUsersQueryBuilder($data['form']['userId'], $data['form']['username'], $data['form']['role'], $data['form']['userLevel'], $data['form']['createdAtStart'], $data['form']['createdAtEnd']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/user/index.html.twig', $data);
     }
@@ -61,10 +68,38 @@ class UserController extends BackendController
         return $this->render('backend/user/info.html.twig', [
             'user' => $user,
             'userStatisticsTotal' => $userStatisticsRepository->findUserStatisticsQueryBuilder($user->getId())->getQuery()->getOneOrNullResult(),
-            'title' => '用户详情',
+            'title' => '个人资料',
             'form' => $form->createView(),
             'productReviews' => $productReviewRepository->findUserProductReviews($user->getId(), 1, 5),
             'productReviewsTotal' => $productReviewRepository->findUserProductReviewsTotal($user->getId())
+        ]);
+    }
+
+    /**
+     * @Route("/user/personal/{id}/edit", name="user_personal_edit", methods="GET|POST")
+     *
+     * @param Request $request
+     * @param User $user
+     * @return Response
+     */
+    public function editUserPersonal(Request $request, User $user) {
+        $form = $this->createForm(UserPersonalType::class, $user);
+        $form->get('userLevel')->setData(array_search($user->getUserLevelText(), UserLevel::$userLevelTextArray));
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $user->setUserLevel($form->get('userLevel')->getData());
+            $this->getEntityManager()->persist($user);
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('notice', '修改成功');
+            return $this->redirectToRoute('user_personal_edit', ['id' => $user->getId()]);
+        }
+
+        return $this->render('backend/user/personal.edit.html.twig', [
+            'user' => $user,
+            'title' => '编辑个人资料',
+            'form' => $form->createView(),
         ]);
     }
 
@@ -88,6 +123,7 @@ class UserController extends BackendController
                 $user->setPlainPassword($request->request->get('user')['password']);
                 $userManager->updatePassword($user);
             }
+            $user->setEnabled($form->get('enabled')->getData());
             $userManager->updateUser($user);
             $this->addFlash('notice', '添加成功');
             return $this->redirectToRoute('user_index');
@@ -95,13 +131,17 @@ class UserController extends BackendController
 
         return $this->render('backend/user/new.html.twig', [
             'user' => $user,
-            'title' => '添加用户',
+            'title' => '添加后台用户',
             'form' => $form->createView(),
         ]);
     }
 
     /**
      * @Route("/user/{id}/edit", name="user_edit", methods="GET|POST")
+     * @param Request $request
+     * @param User $user
+     * @param UserManagerInterface $userManager
+     * @return Response
      */
     public function edit(Request $request, User $user, UserManagerInterface $userManager): Response
     {
@@ -116,6 +156,7 @@ class UserController extends BackendController
                 $user->setPlainPassword($request->request->get('user')['password']);
                 $userManager->updatePassword($user);
             }
+            $user->setEnabled($form->get('enabled')->getData());
             $userManager->updateUser($user);
             $this->addFlash('notice', '修改成功');
             return $this->redirectToRoute('user_edit', ['id' => $user->getId()]);
@@ -123,7 +164,7 @@ class UserController extends BackendController
 
         return $this->render('backend/user/edit.html.twig', [
             'user' => $user,
-            'title' => '修改用户',
+            'title' => '修改后台用户',
             'form' => $form->createView(),
         ]);
     }

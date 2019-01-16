@@ -9,11 +9,10 @@
             <div class="box">
                 <div class="box-header with-border">
                     {% include "backend/includes/app.session.flashbag.html.twig" %}
-                    <h3 class="box-title">创建后台用户</h3>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    {{ include('backend/user/_form.html.twig') }}
+                    {{ include('backend/user/_form.html.twig', {'button_label': '提交'}) }}
                 </div>
                 <!-- /.box-body -->
             </div>

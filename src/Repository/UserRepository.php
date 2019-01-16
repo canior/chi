@@ -45,50 +45,44 @@ class UserRepository extends ServiceEntityRepository
 
     /**
      * @param null $userId
-     * @param null $username
+     * @param null $nameWildCard
      * @param null $role
+     * @param null $userLevel
      * @param null $createdAtStart
      * @param null $createdAtEnd
      * @return QueryBuilder
      */
-    public function findUsersQueryBuilder($userId = null, $username = null, $role = null, $createdAtStart = null, $createdAtEnd = null)
+    public function findUsersQueryBuilder($userId = null, $nameWildCard = null, $role = null, $userLevel = null, $createdAtStart = null, $createdAtEnd = null)
     {
         /**
          * @var QueryBuilder $query
          */
         $query = $this->getEntityManager()->createQueryBuilder()
             ->select('u AS user')
-            ->from('App:User', 'u')
-            ->addSelect('SUM(us.spentTotal) AS spentTotal')
-            ->addSelect('SUM(us.sharedNum) AS sharedNum')
-            ->addSelect('SUM(us.childrenNum) AS childrenNum')
-            ->leftJoin('u.userStatistics', 'us')
-            ->groupBy('u.id')
-            // order by 拼团消费总额
-            ->addOrderBy('spentTotal', 'DESC')
-            // order by 总分享数量
-            ->addOrderBy('sharedNum', 'DESC')
-            // order by 有效下线用户数量
-            ->addOrderBy('childrenNum', 'DESC')
-            // order by 总收益
-            ->addOrderBy('u.totalRewards', 'DESC');
+            ->from('App:User', 'u');
 
         if ($userId) {
             $query->where('u.id = :userId')
                 ->setParameter('userId', $userId);
         }
 
-        if ($username) {
-            $orX = $query->expr()->orX();
-            $literal = $query->expr()->literal("%$username%");
-            $orX->add($query->expr()->like('u.username', $literal));
-            $orX->add($query->expr()->like('u.nickname', $literal));
-            $query->andWhere($orX);
+        if ($role) {
+            $query->andWhere('u.roles like :roles')
+                ->setParameter('roles', '%' . $role . '%');
         }
 
-        if ($role) {
-            $literal = $query->expr()->literal("%$role%");
-            $query->andWhere($query->expr()->like('u.roles', $literal));
+        if ($userLevel) {
+            $query->andWhere('u.userLevel = :userLevel')
+                ->setParameter('userLevel', $userLevel);
+        }
+
+        if ($nameWildCard) {
+            $orX = $query->expr()->orX();
+            $literal = $query->expr()->literal("%$nameWildCard%");
+            $orX->add($query->expr()->like('u.username', $literal));
+            $orX->add($query->expr()->like('u.nickname', $literal));
+            $orX->add($query->expr()->like('u.name', $literal));
+            $query->andWhere($orX);
         }
 
         if ($createdAtStart) {
@@ -119,7 +113,8 @@ class UserRepository extends ServiceEntityRepository
      * @param  int $pageLimit
      * @return ShareSourceUser[]|Collection
      */
-    public function findShareUsers($userId, $userLevel, $page, $pageLimit) {
+    public function findShareUsers($userId, $userLevel, $page, $pageLimit)
+    {
         /**
          * @var QueryBuilder $query
          */
@@ -152,7 +147,8 @@ class UserRepository extends ServiceEntityRepository
      * @return int
      * @throws NonUniqueResultException
      */
-    public function findTotalShareUsers($userId, $userLevel = null) {
+    public function findTotalShareUsers($userId, $userLevel = null)
+    {
         /**
          * @var QueryBuilder $query
          */
