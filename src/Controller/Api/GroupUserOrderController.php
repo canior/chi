@@ -188,9 +188,11 @@ class GroupUserOrderController extends BaseController
 
         $groupUserOrderId =  isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $recommanderName =  isset($data['recommanderName']) ? $data['recommanderName'] : null;
 
         $user = $this->getWxUser($thirdSession);
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+        $groupUserOrder->setRecommanderName($recommanderName);
 
         /**
          * 如果是拼团订单，并且是已完成或者已过期，则把当前订单取消不让支付继续

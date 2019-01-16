@@ -694,9 +694,10 @@ class UserController extends BaseController
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $userLevel = isset($data['userLevel']) ? $data['userLevel'] : null;
+        $recommanderName = isset($data['recommanderName']) ? $data['recommanderName'] : null;
         $user = $this->getWxUser($thirdSession);
 
-        $upgradeUserOrder = $user->createUpgradeUserOrder($userLevel);
+        $upgradeUserOrder = $user->createUpgradeUserOrder($userLevel, $recommanderName);
         $this->getEntityManager()->persist($upgradeUserOrder);
         $this->getEntityManager()->flush();
 
@@ -984,6 +985,8 @@ class UserController extends BaseController
         $idNum = isset($data['idNum']) ? $data['idNum'] : null;
         $wechat = isset($data['wechat']) ? $data['wechat'] : null;
 
+        $recommanderName = isset($data['recommanderName']) ? $data['recommanderName'] : null;
+
         $user = $this->getWxUser($thirdSession);
 
         $user->setName($name);
@@ -991,6 +994,7 @@ class UserController extends BaseController
         $user->setCompany($company);
         $user->setIdNum($idNum);
         $user->setWechat($wechat);
+        $user->setRecommanderName($recommanderName);
 
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();

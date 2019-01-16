@@ -129,28 +129,41 @@ class GroupUserOrder implements Dao
     private $product;
 
     /**
-     * GroupUserOrder constructor.
-     * @param User $user
-     * @param Product $product
-     * @param GroupOrder|null $groupOrder
+     * @var string|null
+     * @ORM\Column(type="string")
      */
-    public function __construct(User $user, Product $product, ?GroupOrder $groupOrder = null)
-    {
+    private $recommanderName;
+
+    public function __construct() {
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
         $this->groupUserOrderLogs = new ArrayCollection();
-        $this->setUser($user);
-        $this->setProduct($product);
         $this->setCreatedAt();
         $this->setUpdatedAt();
         $this->setCreated();
         $this->setUnPaid();
+    }
+
+    /**
+     * GroupUserOrder constructor.
+     * @param User $user
+     * @param Product $product
+     * @param GroupOrder|null $groupOrder
+     * @return GroupUserOrder
+     */
+    public static function factory(User $user, Product $product, ?GroupOrder $groupOrder = null)
+    {
+        $groupUserOrder = new GroupUserOrder();
+        $groupUserOrder->setUser($user);
+        $groupUserOrder->setProduct($product);
 
         if ($groupOrder) {
-            $this->setOrderRewards($groupOrder->getProduct()->getGroupOrderRewards());
+            $groupUserOrder->setOrderRewards($groupOrder->getProduct()->getGroupOrderRewards());
         } else {
-            $this->setOrderRewards($product->getGroupOrderRewards());
+            $groupUserOrder->setOrderRewards($product->getGroupOrderRewards());
         }
+
+        return $groupUserOrder;
     }
 
     public function setCreated() : self {
@@ -701,6 +714,7 @@ class GroupUserOrder implements Dao
             'address' => $this->getUserAddress() == null ? null : $this->getUserAddress()->getArray(),
             'carrierName' => $this->getCarrierName(),
             'trackingNo' => $this->getTrackingNo(),
+            'recommanderName' => $this->getRecommanderName(),
         ];
     }
 
@@ -714,5 +728,21 @@ class GroupUserOrder implements Dao
         $this->product = $product;
 
         return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getRecommanderName(): ?string
+    {
+        return $this->recommanderName;
+    }
+
+    /**
+     * @param null|string $recommanderName
+     */
+    public function setRecommanderName(?string $recommanderName): void
+    {
+        $this->recommanderName = $recommanderName;
     }
 }

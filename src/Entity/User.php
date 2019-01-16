@@ -233,6 +233,12 @@ class User extends BaseUser implements Dao
      */
     private $wechat;
 
+    /**
+     * @var string|null
+     * @ORM\Column(type="string")
+     */
+    private $recommanderName;
+
     public function __construct()
     {
         parent::__construct();
@@ -1020,10 +1026,11 @@ class User extends BaseUser implements Dao
     /**
      * 创建升级会员订单
      * @param string $userLevel
+     * @param $recommanderName
      * @return UpgradeUserOrder
      */
-    public function createUpgradeUserOrder($userLevel) {
-        $upgradeUserOrder = new UpgradeUserOrder($this, $userLevel, UserLevel::$userLevelPriceArray[$userLevel]);
+    public function createUpgradeUserOrder($userLevel, $recommanderName) {
+        $upgradeUserOrder = UpgradeUserOrder::factory($this, $userLevel, UserLevel::$userLevelPriceArray[$userLevel], $recommanderName);
         $this->upgradeUserOrders->add($upgradeUserOrder);
         return $upgradeUserOrder;
     }
@@ -1208,6 +1215,22 @@ class User extends BaseUser implements Dao
      */
     public function isCompletedPersonalInfo() {
         return $this->getName() and $this->getIdNum() and $this->getPhone();
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getRecommanderName(): ?string
+    {
+        return $this->recommanderName;
+    }
+
+    /**
+     * @param null|string $recommanderName
+     */
+    public function setRecommanderName(?string $recommanderName): void
+    {
+        $this->recommanderName = $recommanderName;
     }
 
     public function __toString()

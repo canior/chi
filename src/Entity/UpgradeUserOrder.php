@@ -105,6 +105,13 @@ class UpgradeUserOrder implements Dao
      */
     private $oldUserLevel;
 
+    /**
+     * @var string|null
+     * @ORM\Column(type="string")
+     */
+    private $recommanderName;
+
+
     public function __construct()
     {
         $this->setTotal(0);
@@ -119,9 +126,10 @@ class UpgradeUserOrder implements Dao
      * @param User $user
      * @param $userLevel
      * @param $total
+     * @param $recommanderName
      * @return UpgradeUserOrder
      */
-    public static function factory(User $user, $userLevel, $total) {
+    public static function factory(User $user, $userLevel, $total, $recommanderName) {
         $upgradeUserOrder = new UpgradeUserOrder();
         $upgradeUserOrder->setUser($user);
         $upgradeUserOrder->setOldUserLevel($user->getUserLevel());
@@ -130,6 +138,7 @@ class UpgradeUserOrder implements Dao
         $upgradeUserOrder->setStatus(self::CREATED);
         $upgradeUserOrder->setPaymentStatus(self::UNPAID);
         $upgradeUserOrder->setUserLevel($userLevel);
+        $upgradeUserOrder->setRecommanderName($recommanderName);
         return $upgradeUserOrder;
     }
 
@@ -373,6 +382,22 @@ class UpgradeUserOrder implements Dao
         $this->userAccountOrders = $userAccountOrders;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getRecommanderName(): ?string
+    {
+        return $this->recommanderName;
+    }
+
+    /**
+     * @param string|null $recommanderName
+     */
+    public function setRecommanderName($recommanderName): void
+    {
+        $this->recommanderName = $recommanderName;
+    }
+
     public function getArray() {
 
         $upgradeUserOrderPaymentArray = [];
@@ -393,7 +418,8 @@ class UpgradeUserOrder implements Dao
             'paymentStatusText' => $this->getPaymentStatusText(),
             'upgradeUserOrderPayments' => $upgradeUserOrderPaymentArray,
             'createdAt' => $this->getCreatedAt(true),
-            'updatedAt' => $this->getUpdatedAt(true)
+            'updatedAt' => $this->getUpdatedAt(true),
+            'recommanderName' => $this->getRecommanderName(),
         ];
     }
 
