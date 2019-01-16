@@ -672,7 +672,9 @@ class User extends BaseUser implements Dao
                 'id' => $this->getParentUser()->getId(),
                 'avatarUrl' => $this->getParentUser()->getAvatarUrl(),
                 'nickname' => $this->getParentUser()->getNickname(),
-                'name' => $this->getName()
+                'name' => $this->getParentUser()->getName(),
+                'phone' => $this->getParentUser()->getPhone(),
+                'company' => $this->getParentUser()->getCompany()
             ];
         }
 
