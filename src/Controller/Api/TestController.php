@@ -35,11 +35,19 @@ class TestController extends BaseController
         if ($this->getEnvironment() != 'dev') exit;
 
         /**
-         * @var TeacherRepository $teacherRepository
+         * @var Course $course
          */
-        $teacherRepository = $this->getEntityManager()->getRepository(Teacher::class);
+        $course = $this->getEntityManager()->getRepository(Course::class)->find(10);
 
-        echo $teacherRepository->findTotalStudents(1, 4);
+        /**
+         * @var User $user
+         */
+        $user = $this->getEntityManager()->getRepository(User::class)->find(5);
+        $courseOrder = $user->createCourseOrder($course);
+        $this->getEntityManager()->persist($courseOrder);
+        $this->getEntityManager()->flush();
+        echo $courseOrder->getId();
+
 
         return $this->responseRaw("");
     }

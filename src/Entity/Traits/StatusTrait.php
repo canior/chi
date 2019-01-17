@@ -21,7 +21,7 @@ trait StatusTrait
      *
      * @return string
      */
-    private function getStatus() : string
+    protected function getStatus() : string
     {
         return $this->status;
     }

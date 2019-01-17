@@ -280,6 +280,20 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * @return CourseStudent[]|ArrayCollection|Collection
+     */
+    public function getCourseStudents() {
+        return $this->courseStudents;
+    }
+
+    /**
+     * @param CourseStudent $courseStudent
+     */
+    public function addCourseStudent(CourseStudent $courseStudent) {
+        $this->courseStudents->add($courseStudent);
+    }
+
+    /**
      * @return bool
      */
     public function isTeacher() {
@@ -461,6 +475,7 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * 曾经用掉的总名额
      * @return int
      */
     public function getTotalRecommandStock() {
@@ -991,7 +1006,7 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @param UserAccountOrder[] $userAccountOrders
+     * @param UserAccountOrder[]|ArrayCollection $userAccountOrders
      */
     public function setUserAccountOrders($userAccountOrders): void
     {
@@ -1022,6 +1037,16 @@ class User extends BaseUser implements Dao
     public function setUpgradeUserOrders($upgradeUserOrders): void
     {
         $this->upgradeUserOrders = $upgradeUserOrders;
+    }
+
+    /**
+     * @param Course $course
+     * @return CourseOrder
+     */
+    public function createCourseOrder(Course $course) {
+        $courseOrder = GroupUserOrder::factory($this, $course->getProduct());
+        $this->groupUserOrders->add($courseOrder);
+        return $courseOrder;
     }
 
     /**
@@ -1062,6 +1087,14 @@ class User extends BaseUser implements Dao
      */
     public function increaseUserAccountTotal($amount) {
         $this->userAccountTotal += $amount;
+    }
+
+    /**
+     * 减少用户账户钱
+     * @param $amount
+     */
+    public function decreaseUserAccountTotal($amount) {
+        $this->userAccountTotal -= $amount;
     }
 
     /**

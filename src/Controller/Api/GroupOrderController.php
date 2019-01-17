@@ -141,9 +141,6 @@ class GroupOrderController extends BaseController
         $groupUserOrder = $groupOrder->getSlaveGroupUserOrder($user);
         if ($groupUserOrder == null) {
             $groupUserOrder = GroupUserOrder::factory($user, $groupOrder->getProduct(), $groupOrder);
-            $groupUserOrder->setTotal($groupOrder->getProduct()->getGroupPrice() + $groupOrder->getProduct()->getFreight());
-            $groupUserOrder->setGroupOrder($groupOrder);
-            $groupOrder->addGroupUserOrder($groupUserOrder);
         }
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();

@@ -76,6 +76,8 @@ class BaseTestCase extends WebTestCase
     }
 
     /**
+     * 如果persist则需要测试数据库连接
+     *
      * @param bool $isPersist
      * @return Product
      */
@@ -109,6 +111,10 @@ class BaseTestCase extends WebTestCase
         return $product;
     }
 
+    /**
+     * @param bool $isPersist
+     * @return User
+     */
     public function createUser($isPersist = false) {
         $openId = uniqid();
         $user = new User();

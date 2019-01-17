@@ -91,7 +91,7 @@ class Course implements Dao
      * @param string|null $address
      * @return Course
      */
-    public static function factory($title, $shortDescription, $price, $subject, Teacher $teacher, $startDate, $endDate, Region $region, $address = null) {
+    public static function factory($title, $shortDescription, $price, $subject, Teacher $teacher, $startDate, $endDate, Region $region = null, $address = null) {
         $course = new Course();
 
         $product = new Product();
@@ -107,6 +107,8 @@ class Course implements Dao
         $course->setEndDate($endDate);
         $course->setRegion($region);
         $course->setAddress($address);
+        $product->setCourse($course);
+
         return $course;
     }
 
@@ -304,7 +306,7 @@ class Course implements Dao
     }
 
     /**
-     * @return CourseStudent[]
+     * @return CourseStudent[]|ArrayCollection
      */
     public function getCourseStudents()
     {
@@ -315,16 +317,16 @@ class Course implements Dao
      * 返回课程学生列表（无重复）
      *
      * @param string $status
-     * @return User[]
+     * @return User[]|Collection
      */
     public function getStudentUsers($status = null){
-        $students = [];
+        $students = new ArrayCollection();
         foreach ($this->getCourseStudents() as $courseStudent) {
-            if (!in_array($courseStudent->getStudentUser(), $students)) {
+            if (!$students->contains($courseStudent->getStudentUser())) {
                 if ($status == null) {
-                    $students[] = $courseStudent->getStudentUser();
+                    $students->add($courseStudent->getStudentUser());
                 } else if ($status == $courseStudent->getStatus()) {
-                    $students[] = $courseStudent->getStudentUser();
+                    $students->add($courseStudent->getStudentUser());
                 }
             }
         }
@@ -373,13 +375,14 @@ class Course implements Dao
     private function addStudentUser(User $studentUser, $courseStatus) {
         $courseStudent = new CourseStudent($this, $studentUser, $courseStatus);
         $this->courseStudents->add($courseStudent);
+        $studentUser->addCourseStudent($courseStudent);
     }
 
     /**
      * 学生注册
-     * @param $studentUser
+     * @param User $studentUser
      */
-    public function registerStudent($studentUser) {
+    public function registerStudent(User $studentUser) {
         $this->addStudentUser($studentUser, CourseStudent::REGISTERED);
     }
 

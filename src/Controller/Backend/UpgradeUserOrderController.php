@@ -34,12 +34,10 @@ class UpgradeUserOrderController extends BackendController
                 'oldUserLevel' => $request->query->get('oldUserLevel', null),
                 'userLevel' => $request->query->get('userLevel', null),
                 'status' => $request->query->get('status', null),
-                'paymentStatus' => $request->query->get('paymentStatus', null),
                 'page' => $request->query->getInt('page', 1)
             ],
             'userLevels' => UserLevel::$userLevelTextArray,
             'statuses' => UpgradeUserOrder::$statusTexts,
-            'paymentStatuses' => UpgradeUserOrder::$paymentStatusTexts,
 
         ];
         $id = $data['form']['id'];
@@ -48,9 +46,8 @@ class UpgradeUserOrderController extends BackendController
         $oldUserLevel = $data['form']['oldUserLevel'];
         $userLevel = $data['form']['userLevel'];
         $status = $data['form']['status'];
-        $paymentStatus = $data['form']['paymentStatus'];
 
-        $data['data'] = $upgradeUserOrderRepository->search($id, $userId, $name, $oldUserLevel, $userLevel, $status, $paymentStatus);
+        $data['data'] = $upgradeUserOrderRepository->search($id, $userId, $name, $oldUserLevel, $userLevel, $status);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/upgrade_user_order/index.html.twig', $data);
     }
@@ -66,7 +63,6 @@ class UpgradeUserOrderController extends BackendController
         $user = $upgradeUserOrder->getUser();
         $form = $this->createForm(EditUpgradeUserOrderType::class, $upgradeUserOrder);
         $form->get('status')->setData($upgradeUserOrder->getStatus());
-        $form->get('paymentStatus')->setData($upgradeUserOrder->getPaymentStatus());
 
         $form->handleRequest($request);
 
@@ -75,7 +71,6 @@ class UpgradeUserOrderController extends BackendController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $upgradeUserOrder->setStatus($form->get('status')->getData());
-            $upgradeUserOrder->setPaymentStatus($form->get('paymentStatus')->getData());
 
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');

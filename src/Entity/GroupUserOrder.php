@@ -13,6 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\GroupUserOrderRepository")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="group_user_order_type", type="string")
+ * @ORM\DiscriminatorMap({"product_order" = "GroupUserOrder", "course_order" = "CourseOrder"})
  */
 class GroupUserOrder implements Dao
 {
@@ -62,6 +65,16 @@ class GroupUserOrder implements Dao
     const GROUP_MASTER = '团长';
     const GROUP_MEMBER = '团员';
     const REGULAR = '普通';
+
+
+    const PRODUCT_ORDER = 'product_order';
+    const COURSE_ORDER = 'course_order';
+
+    public static $groupUserOrderType = [
+        self::PRODUCT_ORDER => '产品订单',
+        self::COURSE_ORDER => '课程订单'
+    ];
+
 
     /**
      * @ORM\ManyToOne(targetEntity="GroupOrder", inversedBy="groupUserOrders")
@@ -141,26 +154,45 @@ class GroupUserOrder implements Dao
      * @param User $user
      * @param Product $product
      * @param GroupOrder|null $groupOrder
-     * @return GroupUserOrder
+     * @return GroupUserOrder|CourseOrder
      */
     public static function factory(User $user, Product $product, ?GroupOrder $groupOrder = null)
     {
         $groupUserOrder = new GroupUserOrder();
+        if ($product->getCourse()) {
+            $groupUserOrder = new CourseOrder();
+        }
+
         $groupUserOrder->setUser($user);
         $groupUserOrder->setProduct($product);
         $groupUserOrder->setCreated();
         $groupUserOrder->setUnPaid();
 
         if ($groupOrder) {
+            $groupUserOrder->setGroupOrder($groupOrder);
+            $groupUserOrder->setTotal($product->getGroupPrice() + $product->getFreight());
             $groupUserOrder->setOrderRewards($groupOrder->getProduct()->getGroupOrderRewards());
+            $groupOrder->addGroupUserOrder($groupUserOrder);
         } else {
+            $groupUserOrder->setTotal($product->getPrice() + $product->getFreight());
             $groupUserOrder->setOrderRewards($product->getGroupOrderRewards());
         }
 
         return $groupUserOrder;
     }
 
-    public function setCreated() : self {
+    /**
+     * 是否课程订单
+     * @return bool
+     */
+    public function isCourseOrder(){
+        return false;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setCreated() {
         $oldStatus = $this->status;
         $newStatus = $this->status = self::CREATED;
 
@@ -208,7 +240,10 @@ class GroupUserOrder implements Dao
         return self::CANCELLED == $this->getStatus();
     }
 
-    public function setCancelled() : self {
+    /**
+     * @return $this
+     */
+    public function setCancelled() {
         $oldStatus = $this->status;
         $newStatus = $this->status = self::CANCELLED;
 
@@ -329,7 +364,7 @@ class GroupUserOrder implements Dao
         return self::RMA_RECEIVED == $this->getStatus();
     }
 
-    public function setPaid() : self {
+    public function setPaid() {
         $oldStatus = $this->paymentStatus;
         $newStatus = $this->paymentStatus = self::PAID;
 
@@ -384,7 +419,10 @@ class GroupUserOrder implements Dao
     }
 
 
-    public function setUnPaid() : self {
+    /**
+     * @return $this
+     */
+    public function setUnPaid() {
         $oldStatus = $this->paymentStatus;
         $newStatus = $this->paymentStatus = self::UNPAID;
 

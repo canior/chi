@@ -6,7 +6,8 @@
  * Time: 11:47 PM
  */
 
-namespace App\Tests;
+namespace App\Tests\Chi;
+
 
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
@@ -20,6 +21,7 @@ use App\Repository\ShareSourceRepository;
 use App\Repository\ShareSourceUserRepository;
 use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\BaseTestCase;
 
 /**
  * Created by PhpStorm.

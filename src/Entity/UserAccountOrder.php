@@ -93,6 +93,10 @@ class UserAccountOrder implements Dao
         $userAccountOrder->setAmount($amount);
         $userAccountOrder->setUserAccountOrderType($userAccountOrderType);
         $userAccountOrder->setUpgradeUserOrder($upgradeUserOrder);
+        if ($userAccountOrderType == UserAccountOrder::WITHDRAW)
+            $user->decreaseUserAccountTotal($amount);
+        else
+            $user->increaseUserAccountTotal($amount);
         return $userAccountOrder;
     }
 
@@ -235,12 +239,7 @@ class UserAccountOrder implements Dao
 
     public function setPaid() {
         $this->paymentStatus = self::PAID;
-
-        if ($this->isWithdraw()) {
-            $this->getUser()->increaseUserAccountTotal(-$this->getAmount());
-        } else {
-            $this->getUser()->increaseUserAccountTotal($this->getAmount());
-        }
+        $this->setUpdatedAt();
     }
 
     /**

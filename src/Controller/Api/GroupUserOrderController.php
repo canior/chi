@@ -166,7 +166,6 @@ class GroupUserOrderController extends BaseController
         $product = $productRepository->find($productId);
 
         $groupUserOrder = GroupUserOrder::factory($user, $product);
-        $groupUserOrder->setTotal($product->getPrice() + $product->getFreight());
         $this->getEntityManager()->persist($groupUserOrder);
         $this->getEntityManager()->flush();
 

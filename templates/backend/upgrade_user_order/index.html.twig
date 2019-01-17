@@ -59,15 +59,6 @@
                                 </select>
                             </div>
                             <div class="col-md-3 form-group">
-                                <label>支付状态</label>
-                                <select name="paymentStatus" class="form-control chosen">
-                                    <option value="">全部</option>
-                                    {% for paymentStatus, text in paymentStatuses %}
-                                        <option value="{{ paymentStatus }}"{% if paymentStatus == form.paymentStatus %} selected{% endif %}>{{ text }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-3 form-group">
                                 <label>&nbsp</label>
                                 <input class="form-control btn btn-primary" type="submit" value="搜索"/>
                             </div>
@@ -84,7 +75,6 @@
                                 <th class="col-md-2">会员等级</th>
                                 <th class="col-md-1">订单金额</th>
                                 <th class="col-md-1">订单状态</th>
-                                <th class="col-md-1">支付状态</th>
                                 <th class="col-md-1">推荐人</th>
                                 <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
@@ -100,7 +90,6 @@
                                         <td>{{ item.UpgradeUserOrder.oldUserLevelText }} - {{ item.UpgradeUserOrder.userLevelText }}</td>
                                         <td>￥{{ item.UpgradeUserOrder.total }}</td>
                                         <td>{{ item.UpgradeUserOrder.statusText }}</td>
-                                        <td>{{ item.UpgradeUserOrder.paymentStatusText }}</td>
                                         <td>
                                             {% if item.UpgradeUserOrder.user.isRecommanderVerified %}
                                                 <span class="fa fa-check-square icon-cog text-green ">

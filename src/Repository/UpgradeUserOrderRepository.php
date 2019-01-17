@@ -28,10 +28,9 @@ class UpgradeUserOrderRepository extends ServiceEntityRepository
      * @param string|null $oldUserLevel
      * @param string|null $userLevel
      * @param string|null $status
-     * @param string|null $paymentStatus
      * @return QueryBuilder
      */
-    public function search($id = null, $userId = null, $name = null, $oldUserLevel = null, $userLevel = null, $status = null, $paymentStatus = null) {
+    public function search($id = null, $userId = null, $name = null, $oldUserLevel = null, $userLevel = null, $status = null) {
         /**
          * @var QueryBuilder $query
          */
@@ -68,11 +67,6 @@ class UpgradeUserOrderRepository extends ServiceEntityRepository
         if ($status) {
             $query->andWhere('uuo.status = :status')
                 ->setParameter('status', $status);
-        }
-
-        if ($paymentStatus) {
-            $query->andWhere('uuo.paymentStatus = :paymentStatus')
-                ->setParameter('paymentStatus', $paymentStatus);
         }
 
         return $query;

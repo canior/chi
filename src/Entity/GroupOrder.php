@@ -13,6 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\GroupOrderRepository")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="group_order_type", type="string")
+ * @ORM\DiscriminatorMap({"group_gift" = "GroupGiftOrder", "group_buy" = "GroupOrder"})
  */
 class GroupOrder implements Dao
 {
@@ -32,6 +35,15 @@ class GroupOrder implements Dao
         self::PENDING => '拼团中',
         self::COMPLETED => '拼团成功',
         self::EXPIRED => '拼团过期',
+    ];
+
+
+    const GROUP_GIFT = 'group_gift';
+    const GROUP_BUY = 'group_buy';
+
+    public static $groupOrderType = [
+        self::GROUP_GIFT => '集call',
+        self::GROUP_BUY => '拼团'
     ];
 
     /**

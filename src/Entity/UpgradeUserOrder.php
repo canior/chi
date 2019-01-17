@@ -39,19 +39,6 @@ class UpgradeUserOrder implements Dao
         self::REJECTED => '已拒绝',
     ];
 
-    const UNPAID = 'unpaid';
-    const PAID = 'paid';
-
-    const REFUNDING = 'refunding';
-    const REFUNDED = 'refunded';
-
-    public static $paymentStatusTexts = [
-        self::PAID => '已支付',
-        self::UNPAID => '未支付',
-        self::REFUNDING => '退款中',
-        self::REFUNDED => '已退款'
-    ];
-
     /**
      * @var User $user
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="upgradeUserOrders")
@@ -129,11 +116,31 @@ class UpgradeUserOrder implements Dao
         $upgradeUserOrder->setUserLevel($userLevel);
         $upgradeUserOrder->setTotal($total);
         $upgradeUserOrder->setStatus(self::CREATED);
-        $upgradeUserOrder->setPaymentStatus(self::UNPAID);
         $upgradeUserOrder->setUserLevel($userLevel);
         return $upgradeUserOrder;
     }
 
+    /**
+     * @return bool
+     */
+    public function isCreated() {
+        return $this->getStatus() == self::CREATED;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isApproved() {
+        return $this->getStatus() == self::APPROVED;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isPending() {
+        return $this->getStatus() == self::PENDING;
+    }
 
     /**
      * @return string
@@ -245,34 +252,11 @@ class UpgradeUserOrder implements Dao
     }
 
     /**
-     * @return string
-     */
-    public function getPaymentStatusText() {
-        return self::$paymentStatusTexts[$this->getPaymentStatus()];
-    }
-
-    /**
      * @param string $status
      */
     public function setStatus(string $status): void
     {
         $this->status = $status;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPaymentStatus(): string
-    {
-        return $this->paymentStatus;
-    }
-
-    /**
-     * @param string $paymentStatus
-     */
-    public function setPaymentStatus(string $paymentStatus): void
-    {
-        $this->paymentStatus = $paymentStatus;
     }
 
 
@@ -281,14 +265,9 @@ class UpgradeUserOrder implements Dao
      * @param string $memo
      */
     public function addPayment($amount, $memo = null) {
-        $payments = new UpgradeUserOrderPayment($this, $amount, $memo);
-        $this->setPaid();
+        $payments = UpgradeUserOrderPayment::factory($this, $amount, $memo);
         $this->upgradeUserOrderPayments->add($payments);
-    }
-
-    public function setPaid() {
-        $this->paymentStatus = self::PAID;
-        $this->setUpdatedAt();
+        $this->setPending();
     }
 
     public function setPending() {
@@ -304,10 +283,9 @@ class UpgradeUserOrder implements Dao
      * 4. 分钱给间接讲师
      */
     public function setApproved() {
-        if ($this->status == self::APPROVED)
-            return;
-
         $this->status = self::APPROVED;
+        $this->setUpdatedAt();
+
         $userLevel = $this->getUserLevel();
         $user = $this->getUser();
 
@@ -335,22 +313,18 @@ class UpgradeUserOrder implements Dao
         }
 
         /* 分钱给间接讲师 */
+
         if (array_key_exists($currentSubject, Subject::$oldTeacherRewards)) {
-            foreach (Subject::$oldTeacherRewards[$currentSubject] as $oldSubjects) {
-                $oldCourse = $user->getLatestCourse($oldSubjects);
+            foreach (Subject::$oldTeacherRewards[$currentSubject] as $oldSubject => $oldSubjectConfigs) {
+                $oldCourse = $user->getLatestCourse($oldSubject);
                 if ($oldCourse != null) {
-                    if (array_key_exists($this->getUserLevel(), $oldSubjects)){
-                        $oldTeacherRewards = $oldSubjects[$this->getUserLevel()];
-                        $oldTeacherUser = $oldCourse->getTeacher()->getUser();
-                        if ($oldTeacherUser != null) {
-                            $oldTeacherUser->createUserAccountOrder(UserAccountOrder::OLD_TEACHER_REWARDS, $oldTeacherRewards, $this);
-                        }
+                    $oldTeacherUser = $oldCourse->getTeacher()->getUser();
+                    if ($oldTeacherUser != null) {
+                        $oldTeacherUser->createUserAccountOrder(UserAccountOrder::OLD_TEACHER_REWARDS, $oldSubjectConfigs[$this->getUserLevel()], $this);
                     }
                 }
             }
         }
-
-        $this->setUpdatedAt();
     }
 
     public function setRejected() {
@@ -390,12 +364,9 @@ class UpgradeUserOrder implements Dao
             'total' => $this->getTotal(),
             'status' => $this->getStatus(),
             'statusText' => $this->getStatusText(),
-            'paymentStatus' => $this->getPaymentStatus(),
-            'paymentStatusText' => $this->getPaymentStatusText(),
             'upgradeUserOrderPayments' => $upgradeUserOrderPaymentArray,
             'createdAt' => $this->getCreatedAt(true),
             'updatedAt' => $this->getUpdatedAt(true),
-            'recommanderName' => $this->getRecommanderName(),
         ];
     }
 
@@ -406,7 +377,6 @@ class UpgradeUserOrder implements Dao
     {
         return '订单号: ' . $this->getId()
             . ' , 金额: ￥' . $this->getTotal()
-            . ' , 状态:'. $this->getStatusText()
-            . ' , 支付状态:'. $this->getPaymentStatusText();
+            . ' , 状态:'. $this->getStatusText();
     }
 }

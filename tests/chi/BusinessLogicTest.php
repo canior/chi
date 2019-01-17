@@ -6,7 +6,7 @@
  * Time: 12:28 AM
  */
 
-namespace App\Tests;
+namespace App\Tests\Bianxian;
 
 
 use App\Entity\CommandMessage;
@@ -14,6 +14,7 @@ use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
 use App\Entity\ShareSource;
 use App\Entity\ShareSourceUser;
+use App\Tests\BaseTestCase;
 
 class BusinessLogicTest extends BaseTestCase
 {

@@ -18,11 +18,6 @@ class EditUpgradeUserOrderType extends AbstractType
                 'mapped' => false,
                 'choices' => array_flip(UpgradeUserOrder::$statusTexts),
             ])
-            ->add('paymentStatus', ChoiceType::class, [
-                'label' => '支付状态',
-                'mapped' => false,
-                'choices' => array_flip(UpgradeUserOrder::$paymentStatusTexts),
-            ])
         ;
     }
 
