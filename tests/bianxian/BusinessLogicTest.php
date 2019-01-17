@@ -17,7 +17,7 @@ use App\Entity\CourseOrder;
 use App\Form\CourseStudentType;
 use Doctrine\Common\Collections\ArrayCollection;
 
-class BianxianBusinessLogicTest extends BianxianBaseTestCase
+class BusinessLogicTest extends BianxianBaseTestCase
 {
     /**
      * 测试学员会务费订单流程

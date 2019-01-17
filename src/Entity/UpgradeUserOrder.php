@@ -65,12 +65,6 @@ class UpgradeUserOrder implements Dao
     private $status;
 
     /**
-     * @var string
-     * @ORM\Column(type="string")
-     */
-    private $paymentStatus;
-
-    /**
      * @var UpgradeUserOrderPayment[]
      * @ORM\OneToMany(targetEntity="App\Entity\UpgradeUserOrderPayment", mappedBy="upgradeUserOrder", cascade={"persist"}, orphanRemoval=true, fetch="LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
@@ -256,9 +250,14 @@ class UpgradeUserOrder implements Dao
      */
     public function setStatus(string $status): void
     {
-        $this->status = $status;
-    }
+        switch ($status) {
+            case self::CREATED: $this->setCreated(); return;
+            case self::PENDING: $this->setPending(); return;
+            case self::APPROVED: $this->setApproved(); return;
+            case self::REJECTED: $this->setRejected(); return;
+        }
 
+    }
 
     /**
      * @param float $amount
@@ -268,6 +267,11 @@ class UpgradeUserOrder implements Dao
         $payments = UpgradeUserOrderPayment::factory($this, $amount, $memo);
         $this->upgradeUserOrderPayments->add($payments);
         $this->setPending();
+    }
+
+    public function setCreated() {
+        $this->status = self::CREATED;
+        $this->setUpdatedAt();
     }
 
     public function setPending() {
@@ -283,6 +287,9 @@ class UpgradeUserOrder implements Dao
      * 4. 分钱给间接讲师
      */
     public function setApproved() {
+        if ($this->isApproved())
+            return;
+
         $this->status = self::APPROVED;
         $this->setUpdatedAt();
 
@@ -303,6 +310,9 @@ class UpgradeUserOrder implements Dao
 
         /* 分钱给直接讲师 */
         $latestCourse = $user->getLatestCourse();
+        if (!$latestCourse)
+            return;
+
         $currentSubject = $latestCourse->getSubject();
         if ($latestCourse != null) {
             $teacherRewards = Subject::$teacherRewards[$currentSubject][$this->getUserLevel()];

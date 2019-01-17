@@ -9,6 +9,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Course;
+use App\Entity\CourseOrder;
 use App\Entity\Teacher;
 use App\Entity\User;
 use App\Entity\UpgradeUserOrder;
@@ -34,20 +35,7 @@ class TestController extends BaseController
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
 
-        /**
-         * @var Course $course
-         */
-        $course = $this->getEntityManager()->getRepository(Course::class)->find(10);
-
-        /**
-         * @var User $user
-         */
-        $user = $this->getEntityManager()->getRepository(User::class)->find(5);
-        $courseOrder = $user->createCourseOrder($course);
-        $this->getEntityManager()->persist($courseOrder);
-        $this->getEntityManager()->flush();
-        echo $courseOrder->getId();
-
+        $order = $this->getEntityManager()->getRepository(UpgradeUserOrder::class)->find(5);
 
         return $this->responseRaw("");
     }

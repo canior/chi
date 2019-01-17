@@ -14,7 +14,7 @@ trait StatusTrait
      * @var string
      * @ORM\Column(name="status", type="string", length=50, nullable=false)
      */
-    private $status;
+    protected $status;
 
     /**
      * Get status
@@ -33,7 +33,7 @@ trait StatusTrait
      *
      * @return $this
      */
-    public function setStatus($status) : self
+    public function setStatus($status)
     {
         $this->status = $status;
         return $this;

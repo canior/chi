@@ -71,7 +71,7 @@ class UpgradeUserOrderController extends BackendController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $upgradeUserOrder->setStatus($form->get('status')->getData());
-
+            $this->getEntityManager()->persist($upgradeUserOrder);
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');
             return $this->redirectToRoute('upgrade_user_order_edit', ['id' => $upgradeUserOrder->getId()]);

@@ -92,23 +92,21 @@ class Course implements Dao
      * @return Course
      */
     public static function factory($title, $shortDescription, $price, $subject, Teacher $teacher, $startDate, $endDate, Region $region = null, $address = null) {
-        $course = new Course();
-
         $product = new Product();
         $product->setTitle($title);
         $product->setShortDescription($shortDescription);
         $product->setPrice($price);
 
+        $course = new Course();
         $course->setProduct($product);
-
         $course->setSubject($subject);
         $course->setTeacher($teacher);
         $course->setStartDate($startDate);
         $course->setEndDate($endDate);
         $course->setRegion($region);
         $course->setAddress($address);
-        $product->setCourse($course);
 
+        $product->setCourse($course);
         return $course;
     }
 

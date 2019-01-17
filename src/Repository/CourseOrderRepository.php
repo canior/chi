@@ -2,9 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\GroupGiftOrder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use App\Entity\CourseOrder;
 
 /**
  * @method CourseOrder|null find($id, $lockMode = null, $lockVersion = null)

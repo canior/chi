@@ -57,7 +57,7 @@ class ProductController extends BaseController
             $bannersArray[] = $projectBannerMeta->getArray();
         }
 
-        $products = $productRepository->findActiveProducts($request->query->getInt('page', 1), self::PAGE_LIMIT);
+        $products = $productRepository->findActiveProducts();
         foreach($products as $product) {
             $productsArray[] = $product->getArray();
         }

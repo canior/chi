@@ -13,14 +13,14 @@ trait PaymentStatusTrait
     /**
      * @ORM\Column(type="string", length=50)
      */
-    private $paymentStatus;
+    protected $paymentStatus;
 
     protected function getPaymentStatus(): ?string
     {
         return $this->paymentStatus;
     }
 
-    protected function setPaymentStatus(string $paymentStatus): self
+    protected function setPaymentStatus(string $paymentStatus)
     {
         $this->paymentStatus = $paymentStatus;
 

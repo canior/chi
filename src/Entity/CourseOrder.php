@@ -8,6 +8,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\StatusTrait;
 use App\Repository\CourseOrderRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -16,6 +17,15 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CourseOrder extends GroupUserOrder
 {
+    public function setStatus($status)
+    {
+        switch ($status) {
+            case self::CREATED: return $this->setCreated();
+            case self::CANCELLED: return $this->setCancelled();
+            case self::DELIVERED: return $this->setRegistered();
+        }
+    }
+
     /**
      * @return bool
      */
@@ -24,12 +34,11 @@ class CourseOrder extends GroupUserOrder
         return true;
     }
 
-
     /**
      * @return $this|GroupUserOrder
      */
     public function setCreated() {
-        $this->setStatus(GroupUserOrder::CREATED);
+        $this->status = GroupUserOrder::CREATED;
         $this->setUpdatedAt();
         return $this;
     }
@@ -39,11 +48,12 @@ class CourseOrder extends GroupUserOrder
      */
     public function setRegistered()
     {
-       $this->setStatus(GroupUserOrder::DELIVERED);
+        if ($this->isRegistered())
+            return $this;
+
+       $this->status = GroupUserOrder::DELIVERED;
        $this->setUpdatedAt();
-       if ($this->isUnPaid()) {
-           $this->setPaid();
-       }
+       $this->setPaid();
 
        $this->getCourse()->registerStudent($this->getUser());
 
@@ -62,7 +72,7 @@ class CourseOrder extends GroupUserOrder
      */
     public function setCancelled()
     {
-        $this->setStatus(GroupUserOrder::CANCELLED);
+        $this->status = GroupUserOrder::CANCELLED;
         $this->setUpdatedAt();
         return $this;
     }
@@ -78,7 +88,10 @@ class CourseOrder extends GroupUserOrder
      * @return $this|GroupUserOrder
      */
     public function setPaid() {
-        $this->setPaymentStatus(GroupUserOrder::PAID);
+        if ($this->isPaid())
+            return $this;
+
+        $this->paymentStatus = GroupUserOrder::PAID;
         $this->setUpdatedAt();
         $this->setRegistered();
         return $this;
@@ -89,7 +102,7 @@ class CourseOrder extends GroupUserOrder
      */
     public function setUnPaid()
     {
-        $this->setPaymentStatus(GroupUserOrder::UNPAID);
+        $this->paymentStatus = GroupUserOrder::UNPAID;
         $this->setUpdatedAt();
         return $this;
     }

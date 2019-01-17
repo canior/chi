@@ -760,4 +760,22 @@ class GroupUserOrder implements Dao
 
         return $this;
     }
+
+    public function setPaymentStatus(string $paymentStatus)
+    {
+        switch ($paymentStatus) {
+            case self::UNPAID: return $this->setUnPaid();
+            case self::PAID: return $this->setPaid();
+            case self::REFUNDING: return $this->setRefunding();
+            case self::REFUNDED: return $this->setRefunded();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getCourseStatusText() : string
+    {
+        return isset(self::$courseStatuses) && isset(self::$courseStatuses[$this->status]) ? self::$courseStatuses[$this->status] : $this->status;
+    }
 }

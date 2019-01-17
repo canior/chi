@@ -8,12 +8,57 @@
 
 namespace App\Tests\Bianxian;
 use App\Entity\Teacher;
+use App\Entity\UpgradeUserOrder;
 use App\Entity\User;
 use App\Entity\Course;
+use App\Entity\UserAccountOrder;
+use App\Repository\CourseRepository;
+use App\Repository\UpgradeUserOrderRepository;
+use App\Repository\UserAccountOrderRepository;
 use App\Tests\BaseTestCase;
 
 class BianxianBaseTestCase extends BaseTestCase
 {
+    protected function setUp() {
+        parent::setUp();
+
+        /**
+         * @var UserAccountOrderRepository $userAccountOrderRepository
+         */
+        $userAccountOrderRepository = $this->getEntityManager()->getRepository(UserAccountOrder::class);
+        foreach ($userAccountOrderRepository->findAll() as $userAccountOrder) {
+            $this->getEntityManager()->remove($userAccountOrder);
+        }
+        $this->getEntityManager()->flush();
+
+        /**
+         * @var UpgradeUserOrderRepository $upgradeUserOrderRepository
+         */
+        $upgradeUserOrderRepository = $this->getEntityManager()->getRepository(UpgradeUserOrder::class);
+        foreach ($upgradeUserOrderRepository->findAll() as $upgradeUserOrder) {
+            $this->getEntityManager()->remove($upgradeUserOrder);
+        }
+        $this->getEntityManager()->flush();
+
+        /**
+         * @var CourseRepository $userRepository
+         */
+        $courseRepository = $this->getEntityManager()->getRepository(Course::class);
+        foreach ($courseRepository->findAll() as $course) {
+            $this->getEntityManager()->remove($course);
+        }
+        $this->getEntityManager()->flush();
+
+        /**
+         * @var Teacher $teacher
+         */
+        $teacherRepository = $this->getEntityManager()->getRepository(Teacher::class);
+        foreach ($teacherRepository->findAll() as $teacher) {
+            $this->getEntityManager()->remove($teacher);
+        }
+        $this->getEntityManager()->flush();
+
+    }
     /**
      * @param $userLevel
      * @param bool $isPersist
@@ -22,6 +67,10 @@ class BianxianBaseTestCase extends BaseTestCase
     public function createStudent($userLevel, $isPersist = false) {
         $student = parent::createUser($isPersist);
         $student->setUserLevel($userLevel);
+        if ($isPersist) {
+            $this->getEntityManager()->persist($student);
+            $this->getEntityManager()->flush();
+        }
         return $student;
     }
 

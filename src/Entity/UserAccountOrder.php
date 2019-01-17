@@ -61,7 +61,7 @@ class UserAccountOrder implements Dao
 
     /**
      * @var UpgradeUserOrder
-     * @ORM\ManyToOne(targetEntity="App\Entity\UpgradeUserOrder")
+     * @ORM\ManyToOne(targetEntity="App\Entity\UpgradeUserOrder", cascade={"persist"})
      */
     private $upgradeUserOrder;
 
