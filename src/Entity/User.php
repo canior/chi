@@ -746,6 +746,7 @@ class User extends BaseUser implements Dao
             'wechat' => $this->getWechat(),
             'recommanderName' => $this->getRecommanderName(),
             'totalStudents' => 1000,
+            'totalShares'=> 500,
         ];
     }
 
