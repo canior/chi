@@ -35,7 +35,13 @@ class TestController extends BaseController
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
 
-        $order = $this->getEntityManager()->getRepository(UpgradeUserOrder::class)->find(5);
+        /**
+         * @var UpgradeUserOrder $upgradeUserOrder
+         */
+        $upgradeUserOrder = $this->getEntityManager()->getRepository(UpgradeUserOrder::class)->find(5);
+        $userAccountOrders = $upgradeUserOrder->getPotentialUserAccountOrders();
+        echo $userAccountOrders->count();
+        var_dump($userAccountOrders[0]->getArray());
 
         return $this->responseRaw("");
     }

@@ -86,6 +86,11 @@ class UpgradeUserOrder implements Dao
      */
     private $oldUserLevel;
 
+    /**
+     * @var ArrayCollection|null
+     */
+    private $potentialUserAccountOrders;
+
 
     public function __construct()
     {
@@ -94,6 +99,7 @@ class UpgradeUserOrder implements Dao
         $this->setUpdatedAt();
         $this->upgradeUserOrderPayments = new ArrayCollection();
         $this->userAccountOrders = new ArrayCollection();
+        $this->potentialUserAccountOrders = new ArrayCollection();
     }
 
     /**
@@ -112,6 +118,26 @@ class UpgradeUserOrder implements Dao
         $upgradeUserOrder->setStatus(self::CREATED);
         $upgradeUserOrder->setUserLevel($userLevel);
         return $upgradeUserOrder;
+    }
+
+    /**
+     * @return ArrayCollection|null
+     */
+    public function getPotentialUserAccountOrders(): ?ArrayCollection
+    {
+        if ($this->potentialUserAccountOrders == null) {
+            $this->potentialUserAccountOrders = new ArrayCollection();
+            $this->populateUserAccountOrders();
+        }
+        return $this->potentialUserAccountOrders;
+    }
+
+    /**
+     * @param ArrayCollection|null $potentialUserAccountOrders
+     */
+    public function setPotentialUserAccountOrders(?ArrayCollection $potentialUserAccountOrders): void
+    {
+        $this->potentialUserAccountOrders = $potentialUserAccountOrders;
     }
 
     /**
@@ -134,6 +160,13 @@ class UpgradeUserOrder implements Dao
      */
     public function isPending() {
         return $this->getStatus() == self::PENDING;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRejected() {
+        return $this->getStatus() == self::REJECTED;
     }
 
     /**
@@ -272,11 +305,13 @@ class UpgradeUserOrder implements Dao
     public function setCreated() {
         $this->status = self::CREATED;
         $this->setUpdatedAt();
+        $this->populateUserAccountOrders();
     }
 
     public function setPending() {
         $this->status = self::PENDING;
         $this->setUpdatedAt();
+        $this->populateUserAccountOrders();
     }
 
     /**
@@ -298,14 +333,26 @@ class UpgradeUserOrder implements Dao
 
         /* 升级会员 */
         $user->upgradeUserLevel($userLevel);
+        $this->populateUserAccountOrders();
+    }
+
+    protected function populateUserAccountOrders() {
+
+        $user = $this->getUser();
+        $userLevel = $this->getUserLevel();
 
         /* 分钱给推荐人 */
         $recommander = $user->getParentUser();
         if ($recommander != null and $recommander->getRecommandStock() > 0) {
             $recommanderRewards = UserLevel::$userLevelRecommanderRewardsArray[$userLevel];
-            $recommander->createUserAccountOrder(UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this);
-            //推荐名额减1
-            $recommander->increaseRecommandStock(-1);
+            if ($this->isApproved()) {
+                $recommander->createUserAccountOrder(UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this);
+                //推荐名额减1
+                $recommander->increaseRecommandStock(-1);
+            } else {
+                $userAccountOrder = UserAccountOrder::factory($recommander, UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this);
+                $this->getPotentialUserAccountOrders()->add($userAccountOrder);
+            }
         }
 
         /* 分钱给直接讲师 */
@@ -318,7 +365,12 @@ class UpgradeUserOrder implements Dao
             $teacherRewards = Subject::$teacherRewards[$currentSubject][$this->getUserLevel()];
             $teacherUser = $latestCourse->getTeacher()->getUser();
             if ($teacherUser != null) {
-                $teacherUser->createUserAccountOrder(UserAccountOrder::TEACHER_REWARDS, $teacherRewards, $this);
+                if ($this->isApproved()){
+                    $teacherUser->createUserAccountOrder(UserAccountOrder::TEACHER_REWARDS, $teacherRewards, $this, $latestCourse);
+                } else {
+                    $userAccountOrder = UserAccountOrder::factory($teacherUser, UserAccountOrder::TEACHER_REWARDS, $teacherRewards, $this, $latestCourse);
+                    $this->getPotentialUserAccountOrders()->add($userAccountOrder);
+                }
             }
         }
 
@@ -330,12 +382,18 @@ class UpgradeUserOrder implements Dao
                 if ($oldCourse != null) {
                     $oldTeacherUser = $oldCourse->getTeacher()->getUser();
                     if ($oldTeacherUser != null) {
-                        $oldTeacherUser->createUserAccountOrder(UserAccountOrder::OLD_TEACHER_REWARDS, $oldSubjectConfigs[$this->getUserLevel()], $this);
+                        if ($this->isApproved()) {
+                            $oldTeacherUser->createUserAccountOrder(UserAccountOrder::OLD_TEACHER_REWARDS, $oldSubjectConfigs[$this->getUserLevel()], $this, $oldCourse);
+                        } else {
+                            $userAccountOrder = UserAccountOrder::factory($oldTeacherUser, UserAccountOrder::OLD_TEACHER_REWARDS, $oldSubjectConfigs[$this->getUserLevel()], $this, $oldCourse);
+                            $this->getPotentialUserAccountOrders()->add($userAccountOrder);
+                        }
                     }
                 }
             }
         }
     }
+
 
     public function setRejected() {
         $this->status = self::REJECTED;
@@ -356,6 +414,14 @@ class UpgradeUserOrder implements Dao
     public function setUserAccountOrders($userAccountOrders): void
     {
         $this->userAccountOrders = $userAccountOrders;
+    }
+
+    public function getTotalPaymentAmount() {
+        $totalAmount = 0;
+        foreach ($this->upgradeUserOrderPayments as $upgradeUserOrderPayment) {
+            $totalAmount += $upgradeUserOrderPayment->getAmount();
+        }
+        return $totalAmount;
     }
 
     public function getArray() {

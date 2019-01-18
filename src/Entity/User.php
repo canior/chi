@@ -471,7 +471,7 @@ class User extends BaseUser implements Dao
      * @return int
      */
     public function getTotalChildren() {
-        return $this->getSubUsers()->count();
+        return $this->getUserAccountOrdersAsRecommander()->count();
     }
 
     /**
@@ -1006,6 +1006,19 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * @return ArrayCollection|UserAccountOrder[]
+     */
+    public function getUserAccountOrdersAsRecommander() {
+        $userAccountOrderAsRecommanders = new ArrayCollection();
+        foreach ($this->userAccountOrders as $userAccountOrder) {
+            if ($userAccountOrder->isRecommandRewards()) {
+                $userAccountOrderAsRecommanders->add($userAccountOrder);
+            }
+        }
+        return $userAccountOrderAsRecommanders;
+    }
+
+    /**
      * @param UserAccountOrder[]|ArrayCollection $userAccountOrders
      */
     public function setUserAccountOrders($userAccountOrders): void
@@ -1065,10 +1078,11 @@ class User extends BaseUser implements Dao
      * @param string $userAccountOrderType
      * @param float $amount
      * @param UpgradeUserOrder|null $upgradeUserOrder
+     * @param Course|null $course
      * @return UserAccountOrder
      */
-    public function createUserAccountOrder($userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null) {
-        $userAccountOrder = UserAccountOrder::factory($this, $userAccountOrderType, $amount, $upgradeUserOrder);
+    public function createUserAccountOrder($userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null, Course $course = null) {
+        $userAccountOrder = UserAccountOrder::factory($this, $userAccountOrderType, $amount, $upgradeUserOrder, $course);
         $this->userAccountOrders->add($userAccountOrder);
         return $userAccountOrder;
     }

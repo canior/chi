@@ -10,7 +10,7 @@
             <div class="box">
                 <div class="box-header">
                     {% include "backend/includes/app.session.flashbag.html.twig" %}
-                    <h3 class="box-title">支付列表 ({{ dataCount }})</h3>
+                    <h3 class="box-title">支付列表 ({{ dataCount }}) | <span class="text text-blue"> 已支付总额 (￥{{ paymentTotal }})</span></h3>
                     <a href="{{ path('upgrade_user_order_payment_new', {'upgradeUserOrderId': upgradeUserOrderId}) }}" type="button"
                        class="btn btn-info pull-right">添加支付记录</a>
                 </div>

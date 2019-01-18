@@ -29,8 +29,13 @@ class UpgradeUserOrderPaymentController extends BackendController
             'title' => '支付列表',
             'upgradeUserOrderId' => $upgradeUserOrderId,
         ];
+        /**
+         * @var UpgradeUserOrder $upgradeUserOrder
+         */
+        $upgradeUserOrder = $this->getEntityManager()->getRepository(UpgradeUserOrder::class)->find($upgradeUserOrderId);
         $data['data'] = $upgradeUserOrderPaymentRepository->findBy(['upgradeUserOrder' => $upgradeUserOrderId]);
         $data['dataCount'] = count($data['data']);
+        $data['paymentTotal'] = $upgradeUserOrder->getTotalPaymentAmount();
         return $this->render('backend/upgrade_user_order_payment/index.html.twig', $data);
     }
 

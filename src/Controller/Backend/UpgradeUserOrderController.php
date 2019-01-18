@@ -61,6 +61,17 @@ class UpgradeUserOrderController extends BackendController
     public function edit(Request $request, UpgradeUserOrder $upgradeUserOrder): Response
     {
         $user = $upgradeUserOrder->getUser();
+
+        if ($upgradeUserOrder->isApproved() or $upgradeUserOrder->isRejected()) {
+            return $this->render('backend/upgrade_user_order/edit.html.twig', [
+                'isDisabled' => true,
+                'upgrade_user_order' => $upgradeUserOrder,
+                'title' => '编辑会员升级订单',
+                'user' => $user,
+                'userAccountOrders' => $upgradeUserOrder->isApproved() ? $upgradeUserOrder->getUserAccountOrders() : $upgradeUserOrder->getPotentialUserAccountOrders()
+            ]);
+        }
+
         $form = $this->createForm(EditUpgradeUserOrderType::class, $upgradeUserOrder);
         $form->get('status')->setData($upgradeUserOrder->getStatus());
 
@@ -88,8 +99,24 @@ class UpgradeUserOrderController extends BackendController
             'title' => '编辑会员升级订单',
             'form' => $form->createView(),
             'user' => $user,
-            'verifyParentForm' => $verifyParentForm->createView()
+            'verifyParentForm' => $verifyParentForm->createView(),
+            'userAccountOrders' => $upgradeUserOrder->isApproved() ? $upgradeUserOrder->getUserAccountOrders() : $upgradeUserOrder->getPotentialUserAccountOrders(),
+            'isDisabled' => false,
         ]);
+    }
+
+    /**
+     * @Route("/upgrade/user/order/{id}/rewards", name="upgrade_user_order_rewards", methods="GET")
+     * @param Request $request
+     * @param UpgradeUserOrder $upgradeUserOrder
+     * @return Response
+     */
+    public function rewards(Request $request, UpgradeUserOrder $upgradeUserOrder): Response
+    {
+        $upgradeUserOrder->getUserAccountOrders();
+        $recommander = $upgradeUserOrder->getUser()->getParentUser();
+        $recommanderRewards = UserLevel::$userLevelRecommanderRewardsArray[$upgradeUserOrder->getUserLevel()];
+        exit;
     }
 
 }

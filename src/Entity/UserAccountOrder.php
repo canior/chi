@@ -81,18 +81,26 @@ class UserAccountOrder implements Dao
     private $memo;
 
     /**
+     * @var Course|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\Course")
+     */
+    private $course;
+
+    /**
      * @param User $user
      * @param $userAccountOrderType
      * @param $amount
      * @param UpgradeUserOrder|null $upgradeUserOrder
+     * @param Course|null $course
      * @return UserAccountOrder
      */
-    public static function factory(User $user, $userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null) {
+    public static function factory(User $user, $userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null, Course $course = null) {
         $userAccountOrder = new UserAccountOrder();
         $userAccountOrder->setUser($user);
         $userAccountOrder->setAmount($amount);
         $userAccountOrder->setUserAccountOrderType($userAccountOrderType);
         $userAccountOrder->setUpgradeUserOrder($upgradeUserOrder);
+        $userAccountOrder->setCourse($course);
         if ($userAccountOrderType == UserAccountOrder::WITHDRAW)
             $user->decreaseUserAccountTotal($amount);
         else
@@ -259,6 +267,23 @@ class UserAccountOrder implements Dao
     }
 
     /**
+     * @return Course|null
+     */
+    public function getCourse(): ?Course
+    {
+        return $this->course;
+    }
+
+    /**
+     * @param Course|null $course
+     */
+    public function setCourse(?Course $course): void
+    {
+        $this->course = $course;
+    }
+
+
+    /**
      * @return array
      */
     public function getArray() {
@@ -270,6 +295,7 @@ class UserAccountOrder implements Dao
             'paymentStatus' => self::$paymentStatuses[$this->getPaymentStatus()],
             'createdAt' => $this->getCreatedAt(true),
             'upgradeUserOrder' => $this->getUpgradeUserOrder() ? $this->getUpgradeUserOrder()->getArray() : null,
+            'course' => $this->getCourse() ? $this->getCourse()->getArray() : null,
         ];
     }
 }

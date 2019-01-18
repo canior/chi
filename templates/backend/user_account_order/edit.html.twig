@@ -19,13 +19,23 @@
                                 <th>交易类型</th>
                                 <td>{{ user_account_order.userAccountOrderTypeText }}</td>
                             </tr>
+                            <tr class="text text-bold">
+                                <th>状态</th>
+                                <td>{{ user_account_order.paymentStatusText }}</td>
+                            </tr>
                             <tr>
                                 <th>金额</th>
                                 <td>￥{{ user_account_order.amount }}</td>
                             </tr>
                             <tr>
                                 <th>会员升级订单</th>
-                                <td>{{ user_account_order.upgradeUserOrder ? user_account_order.upgradeUserOrder : null }}</td>
+                                <td>
+                                    {% if user_account_order.upgradeUserOrder %}
+                                        <a href="{{ path('upgrade_user_order_edit', {'id': user_account_order.UpgradeUserOrder.id}) }}">
+                                            {{ user_account_order.upgradeUserOrder ? user_account_order.upgradeUserOrder : null }}
+                                        </a>
+                                    {% endif %}
+                                </td>
                             </tr>
                             <tr>
                                 <th>用户ID</th>

@@ -5,22 +5,23 @@
 {% block body %}
     <div class="row">
         <div class="col-xs-12">
+            {% include "backend/includes/app.session.flashbag.html.twig" %}
             <div class="box">
                 <div class="box-body">
-                    <div class="table-responsive">
+                    <div class="table-responsive col-md-6">
                         <h3 class="box-title">交易信息</h3>
                         <table class="table table-bordered table-striped">
                             <tr>
                                 <th>会员升级订单号</th>
                                 <td>{{ upgrade_user_order.id }}</td>
                             </tr>
-                            <tr>
-                                <th>旧会员等级</th>
-                                <td>{{ upgrade_user_order.user.userLevelText }}</td>
+                            <tr class="text-bold">
+                                <th>状态</th>
+                                <td>{{ upgrade_user_order.statusText }}</td>
                             </tr>
                             <tr>
-                                <th>新会员等级</th>
-                                <td>{{ upgrade_user_order.userLevelText }}</td>
+                                <th>会员等级</th>
+                                <td>{{ upgrade_user_order.user.userLevelText }} -> {{ upgrade_user_order.userLevelText }}</td>
                             </tr>
                             <tr>
                                 <th>订单金额</th>
@@ -48,11 +49,62 @@
                             </tr>
                         </table>
                     </div>
+
+                    <div class="table-responsive col-md-6">
+                        <h3 class="box-title">
+                            佣金信息
+                            {% if (upgrade_user_order.isApproved) %}
+                                <span class="fa fa-check-square icon-cog text-green ">
+                                    已存入账户
+                                </span>
+                            {% else %}
+                                <span class="fa fa-window-close icon-cog text-red ">
+                                    未存入账户
+                                </span>
+                            {% endif %}
+                        </h3>
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>用户ID</th>
+                                <th>姓名</th>
+                                <th>交易类型	</th>
+                                <th>科目</th>
+                                <th>课程</th>
+                                <th>佣金</th>
+                                <th>支付状态</th>
+                                <th>用户账单号</th>
+                            </tr>
+                            {% for userAccountOrder in userAccountOrders %}
+                            <tr>
+                                <td>{{ userAccountOrder.user.id }}</td>
+                                <td>
+                                    <a href="{{ path('user_account_order_index', {'userId': userAccountOrder.user.id}) }}">
+                                        {{ userAccountOrder.user.name }}
+                                    </a>
+                                </td>
+                                <td>{{ userAccountOrder.userAccountOrderTypeText }}</td>
+                                <td>{{ userAccountOrder.course ? userAccountOrder.course.subjectText : null}}</td>
+                                <td>{{ userAccountOrder.course ? userAccountOrder.course.title : null}}</td>
+                                <td>￥{{ userAccountOrder.amount }}</td>
+                                <td>{{ userAccountOrder.paymentStatusText }}</td>
+                                <td>
+                                    {% if userAccountOrder.id %}
+                                    <a href="{{ path('user_account_order_edit', {'id': userAccountOrder.id}) }}">
+                                        {{ userAccountOrder.id }}
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
                 </div>
             </div>
             <!-- general form elements disabled -->
 
+            {{ render(controller('App\\Controller\\Backend\\UpgradeUserOrderPaymentController::index', {upgradeUserOrderId: upgrade_user_order.id})) }}
 
+            {% if isDisabled == false %}
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">认证推荐人</h3>                </div>
@@ -65,20 +117,18 @@
 
             <div class="box">
                 <div class="box-header with-border">
-                    {% include "backend/includes/app.session.flashbag.html.twig" %}
                     <h3 class="box-title">
-                        会员升级订单
+                        处理会员升级订单
                     </h3>
-                    <label class="text text-red">（注：已通过会触发推荐人与讲师的分钱）</label>
+                    <label class="text text-red">（注："已通过"会触发推荐人与讲师分钱,如推荐人未认证则不得钱）</label>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-
                     {{ include('backend/upgrade_user_order/_form.edit.html.twig', {'button_label': '提交'}) }}
                 </div>
                 <!-- /.box-body -->
             </div>
-
+            {% endif %}
 
             <!-- /.box -->
         </div>
@@ -86,7 +136,5 @@
     </div>
     <!-- /.row -->
 
-
-    {{ render(controller('App\\Controller\\Backend\\UpgradeUserOrderPaymentController::index', {upgradeUserOrderId: upgrade_user_order.id})) }}
     <a class="btn btn-danger" href="{{ path('upgrade_user_order_index') }}">{{ '返回会员升级订单管理'|trans }}</a>
 {% endblock %}

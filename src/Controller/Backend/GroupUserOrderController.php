@@ -35,7 +35,7 @@ class GroupUserOrderController extends BackendController
                 'page' => $request->query->getInt('page', 1)
             ],
             'types' => ['NOT NULL' => '拼团订单', 'NULL' => '普通订单'],
-            'statuses' => GroupUserOrder::$statuses,
+            'statuses' => GroupUserOrder::$courseStatuses,
             'paymentStatuses' => GroupUserOrder::$paymentStatuses,
         ];
         $data['data'] = $groupUserOrderRepository->findGroupUserOrdersQueryBuilder($data['form']['groupOrderId'], $data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['productName'], $data['form']['type'], $data['form']['status'], $data['form']['paymentStatus']);
