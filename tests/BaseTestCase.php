@@ -134,7 +134,7 @@ class BaseTestCase extends WebTestCase
         return $user;
     }
 
-    public function createShareSource($groupOrder, $product, $user, $isPersist = false) {
+    public function createShareSource($user, $groupOrder = null, $product=null , $isPersist = false) {
         $bannerFile = $this->createFile();
         $shareSource = new ShareSource();
         $shareSource->setUser($user);

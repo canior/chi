@@ -196,7 +196,7 @@ class ShareSource implements Dao
     public function addShareSourceUser(ShareSourceUser $shareSourceUser): self
     {
         if (!$this->shareSourceUsers->contains($shareSourceUser)) {
-            $this->shareSourceUsers[] = $shareSourceUser;
+            $this->shareSourceUsers->add($shareSourceUser);
             $shareSourceUser->setShareSource($this);
         }
 

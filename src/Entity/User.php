@@ -14,6 +14,8 @@ use FOS\UserBundle\Model\User as BaseUser;
  */
 class User extends BaseUser implements Dao
 {
+    const PARENT_EXPIRES_SECONDS = 8640000; //推荐人锁定100天
+
     const ROLE_CUSTOMER = 'ROLE_CUSTOMER';
     const ROLE_CUSTOMER_SERVICE = 'ROLE_CUSTOMER_SERVICE';
     const ROLE_ADMIN = 'ROLE_ADMIN';
@@ -193,6 +195,11 @@ class User extends BaseUser implements Dao
      */
     private $upgradeUserOrders;
 
+    /**
+     * @var int|null
+     * @ORM\Column(type="int")
+     */
+    private $parentUserExpiresAt;
 
 
     /**
@@ -439,20 +446,40 @@ class User extends BaseUser implements Dao
         return $this;
     }
 
+    /**
+     * @return User|null
+     */
     public function getParentUser(): ?self
     {
         return $this->parentUser;
     }
 
-    public function setParentUser(?self $parentUser): self
+    /**
+     * @param null|self $parentUser
+     * @return User
+     */
+    public function setParentUser(?User $parentUser): self
     {
-        if ($parentUser == null) {
-            $this->parentUser = null;
+        if ($parentUser == $this) {
             return $this;
         }
 
-        if ($parentUser->getId() != $this->getId())
-            $this->parentUser = $parentUser;
+//        if ($this->getParentUser() == null) {
+//            if ($parentUser->isPartnerUser()) { //如果受邀者的推荐人为空，并且推荐人是合伙人
+//                $this->parentUser = $parentUser;
+//                //锁定推荐人100天
+//                $this->setParentUserExpiresAt(time() + self::PARENT_EXPIRES_SECONDS);
+//                $parentUser->addSubUser($this);
+//            }
+//        } else {
+//            if ($this->getParentUserExpiresAt() < time()) { //如果受邀者的推荐人不为空，但之前推荐人的时间过期
+//                $this->getParentUser()->removeSubUser($this);
+//                $this->parentUser = $parentUser;
+//                //锁定推荐人100天
+//                $this->setParentUserExpiresAt(time() + self::PARENT_EXPIRES_SECONDS);
+//                $parentUser->addSubUser($this);
+//            }
+//        }
 
         return $this;
     }
@@ -717,7 +744,8 @@ class User extends BaseUser implements Dao
             'phone' => $this->getPhone(),
             'idNum' => $this->getIdNum(),
             'wechat' => $this->getWechat(),
-            'recommanderName' => $this->getRecommanderName()
+            'recommanderName' => $this->getRecommanderName(),
+            'totalStudents' => 1000,
         ];
     }
 
@@ -1290,6 +1318,22 @@ class User extends BaseUser implements Dao
         }
 
         return true;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getParentUserExpiresAt(): ?int
+    {
+        return $this->parentUserExpiresAt;
+    }
+
+    /**
+     * @param int|null $parentUserExpiresAt
+     */
+    public function setParentUserExpiresAt(?int $parentUserExpiresAt): void
+    {
+        $this->parentUserExpiresAt = $parentUserExpiresAt;
     }
 
     public function __toString()

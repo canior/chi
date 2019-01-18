@@ -15,6 +15,7 @@ use App\Entity\Traits\UpdatedAtTrait;
 use App\Entity\UpgradeUserOrderPayment;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Monolog\Logger;
 
 
 /**
@@ -351,6 +352,8 @@ class UpgradeUserOrder implements Dao
                 $recommander->increaseRecommandStock(-1);
             } else {
                 $userAccountOrder = UserAccountOrder::factory($recommander, UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this);
+                //这里是虚拟账单，要把余额还回来
+                $recommander->decreaseUserAccountTotal($recommanderRewards);
                 $this->getPotentialUserAccountOrders()->add($userAccountOrder);
             }
         }
@@ -369,6 +372,8 @@ class UpgradeUserOrder implements Dao
                     $teacherUser->createUserAccountOrder(UserAccountOrder::TEACHER_REWARDS, $teacherRewards, $this, $latestCourse);
                 } else {
                     $userAccountOrder = UserAccountOrder::factory($teacherUser, UserAccountOrder::TEACHER_REWARDS, $teacherRewards, $this, $latestCourse);
+                    //这里是虚拟账单，要把余额还回来
+                    $teacherUser->decreaseUserAccountTotal($teacherRewards);
                     $this->getPotentialUserAccountOrders()->add($userAccountOrder);
                 }
             }
@@ -386,6 +391,8 @@ class UpgradeUserOrder implements Dao
                             $oldTeacherUser->createUserAccountOrder(UserAccountOrder::OLD_TEACHER_REWARDS, $oldSubjectConfigs[$this->getUserLevel()], $this, $oldCourse);
                         } else {
                             $userAccountOrder = UserAccountOrder::factory($oldTeacherUser, UserAccountOrder::OLD_TEACHER_REWARDS, $oldSubjectConfigs[$this->getUserLevel()], $this, $oldCourse);
+                            //这里是虚拟账单，要把余额还回来
+                            $oldTeacherUser->decreaseUserAccountTotal($oldSubjectConfigs[$this->getUserLevel()]);
                             $this->getPotentialUserAccountOrders()->add($userAccountOrder);
                         }
                     }

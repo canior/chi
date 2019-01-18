@@ -30,7 +30,6 @@ class TestController extends BaseController
      * @Route("/test", name="test", methods="GET")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
@@ -41,7 +40,7 @@ class TestController extends BaseController
         $upgradeUserOrder = $this->getEntityManager()->getRepository(UpgradeUserOrder::class)->find(5);
         $userAccountOrders = $upgradeUserOrder->getPotentialUserAccountOrders();
         echo $userAccountOrders->count();
-        var_dump($userAccountOrders[0]->getArray());
+        //var_dump($userAccountOrders[0]->getArray());
 
         return $this->responseRaw("");
     }

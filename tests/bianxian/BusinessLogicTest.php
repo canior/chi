@@ -10,11 +10,13 @@ namespace App\Tests\Bianxian;
 
 
 use App\Entity\CourseStudent;
+use App\Entity\ShareSourceUser;
 use App\Entity\Subject;
 use App\Entity\UserAccountOrder;
 use App\Entity\UserLevel;
 use App\Entity\CourseOrder;
 use App\Form\CourseStudentType;
+use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class BusinessLogicTest extends BianxianBaseTestCase
@@ -340,5 +342,68 @@ class BusinessLogicTest extends BianxianBaseTestCase
         $this->assertEquals($totalAmount-$withdrawAmount, $student->getUserAccountTotal());
         $this->assertEquals(0, $student->getWithDrawingTotal());
         $this->assertEquals($withdrawAmount, $student->getWithDrawedTotal());
+    }
+
+    /**
+     * 测试更新推荐人
+     */
+    public function testSetParent() {
+
+        //下线无推荐人，进入推荐人链接， 推荐人是合伙人
+        $child = $this->createStudent(UserLevel::VISITOR);
+        $parent = $this->createStudent(UserLevel::PARTNER);
+
+        $parentShareSource = $this->createShareSource($parent);
+        $parent->addShareSource($parentShareSource);
+        $shareSourceUser = ShareSourceUser::factory($parentShareSource, $child);
+        $parentShareSource->addShareSourceUser($shareSourceUser);
+
+        $this->assertEquals($parent, $child->getParentUser());
+        $this->assertEquals($child, $parent->getSubUsers()[0]);
+
+        //下线无推荐人，进入推荐人链接， 推荐人不是合伙人
+        $child = $this->createStudent(UserLevel::VISITOR);
+        $parent = $this->createStudent(UserLevel::ADVANCED);
+
+        $parentShareSource = $this->createShareSource($parent);
+        $parent->addShareSource($parentShareSource);
+        $shareSourceUser = ShareSourceUser::factory($parentShareSource, $child);
+        $parentShareSource->addShareSourceUser($shareSourceUser);
+
+        $this->assertEquals(null, $child->getParentUser());
+        $this->assertEquals(0, $parent->getSubUsers()->count());
+
+        //下线有其他推荐人未过期，进入推荐人链接， 推荐人是合伙人
+        $child = $this->createStudent(UserLevel::VISITOR);
+        $parent = $this->createStudent(UserLevel::PARTNER);
+        $parent2 = $this->createStudent(UserLevel::PARTNER);
+        $child->setParentUser($parent2);
+        $parent2->addSubUser($child);
+
+        $parentShareSource = $this->createShareSource($parent);
+        $parent->addShareSource($parentShareSource);
+        $shareSourceUser = ShareSourceUser::factory($parentShareSource, $child);
+        $parentShareSource->addShareSourceUser($shareSourceUser);
+
+        $this->assertEquals($parent2, $child->getParentUser());
+        $this->assertEquals(0, $parent->getSubUsers()->count());
+        $this->assertEquals($child, $parent2->getSubUsers()[0]);
+
+        //下线有其他推荐人已过期，进入推荐人链接， 推荐人是和合伙人
+        $child = $this->createStudent(UserLevel::VISITOR);
+        $parent = $this->createStudent(UserLevel::PARTNER);
+        $parent2 = $this->createStudent(UserLevel::PARTNER);
+        $child->setParentUser($parent2);
+        $parent2->addSubUser($child);
+        $child->setParentUserExpiresAt(time() - User::PARENT_EXPIRES_SECONDS - 3600);
+
+        $parentShareSource = $this->createShareSource($parent);
+        $parent->addShareSource($parentShareSource);
+        $shareSourceUser = ShareSourceUser::factory($parentShareSource, $child);
+        $parentShareSource->addShareSourceUser($shareSourceUser);
+
+        $this->assertEquals($parent, $child->getParentUser());
+        $this->assertEquals($child, $parent->getSubUsers()[0]);
+        $this->assertEquals(0, $parent2->getSubUsers()->count());
     }
 }

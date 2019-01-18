@@ -62,11 +62,11 @@ class BusinessLogicTest extends BaseTestCase
 
 
         //3. 团长分享给团员
-        $captainShareSource = $this->createShareSource($groupOrder, $product, $captain);
+        $captainShareSource = $this->createShareSource($captain, $groupOrder, $product);
 
         //团员打开分享链接
         $joiner = $this->createUser();
-        $shareSourceUser = new ShareSourceUser($captainShareSource, $joiner);
+        $shareSourceUser = ShareSourceUser::factory($captainShareSource, $joiner);
         $captainShareSource->addShareSourceUser($shareSourceUser);
 
         $this->assertEquals(1, $captainStatistics->getSharedNum());

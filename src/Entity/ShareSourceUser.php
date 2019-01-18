@@ -15,7 +15,7 @@ class ShareSourceUser implements Dao
         CreatedAtTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="shareSourceUsers")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="shareSourceUsers", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -27,16 +27,28 @@ class ShareSourceUser implements Dao
     private $shareSource;
 
     /**
-     * ShareSourceUser constructor.
+     * 处理用户分享逻辑
+     *
+     *
+     *
      * @param ShareSource $shareSource
      * @param User $user
+     * @return ShareSourceUser
      */
-    public function __construct(ShareSource $shareSource, User $user)
+    public static function factory(ShareSource $shareSource, User $user)
     {
-        $this->setShareSource($shareSource);
-        $this->setUser($user);
+        $shareSourceUser = new ShareSourceUser();
+        $shareSourceUser->setShareSource($shareSource);
+        $shareSourceUser->setUser($user);
+        $shareSourceUser->getUser()->getOrCreateTodayUserStatistics()->increaseShareNum(1);
+        $user->setParentUser($shareSource->getUser());
+
+        return $shareSourceUser;
+    }
+
+    public function __construct()
+    {
         $this->setCreatedAt();
-        $shareSource->getUser()->getOrCreateTodayUserStatistics()->increaseShareNum(1);
     }
 
     public function getUser(): ?User
