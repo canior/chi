@@ -53,7 +53,7 @@ class ShareSource implements Dao
     private $bannerFile;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ShareSourceUser", mappedBy="shareSource", cascade="persist", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\ShareSourceUser", mappedBy="shareSource", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $shareSourceUsers;
 
@@ -245,6 +245,7 @@ class ShareSource implements Dao
      */
     public function createShareSourceUser($user) {
         $shareSourceUser = ShareSourceUser::factory($this, $user);
+        $this->addShareSourceUser($shareSourceUser);
         return $shareSourceUser;
     }
 }

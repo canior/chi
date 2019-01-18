@@ -744,8 +744,8 @@ class User extends BaseUser implements Dao
             'idNum' => $this->getIdNum(),
             'wechat' => $this->getWechat(),
             'recommanderName' => $this->getRecommanderName(),
-            'totalStudents' => 1000,
-            'totalShares' => 500,
+            'totalStudents' => $this->getTeacher() ? $this->getTeacher()->getTotalStudentUsers() : 0,
+            'totalShares' => $this->getTotalSharedUsers(),
         ];
     }
 
@@ -781,6 +781,30 @@ class User extends BaseUser implements Dao
     {
         return $this->shareSources;
     }
+
+    /**
+     * @return User[]|Collection
+     */
+    public function getSharedUsers() {
+        $sharedUsers = new ArrayCollection();
+        foreach($this->getShareSources() as $shareSource) {
+            foreach($shareSource->getShareSourceUsers() as $shareSourceUser) {
+                $user = $shareSourceUser->getUser();
+                if (!$sharedUsers->contains($user)) {
+                    $sharedUsers->add($user);
+                }
+            }
+        }
+        return $sharedUsers;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalSharedUsers() {
+        return $this->getSharedUsers()->count();
+    }
+
 
     public function addShareSource(ShareSource $shareSource): self
     {

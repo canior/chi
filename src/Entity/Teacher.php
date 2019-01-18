@@ -53,7 +53,7 @@ class Teacher implements Dao
 
     /**
      * @var Course[]
-     * @ORM\OneToMany(targetEntity="App\Entity\Course", mappedBy="teacher", cascade={"persist"}, fetch="LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\Course", mappedBy="teacher", cascade={"persist"}, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $courses;
@@ -168,6 +168,29 @@ class Teacher implements Dao
     {
         $this->courses = $courses;
     }
+
+    /**
+     * @return User[]|ArrayCollection
+     */
+    public function getStudentUsers() {
+        $studentUsers = new ArrayCollection();
+        foreach ($this->getCourses() as $course) {
+            foreach($course->getStudentUsers(CourseStudent::REGISTERED) as $studentUser) {
+                if (!$studentUsers->contains($studentUser)) {
+                    $studentUsers->add($studentUser);
+                }
+            }
+        }
+        return $studentUsers;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalStudentUsers() {
+        return $this->getStudentUsers()->count();
+    }
+
 
     /**
      * @return array

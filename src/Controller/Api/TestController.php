@@ -37,8 +37,8 @@ class TestController extends BaseController
         /**
          * @var User $user
          */
-        $user = $this->getEntityManager()->getRepository(User::class)->find(712);
-        echo $user->getUserAccountOrders()->count();
+        $user = $this->getEntityManager()->getRepository(User::class)->find(821);
+        echo $user->getTotalSharedUsers();
 
         return $this->responseRaw("");
     }
