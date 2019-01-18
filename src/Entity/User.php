@@ -276,7 +276,8 @@ class User extends BaseUser implements Dao
         $this->courseStudents = new ArrayCollection();
     }
 
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
         return $this;
     }
@@ -289,28 +290,32 @@ class User extends BaseUser implements Dao
     /**
      * @return CourseStudent[]|ArrayCollection|Collection
      */
-    public function getCourseStudents() {
+    public function getCourseStudents()
+    {
         return $this->courseStudents;
     }
 
     /**
      * @param CourseStudent $courseStudent
      */
-    public function addCourseStudent(CourseStudent $courseStudent) {
+    public function addCourseStudent(CourseStudent $courseStudent)
+    {
         $this->courseStudents->add($courseStudent);
     }
 
     /**
      * @return bool
      */
-    public function isTeacher() {
+    public function isTeacher()
+    {
         return $this->getTeacher() != null;
     }
 
     /**
      * @return bool
      */
-    public function isVisitorUser() {
+    public function isVisitorUser()
+    {
         return $this->getUserLevel() == UserLevel::VISITOR;
     }
 
@@ -327,21 +332,24 @@ class User extends BaseUser implements Dao
     /**
      * @return bool
      */
-    public function isAdvancedUser() {
+    public function isAdvancedUser()
+    {
         return $this->getUserLevel() == UserLevel::ADVANCED;
     }
 
     /**
      * @return bool
      */
-    public function isLocked() {
+    public function isLocked()
+    {
         return !$this->isEnabled();
     }
 
     /**
      * @return bool
      */
-    public function isPartnerUser() {
+    public function isPartnerUser()
+    {
         return $this->getUserLevel() == UserLevel::PARTNER;
     }
 
@@ -464,25 +472,7 @@ class User extends BaseUser implements Dao
             return $this;
         }
 
-        if ($this->getParentUser() == null) {
-            if ($parentUser->isPartnerUser()) { //如果受邀者的推荐人为空，并且推荐人是合伙人
-                $this->parentUser = $parentUser;
-                //锁定推荐人100天
-                $this->setParentUserExpiresAt(time() + self::PARENT_EXPIRES_SECONDS);
-                $parentUser->addSubUser($this);
-            }
-        } else {
-            if ($this->getParentUserExpiresAt() < time()) { //如果受邀者的推荐人不为空，但之前推荐人的时间过期
-                $oldParentUser = $this->getParentUser();
-                $oldParentUser->removeSubUser($this);
-
-                $this->parentUser = $parentUser;
-
-                //锁定推荐人100天
-                $this->setParentUserExpiresAt(time() + self::PARENT_EXPIRES_SECONDS);
-                $parentUser->addSubUser($this);
-            }
-        }
+        $this->parentUser = $parentUser;
 
         return $this;
     }
@@ -500,7 +490,8 @@ class User extends BaseUser implements Dao
     /**
      * @return int
      */
-    public function getTotalChildren() {
+    public function getTotalChildren()
+    {
         return $this->getUserAccountOrdersAsRecommander()->count();
     }
 
@@ -508,15 +499,18 @@ class User extends BaseUser implements Dao
      * 曾经用掉的总名额
      * @return int
      */
-    public function getTotalRecommandStock() {
+    public function getTotalRecommandStock()
+    {
         return $this->getRecommandStock() + $this->getTotalChildren();
     }
 
-    public function addSubUser(User $subUser): self
+    public function addSubUser(User $subUser, $parentExpiresAt): self
     {
         if (!$this->subUsers->contains($subUser)) {
             $this->subUsers[] = $subUser;
             $subUser->setParentUser($this);
+            //锁定推荐人100天
+            $subUser->setParentUserExpiresAt($parentExpiresAt);
         }
 
         return $this;
@@ -527,10 +521,10 @@ class User extends BaseUser implements Dao
         if ($this->subUsers->contains($subUser)) {
             $this->subUsers->removeElement($subUser);
             // set the owning side to null (unless already changed)
-            // 这里是个大坑!!!!
-//            if ($subUser->getParentUser() === $this) {
-//                $subUser->setParentUser(null);
-//            }
+            if ($subUser->getParentUser() === $this) {
+                $subUser->setParentUser(null);
+                $subUser->setParentUserExpiresAt(null);
+            }
         }
 
         return $this;
@@ -575,7 +569,8 @@ class User extends BaseUser implements Dao
         return $this->userAddresses;
     }
 
-    public function getActiveUserAddress() : Collection {
+    public function getActiveUserAddress(): Collection
+    {
         $userAddresses = new ArrayCollection();
         foreach ($this->getUserAddresses() as $userAddress) {
             if (!$userAddress->getIsDeleted()) {
@@ -750,7 +745,7 @@ class User extends BaseUser implements Dao
             'wechat' => $this->getWechat(),
             'recommanderName' => $this->getRecommanderName(),
             'totalStudents' => 1000,
-            'totalShares'=> 500,
+            'totalShares' => 500,
         ];
     }
 
@@ -821,13 +816,14 @@ class User extends BaseUser implements Dao
     /**
      * @return UserStatistics
      */
-    public function getOrCreateTodayUserStatistics() {
+    public function getOrCreateTodayUserStatistics()
+    {
         foreach ($this->getUserStatistics() as $userStatistics) {
             if ($userStatistics->isToday()) {
                 return $userStatistics;
             }
         }
-        $userStatistics =  new UserStatistics($this);
+        $userStatistics = new UserStatistics($this);
         $this->addUserStatistic($userStatistics);
         return $userStatistics;
     }
@@ -858,7 +854,8 @@ class User extends BaseUser implements Dao
     /**
      * @param UserAddress $userAddress
      */
-    public function setDefaultAddress(UserAddress $userAddress) {
+    public function setDefaultAddress(UserAddress $userAddress)
+    {
         foreach ($this->getUserAddresses() as $ua) {
             $ua->setIsDefault(false);
         }
@@ -870,7 +867,8 @@ class User extends BaseUser implements Dao
      *
      * @return ShareSource
      */
-    public function getLatestFromShareSource() {
+    public function getLatestFromShareSource()
+    {
         /**
          * @var ShareSourceUser[] $fromShareSources
          */
@@ -898,7 +896,8 @@ class User extends BaseUser implements Dao
      * @param $amount
      * @return User
      */
-    public function increasePendingTotalRewards($amount) {
+    public function increasePendingTotalRewards($amount)
+    {
         $this->pendingTotalRewards += $amount;
         return $this;
     }
@@ -907,7 +906,8 @@ class User extends BaseUser implements Dao
      * @param $amount
      * @return User
      */
-    public function increaseTotalRewards($amount) {
+    public function increaseTotalRewards($amount)
+    {
         $this->totalRewards += $amount;
         return $this;
     }
@@ -924,7 +924,8 @@ class User extends BaseUser implements Dao
      * @param CommandMessage $commandMessage
      * @return CommandMessage|null
      */
-    public function getCommandMessage(CommandMessage $commandMessage) {
+    public function getCommandMessage(CommandMessage $commandMessage)
+    {
         foreach ($this->getCommandMessages() as $cm) {
             if ($commandMessage->getId() == $cm->getId() and $commandMessage->getCommandClass() == $commandMessage->getCommandClass()) {
                 return $commandMessage;
@@ -1041,7 +1042,8 @@ class User extends BaseUser implements Dao
     /**
      * @return ArrayCollection|UserAccountOrder[]
      */
-    public function getUserAccountOrdersAsRecommander() {
+    public function getUserAccountOrdersAsRecommander()
+    {
         $userAccountOrderAsRecommanders = new ArrayCollection();
         foreach ($this->userAccountOrders as $userAccountOrder) {
             if ($userAccountOrder->isRecommandRewards()) {
@@ -1070,7 +1072,8 @@ class User extends BaseUser implements Dao
     /**
      * @return UpgradeUserOrder | null
      */
-    public function getLatestUpgradeUserOrder() {
+    public function getLatestUpgradeUserOrder()
+    {
         foreach ($this->getUpgradeUserOrders() as $upgradeUserOrder) {
             return $upgradeUserOrder;
         }
@@ -1089,7 +1092,8 @@ class User extends BaseUser implements Dao
      * @param Course $course
      * @return CourseOrder
      */
-    public function createCourseOrder(Course $course) {
+    public function createCourseOrder(Course $course)
+    {
         $courseOrder = GroupUserOrder::factory($this, $course->getProduct());
         $this->groupUserOrders->add($courseOrder);
         return $courseOrder;
@@ -1100,7 +1104,8 @@ class User extends BaseUser implements Dao
      * @param string $userLevel
      * @return UpgradeUserOrder
      */
-    public function createUpgradeUserOrder($userLevel) {
+    public function createUpgradeUserOrder($userLevel)
+    {
         $upgradeUserOrder = UpgradeUserOrder::factory($this, $userLevel, UserLevel::$userLevelPriceArray[$userLevel]);
         $this->upgradeUserOrders->add($upgradeUserOrder);
         return $upgradeUserOrder;
@@ -1114,17 +1119,29 @@ class User extends BaseUser implements Dao
      * @param Course|null $course
      * @return UserAccountOrder
      */
-    public function createUserAccountOrder($userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null, Course $course = null) {
+    public function createUserAccountOrder($userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null, Course $course = null)
+    {
         $userAccountOrder = UserAccountOrder::factory($this, $userAccountOrderType, $amount, $upgradeUserOrder, $course);
         $this->userAccountOrders->add($userAccountOrder);
         return $userAccountOrder;
     }
 
     /**
+     * 创建提现订单
+     * @param $amount
+     * @return UserAccountOrder
+     */
+    public function createWithdrawUserAccountOrder($amount)
+    {
+        return $this->createUserAccountOrder(UserAccountOrder::WITHDRAW, $amount, null, null);
+    }
+
+    /**
      * 增加推荐名额
      * @param $qty
      */
-    public function increaseRecommandStock($qty) {
+    public function increaseRecommandStock($qty)
+    {
         $this->recommandStock += $qty;
     }
 
@@ -1132,7 +1149,8 @@ class User extends BaseUser implements Dao
      * 增加用户账户钱
      * @param $amount
      */
-    public function increaseUserAccountTotal($amount) {
+    public function increaseUserAccountTotal($amount)
+    {
         $this->userAccountTotal += $amount;
     }
 
@@ -1140,7 +1158,8 @@ class User extends BaseUser implements Dao
      * 减少用户账户钱
      * @param $amount
      */
-    public function decreaseUserAccountTotal($amount) {
+    public function decreaseUserAccountTotal($amount)
+    {
         $this->userAccountTotal -= $amount;
     }
 
@@ -1150,7 +1169,8 @@ class User extends BaseUser implements Dao
      *
      * @param $userLevel
      */
-    public function upgradeUserLevel($userLevel) {
+    public function upgradeUserLevel($userLevel)
+    {
         $this->setUserLevel($userLevel);
         $this->increaseRecommandStock(UserLevel::$userLevelRecommanderStockArray[$userLevel]);
         $this->setUpdatedAt();
@@ -1162,7 +1182,8 @@ class User extends BaseUser implements Dao
      * @param string $subject
      * @return Course | null
      */
-    public function getLatestCourse($subject = null) {
+    public function getLatestCourse($subject = null)
+    {
         $course = null;
 
         if ($subject == null) {
@@ -1186,9 +1207,10 @@ class User extends BaseUser implements Dao
      * 已经提现的总数
      * @return float|int
      */
-    public function getWithDrawedTotal() {
+    public function getWithDrawedTotal()
+    {
         $withdrawTotal = 0;
-        foreach($this->getUserAccountOrders() as $userAccountOrder) {
+        foreach ($this->getUserAccountOrders() as $userAccountOrder) {
             if ($userAccountOrder->isWithdraw() and $userAccountOrder->isPaid()) {
                 $withdrawTotal += $userAccountOrder->getAmount();
             }
@@ -1200,9 +1222,10 @@ class User extends BaseUser implements Dao
      * 已经提现的总数
      * @return float|int
      */
-    public function getWithDrawingTotal() {
+    public function getWithDrawingTotal()
+    {
         $withdrawingTotal = 0;
-        foreach($this->getUserAccountOrders() as $userAccountOrder) {
+        foreach ($this->getUserAccountOrders() as $userAccountOrder) {
             if ($userAccountOrder->isWithdraw() and !$userAccountOrder->isPaid()) {
                 $withdrawingTotal += $userAccountOrder->getAmount();
             }
@@ -1293,7 +1316,8 @@ class User extends BaseUser implements Dao
     /**
      * @return bool
      */
-    public function isCompletedPersonalInfo() {
+    public function isCompletedPersonalInfo()
+    {
         return $this->getName() and $this->getIdNum() and $this->getPhone();
     }
 
@@ -1317,7 +1341,8 @@ class User extends BaseUser implements Dao
      * 是否已认证推荐人
      * @return bool
      */
-    public function isRecommanderVerified() {
+    public function isRecommanderVerified()
+    {
         if (!empty($this->getRecommanderName()) and $this->getParentUser() == null) {
             return false;
         }
@@ -1343,10 +1368,10 @@ class User extends BaseUser implements Dao
 
     public function __toString()
     {
-       return '用户ID: ' . $this->getId()
-           . ' 用户昵称: ' . $this->getNickname()
-           . ' 姓名: ' . $this->getName()
-           . ' 会员等级: ' . $this->getUserLevelText();
+        return '用户ID: ' . $this->getId()
+            . ' 用户昵称: ' . $this->getNickname()
+            . ' 姓名: ' . $this->getName()
+            . ' 会员等级: ' . $this->getUserLevelText();
     }
 
 }

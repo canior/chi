@@ -101,6 +101,11 @@ class UserAccountOrder implements Dao
         $userAccountOrder->setUserAccountOrderType($userAccountOrderType);
         $userAccountOrder->setUpgradeUserOrder($upgradeUserOrder);
         $userAccountOrder->setCourse($course);
+
+        if (!$userAccountOrder->isWithdraw()) {
+            $userAccountOrder->setPaid();
+        }
+
         if ($userAccountOrderType == UserAccountOrder::WITHDRAW)
             $user->decreaseUserAccountTotal($amount);
         else

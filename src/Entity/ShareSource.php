@@ -238,4 +238,13 @@ class ShareSource implements Dao
 
         return $this;
     }
+
+    /**
+     * @param $user
+     * @return ShareSourceUser
+     */
+    public function createShareSourceUser($user) {
+        $shareSourceUser = ShareSourceUser::factory($this, $user);
+        return $shareSourceUser;
+    }
 }

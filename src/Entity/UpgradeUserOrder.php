@@ -380,7 +380,6 @@ class UpgradeUserOrder implements Dao
         }
 
         /* 分钱给间接讲师 */
-
         if (array_key_exists($currentSubject, Subject::$oldTeacherRewards)) {
             foreach (Subject::$oldTeacherRewards[$currentSubject] as $oldSubject => $oldSubjectConfigs) {
                 $oldCourse = $user->getLatestCourse($oldSubject);
@@ -408,7 +407,7 @@ class UpgradeUserOrder implements Dao
     }
 
     /**
-     * @return UserAccountOrder[]
+     * @return UserAccountOrder[]|ArrayCollection
      */
     public function getUserAccountOrders()
     {

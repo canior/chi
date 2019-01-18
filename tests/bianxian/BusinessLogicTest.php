@@ -129,7 +129,7 @@ class BusinessLogicTest extends BianxianBaseTestCase
         $this->assertEquals(1, $teacher2->getUser()->getUserAccountOrders()->count());
         $teacherAccountOrder2 = $teacher2->getUser()->getUserAccountOrders()[0];
         $this->assertEquals(Subject::$teacherRewards[Subject::THINKING][UserLevel::ADVANCED], $teacherAccountOrder2->getAmount());
-        $this->assertTrue(!$teacherAccountOrder2->isPaid());
+        $this->assertTrue($teacherAccountOrder2->isPaid());
         $this->assertEquals($teacherAccountOrder2->getAmount(), $teacher2->getUser()->getUserAccountTotal());
 
 
@@ -157,14 +157,14 @@ class BusinessLogicTest extends BianxianBaseTestCase
         $this->assertEquals(1, $teacher->getUser()->getUserAccountOrders()->count());
         $teacherAccountOrder = $teacher->getUser()->getUserAccountOrders()[0];
         $this->assertEquals(Subject::$teacherRewards[Subject::THINKING][UserLevel::ADVANCED], $teacherAccountOrder->getAmount());
-        $this->assertTrue(!$teacherAccountOrder->isPaid());
+        $this->assertTrue($teacherAccountOrder->isPaid());
         $this->assertEquals($teacherAccountOrder->getAmount(), $teacher->getUser()->getUserAccountTotal());
 
         //有库存推荐人账户
         $this->assertEquals(1, $recommanderWithStock->getUserAccountOrders()->count());
         $recommanderWithStockAccountOrder = $recommanderWithStock->getUserAccountOrders()[0];
         $this->assertEquals(UserLevel::$userLevelRecommanderRewardsArray[UserLevel::ADVANCED], $recommanderWithStockAccountOrder->getAmount());
-        $this->assertTrue(!$recommanderWithStockAccountOrder->isPaid());
+        $this->assertTrue($recommanderWithStockAccountOrder->isPaid());
         $this->assertEquals($stock - 1, $recommanderWithStock->getRecommandStock());
         $this->assertEquals($recommanderWithStockAccountOrder->getAmount(), $recommanderWithStock->getUserAccountTotal());
 
@@ -194,7 +194,7 @@ class BusinessLogicTest extends BianxianBaseTestCase
         $this->assertEquals(1, $teacher->getUser()->getUserAccountOrders()->count());
         $teacherAccountOrder = $teacher->getUser()->getUserAccountOrders()[0];
         $this->assertEquals(Subject::$teacherRewards[Subject::THINKING][UserLevel::ADVANCED], $teacherAccountOrder->getAmount());
-        $this->assertTrue(!$teacherAccountOrder->isPaid());
+        $this->assertTrue($teacherAccountOrder->isPaid());
         $this->assertEquals($teacherAccountOrder->getAmount(), $teacher->getUser()->getUserAccountTotal());
 
         //有库存推荐人账户
@@ -237,14 +237,14 @@ class BusinessLogicTest extends BianxianBaseTestCase
         $this->assertEquals(1, $recommander->getUserAccountOrders()->count());
         $recommanderUserAccountOrder = $recommander->getUserAccountOrders()[0];
         $this->assertEquals(UserLevel::$userLevelRecommanderRewardsArray[UserLevel::PARTNER], $recommanderUserAccountOrder->getAmount());
-        $this->assertTrue(!$recommanderUserAccountOrder->isPaid());
+        $this->assertTrue($recommanderUserAccountOrder->isPaid());
 
         //系统课讲师得钱(直接）
         $this->assertEquals(Subject::$teacherRewards[Subject::TRADING][UserLevel::PARTNER], $teacherTrading->getUser()->getUserAccountTotal());
         $this->assertEquals(1, $teacherTrading->getUser()->getUserAccountOrders()->count());
         $teacherTradingUserAccountOrder = $teacherTrading->getUser()->getUserAccountOrders()[0];
         $this->assertEquals(Subject::$teacherRewards[Subject::THINKING][UserLevel::PARTNER], $teacherTradingUserAccountOrder->getAmount());
-        $this->assertTrue(!$teacherTradingUserAccountOrder->isPaid());
+        $this->assertTrue($teacherTradingUserAccountOrder->isPaid());
 
         //思维课讲师得钱（间接）
         $this->assertEquals($student->getLatestCourse(Subject::THINKING), $courseThinking);
@@ -252,7 +252,7 @@ class BusinessLogicTest extends BianxianBaseTestCase
         $this->assertEquals(1, $teacherThinking->getUser()->getUserAccountOrders()->count());
         $teacherThinkingUserAccountOrder = $teacherThinking->getUser()->getUserAccountOrders()[0];
         $this->assertEquals(Subject::$oldTeacherRewards[Subject::TRADING][Subject::THINKING][UserLevel::PARTNER], $teacherThinkingUserAccountOrder->getAmount());
-        $this->assertTrue(!$teacherThinkingUserAccountOrder->isPaid());
+        $this->assertTrue($teacherThinkingUserAccountOrder->isPaid());
 
     }
 
@@ -295,14 +295,14 @@ class BusinessLogicTest extends BianxianBaseTestCase
         $this->assertEquals(1, $recommander->getUserAccountOrders()->count());
         $recommanderUserAccountOrder = $recommander->getUserAccountOrders()[0];
         $this->assertEquals(UserLevel::$userLevelRecommanderRewardsArray[UserLevel::PARTNER], $recommanderUserAccountOrder->getAmount());
-        $this->assertTrue(!$recommanderUserAccountOrder->isPaid());
+        $this->assertTrue($recommanderUserAccountOrder->isPaid());
 
         //系统课讲师得钱(直接）
         $this->assertEquals(Subject::$teacherRewards[Subject::SYSTEM_1][UserLevel::PARTNER], $teacherSystem->getUser()->getUserAccountTotal());
         $this->assertEquals(1, $teacherSystem->getUser()->getUserAccountOrders()->count());
         $teacherSystemUserAccountOrder = $teacherSystem->getUser()->getUserAccountOrders()[0];
         $this->assertEquals(Subject::$teacherRewards[Subject::SYSTEM_1][UserLevel::PARTNER], $teacherSystemUserAccountOrder->getAmount());
-        $this->assertTrue(!$teacherSystemUserAccountOrder->isPaid());
+        $this->assertTrue($teacherSystemUserAccountOrder->isPaid());
         $this->assertEquals($upgradeUserOrder, $teacherSystemUserAccountOrder->getUpgradeUserOrder());
 
         //交易课讲师得钱（间接）
@@ -310,7 +310,7 @@ class BusinessLogicTest extends BianxianBaseTestCase
         $this->assertEquals(1, $teacherTrading->getUser()->getUserAccountOrders()->count());
         $teacherTradingUserAccountOrder = $teacherTrading->getUser()->getUserAccountOrders()[0];
         $this->assertEquals(Subject::$oldTeacherRewards[Subject::TRADING][Subject::THINKING][UserLevel::PARTNER], $teacherTradingUserAccountOrder->getAmount());
-        $this->assertTrue(!$teacherTradingUserAccountOrder->isPaid());
+        $this->assertTrue($teacherTradingUserAccountOrder->isPaid());
         $this->assertEquals($upgradeUserOrder, $teacherTradingUserAccountOrder->getUpgradeUserOrder());
 
         //思维课讲师得钱（间接）
@@ -318,7 +318,7 @@ class BusinessLogicTest extends BianxianBaseTestCase
         $this->assertEquals(1, $teacherThinking->getUser()->getUserAccountOrders()->count());
         $teacherThinkingUserAccountOrder = $teacherThinking->getUser()->getUserAccountOrders()[0];
         $this->assertEquals(Subject::$oldTeacherRewards[Subject::TRADING][Subject::THINKING][UserLevel::PARTNER], $teacherThinkingUserAccountOrder->getAmount());
-        $this->assertTrue(!$teacherThinkingUserAccountOrder->isPaid());
+        $this->assertTrue($teacherThinkingUserAccountOrder->isPaid());
         $this->assertEquals($upgradeUserOrder, $teacherThinkingUserAccountOrder->getUpgradeUserOrder());
     }
 
@@ -377,13 +377,11 @@ class BusinessLogicTest extends BianxianBaseTestCase
         $child = $this->createStudent(UserLevel::VISITOR);
         $parent = $this->createStudent(UserLevel::PARTNER);
         $parent2 = $this->createStudent(UserLevel::PARTNER);
-        $child->setParentUser($parent2);
-        $parent2->addSubUser($child);
+        $parent2->addSubUser($child, time() + User::PARENT_EXPIRES_SECONDS);
 
         $parentShareSource = $this->createShareSource($parent);
         $parent->addShareSource($parentShareSource);
-        $shareSourceUser = ShareSourceUser::factory($parentShareSource, $child);
-        $parentShareSource->addShareSourceUser($shareSourceUser);
+        $parentShareSource->createShareSourceUser($child);
 
         $this->assertEquals($parent2, $child->getParentUser());
         $this->assertEquals(0, $parent->getSubUsers()->count());
@@ -391,15 +389,11 @@ class BusinessLogicTest extends BianxianBaseTestCase
 
         //下线有其他推荐人已过期，进入推荐人链接， 推荐人是和合伙人
         $child = $this->createStudent(UserLevel::VISITOR);
-        $child->setName('child');
         $parent2 = $this->createStudent(UserLevel::PARTNER);
-        $parent2->setName('old');
-        $parent2->addSubUser($child);
+        $parent2->addSubUser($child, time() + User::PARENT_EXPIRES_SECONDS);
 
         $child->setParentUserExpiresAt(time() - User::PARENT_EXPIRES_SECONDS - 3600);
-
         $parent = $this->createStudent(UserLevel::PARTNER);
-        $parent->setName('new');
         $parentShareSource = $this->createShareSource($parent);
         $parent->addShareSource($parentShareSource);
 

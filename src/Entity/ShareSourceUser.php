@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\IdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ShareSourceUserRepository")
@@ -42,7 +43,19 @@ class ShareSourceUser implements Dao
         $shareSourceUser->setUser($child);
         $shareSourceUser->getUser()->getOrCreateTodayUserStatistics()->increaseShareNum(1);
 
-        $child->setParentUser($shareSource->getUser());
+        $parentUser = $shareSource->getUser();
+
+        if ($child->getParentUser() == null) {
+            if ($parentUser->isPartnerUser()) { //如果受邀者的推荐人为空，并且推荐人是合伙人
+                $parentUser->addSubUser($child, time() + User::PARENT_EXPIRES_SECONDS);
+            }
+        } else {
+            if ($child->getParentUserExpiresAt() < time()) { //如果受邀者的推荐人不为空，但之前推荐人的时间过期
+                $oldParentUser = $child->getParentUser();
+                $oldParentUser->removeSubUser($child);
+                $parentUser->addSubUser($child, time() + User::PARENT_EXPIRES_SECONDS);
+            }
+        }
 
         return $shareSourceUser;
     }

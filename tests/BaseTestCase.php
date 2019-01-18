@@ -135,7 +135,7 @@ class BaseTestCase extends WebTestCase
     }
 
     public function createShareSource($user, $groupOrder = null, $product=null , $isPersist = false) {
-        $bannerFile = $this->createFile();
+        $bannerFile = $this->createFile($isPersist);
         $shareSource = new ShareSource();
         $shareSource->setUser($user);
         $shareSource->setProduct($product);
