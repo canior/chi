@@ -473,8 +473,11 @@ class User extends BaseUser implements Dao
             }
         } else {
             if ($this->getParentUserExpiresAt() < time()) { //如果受邀者的推荐人不为空，但之前推荐人的时间过期
-                $this->getParentUser()->removeSubUser($this);
+                $oldParentUser = $this->getParentUser();
+                $oldParentUser->removeSubUser($this);
+
                 $this->parentUser = $parentUser;
+
                 //锁定推荐人100天
                 $this->setParentUserExpiresAt(time() + self::PARENT_EXPIRES_SECONDS);
                 $parentUser->addSubUser($this);
@@ -524,9 +527,10 @@ class User extends BaseUser implements Dao
         if ($this->subUsers->contains($subUser)) {
             $this->subUsers->removeElement($subUser);
             // set the owning side to null (unless already changed)
-            if ($subUser->getParentUser() === $this) {
-                $subUser->setParentUser(null);
-            }
+            // 这里是个大坑!!!!
+//            if ($subUser->getParentUser() === $this) {
+//                $subUser->setParentUser(null);
+//            }
         }
 
         return $this;

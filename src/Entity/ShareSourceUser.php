@@ -32,16 +32,17 @@ class ShareSourceUser implements Dao
      *
      *
      * @param ShareSource $shareSource
-     * @param User $user
+     * @param User $child
      * @return ShareSourceUser
      */
-    public static function factory(ShareSource $shareSource, User $user)
+    public static function factory(ShareSource $shareSource, User $child)
     {
         $shareSourceUser = new ShareSourceUser();
         $shareSourceUser->setShareSource($shareSource);
-        $shareSourceUser->setUser($user);
+        $shareSourceUser->setUser($child);
         $shareSourceUser->getUser()->getOrCreateTodayUserStatistics()->increaseShareNum(1);
-        $user->setParentUser($shareSource->getUser());
+
+        $child->setParentUser($shareSource->getUser());
 
         return $shareSourceUser;
     }

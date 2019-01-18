@@ -391,13 +391,18 @@ class BusinessLogicTest extends BianxianBaseTestCase
 
         //下线有其他推荐人已过期，进入推荐人链接， 推荐人是和合伙人
         $child = $this->createStudent(UserLevel::VISITOR);
-        $parent = $this->createStudent(UserLevel::PARTNER);
+        $child->setName('child');
         $parent2 = $this->createStudent(UserLevel::PARTNER);
+        $parent2->setName('old');
         $parent2->addSubUser($child);
+
         $child->setParentUserExpiresAt(time() - User::PARENT_EXPIRES_SECONDS - 3600);
 
+        $parent = $this->createStudent(UserLevel::PARTNER);
+        $parent->setName('new');
         $parentShareSource = $this->createShareSource($parent);
         $parent->addShareSource($parentShareSource);
+
         $shareSourceUser = ShareSourceUser::factory($parentShareSource, $child);
         $parentShareSource->addShareSourceUser($shareSourceUser);
 
