@@ -393,7 +393,6 @@ class BusinessLogicTest extends BianxianBaseTestCase
         $child = $this->createStudent(UserLevel::VISITOR);
         $parent = $this->createStudent(UserLevel::PARTNER);
         $parent2 = $this->createStudent(UserLevel::PARTNER);
-        $child->setParentUser($parent2);
         $parent2->addSubUser($child);
         $child->setParentUserExpiresAt(time() - User::PARENT_EXPIRES_SECONDS - 3600);
 

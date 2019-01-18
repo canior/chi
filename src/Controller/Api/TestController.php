@@ -33,7 +33,7 @@ class TestController extends BaseController
      */
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
-
+echo $this->getEntityManager()->getRepository(Teacher::class)->find(1)->getName();exit;
         /**
          * @var UpgradeUserOrder $upgradeUserOrder
          */

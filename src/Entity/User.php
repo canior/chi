@@ -197,7 +197,7 @@ class User extends BaseUser implements Dao
 
     /**
      * @var int|null
-     * @ORM\Column(type="int")
+     * @ORM\Column(type="integer")
      */
     private $parentUserExpiresAt;
 
@@ -464,22 +464,22 @@ class User extends BaseUser implements Dao
             return $this;
         }
 
-//        if ($this->getParentUser() == null) {
-//            if ($parentUser->isPartnerUser()) { //如果受邀者的推荐人为空，并且推荐人是合伙人
-//                $this->parentUser = $parentUser;
-//                //锁定推荐人100天
-//                $this->setParentUserExpiresAt(time() + self::PARENT_EXPIRES_SECONDS);
-//                $parentUser->addSubUser($this);
-//            }
-//        } else {
-//            if ($this->getParentUserExpiresAt() < time()) { //如果受邀者的推荐人不为空，但之前推荐人的时间过期
-//                $this->getParentUser()->removeSubUser($this);
-//                $this->parentUser = $parentUser;
-//                //锁定推荐人100天
-//                $this->setParentUserExpiresAt(time() + self::PARENT_EXPIRES_SECONDS);
-//                $parentUser->addSubUser($this);
-//            }
-//        }
+        if ($this->getParentUser() == null) {
+            if ($parentUser->isPartnerUser()) { //如果受邀者的推荐人为空，并且推荐人是合伙人
+                $this->parentUser = $parentUser;
+                //锁定推荐人100天
+                $this->setParentUserExpiresAt(time() + self::PARENT_EXPIRES_SECONDS);
+                $parentUser->addSubUser($this);
+            }
+        } else {
+            if ($this->getParentUserExpiresAt() < time()) { //如果受邀者的推荐人不为空，但之前推荐人的时间过期
+                $this->getParentUser()->removeSubUser($this);
+                $this->parentUser = $parentUser;
+                //锁定推荐人100天
+                $this->setParentUserExpiresAt(time() + self::PARENT_EXPIRES_SECONDS);
+                $parentUser->addSubUser($this);
+            }
+        }
 
         return $this;
     }
