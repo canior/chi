@@ -32,6 +32,14 @@ class VerifyParentUserType extends AbstractType
                 'class' => User::class,
                 'required' => false,
             ])
+            ->add('parentUserExpiresAt', DateType::class, [
+                'label' => '推荐人锁定至日期',
+                'input' => 'timestamp',
+                'widget' => 'single_text',
+                'placeholder' => '请输入推荐人锁定至日期',
+                'required' => false,
+            ])
+
 
         ;
     }

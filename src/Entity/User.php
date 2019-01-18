@@ -492,7 +492,7 @@ class User extends BaseUser implements Dao
      */
     public function getTotalChildren()
     {
-        return $this->getUserAccountOrdersAsRecommander()->count();
+        return $this->getSubUsers()->count();
     }
 
     /**
@@ -501,7 +501,7 @@ class User extends BaseUser implements Dao
      */
     public function getTotalRecommandStock()
     {
-        return $this->getRecommandStock() + $this->getTotalChildren();
+        return $this->getRecommandStock() + $this->getUserAccountOrdersAsRecommander()->count();
     }
 
     public function addSubUser(User $subUser, $parentExpiresAt): self
@@ -1070,11 +1070,18 @@ class User extends BaseUser implements Dao
     {
         $userAccountOrderAsRecommanders = new ArrayCollection();
         foreach ($this->userAccountOrders as $userAccountOrder) {
-            if ($userAccountOrder->isRecommandRewards()) {
+            if ($userAccountOrder->isRecommandRewards() and $userAccountOrder->isPaid()) {
                 $userAccountOrderAsRecommanders->add($userAccountOrder);
             }
         }
         return $userAccountOrderAsRecommanders;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalUserAccountOrdersAsRecommander() {
+        return $this->getUserAccountOrdersAsRecommander()->count();
     }
 
     /**

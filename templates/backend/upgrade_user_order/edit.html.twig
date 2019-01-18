@@ -8,7 +8,7 @@
             {% include "backend/includes/app.session.flashbag.html.twig" %}
             <div class="box">
                 <div class="box-body">
-                    <div class="table-responsive col-md-6">
+                    <div class="table-responsive col-md-4">
                         <h3 class="box-title">交易信息</h3>
                         <table class="table table-bordered table-striped">
                             <tr>
@@ -50,7 +50,7 @@
                         </table>
                     </div>
 
-                    <div class="table-responsive col-md-6">
+                    <div class="table-responsive col-md-8">
                         <h3 class="box-title">
                             佣金信息
                             {% if (upgrade_user_order.isApproved) %}
@@ -65,14 +65,14 @@
                         </h3>
                         <table class="table table-bordered table-striped">
                             <tr>
-                                <th>用户ID</th>
-                                <th>姓名</th>
-                                <th>交易类型	</th>
-                                <th>科目</th>
-                                <th>课程</th>
-                                <th>佣金</th>
-                                <th>支付状态</th>
-                                <th>用户账单号</th>
+                                <th class="col-md-2">用户ID</th>
+                                <th class="col-md-2">姓名</th>
+                                <th class="col-md-2">交易类型	</th>
+                                <th class="col-md-1">科目</th>
+                                <th class="col-md-1">课程</th>
+                                <th class="col-md-1">佣金</th>
+                                <th class="col-md-2">支付状态</th>
+                                <th class="col-md-1">用户账单号</th>
                             </tr>
                             {% for userAccountOrder in userAccountOrders %}
                             <tr>
