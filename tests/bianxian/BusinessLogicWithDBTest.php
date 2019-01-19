@@ -119,6 +119,12 @@ class BusinessLogicWithDBTest extends BianxianBaseTestCase
         $this->getEntityManager()->persist($upgradeUserOrder);
         $this->getEntityManager()->flush();
 
+        //测试用户名额
+        $this->assertEquals(0, $child->getUserRecommandStockOrders()->count());
+        $this->assertEquals(100, $parent1->getTotalRecommandStock());
+        $this->assertEquals(0, $child->getTotalRecommandStock());
+
+
         $this->assertTrue($upgradeUserOrder->isCreated());
         $this->assertTrue($child->isVisitorUser());
         $this->assertEquals(4, $upgradeUserOrder->getPotentialUserAccountOrders()->count());
@@ -138,6 +144,12 @@ class BusinessLogicWithDBTest extends BianxianBaseTestCase
         $this->getEntityManager()->refresh($thinkingTeacher);
         $this->getEntityManager()->refresh($tradingTeacher);
         $this->getEntityManager()->refresh($system2Teacher);
+
+        //检验名额订单
+        $this->assertEquals(1, $parent1->getTotalRecommandStockOrders());
+        $this->assertEquals(1, $child->getTotalRecommandStockOrders());
+        $this->assertEquals(99, $parent1->getRecommandStock());
+        $this->assertEquals(100, $child->getRecommandStock());
 
         $this->assertEquals(4, $upgradeUserOrder->getUserAccountOrders()->count());
 
@@ -180,6 +192,22 @@ class BusinessLogicWithDBTest extends BianxianBaseTestCase
         $this->getEntityManager()->refresh($parent1);
         $this->assertEquals(UserLevel::$userLevelRecommanderRewardsArray[UserLevel::PARTNER], $parent1->getWithDrawedTotal());
         $this->assertEquals(0, $parent1->getUserAccountTotal());
+
+
+        //测试人工增加名额
+        $this->assertEquals(100, $child->getRecommandStock());
+        $child->createUserRecommandStockOrder(100, null, 'test manual incrase stock');
+        $this->getEntityManager()->persist($child);
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->refresh($child);
+        $this->assertEquals(200, $child->getRecommandStock());
+
+        //测试人工减少名额
+        $child->createUserRecommandStockOrder(-100, null, 'test manual descrease stock');
+        $this->getEntityManager()->persist($child);
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->refresh($child);
+        $this->assertEquals(100, $child->getRecommandStock());
 
 
     }

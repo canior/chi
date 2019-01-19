@@ -334,6 +334,12 @@ class UpgradeUserOrder implements Dao
 
         /* 升级会员 */
         $user->upgradeUserLevel($userLevel);
+        /* 更新名额 */
+        $increasedStock = UserLevel::$userLevelRecommanderStockArray[$userLevel];
+
+        $memo = '升级至' . UserLevel::$userLevelTextArray[$userLevel] . '成功，获得名额';
+        $user->createUserRecommandStockOrder($increasedStock, $this, $memo);
+
         $this->populateUserAccountOrders();
     }
 
@@ -349,7 +355,8 @@ class UpgradeUserOrder implements Dao
             if ($this->isApproved()) {
                 $recommander->createUserAccountOrder(UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this);
                 //推荐名额减1
-                $recommander->increaseRecommandStock(-1);
+                $memo = '推荐' . UserLevel::$userLevelTextArray[$userLevel] . '成功, 减少名额';
+                $recommander->createUserRecommandStockOrder(-1, $this, $memo);
             } else {
                 $userAccountOrder = UserAccountOrder::factory($recommander, UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this);
                 //这里是虚拟账单，要把余额还回来
@@ -457,7 +464,9 @@ class UpgradeUserOrder implements Dao
      */
     public function __toString()
     {
-        return '订单号: ' . $this->getId()
+        return ' 订单号: ' . $this->getId()
+            . ' , 姓名: ' . $this->getUser()->getName()
+            . ' , 升级: ' . $this->getUserLevelText()
             . ' , 金额: ￥' . $this->getTotal()
             . ' , 状态:'. $this->getStatusText();
     }

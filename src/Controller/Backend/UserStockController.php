@@ -51,7 +51,6 @@ class UserStockController extends BackendController
         $data = [
             'title' => '用户名额管理',
             'form' => [
-                'page' => $request->query->getInt('page', 1)
             ]
         ];
         /**
@@ -59,9 +58,7 @@ class UserStockController extends BackendController
          */
         $user = $this->getEntityManager()->getRepository(User::class)->find($userId);
         $data['user'] = $user;
-        $data['data'] = $user->getUserAccountOrdersAsRecommander();
 
-        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/user_stock/index.html.twig', $data);
     }
 

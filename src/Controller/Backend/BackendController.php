@@ -68,6 +68,7 @@ class BackendController extends DefaultController
                     'path' => [
                         'user_stock_statistic',
                         'user_stock_index',
+                        'user_recommand_stock_order_new'
                     ],
                     'name' => '用户名额',
                     'icon' => 'fa fa-paper-plane',

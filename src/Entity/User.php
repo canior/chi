@@ -246,6 +246,14 @@ class User extends BaseUser implements Dao
      */
     private $recommanderName;
 
+
+    /**
+     * @var UserRecommandStockOrder[]|Collection
+     * @ORM\OneToMany(targetEntity="App\Entity\UserRecommandStockOrder", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $userRecommandStockOrders;
+
     public function __construct()
     {
         parent::__construct();
@@ -274,6 +282,7 @@ class User extends BaseUser implements Dao
         $this->upgradeUserOrders = new ArrayCollection();
         $this->userAccountOrders = new ArrayCollection();
         $this->courseStudents = new ArrayCollection();
+        $this->userRecommandStockOrders = new ArrayCollection();
     }
 
     public function setId($id)
@@ -1203,7 +1212,6 @@ class User extends BaseUser implements Dao
     public function upgradeUserLevel($userLevel)
     {
         $this->setUserLevel($userLevel);
-        $this->increaseRecommandStock(UserLevel::$userLevelRecommanderStockArray[$userLevel]);
         $this->setUpdatedAt();
     }
 
@@ -1395,6 +1403,49 @@ class User extends BaseUser implements Dao
     public function setParentUserExpiresAt(?int $parentUserExpiresAt): void
     {
         $this->parentUserExpiresAt = $parentUserExpiresAt;
+    }
+
+    /**
+     * @param int $qty
+     * @param UpgradeUserOrder $upgradeUserOrder
+     * @param string $memo
+     * @return UserRecommandStockOrder
+     */
+    public function createUserRecommandStockOrder($qty, UpgradeUserOrder $upgradeUserOrder = null, $memo = null) {
+        $userRecommandStockOrder = UserRecommandStockOrder::factory($this, $qty, $upgradeUserOrder, $memo);
+        $this->getUserRecommandStockOrders()->add($userRecommandStockOrder);
+        return $userRecommandStockOrder;
+    }
+
+    /**
+     * @return UserRecommandStockOrder[]|Collection
+     */
+    public function getUserRecommandStockOrders()
+    {
+        return $this->userRecommandStockOrders;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalRecommandStockOrders() {
+        return $this->getUserRecommandStockOrders()->count();
+    }
+
+    /**
+     * @param UserRecommandStockOrder $userRecommandStockOrder
+     */
+    public function addUserRecommandStockOrder(UserRecommandStockOrder $userRecommandStockOrder) {
+        $userRecommandStockOrder->setUser($this);
+        $this->getUserRecommandStockOrders()->add($userRecommandStockOrder);
+    }
+
+    /**
+     * @param UserRecommandStockOrder[]|Collection $userRecommandStockOrders
+     */
+    public function setUserRecommandStockOrders($userRecommandStockOrders): void
+    {
+        $this->userRecommandStockOrders = $userRecommandStockOrders;
     }
 
     public function __toString()

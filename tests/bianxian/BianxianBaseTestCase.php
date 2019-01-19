@@ -12,15 +12,26 @@ use App\Entity\UpgradeUserOrder;
 use App\Entity\User;
 use App\Entity\Course;
 use App\Entity\UserAccountOrder;
+use App\Entity\UserRecommandStockOrder;
 use App\Repository\CourseRepository;
 use App\Repository\UpgradeUserOrderRepository;
 use App\Repository\UserAccountOrderRepository;
+use App\Repository\UserRecommandStockOrderRepository;
 use App\Tests\BaseTestCase;
 
 class BianxianBaseTestCase extends BaseTestCase
 {
     protected function setUp() {
         parent::setUp();
+
+        /**
+         * @var UserRecommandStockOrderRepository $userRecommandStockOrderRepository
+         */
+        $userRecommandStockOrderRepository = $this->getEntityManager()->getRepository(UserRecommandStockOrder::class);
+        foreach ($userRecommandStockOrderRepository->findAll() as $userRecommandStockOrder) {
+            $this->getEntityManager()->remove($userRecommandStockOrder);
+        }
+        $this->getEntityManager()->flush();
 
         /**
          * @var UserAccountOrderRepository $userAccountOrderRepository

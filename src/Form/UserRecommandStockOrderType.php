@@ -2,21 +2,23 @@
 
 namespace App\Form;
 
-use App\Entity\UpgradeUserOrderPayment;
+use App\Entity\UserRecommandStockOrder;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
-class NewUpgradeUserOrderPaymentType extends AbstractType
+class UserRecommandStockOrderType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('amount', MoneyType::class, ['label' => '金额', 'currency' => 'CNY'])
+            ->add('qty', IntegerType::class, [
+                'label' => '增加或减少名额数量',
+            ])
             ->add('memo', TextareaType::class, [
-                'label' => '备注 (必填)',
+                'label' => '备注 (必填）',
                 'required' => true
             ])
         ;
@@ -25,7 +27,7 @@ class NewUpgradeUserOrderPaymentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => UpgradeUserOrderPayment::class,
+            'data_class' => UserRecommandStockOrder::class,
         ]);
     }
 }
