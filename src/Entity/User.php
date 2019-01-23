@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\UpdatedAtTrait;
+use App\Service\Wx\WxCommon;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -253,6 +254,13 @@ class User extends BaseUser implements Dao
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $userRecommandStockOrders;
+
+    /**
+     * @var File|null $wxShareQrFile
+     * @ORM\ManyToOne(targetEntity="App\Entity\File")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $wxShareQrFile;
 
     public function __construct()
     {
@@ -1446,6 +1454,22 @@ class User extends BaseUser implements Dao
     public function setUserRecommandStockOrders($userRecommandStockOrders): void
     {
         $this->userRecommandStockOrders = $userRecommandStockOrders;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getWxShareQrFile(): ?File
+    {
+        return $this->wxShareQrFile;
+    }
+
+    /**
+     * @param File|null $wxShareQrFile
+     */
+    public function setWxShareQrFile(?File $wxShareQrFile): void
+    {
+        $this->wxShareQrFile = $wxShareQrFile;
     }
 
     public function __toString()

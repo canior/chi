@@ -1,55 +1,5 @@
 {{ form_start(form) }}
-    <div class="row">
-        <div class="form-group col-md-4{% if form.provinceId.vars.errors|length %} has-error{% endif %}">
-            {{ form_label(form.provinceId) }}
-            {{ form_errors(form.provinceId) }}
-            {{ form_widget(form.provinceId) }}
-            {{ form_help(form.provinceId) }}
-        </div>
-        <div class="form-group col-md-4{% if form.cityId.vars.errors|length %} has-error{% endif %}">
-            {{ form_label(form.cityId) }}
-            {{ form_errors(form.cityId) }}
-            {{ form_widget(form.cityId) }}
-            {{ form_help(form.cityId) }}
-        </div>
-        <div class="form-group col-md-4{% if form.countyId.vars.errors|length %} has-error{% endif %}">
-            {{ form_label(form.countyId) }}
-            {{ form_errors(form.countyId) }}
-            {{ form_widget(form.countyId) }}
-            {{ form_help(form.countyId) }}
-        </div>
-        <div class="form-group col-md-4{% if form.name.vars.errors|length %} has-error{% endif %}">
-            {{ form_label(form.name) }}
-            {{ form_errors(form.name) }}
-            {{ form_widget(form.name) }}
-            {{ form_help(form.name) }}
-        </div>
-        <div class="form-group col-md-4{% if form.phone.vars.errors|length %} has-error{% endif %}">
-            {{ form_label(form.phone) }}
-            {{ form_errors(form.phone) }}
-            {{ form_widget(form.phone) }}
-            {{ form_help(form.phone) }}
-        </div>
-        <div class="form-group col-md-4{% if form.address.vars.errors|length %} has-error{% endif %}">
-            {{ form_label(form.address) }}
-            {{ form_errors(form.address) }}
-            {{ form_widget(form.address) }}
-            {{ form_help(form.address) }}
-        </div>
-        <div class="form-group col-md-4{% if form.isDefault.vars.errors|length %} has-error{% endif %}">
-            {{ form_label(form.isDefault) }}
-            {{ form_errors(form.isDefault) }}
-            {{ form_widget(form.isDefault) }}
-            {{ form_help(form.isDefault) }}
-        </div>
-        <div class="form-group col-md-4{% if form.isDeleted.vars.errors|length %} has-error{% endif %}">
-            {{ form_label(form.isDeleted) }}
-            {{ form_errors(form.isDeleted) }}
-            {{ form_widget(form.isDeleted) }}
-            {{ form_help(form.isDeleted) }}
-        </div>
-    </div>
     {{ form_widget(form) }}
     {#<a class="btn btn-danger" href="{{ path('user_address_index') }}">{{ 'Back to list'|trans }}</a>#}
-    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    <button class="btn btn-primary">{{ button_label|default('提交') }}</button>
 {{ form_end(form) }}

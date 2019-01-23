@@ -25,7 +25,7 @@ class UploadFileCommand implements CommandInterface
 
     /**
      * UploadFileCommand constructor.
-     * @param UploadedFile $file
+     * @param UploadedFile|mixed $file
      * @param int $uploadUserId
      */
     public function __construct(UploadedFile $file, $uploadUserId = null)

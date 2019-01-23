@@ -1,17 +1,13 @@
 parameters:
 
-  #微信小程序
-  wxAppId: "test"
-  wxAppSecret:
+  #后台扫描二维码签到配置
 
-  #微信支付
-  wxAppKey:
-  wxAppMchId:
+  #web socket url
+  web_socket_server: 'ws://127.0.0.1:8080/'
 
-  wxCertPath:
-  wxSslKeyPath:
-  wxCaInfoPath:
+  #签到二维码
+  qrcode_uri: 'http://127.0.0.1/backend/wx'
+  qrcode_path: '%kernel.project_dir%/public/upload/qrcode'
 
-  wxPayNotifyUrl:
-  wxRefundNotifyUrl:
+
 

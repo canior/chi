@@ -9,11 +9,23 @@
                 <div class="box-body">
 
                     <div class="col-md-4 table-responsive">
-                        <h3 class="box-title">微信登录信息</h3>
+                        <h3 class="box-title">基本信息</h3>
                         <table class="table table-bordered table-striped">
                             <tr>
                                 <th class="col-md-3">用户ID</th>
                                 <td class="col-md-9">{{ user.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>姓名</th>
+                                <td>{{ user.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>会员等级</th>
+                                <td>{{ user.userLevelText }}</td>
+                            </tr>
+                            <tr>
+                                <th>电话</th>
+                                <td>{{ user.phone }}</td>
                             </tr>
                             <tr>
                                 <th>微信昵称</th>
@@ -85,6 +97,10 @@
                         </table>
                     </div>
 
+                    <div class="col-md-8 table-responsive">
+                        {{ render(controller('App\\Controller\\Backend\\UserAddressController::index', {userId: user.id})) }}
+                    </div>
+
                 </div>
             </div>
 
@@ -107,6 +123,7 @@
             <div class="box">
                 <div class="box-header with-border">
                     {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <b>编辑个人资料</b>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">

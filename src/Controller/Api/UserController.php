@@ -647,6 +647,7 @@ class UserController extends BaseController
         $referShareSource->setBannerFile(null);
         $referShareSource->setPage($page, true);
 
+        //需要调用微信二维码生成
         $quanShareSource = new ShareSource();
         $quanShareSource->setType(ShareSource::QUAN);
         $quanShareSource->setBannerFile(null);
@@ -1023,10 +1024,22 @@ class UserController extends BaseController
          * @var Course $course
          */
         $course = $this->getEntityManager()->getRepository(Course::class)->find($courseId);
-        if ($courseStudentStatus == CourseStudent::WELCOME) {
-            $course->welcomeStudent($user);
-        } else if ($courseStudentStatus == CourseStudent::SIGNIN) {
-            $course->signInStudent($user);
+
+        if (!$course->hasStudent($user)) {
+            $memo = '未找到注册记录';
+            $course->refuseStudent($user, $memo);
+        } else if ($course->isExpired()) {
+            $memo = '课程已结束';
+            $course->refuseStudent($user, $memo);
+        } else if (!$course->getProduct()->isActive()) {
+            $memo = '课程未发布';
+            $course->refuseStudent($user, $memo);
+        } else {
+            if ($courseStudentStatus == CourseStudent::WELCOME) {
+                $course->welcomeStudent($user);
+            } else if ($courseStudentStatus == CourseStudent::SIGNIN) {
+                $course->signInStudent($user);
+            }
         }
 
         $this->getEntityManager()->persist($course);

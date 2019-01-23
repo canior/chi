@@ -331,12 +331,31 @@ class Course implements Dao
         return $students;
     }
 
+    public function isExpired() {
+        return time() > strtotime(date(DAO::DATETIME_END, $this->getEndDate()));
+    }
+
     /**
-     * 全部注册学生 （无重复）
+     * @return int
+     */
+    public function getTotalCourseStudents() {
+        return $this->courseStudents->count();
+    }
+
+    /**
+     * 全部课程学生,包含拒绝的学生 （无重复）
      * @return int
      */
     public function getTotalStudentUsers() {
         return count($this->getStudentUsers());
+    }
+
+    /**
+     * 全部注册学生 （无重复）
+     * @return int
+     */
+    public function getTotalRegisteredStudentUsers() {
+        return count($this->getStudentUsers(CourseStudent::REGISTERED));
     }
 
     /**
@@ -369,9 +388,11 @@ class Course implements Dao
      *
      * @param User $studentUser
      * @param $courseStatus
+     * @param $memo
      */
-    private function addStudentUser(User $studentUser, $courseStatus) {
-        $courseStudent = new CourseStudent($this, $studentUser, $courseStatus);
+    private function addStudentUser(User $studentUser, $courseStatus, $memo = null) {
+        $courseStudent = CourseStudent::factory($this, $studentUser, $courseStatus);
+        $courseStudent->setMemo($memo);
         $this->courseStudents->add($courseStudent);
         $studentUser->addCourseStudent($courseStudent);
     }
@@ -401,11 +422,33 @@ class Course implements Dao
     }
 
     /**
+     * 拒绝学生
+     * @param $studentUser
+     * @param $memo
+     */
+    public function refuseStudent($studentUser, $memo) {
+        $this->addStudentUser($studentUser, CourseStudent::REFUSED, $memo);
+    }
+
+    /**
      * @return string
      */
     public function getSubjectText() : string
     {
         return isset(Subject::$subjectTextArray) && isset(Subject::$subjectTextArray[$this->subject]) ? Subject::$subjectTextArray[$this->subject] : $this->subject;
+    }
+
+    /**
+     * @param User $studentUser
+     * @return bool
+     */
+    public function hasStudent(User $studentUser) {
+        foreach ($this->getCourseStudents() as $courseStudent) {
+            if ($courseStudent->isRegistered() and $courseStudent->getStudentUser() == $studentUser) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

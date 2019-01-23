@@ -1,0 +1,35 @@
+<script>
+    $(document).ready(function() {
+        var currentTotal = 0;
+
+        function loadTotal() {
+            $.ajax({url: "{{ path('course_student_count', {'courseId': course.id}) }}", success: function(totalJson){
+                tmp = $.parseJSON(totalJson);
+                newTotal = tmp.total;
+                registeredTotal = tmp.registeredTotal;
+                welcomedTotal = tmp.welcomedTotal;
+                if (currentTotal != newTotal) {
+                    missingTotal = newTotal - currentTotal;
+                    currentTotal = newTotal;
+                    $.ajax({url: "{{ path('course_student_table', {'courseId': course.id}) }}", success: function(result){
+                            $("#studentTableDiv").html(result)
+                            for (i = 1; i <= missingTotal; i++) {
+                                $("#studentTableDiv tr").eq(i).addClass('text-bold')
+                            }
+                    }});
+                } else {
+                    $("#studentTableDiv tr").removeClass('text-bold')
+                }
+
+                $("#register_total").html(registeredTotal)
+                $("#welcome_total").html(welcomedTotal)
+            }});
+        }
+        loadTotal();
+
+        setInterval(function(){
+            loadTotal() // this will run after every 3 seconds
+        }, 2000);
+
+    });
+</script>

@@ -10,6 +10,7 @@ use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\User;
 
 /**
  * @Route("/backend")
@@ -17,68 +18,60 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserAddressController extends BackendController
 {
     /**
-     * @Route("/user/address/", name="user_address_index", methods="GET")
+     * @Route("/user/address/{userId}", name="user_address_index", methods="GET")
+     * @param UserAddressRepository $userAddressRepository
+     * @param $userId
+     * @param Request $request
+     * @return Response
      */
-    public function index(UserAddressRepository $userAddressRepository, Request $request): Response
+    public function index(UserAddressRepository $userAddressRepository, $userId, Request $request): Response
     {
         $data = [
-            'title' => 'UserAddress 列表',
-            'form' => [
-                'keyword' => $request->query->get('keyword', null),
-                'page' => $request->query->getInt('page', 1)
-            ]
+            'title' => '地址列表',
+            'userId' => $userId,
         ];
-        $data['data'] = $userAddressRepository->findByKeyword($data['form']['keyword']);
-        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
+        $data['data'] = $userAddressRepository->findBy(['user' => $userId]);
+        $data['dataCount'] = count($data['data']);
         return $this->render('backend/user_address/index.html.twig', $data);
     }
 
     /**
-     * @Route("/user/address/new", name="user_address_new", methods="GET|POST")
+     * @Route("/user/address/{userId}/new", name="user_address_new", methods="GET|POST")
+     * @param Request $request
+     * @param UserAddressRepository $userAddressRepository
+     * @param $userId
+     * @return Response
      */
-    public function new(Request $request, UserRepository $userRepository, RegionRepository $regionRepository): Response
+    public function new(Request $request, UserAddressRepository $userAddressRepository, $userId): Response
     {
+
+        /**
+         * @var User $user
+         */
+        $user = $this->getEntityManager()->getRepository(User::class)->find($userId);
         $userAddress = new UserAddress();
+        $userAddress->setUser($user);
+
         $form = $this->createForm(UserAddressType::class, $userAddress);
-        if (!$request->query->getInt('userId')) {
-            throw $this->createNotFoundException('Missing userId parameter');
-//            $form->get('user')->setData($userRepository->find($request->query->getInt('userId')));
-        }
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $provinceId = $form->get('provinceId')->getData();
-            $cityId = $form->get('cityId')->getData();
-            $countyId = $form->get('countyId')->getData();
-            $regionId = $countyId ? $countyId : ($cityId ? $cityId : $provinceId);
-            if ($regionId) {
-                $region = $regionRepository->find($regionId);
-                $userAddress->setRegion($region);
-            }
-            $user = $userRepository->find($request->query->getInt('userId'));
-            $userAddress->setUser($user);
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($userAddress);
             $em->flush();
-            // reset other default address
-            if ($userAddress->getIsDefault()) {
-                foreach ($userAddress->getUser()->getUserAddresses() as $address) {
-                    if ($address->getIsDefault() && $address->getId() != $userAddress->getId()) {
-                        $address->setIsDefault(false);
-                    }
-                }
-                $em->flush();
-            }
-            $this->addFlash('notice', '添加成功');
-            return $this->redirectToRoute('user_info', ['id' => $userAddress->getUser()->getId()]);
+
+            $this->addFlash('notice', '创建成功');
+            return $this->redirectToRoute('user_personal_edit', ['id' => $userId]);
         }
 
         return $this->render('backend/user_address/new.html.twig', [
-            'user_address' => $userAddress,
-            'title' => '添加收货地址',
+            'title' => '创建新地址',
             'form' => $form->createView(),
+            'userId' => $userId,
         ]);
     }
+
 
     /**
      * @Route("/user/address/{id}/edit", name="user_address_edit", methods="GET|POST")

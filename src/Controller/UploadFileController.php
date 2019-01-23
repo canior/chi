@@ -26,6 +26,9 @@ class UploadFileController extends DefaultController
      * @Route("/file/download/{fileId}", name="fileDownload")
      * @param int $fileId
      * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      */
     public function downloadAction($fileId)
     {
@@ -48,6 +51,9 @@ class UploadFileController extends DefaultController
      * @param int $fileId
      * @param Request $request
      * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      */
     public function authDownloadAction($fileId, Request $request)
     {

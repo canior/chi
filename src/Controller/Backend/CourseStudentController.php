@@ -7,11 +7,12 @@ use App\Form\CourseStudentType;
 use App\Repository\CourseRepository;
 use App\Repository\CourseStudentRepository;
 use App\Entity\Subject;
+use Endroid\QrCode\QrCode;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Course;
-
+use Endroid\QrCode\Factory\QrCodeFactory;
 /**
  * @Route("/backend")
  */
@@ -56,17 +57,63 @@ class CourseStudentController extends BackendController
     {
         $data = [
             'title' => '报到管理',
-            'course' => null,
-            'form' => [
-                'page' => $request->query->getInt('page', 1)
-            ]
         ];
 
         $course = $this->getEntityManager()->getRepository(Course::class)->find($courseId);
-        $data['data'] = $courseStudent = $courseStudentRepository->findBy(['course' => $courseId]);
-        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         $data['course'] = $course;
         return $this->render('backend/course_student/index.html.twig', $data);
+    }
+
+    /**
+     * @Route("/course/student/{courseId}/count", name="course_student_count", methods="GET")
+     * @param CourseStudentRepository $courseStudentRepository
+     * @param $courseId
+     * @return Response
+     */
+    public function countStudent(CourseStudentRepository $courseStudentRepository, $courseId) {
+        /**
+         * @var Course $course
+         */
+        $course = $this->getEntityManager()->getRepository(Course::class)->find($courseId);
+        $total = $courseStudentRepository->count(['course' => $courseId]);
+        $registedTotal = $course->getTotalRegisteredStudentUsers();
+        $welcomedTotal = $course->getTotalWelcomeStudentUsers();
+        $json = json_encode([
+            'total' => $total,
+            'registeredTotal' => $registedTotal,
+            'welcomedTotal' => $welcomedTotal
+        ]);
+        return new Response($json);
+    }
+
+    /**
+     * @Route("/course/student/{courseId}/studentTable", name="course_student_table", methods="GET")
+     * @param CourseStudentRepository $courseStudentRepository
+     * @param $courseId
+     * @return Response
+     */
+    public function studentTable(CourseStudentRepository $courseStudentRepository, $courseId) {
+        $courseStudents = $courseStudentRepository->findBy(['course' => $courseId], ['id' => 'desc']);
+        return $this->render('backend/course_student/table.html.twig', [
+            'courseStudents' => $courseStudents,
+            'totalCourseStudents' => count($courseStudents)
+        ]);
+    }
+
+    /**
+     * @Route("/course/student/{id}/qr/{status}", name="course_student_create_qr", methods="GET")
+     * @param QrCodeFactory $qrCodeFactory
+     * @param string $id courseId
+     * @param $status
+     * @return Response
+     */
+    public function createQRAction(QrCodeFactory $qrCodeFactory, $id, $status) {
+        // 加上微信扫一扫的图标
+        /**
+         * @var QrCode $qrCode
+         */
+        $qrCode = $qrCodeFactory->create("courseId=" . $id . "&status=" . $status);
+        return new Response($qrCode->writeString(), Response::HTTP_OK, ['Content-Type' => $qrCode->getContentType()]);
     }
 
     /**

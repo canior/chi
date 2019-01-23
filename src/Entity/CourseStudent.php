@@ -17,11 +17,13 @@ class CourseStudent implements Dao
     const REGISTERED = 'registered';
     const WELCOME = 'welcome';
     const SIGNIN = 'signin';
+    const REFUSED = 'refused';
 
     public static $statusTexts = [
         self::REGISTERED => '已注册',
         self::WELCOME => '已报到',
-        self::SIGNIN => '签到',
+        self::SIGNIN => '已签到',
+        self::REFUSED => '已拒绝',
     ];
 
 
@@ -49,16 +51,27 @@ class CourseStudent implements Dao
     private $status;
 
     /**
-     * CourseStudent constructor.
+     * @var string|null
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $memo;
+
+    /**
      * @param Course $course
      * @param User $studentUser
      * @param $status
+     * @return CourseStudent
      */
-    public function __construct(Course $course, User $studentUser, $status)
+    public static function factory(Course $course, User $studentUser, $status)
     {
-        $this->setCourse($course);
-        $this->setStudentUser($studentUser);
-        $this->setStatus($status);
+        $courseStudent = new CourseStudent();
+        $courseStudent->setCourse($course);
+        $courseStudent->setStudentUser($studentUser);
+        $courseStudent->setStatus($status);
+        return $courseStudent;
+    }
+
+    public function __construct() {
         $this->setCreatedAt();
     }
 
@@ -118,11 +131,42 @@ class CourseStudent implements Dao
     }
 
     /**
+     * @return null|string
+     */
+    public function getMemo(): ?string
+    {
+        return $this->memo;
+    }
+
+    /**
+     * @param null|string $memo
+     */
+    public function setMemo(?string $memo): void
+    {
+        $this->memo = $memo;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRegistered() {
+        return self::REGISTERED == $this->getStatus();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRefused() {
+        return self::REFUSED == $this->getStatus();
+    }
+
+    /**
      * @return array
      */
     public function getArray() {
         return [
             'id' => $this->getId(),
+            'status' => $this->getStatus(),
             'statusText' => self::$statusTexts[$this->getStatus()],
             'courseId' => $this->getCourse()->getId(),
             'createdAt' => $this->getCreatedAt(true)

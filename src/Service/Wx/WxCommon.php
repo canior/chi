@@ -6,9 +6,17 @@
 
 namespace App\Service\Wx;
 
+use App\Command\File\UploadFileCommand;
+use App\Entity\File as FileDao;
+use App\Repository\FileRepository;
 use App\Service\Wx\WxTrait;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMException;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * WxCommon
@@ -137,7 +145,6 @@ class WxCommon
             'body' => $postStr,
         ]);
         $code = $response->getStatusCode(); // 200
-        $reason = $response->getReasonPhrase(); // OK
         $body = $response->getBody()->getContents();
 
         if($code === 200) {
@@ -235,6 +242,58 @@ class WxCommon
             return $body;
         } else {
             return "sending message error";
+        }
+    }
+
+    /**
+     * @param ObjectManager $entityManager
+     * @param string $scene
+     * @param $page
+     * @param bool $isHyaline
+     * @return FileDao|null
+     */
+    public function createWxQRFile(ObjectManager $entityManager, string $scene, $page, $isHyaline = false) {
+        $accessToken = $this->getAccessToken();
+        $this->log->info("got access token" . $accessToken);
+        $client = new Client(['base_uri' => self::API_URL]);
+        $postInfo = [
+            'scene' => $scene,
+            'page' => $page,
+            'is_hyaline' => $isHyaline
+        ];
+        $url = "/wxa/getwxacodeunlimit?access_token={$accessToken}";
+        $postStr = json_encode($postInfo);
+        $this->log->info("create QR Code: " . $postStr);
+        $response = $client->post($url, [
+            'body' => $postStr,
+        ]);
+        $code = $response->getStatusCode(); // 200
+
+        if($code === 200) {
+            $file = $response->getBody();
+            $fileName = uniqid() . ".jpeg";
+            $filePath = __DIR__ . "/../../../public/upload/";
+            file_put_contents($filePath . $fileName, $file);
+
+            $fileDao = new FileDao();
+            $fileDao->setUploadUser(null)
+                ->setName($fileName)
+                ->setType('jpeg')
+                ->setSize($file->getSize())
+                ->setPath($filePath)
+                ->setMd5($filePath . $fileName)
+                ->setUploadAt(time());
+            try {
+                $entityManager->persist($fileDao);
+                $entityManager->flush();
+            } catch (ORMException $e) {
+                return null;
+            }
+
+            return $fileDao;
+
+        } else {
+            return null;
         }
     }
 }
