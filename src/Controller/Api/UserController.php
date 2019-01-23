@@ -43,6 +43,7 @@ use App\Repository\TeacherRepository;
 use App\Repository\UserActivityRepository;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
+use App\Service\ImageGenerator;
 use App\Service\Wx\WxCommon;
 use App\Command\File\UploadFileCommand;
 use Symfony\Component\HttpFoundation\Request;
@@ -644,7 +645,7 @@ class UserController extends BaseController
         $referShareSource = new ShareSource();
         $referShareSource->setType(ShareSource::REFER);
         $referShareSource->setTitle($user->getNickname() . "邀请你来赚钱");
-        $referShareSource->setBannerFile(null);
+        //$referShareSource->setBannerFile(ImageGenerator::createShareQuanBannerImage($userQrFile, $bannerFile));
         $referShareSource->setPage($page, true);
 
         //需要调用微信二维码生成

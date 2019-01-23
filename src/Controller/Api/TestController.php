@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\File;
-use App\Entity\Dao;
 
 /**
  * @Route("/wxapi")
@@ -37,11 +36,13 @@ class TestController extends BaseController
      */
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
-        $course = $this->getEntityManager()->getRepository(Course::class)->find(499);
-        echo strtotime(date(DAO::DATETIME_END, $course->getEndDate()));
-        echo "<br>";
-        echo time();
-
+        $service = new WxCommon($this->getLog());
+        /**
+         * @var FileRepository $fileRepository
+         */
+        $fileRepository = $this->getEntityManager()->getRepository(File::class);
+        //header('Content-Type: image/jpeg');
+        echo $service->createWxQRFile($this->getEntityManager(), "userId=123&pageId=123", "pages/index/index")->getId();
         return $this->responseRaw("");
     }
 
