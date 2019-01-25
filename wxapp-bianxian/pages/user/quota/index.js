@@ -6,20 +6,44 @@ Page({
    * 页面的初始数据
    */
   data: {
-    menu: [
-      { name: '已用名额（3人）剩余名额（97人）', isValid: null },
-    ],
-    isValid: null,
     isLogin: null,
     user: null,
-    rewardList: [],
+    quota: null,
+  },
+
+  getQuota: function () {
+    const that = this;
+    wx.showLoading({
+      title: '载入中',
+    })
+    wx.request({
+      url: app.globalData.baseUrl + '/user/children',
+      data: {
+        thirdSession: wx.getStorageSync('thirdSession'),
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          that.setData({
+            quota: res.data.data
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) { },
+      complete(e) {
+        wx.hideLoading()
+      }
+    })
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    //app.buriedPoint(options)
   },
 
   /**
@@ -38,7 +62,7 @@ Page({
       user: app.globalData.user
     })
     if (this.data.isLogin) {
-      //this.getRewardList(this.data.isValid)
+      this.getQuota()
     }
   },
 

@@ -7,21 +7,61 @@ Page({
    */
   data: {
     menu: [
-      { name: '全部', isValid: null },
-      { name: '高级学员', isValid: true },
-      { name: '合伙人', isValid: false }
+      { name: '全部', level: null },
+      { name: '普通学员', level: 'visitor' },
+      { name: '高级学员', level: 'advanced' },
+      { name: '合伙人', level: 'partner' },
     ],
-    isValid: null,
+    userLevel: null,
+    shareUser: null,
     isLogin: null,
     user: null,
-    rewardList: [],
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    //app.buriedPoint(options)
+    this.setData({
+      userLevel: options.level ? options.level : null
+    })
+  },
 
+  getReferral: function (level) {
+    const that = this;
+    wx.showLoading({
+      title: '载入中',
+    })
+    wx.request({
+      url: app.globalData.baseUrl + '/user/shareUser',
+      data: {
+        userLevel: level,
+        //, page, url(分享源返回的url)
+        thirdSession: wx.getStorageSync('thirdSession'),
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          //userLevels(包含了学员等级), shareSourceUsersTotal, shareSourceUsers, shareSources(转发和图片)
+          console.log(res.data.data)
+          that.setData({
+            shareUser: res.data.data,
+            userLevel: level
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) { },
+      complete(e) {
+        wx.hideLoading()
+      }
+    })
+  },
+
+  tapMenu: function (e) {
+    this.getReferral(e.currentTarget.dataset.level)
   },
 
   /**
@@ -40,7 +80,7 @@ Page({
       user: app.globalData.user
     })
     if (this.data.isLogin) {
-      //this.getRewardList(this.data.isValid)
+      this.getReferral(this.data.userLevel)
     }
   },
 

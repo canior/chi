@@ -26,7 +26,7 @@ Page({
     this.getProduct(productId);
     const url = app.globalData.baseUrl + '/products/' + productId + '/reviews'
     productReview.init(this, url);
-    app.buriedPoint(options)
+    //app.buriedPoint(options)
     /*app.userActivityCallback = res => {
       app.buriedPoint(options)
       this.setData({
@@ -48,9 +48,7 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           var product = res.data.data.product
-          product.realPrice = app.roundFixed(parseFloat(product.price) + parseFloat(product.freight), 2);
-          product.realGroupPrice = app.roundFixed(parseFloat(product.groupPrice) + parseFloat(product.freight), 2);
-          product.productSpecImages.forEach((item) => {
+          product.courseSpecImages.forEach((item) => {
             item.loading = true
           })
           that.setData({
@@ -117,7 +115,7 @@ Page({
     //console.log('bindload:imgLoadDone', e)
     const index = e.currentTarget.dataset.index
     this.setData({
-      ['product.productSpecImages['+index+'].loading']: false
+      ['product.courseSpecImages['+index+'].loading']: false
     })
   },
 

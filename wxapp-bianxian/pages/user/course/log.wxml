@@ -1,55 +1,43 @@
 <!--pages/user/course/log.wxml-->
 <import src="/pages/tmpl/price.wxml"/>
 <view class="top">
-  <view>课程公告：临时通知临时通知临时通知临时通知临时</view>
+  <!--<view>课程公告：临时通知临时通知临时通知临时通知临时</view>-->
 </view>
 <view class="split-brand"/>
 
 <view class="section">
   <view class="row">
     <view class="left">
-      <image src="/images/demo/course1.jpg"/>
+      <image src="{{imgUrlPrefix+'/'+course.product.courseImages[0].fileId}}"/>
       <view>
-        <view class="line name">变现思维课</view>
-        <view class="line desc">2019.01.20 - 2019.01.22</view>
-        <view class="line desc">上海市松江区漕河泾双子楼</view>
+        <view class="line name">{{course.product.subjectText}}</view>
+        <view class="line desc">{{course.product.startDate}} - {{course.product.endDate}}</view>
+        <view class="line desc">{{course.product.address}}</view>
       </view>
     </view>
   </view>
   <view class="row">
-    <block wx:if="{{groupUserOrder.status != 'delivered'}}">
-      <button bindtap="toUserComment" wx:if="{{groupUserOrder.productReviews.length == 0}}">课程评价</button>
-      <button bindtap="toUserComment" wx:if="{{groupUserOrder.productReviews.length > 0}}">查看评价</button>
+    <block wx:if="{{course.status == 'delivered'}}">
+      <button bindtap="toUserComment" wx:if="{{course.productReviews.length == 0}}">课程评价</button>
+      <button bindtap="toUserComment" wx:if="{{course.productReviews.length > 0}}">查看评价</button>
     </block>
     <button open-type="contact">客服咨询</button>
   </view>
 </view>
 <view class="split-brand"/>
 
-<block wx:if="{{true}}">
-  <!--好友咖位排行榜-->
+<block>
+  <!--列表-->
   <view class="container">
     <view class="rank">
       <view class="table">
-        <view class="tr" wx:for="1" wx:key="index">
-          <view class="td">2019-01-01 10:12:12 pm</view>
-          <view class="td">注册成功</view>
-        </view>      
-        <view class="tr" wx:for="1" wx:key="index">
-          <view class="td">2019-01-10 10:12:12 pm</view>
-          <view class="td">报到成功</view>
+        <view class="tr" wx:for="{{course.courseStudents}}" wx:key="index">
+          <view class="td">{{item.createdAt}}</view>
+          <view class="td">{{item.status}}</view>
         </view>
-        <view class="tr" wx:for="1" wx:key="index">
-          <view class="td">2019-01-11 10:12:12 pm</view>
-          <view class="td">签到成功</view>
-        </view>      
-        <view class="tr" wx:for="1" wx:key="index">
-          <view class="td">2019-01-12 10:12:12 pm</view>
-          <view class="td">签到成功</view>
-        </view>      
       </view>
     </view>
-  </view><!--好友咖位排行榜-->
+  </view><!--列表-->
   <view class="split-brand"/>
 </block>
 

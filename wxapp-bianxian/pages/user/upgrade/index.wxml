@@ -1,36 +1,21 @@
 <!--pages/user/upgrade/index.wxml-->
+<import src="/pages/tmpl/address.wxml"/>
 <view class="container">
     <!--排序筛选body-->
     <view class="filter">
-        <view class="item{{upindex == 1 ? ' active' : ''}}" wx:for="1" wx:key="index" data-index="1" bindtap="tapFilter">高级会员</view>
-        <view class="item{{upindex == 2 ? ' active' : ''}}" wx:for="1" wx:key="index" data-index="2" bindtap="tapFilter">合伙人</view>
+      <block wx:for="{{userLevels}}" wx:key="index">
+        <view class="item{{userLevel == item.key ? ' active' : ''}}" data-key="{{item.key}}" bindtap="{{item.enable ? 'tapFilter' : ''}}" wx:if="{{item.show}}">
+          <text>{{item.name}}</text>
+          <view class="tip" wx:if="{{userLevel == item.key}}"><image src="/images/checked.png"/></view>
+        </view>
+      </block>
     </view>
 </view>
 
-<view class="container form">
+<view class="container">
   <view class="split-line"/>
-  <view class="title">个人信息</view>
-  <view class="chi-item" bindtap="toMyInfo">
-    <view class="left"><image src="/images/demo/group-user.png"/></view>
-    <view class="right">
-      <view class="line">姓名：唐亚迪</view>
-      <view class="line">电话：1861632536</view>
-      <view class="line">身份证：123456789000</view>
-    </view>
-    <view class="btn"><view class="arrow-right"/></view>
-  </view>
-</view>
-<view class="container form">
-  <view class="split-line"/>
-  <view class="title">推荐人</view>
-  <view class="chi-item" bindtap="toReferee">
-    <view class="left"><image src="/images/demo/group-user.png"/></view>
-    <view class="right">
-      <view class="line">姓名：唐亚迪</view>
-      <view class="line">电话：1861632536</view>
-    </view>
-    <view class="btn"><view class="arrow-right"/></view>
-  </view>
+  <view class="title">个人资料</view>
+  <template is="address" data="{{user:user, unpaid:false}}"/>
 </view>
 
 <view class="bottom">

@@ -1,13 +1,13 @@
 <!--pages/user/index.wxml-->
 <view class="container">
-  <view class="top" bindtap="toMyInfo">
+  <view class="top" bindtap="toUserInfo">
     <view class="left">
       <view class="avatar">
         <image src="{{user.avatarUrl}}" wx:if="{{isLogin}}"/>
       </view>
       <view class="info">
         <view class="line">{{isLogin ? user.nickname : '未登录'}}</view>
-        <view class="line" wx:if="{{isLogin}}">普通学员</view>
+        <view class="line" wx:if="{{isLogin}}">{{user.userLevel}}</view>
       </view>
     </view>
     <view class="right" wx:if="{{isLogin}}">
@@ -19,19 +19,19 @@
   </view>
   <view class="row">
     <view class="step" bindtap="toMyAccount" data-status="created">
-      <text>我的账户</text><text>￥300</text>
+      <text>我的账户</text><text>￥{{user.userAccountTotal ? user.userAccountTotal : 0}}</text>
     </view>
     <view class="step" bindtap="toReferral" data-status="pending">
-      <text>我的推荐</text><text>3人</text>
+      <text>我的推荐</text><text>{{user.totalShares ? user.totalShares : 0}}人</text>
     </view>
     <view class="step" bindtap="toQuota" data-status="shipping">
-      <text>我的名额</text><text>3/100</text>
+      <text>我的名额</text><text>{{user.userRecommandStock ? user.userRecommandStock : 0}}人</text>
     </view>
   </view>
 </view>
 <view class="split-brand"/>
 <view class="container">
-  <view class="row" bindtap="toUpgrade" data-status="">
+  <view class="row" bindtap="toUpgrade" wx:if="{{user.userLevel != '合伙人'}}">
     <view class="left">学员升级</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>
@@ -40,11 +40,13 @@
     <view class="left">我的课程</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>
-  <view class="split-line"/>
-  <view class="row" bindtap="toMyTrainee">
-    <view class="left">我的学员</view>
-    <view class="right">60人<view class="arrow-right"/></view>
-  </view>
+  <block wx:if="{{isLogin && user.totalStudents > 0}}">
+    <view class="split-line"/>
+    <view class="row" bindtap="toMyStudent">
+      <view class="left">我的学员</view>
+      <view class="right">{{user.totalStudents}}人<view class="arrow-right"/></view>
+    </view>
+  </block>
   <view class="split-line"/>
   <view class="row" bindtap="toScan">
     <view class="left">扫一扫</view>

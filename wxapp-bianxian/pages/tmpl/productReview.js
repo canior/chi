@@ -7,6 +7,9 @@ var __data = {
 }
 
 function init(that, url) {
+  __data.productReviews = [];
+  __data.page = 1;
+  __data.hasMore = false;
   __data.url = url;
   that.setData({
     productReviewData: __data

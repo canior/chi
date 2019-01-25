@@ -195,6 +195,3 @@
   margin-right: 5rpx;
   border-radius: 50%;
 }
-.table .tr .td.user text {
-  width: 150rpx;
-}

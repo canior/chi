@@ -1,36 +1,28 @@
 <!--pages/product/index.wxml-->
-<import src="/pages/tmpl/price.wxml"/>
 <view class="container">
   
   <view class="banner">
     <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
-      <swiper-item wx:for="123" wx:key="index" wx:for-item="banner" bindtap="redirect" data-url="{{banner.redirectUrl}}">
-        <image src="/images/demo/banner.jpg" />
+      <swiper-item wx:for="{{banners}}" wx:key="index" wx:for-item="banner" bindtap="redirect" data-url="{{banner.redirectUrl}}">
+        <image src="{{imgUrlPrefix + '/' + banner.bannerFileId}}" />
       </swiper-item>
     </swiper>
-  </view>
-
-<view class="split-line"/>
-
-<block wx:for="1" wx:key="index">
-  <view class="section">
-    <view class="row">
-      <view class="left">
-        <image src="/images/demo/course1.jpg"/>
-      </view>
+  </view>  
+  
+  <block wx:for="{{products}}" wx:for-item="product" wx:key="id" bindtap="toProductDetail" data-id="{{product.id}}">
+    <view class="chi-item">
+      <view class="left"><image src="{{imgUrlPrefix + '/' + product.courseImages[0].fileId}}"/></view>
       <view class="right">
-          <view class="line name">变现思维课</view>
-          <view class="line desc">日期：2019.01.02 至 2019.01.05</view>
-          <view class="line desc">地址：上海市松江区漕河泾开发区双子楼</view>
-          <view class="line price"><text>￥380</text><button bindtap="toProductDetail" data-id="{{'2'}}">我要报名</button></view>
+        <view class="line title">{{product.subjectText}}</view>
+        <view class="line desc">时间：{{product.startDate}}至{{product.endDate}}</view>
+        <view class="line desc">地点：{{product.region.fullname}} {{product.address}}</view>
+        <view class="line">
+          <view class="price">￥{{product.price}}</view>
+          <button catchtap="toProductDetail" data-id="{{product.id}}">我要报名</button>
+        </view>
       </view>
     </view>
-  </view>
-  <view class="split-line"/>
-</block>
-
-
- 
-<view class="btn" catchtap="toProductDetail" data-id="{{product.id}}"/>
+    <view class="split-line"/>
+  </block>
 
 </view>

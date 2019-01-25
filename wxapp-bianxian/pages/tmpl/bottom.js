@@ -63,9 +63,18 @@ function __createOrder(that, url, productId) {
       wx.hideLoading();
       if (res.statusCode == 200 && res.data.code == 200) {
         //console.log(res.data.data)
-        wx.navigateTo({
-          url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
-        })
+        const groupUserOrder = res.data.data.groupUserOrder;
+        // 判断有无个人资料
+        if (groupUserOrder.user.isCompletedPersonalInfo) {
+          wx.navigateTo({
+            url: '/pages/product/pay?orderId=' + groupUserOrder.id,
+          })
+        } else {
+          // 转新建个人资料
+            wx.navigateTo({
+              url: '/pages/user/info/update?orderId=' + groupUserOrder.id,
+            })
+        }
       } else {
         console.log('wx.request return error', res.statusCode);
       }

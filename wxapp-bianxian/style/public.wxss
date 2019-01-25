@@ -104,6 +104,17 @@
   font-size: 24rpx;
   color: #b2b2b2;
 }
+.chi-item .right .line .price {
+  font-size: 36rpx;
+  font-weight: bold;  
+  color: #ff4d42;
+}
+.chi-item .right .line button {
+  font-size: 30rpx;
+  background-color: #ffdf00;
+}.row .right button::after {
+  border-color: #000;
+}
 .chi-price-container {
   display: flex;
   align-items: baseline !important;

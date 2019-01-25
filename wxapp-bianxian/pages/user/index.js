@@ -17,100 +17,104 @@ Page({
     //app.buriedPoint(options)
   },
 
-  // 转我的拼团
-  toUserGroup: function () {
-    if (this.data.isLogin) {
-      wx.navigateTo({
-        url: '/pages/user/group/index',
-      })
-    } else {
-      wx.navigateTo({
-        url: '/pages/user/login',
-      })
-    }
-  },
-
-  // 转我的订单
-  toUserOrder: function (e) {
-    var status = e.currentTarget.dataset.status
-    if (this.data.isLogin) {
-      wx.navigateTo({
-        url: '/pages/user/order/index?status=' + status,
-      })
-    } else {
-      wx.navigateTo({
-        url: '/pages/user/login',
-      })
-    }
-  },
-
-  // 转地址管理
-  toUserAddress: function () {
-    if (this.data.isLogin) {
-      wx.navigateTo({
-        url: '/pages/user/address/index',
-      })
-    } else {
-      wx.navigateTo({
-        url: '/pages/user/login',
-      })
-    }
-  },
-
-  // 转我的收益
-  toUserReward: function () {
-    wx.switchTab({
-      url: '/pages/user/reward/index',
-    })
-  },
-
   // 转个人资料
-  toMyInfo: function () {
-    wx.navigateTo({
-      url: '/pages/user/address/edit',
-    })
+  toUserInfo: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/info/update',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
   },
+
   // 转我的账户
   toMyAccount: function () {
-    wx.navigateTo({
-      url: '/pages/user/reward/index',
-    })
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/account/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
   },
+
   // 转我的推荐
   toReferral: function () {
-    wx.navigateTo({
-      url: '/pages/user/referral/index',
-    })
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/referral/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
   },
+
   // 转我的名额
   toQuota: function () {
-    wx.navigateTo({
-      url: '/pages/user/quota/index',
-    })
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/quota/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
   },
+
   // 转我的课程
   toMyCourse: function () {
-    wx.navigateTo({
+    wx.switchTab({
       url: '/pages/user/course/index',
     })
-  },
+  },  
+
   // 转我的学员
-  toMyTrainee: function () {
-    wx.navigateTo({
-      url: '/pages/user/trainee/index',
-    })
+  toMyStudent: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/student/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
   },
+
   // 转学员升级
   toUpgrade: function () {
-    wx.navigateTo({
-      url: '/pages/user/upgrade/index',
-    })
-  },
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/upgrade/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },  
+
   // 扫一扫
   toScan: function () {
-    wx.navigateTo({
-      url: '/pages/user/signin',
-    })
+    wx.scanCode({
+      onlyFromCamera: true,
+      success: (res) => {
+        console.log(res);
+        var tmp = res.result.split('id=');
+        var id = tmp[1];
+        wx.navigateTo({
+          url: '/pages/user/course?id=' + id + '&qr=1', //qr=1表示扫码进入
+        });
+      }
+    });
   },
 
   /**

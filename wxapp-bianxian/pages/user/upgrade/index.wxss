@@ -1,4 +1,5 @@
 /* pages/user/upgrade/index.wxss */
+@import "/pages/tmpl/address.wxss";
 .container {
   background-color: #fff;
 }
@@ -72,15 +73,25 @@
   padding: 30rpx 0;
 }
 .filter .item {
-    width: 200rpx;
-    height: 60rpx;
-    line-height: 60rpx;
+    width: 260rpx;
+    height: 100rpx;
+    line-height: 100rpx;
     border: 1px solid #ddd;
     margin: 0 30rpx;
     text-align: center;
+    position: relative;
 }
 .filter .item.active {
     color: #f23560;
     background-color: #fcedf4;
     border: 1px solid #f23560;
+}
+.filter .item .tip {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.filter .item .tip image{
+  width: 62rpx;
+  height: 62rpx;
 }

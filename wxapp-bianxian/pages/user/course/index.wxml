@@ -7,23 +7,23 @@
 </view>
 <view class="split-brand"/>
 
-<block wx:for="{{groupOrders}}" wx:key="index">
+<block wx:for="{{myCourses}}" wx:key="index">
   <view class="section">
     <view class="row">
       <view class="left">订单号：{{item.id}}</view>
-      <view class="right pending">已支付</view>
+      <view class="right pending">{{item.statusText}}</view>
     </view>
     <view class="row">
       <view class="left">
-        <image src="/images/demo/course1.jpg"/>
+        <image src="{{imgUrlPrefix+'/'+item.product.courseImages[0].fileId}}"/>
         <view>
-          <view class="line name">思维变现课</view>
-          <view class="line desc">2019.01.20 - 2019.01.22</view>
-          <view class="line desc">上海市松江区漕河泾双子楼</view>
+          <view class="line name">{{item.product.subjectText}}</view>
+          <view class="line desc">{{item.product.startDate}} - {{item.product.endDate}}</view>
+          <view class="line desc">{{item.product.address}}</view>
         </view>
       </view>
       <view class="right">
-        <view>实付￥380</view>
+        <view>实付￥{{item.paymentTotal}}</view>
         <view><button bindtap="toMyCourseLog" data-id="{{item.id}}">课程日志</button></view>
       </view>
     </view>

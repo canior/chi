@@ -7,7 +7,7 @@ Page({
    */
   data: {
     options: null,
-    groupUserOrder: null,
+    course: null,
     imgUrlPrefix: app.globalData.imgUrlPrefix,
   },
 
@@ -15,27 +15,27 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    app.buriedPoint(options)
-    //this.getGroupUserOrder(options.id)
+    //app.buriedPoint(options)
     this.setData({
       options: options
     })
   },
 
-  getGroupUserOrder: function (id) {
+  getMyCourseLog: function (id) {
     const that = this;
     wx.request({
       url: app.globalData.baseUrl + '/groupUserOrder/view',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
-        groupUserOrderId: id
+        groupUserOrderId: id,
+        url: '/pages/product/detail?id=' + id
       },
       method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           that.setData({
-            groupUserOrder: res.data.data.groupUserOrder,
+            course: res.data.data.groupUserOrder,
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -47,50 +47,14 @@ Page({
     })
   },
 
-  // 确认收货
-  deliver: function (e) {
-    const that = this;
-    wx.showModal({
-      title: '提示',
-      content: '您是否确认已收货',
-      confirmText: '是',
-      cancelText: '否',
-      success: function (res) {
-        if (res.confirm) {
-          wx.request({
-            url: app.globalData.baseUrl + '/user/groupUserOrder/post',
-            data: {
-              thirdSession: wx.getStorageSync('thirdSession'),
-              groupUserOrderId: that.data.groupUserOrder.id
-            },
-            method: 'POST',
-            success: (res) => {
-              if (res.statusCode == 200 && res.data.code == 200) {
-                console.log(res.data.data)
-                that.setData({
-                  groupUserOrder: res.data.data.groupUserOrder,
-                })
-              } else {
-                console.log('wx.request return error', res.statusCode);
-              }
-            },
-            fail(e) {
-            },
-            complete(e) { }
-          })
-        }
-      }
-    })
-  },
-
-  // 商品评价
+  // 评价
   toUserComment: function (e) {
     wx.navigateTo({
       url: '/pages/user/order/review?id=' + this.data.groupUserOrder.id,
     })
   },
 
-  // 继续拼团
+  // 分享
   toProductDetail: function (e) {
     wx.reLaunch({
       url: '/pages/product/detail?id=' + this.data.groupUserOrder.product.id,
@@ -108,7 +72,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.getGroupUserOrder(this.data.options.id)
+    this.getMyCourseLog(this.data.options.id)
   },
 
   /**

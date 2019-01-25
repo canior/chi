@@ -1,25 +1,22 @@
 {
-  "pages":[    
+  "pages":[
     "pages/product/index",
     "pages/product/detail",
-    "pages/group/pay",
+    "pages/product/pay",
     "pages/user/index",
-    "pages/user/signin",
-    "pages/user/reward/index",
+    "pages/user/info/update",
+    "pages/user/account/index",
+    "pages/user/upgrade/index",    
     "pages/user/referral/index",
     "pages/user/quota/index",
     "pages/user/course/index",
     "pages/user/course/log",
-    "pages/user/trainee/index",
-    "pages/user/trainee/list",
-    "pages/user/upgrade/index",
+    "pages/user/student/index",
+    "pages/user/student/list",
     
     "pages/product/reward",
-    "pages/group/index",
     "pages/user/login",
     "pages/user/mobile/login",
-    "pages/user/address/index",
-    "pages/user/address/edit",
     "pages/user/order/index",
     "pages/user/order/detail",
     "pages/user/order/review",
@@ -40,7 +37,7 @@
     "list": [
       {
         "pagePath": "pages/product/index",
-        "text": "变现课程",
+        "text": "首页",
         "iconPath": "images/home.png",
         "selectedIconPath": "images/home-active.png"
       },

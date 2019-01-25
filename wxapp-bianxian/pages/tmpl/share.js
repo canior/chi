@@ -35,7 +35,7 @@ function saveShareSource(that, e, url) {
 function __saveShareSource(that, url, shareSourceType) {
   const pages = getCurrentPages();
   const currentPageUrl = '/' + pages[pages.length - 1].route;
-  const shareSource = __data.shareSources.find(item => { return item.type == shareSourceType});
+  const shareSource = __data.shareSources[shareSourceType];
   wx.request({
     url: url,
     data: {
@@ -69,13 +69,12 @@ function __saveShareSource(that, url, shareSourceType) {
 function shareObject(that, res) {
   //const shareSourceType = res.target.dataset.type;
   const shareSourceType = 'refer';//仅类型refer需发送
-  const shareSource = __data.shareSources.find(item => { return item.type == shareSourceType });
+  const shareSource = __data.shareSources[shareSourceType];
   var id = null;
   if (that.data.product) id = that.data.product.id
   else if (that.data.groupOrder) id = that.data.groupOrder.id
   return {
-    //title: shareSource.title,
-    title: '【推荐人名字】邀请您来参加变现思维课',
+    title: shareSource.title,
     imageUrl: that.data.imgUrlPrefix + '/' + shareSource.bannerFileId,
     path: shareSource.page + '&id=' + id
   }

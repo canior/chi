@@ -43,7 +43,7 @@
 }
 .nav {
   font-size: 30rpx;
-  margin: 0 40rpx;
+  margin: 0 30rpx;
 }.nav.active {
   border-bottom: 3px solid #ffdf00;
 }
@@ -194,7 +194,4 @@
   height: 86rpx;
   margin-right: 5rpx;
   border-radius: 50%;
-}
-.table .tr .td.user text {
-  width: 150rpx;
 }

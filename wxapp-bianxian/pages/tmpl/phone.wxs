@@ -1,5 +1,5 @@
 //手机号码中间四位显示为*号
 var encode = function (array) {
-  return array.substring(0, 3) + '****' + array.substring(7);
+  return array.length == 11 ? array.substring(0, 3) + '****' + array.substring(7) : array.substring(0, 3) + '******' + array.substring(9);
 }
 module.exports.encode = encode;
