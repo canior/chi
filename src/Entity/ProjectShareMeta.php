@@ -9,7 +9,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use App\Entity\ShareSource;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProjectShareMetaRepository")
@@ -66,7 +66,7 @@ class ProjectShareMeta extends ProjectMeta
     }
 
     public function getShareSceneText() {
-        return isset(self::$scenes[$this->getShareScene()]) ? self::$scenes[$this->getShareScene()] : $this->getShareScene();
+        return isset(ShareSource::$types[$this->getShareScene()]) ? ShareSource::$types[$this->getShareScene()] : $this->getShareScene();
     }
 
     public function getShareType() {
