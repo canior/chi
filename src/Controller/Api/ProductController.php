@@ -24,6 +24,7 @@ use App\Entity\ProjectShareMeta;
 use App\Entity\File;
 use App\Service\Wx\WxCommon;
 use App\Entity\User;
+use App\Service\ImageGenerator;
 
 /**
  * @Route("/wxapi")
