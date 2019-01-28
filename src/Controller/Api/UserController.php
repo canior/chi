@@ -6,6 +6,7 @@ use App\Command\Notification\NotifyPendingGroupOrderCommand;
 use App\Entity\CommandMessage;
 use App\Entity\Course;
 use App\Entity\CourseStudent;
+use App\Entity\File;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
 use App\Entity\GroupUserOrderRewards;
@@ -46,6 +47,7 @@ use App\Repository\UserRepository;
 use App\Service\ImageGenerator;
 use App\Service\Wx\WxCommon;
 use App\Command\File\UploadFileCommand;
+use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -631,28 +633,74 @@ class UserController extends BaseController
 
 
     /**
-     * //TODO 需要确定转发配置
      * 返回转发和朋友圈的shareSource
      *
      * @param User $user
      * @param $page
      * @return array
      */
-    public function createShareSource(User $user, $page) {
+    private function createShareSource(User $user, $page) {
+
+        $fileRepository = $this->getEntityManager()->getRepository(File::class);
+        $projectShareMeta = $this->getEntityManager()->getRepository(ProjectShareMeta::class);
+        $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);
+
+        /**
+         * @var ProjectShareMeta $referMeta
+         */
+        $referMeta = $projectShareMeta->findOneBy(['metaKey' => ShareSource::REFER_USER]);
+
+        /**
+         * @var ProjectShareMeta $quanMeta
+         */
+        $quanMeta = $projectShareMeta->findOneBy(['metaKey' => ShareSource::QUAN_USER]);
 
         $shareSources = [];
 
-        $referShareSource = new ShareSource();
-        $referShareSource->setType(ShareSource::REFER);
-        $referShareSource->setTitle($user->getNickname() . "邀请你来赚钱");
-        //$referShareSource->setBannerFile(ImageGenerator::createShareQuanBannerImage($userQrFile, $bannerFile));
-        $referShareSource->setPage($page, true);
+        //个人信息页面转发分享
+        $referShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::REFER_USER]);
+        if ($referShareSource == null) {
+            $referShareSource = new ShareSource();
+            $referShareSource->setType(ShareSource::REFER_USER);
+            $referShareSource->setTitle($user->getNickname() . ' ' . $referMeta->getShareTitle());
 
-        //需要调用微信二维码生成
-        $quanShareSource = new ShareSource();
-        $quanShareSource->setType(ShareSource::QUAN);
-        $quanShareSource->setBannerFile(null);
-        $quanShareSource->setPage($page, true);
+
+            if ($referMeta->getShareBannerFileId()) {
+                /**
+                 * @var File $referBannerFile
+                 */
+                $referBannerFile = $fileRepository->find($referMeta->getShareBannerFileId());
+                $referShareSource->setBannerFile($referBannerFile);
+            }
+
+            $referShareSource->setPage($page, true);
+            $referShareSource->setUser($user);
+            $this->getEntityManager()->persist($referShareSource);
+            $this->getEntityManager()->flush();
+        }
+
+        //个人信息朋友圈图片
+        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::QUAN_USER]);
+        if ($quanShareSource == null) {
+            $quanShareSource = new ShareSource();
+            $wx = new WxCommon($this->getLog());
+            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
+
+            $quanShareSource->setType(ShareSource::QUAN_USER);
+
+            if ($quanMeta->getShareBannerFileId()) {
+                /**
+                 * @var File $quanBannerFile
+                 */
+                $quanBannerFile = $fileRepository->find($quanMeta->getShareBannerFileId());
+                $quanShareSource->setBannerFile(ImageGenerator::createShareQuanBannerImage($userQrFile, $quanBannerFile));
+            }
+
+            $quanShareSource->setUser($user);
+            $quanShareSource->setPage($page, true);
+            $this->getEntityManager()->persist($quanShareSource);
+            $this->getEntityManager()->flush();
+        }
 
         $shareSources[ShareSource::REFER] = $referShareSource->getArray();
         $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();

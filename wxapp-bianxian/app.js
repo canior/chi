@@ -217,10 +217,10 @@ App({
 
   globalData: {
     appName: '变现商学院',
-    baseUrl: 'https://laowantong.yunlishuju.com/wxapi',
-    imgUrlPrefix: 'https://laowantong.yunlishuju.com/image/preview',
-    //baseUrl: 'http://127.0.0.1:8000/wxapi',
-    //imgUrlPrefix: 'http://127.0.0.1:8000/image/preview',
+    //baseUrl: 'https://laowantong.yunlishuju.com/wxapi',
+    //imgUrlPrefix: 'https://laowantong.yunlishuju.com/image/preview',
+    baseUrl: 'http://127.0.0.1:8000/wxapi',
+    imgUrlPrefix: 'http://127.0.0.1:8000/image/preview',
     isLogin: false,   //是否授权并登录
     userInfo: null,   //授权后获取的用户信息, 如昵称头像
     user: null,       //用户信息:userId,nickName,...

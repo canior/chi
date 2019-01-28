@@ -65,9 +65,22 @@ class ShareSource implements Dao
     const REFER = 'refer';
     const QUAN = 'quan';
 
+    const REFER_GROUP_ORDER = 'referGroupOrder';
+    const REFER_PRODUCT = 'referProduct';
+    const REFER_USER = 'referUser';
+
+    const QUAN_GROUP_ORDER = 'quanGroupOrder';
+    const QUAN_PRODUCT = 'quanProduct';
+    const QUAN_USER = 'quanUser';
+
     public static $types = [
-        self::REFER => '小程序转发',
-        self::QUAN => '朋友圈图片',
+        self::REFER_GROUP_ORDER => '拼团分享',
+        self::REFER_PRODUCT => '产品分享',
+        self::REFER_USER => '用户分享',
+
+        self::QUAN_GROUP_ORDER => '拼团分享',
+        self::QUAN_PRODUCT => '产品分享',
+        self::QUAN_USER => '用户分享',
     ];
 
     public function __construct()

@@ -20,6 +20,10 @@ use App\Repository\ProjectMetaRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\ProjectShareMeta;
+use App\Entity\File;
+use App\Service\Wx\WxCommon;
+use App\Entity\User;
 
 /**
  * @Route("/wxapi")
@@ -80,11 +84,14 @@ class ProductController extends BaseController
      * @return Response
      */
     public function detailAction(Request $request, Product $product): Response {
+        $thirdSession = $request->query->get('thirdSession');
         $url = $request->query->get('url');
+
+        $user = $this->getWxUser($thirdSession);
 
         return $this->responseJson('success', 200, [
             'product' => $product->getArray(),
-            'shareSources' => $this->createShareSource($product, $url)
+            'shareSources' => $this->createShareSource($user, $product, $url)
         ]);
     }
 
@@ -108,27 +115,53 @@ class ProductController extends BaseController
     }
 
     /**
-     * //TODO 需要确定转发配置
      * 返回转发和朋友圈的shareSource
      *
+     * @param User $user
      * @param Product $product
      * @param $page
      * @return array
      */
-    public function createShareSource(Product $product, $page) {
+    private function createShareSource(User $user, Product $product, $page) {
+
+        $fileRepository = $this->getEntityManager()->getRepository(File::class);
+        $projectShareMeta = $this->getEntityManager()->getRepository(ProjectShareMeta::class);
+        $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);
+
+        /**
+         * @var ProjectShareMeta $referProductShare
+         */
+        $referProductShare = $projectShareMeta->findOneBy(['metaKey' => ShareSource::REFER_PRODUCT]);
 
         $shareSources = [];
 
-        $referShareSource = new ShareSource();
-        $referShareSource->setType(ShareSource::REFER);
-        $referShareSource->setTitle($product->getTitle());
-        $referShareSource->setBannerFile($product->getMainProductImage() ? $product->getMainProductImage()->getFile() : null);
-        $referShareSource->setPage($page, true);
+        //产品信息页面转发分享
+        $referShareSource = $shareSourceRepository->findOneBy(['user'=> $user, 'product' => $product, 'type' => ShareSource::REFER_PRODUCT]);
+        if ($referShareSource == null) {
+            $referShareSource = new ShareSource();
+            $referShareSource->setType(ShareSource::REFER_PRODUCT);
+            $referShareSource->setTitle($product->getTitle());
+            $referShareSource->setUser($user);
+            if ($product->getMainProductImage()) {
+                $referShareSource->setBannerFile($product->getMainProductImage()->getFile());
+            }
+            $referShareSource->setPage($page, true);
+        }
 
-        $quanShareSource = new ShareSource();
-        $quanShareSource->setType(ShareSource::QUAN);
-        $quanShareSource->setBannerFile($product->getMainProductImage() ? $product->getMainProductImage()->getFile() : null);
-        $quanShareSource->setPage($page, true);
+
+        //产品信息朋友圈图片
+        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'product' => $product, 'type' => ShareSource::QUAN_PRODUCT]);
+        if ($quanShareSource == null) {
+            $quanShareSource = new ShareSource();
+            $wx = new WxCommon($this->getLog());
+            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
+            $quanShareSource->setUser($user);
+            $quanShareSource->setType(ShareSource::QUAN_PRODUCT);
+            if ($product->getMainProductImage() and $userQrFile) {
+                $quanShareSource->setBannerFile(ImageGenerator::createShareQuanBannerImage($userQrFile, $product->getMainProductImage()->getFile()));
+            }
+            $quanShareSource->setPage($page, true);
+        }
 
         $shareSources[ShareSource::REFER] = $referShareSource->getArray();
         $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();

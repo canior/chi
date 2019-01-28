@@ -16,15 +16,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ProjectShareMeta extends ProjectMeta
 {
-    const GROUP_ORDER = 'groupOrder';
-    const PRODUCT = 'product';
-    const USER = 'user';
-
-    public static $scenes = [
-        self::GROUP_ORDER => '拼团分享',
-        self::PRODUCT => '产品分享',
-        self::USER => '用户分享',
-    ];
 
     public function isTextMeta()
     {
@@ -52,11 +43,11 @@ class ProjectShareMeta extends ProjectMeta
     }
 
     /**
-     * @param $scene
-     * @param $type
-     * @param $title
-     * @param $bannerFileId
-     * @param $bannerEditable
+     * @param string $scene 分享的场景
+     * @param string $type quan 或者 refer
+     * @param string $title 分享出去的标题
+     * @param int|null $bannerFileId 分享出去的背景图片
+     * @param bool $bannerEditable 背景图片是否可编辑
      * @return ProjectMeta
      */
     public function setShareMeta($scene, $type, $title, $bannerFileId, $bannerEditable) {
@@ -104,9 +95,8 @@ class ProjectShareMeta extends ProjectMeta
     }
 
     public function isBannerEditable() {
-        if ($this->getShareScene() == self::USER)
-            return true;
-        return false;
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $metaValueArray['bannerEditable'];
     }
 
     /**
