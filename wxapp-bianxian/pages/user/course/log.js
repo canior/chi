@@ -28,7 +28,7 @@ Page({
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
         groupUserOrderId: id,
-        url: '/pages/product/detail?id=' + id
+        url: '/pages/course/detail?id=' + id
       },
       method: 'POST',
       success: (res) => {
@@ -57,7 +57,7 @@ Page({
   // 分享
   toProductDetail: function (e) {
     wx.reLaunch({
-      url: '/pages/product/detail?id=' + this.data.groupUserOrder.product.id,
+      url: '/pages/course/detail?id=' + this.data.groupUserOrder.product.id,
     })
   },
 

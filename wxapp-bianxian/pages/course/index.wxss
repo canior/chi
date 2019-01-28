@@ -1,4 +1,4 @@
-/* pages/product/index.wxss */
+/* pages/course/index.wxss */
 .banner {
   text-align: center;
 }

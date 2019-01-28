@@ -1,4 +1,4 @@
-// pages/user/order/review.js
+// pages/user/course/review.js
 const app = getApp()
 Page({
 

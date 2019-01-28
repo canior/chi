@@ -1,2 +1,2 @@
-<!--pages/product/reward.wxml-->
+<!--pages/course/reward.wxml-->
 <web-view src="{{url}}"></web-view>

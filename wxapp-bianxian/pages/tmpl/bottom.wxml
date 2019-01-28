@@ -12,23 +12,7 @@
         <image src="/images/service.png"/>
         <text>客服</text>
       </button>-->
-      <!--<button class="item btn order" bindtap="wxShowModal" disabled="{{btnDisabled}}"><text>￥{{product.realPrice}}</text><text>单独购买</text></button>
-      <button class="item btn group" bindtap="wxCreateGroup" disabled="{{btnDisabled}}"><text>￥{{product.realGroupPrice}}</text><text>发起拼团</text></button>-->
-      <button class="item btn group" bindtap="wxCreateOrder" disabled="{{btnDisabled}}"><text>我要报名￥{{product.price}}</text></button>
-  </view>
-
-  <!--单独购买弹窗-->
-  <view class="chi-mask" wx:if="{{showModal}}" bindtap="wxHideModal"/>
-  <view class="chi-modal" wx:if="{{showModal}}">
-    <view class="title">提醒</view>
-    <view class="body">
-      <view>您确定花费￥{{product.realPrice}}直接购买吗？</view>
-      <view>两人拼团只需￥{{product.realGroupPrice}}喔〜</view>
-    </view>
-    <view class="foot" bindtap="wxHideModal">
-      <button class="btn" bindtap="wxCreateOrder">继续支付</button>
-      <button class="btn group" bindtap="wxCreateGroup">我要拼团</button>
-    </view>
+      <button class="item btn group" bindtap="wxCreateOrder" disabled="{{btnDisabled}}"><text>我要报名￥{{course.price}}</text></button>
   </view>
 
 </template>

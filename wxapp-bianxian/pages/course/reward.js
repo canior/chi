@@ -1,4 +1,4 @@
-// pages/product/reward.js
+// pages/course/reward.js
 const app = getApp()
 Page({
 

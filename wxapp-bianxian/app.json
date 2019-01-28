@@ -1,8 +1,9 @@
 {
   "pages":[
-    "pages/product/index",
-    "pages/product/detail",
-    "pages/product/pay",
+    "pages/course/index",
+    "pages/course/detail",
+    "pages/course/pay",
+    "pages/course/reward",
     "pages/user/index",
     "pages/user/info/update",
     "pages/user/account/index",
@@ -11,15 +12,11 @@
     "pages/user/quota/index",
     "pages/user/course/index",
     "pages/user/course/log",
+    "pages/user/course/review",
     "pages/user/student/index",
     "pages/user/student/list",
-    
-    "pages/product/reward",
     "pages/user/login",
     "pages/user/mobile/login",
-    "pages/user/order/index",
-    "pages/user/order/detail",
-    "pages/user/order/review",
     "pages/share/moment"
   ],
   "window":{
@@ -36,7 +33,7 @@
     "backgroundColor": "#fff",
     "list": [
       {
-        "pagePath": "pages/product/index",
+        "pagePath": "pages/course/index",
         "text": "首页",
         "iconPath": "images/home.png",
         "selectedIconPath": "images/home-active.png"

@@ -1,4 +1,4 @@
-/* pages/product/detail.wxss */
+/* pages/course/detail.wxss */
 @import "/pages/tmpl/bottom.wxss";
 @import "/pages/tmpl/share.wxss";
 .banner {

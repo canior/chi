@@ -67,7 +67,7 @@ function __createOrder(that, url, productId) {
         // 判断有无个人资料
         if (groupUserOrder.user.isCompletedPersonalInfo) {
           wx.navigateTo({
-            url: '/pages/product/pay?orderId=' + groupUserOrder.id,
+            url: '/pages/course/pay?orderId=' + groupUserOrder.id,
           })
         } else {
           // 转新建个人资料

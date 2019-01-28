@@ -1,4 +1,4 @@
-<!--pages/user/order/review.wxml-->
+<!--pages/user/course/review.wxml-->
 <import src="/pages/tmpl/price.wxml"/>
 <view class="container">
   <view class="row">

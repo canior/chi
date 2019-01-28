@@ -1,4 +1,4 @@
-// pages/product/index.js
+// pages/course/index.js
 const app = getApp()
 Page({
 
@@ -8,7 +8,7 @@ Page({
   data: {
     imgUrlPrefix: app.globalData.imgUrlPrefix,
     banners: [],
-    products: [],
+    courses: [],
     page: 1,
     limit: 20,
     hasMore: false,    
@@ -19,13 +19,13 @@ Page({
    */
   onLoad: function (options) {
     wx.setNavigationBarTitle({ title: app.globalData.appName })
-    this.getProducts(this.data.page)
+    this.getCourses(this.data.page)
     app.userActivityCallback = res => {
       app.buriedPoint(options)
     }
   },
 
-  getProducts: function (page) {
+  getCourses: function (page) {
     const that = this;
     wx.showLoading({
       title: '玩命加载中',
@@ -38,13 +38,13 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          var products = that.data.products;
-          products.push(...res.data.data.products);
+          var courses = that.data.courses;
+          courses.push(...res.data.data.products);
           var hasMore = res.data.data.products.length < that.data.limit ? false : true;
           var nextPage = hasMore ? page + 1 : page;
           that.setData({
             banners: res.data.data.banners,
-            products: products,
+            courses: courses,
             page: nextPage,
             hasMore: hasMore
           })
@@ -59,10 +59,10 @@ Page({
     })
   },
 
-  toProductDetail: function(e) {
+  toCourseDetail: function(e) {
     const id = e.currentTarget.dataset.id
     wx.navigateTo({
-      url: '/pages/product/detail?id=' + id,
+      url: '/pages/course/detail?id=' + id,
     })
   },
 
@@ -113,7 +113,7 @@ Page({
    */
   onReachBottom: function () {
     if (this.data.hasMore) {
-      this.getProducts(this.data.page)
+      this.getCourses(this.data.page)
     }
   },
 
