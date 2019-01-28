@@ -1,0 +1,31 @@
+<!--pages/user/student/list.wxml-->
+<view class="container">
+  <view class="chi-item">
+    <view class="left"><image src="{{imgUrlPrefix+'/'+course.courseImages[0].fileId}}"/></view>
+    <view class="right">
+      <view class="line title">{{course.subjectText}}</view>
+      <view class="line desc">{{course.startDate}} - {{course.endDate}}<text>{{students.length}}人</text></view>
+      <view class="line desc">{{course.address}}</view>
+    </view>
+  </view>
+</view>
+
+<view class="split-brand"/>
+
+<block wx:if="{{students.length > 0}}">
+  <!--列表-->
+  <view class="container">
+    <view class="rank">
+      <view class="table">
+        <view class="tr" wx:for="{{students}}" wx:key="index">
+          <view class="td user"><image src="{{item.user.avatarUrl}}"/>
+            <text>{{item.user.nickname}}</text>
+          </view>
+          <view class="td"><text>{{item.user.name}}</text></view>
+          <view class="td">{{item.user.userLevel}}</view>
+        </view>      
+      </view>
+    </view>
+  </view><!--列表-->
+  <view class="split-brand"/>
+</block>
