@@ -5,22 +5,22 @@
 {% block fos_user_content %}
     <div class="login-box">
         <div class="login-logo">
-            <a href="{{ path('fos_user_security_login') }}"><b>CHI</b> Admin</a>
+            <a href="{{ path('fos_user_security_login') }}"><b>变现商学院</b> 管理平台</a>
         </div>
         <!-- /.login-logo -->
         <div class="login-box-body">
-            <p class="login-box-msg">会员登录</p>
+            <p class="login-box-msg">用户登录</p>
 
             <form name="TRACKING_USER_LOGIN" action="{{ path("fos_user_security_check") }}" method="post">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
                 <div class="form-group has-feedback">
-                    <input type="text" class="form-control" id="username" name="_username" value="{{ last_username }}" required="required" placeholder="用户名/手机号码" autocomplete="off"/>
+                    <input type="text" class="form-control" id="username" name="_username" value="{{ last_username }}" required="required" placeholder="用户名" autocomplete="off"/>
                     <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                 </div>
                 <div class="consult-error-line">
                     {% if error %}
                         {% if error.messageKey == 'Invalid credentials.' %}
-                            <label class="text-red" for="username">用户名/手机号码或密码不正确</label>
+                            <label class="text-red" for="username">用户名或密码不正确</label>
                         {% else %}
                             <label class="text-red" for="username">{{ error.messageKey|trans(error.messageData, 'security') }}</label>
                         {% endif %}
