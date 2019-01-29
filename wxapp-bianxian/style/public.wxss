@@ -111,6 +111,9 @@
 }
 .chi-item .right .line button {
   font-size: 30rpx;
+  position: absolute;
+  right: 60rpx;
+  line-height: 60rpx;
   background-color: #ffdf00;
 }.row .right button::after {
   border-color: #000;

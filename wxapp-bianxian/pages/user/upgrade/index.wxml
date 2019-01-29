@@ -3,10 +3,10 @@
 <view class="container">
     <!--排序筛选body-->
     <view class="filter">
-      <block wx:for="{{userLevels}}" wx:key="index">
-        <view class="item{{userLevel == item.key ? ' active' : ''}}" data-key="{{item.key}}" bindtap="{{item.enable ? 'tapFilter' : ''}}" wx:if="{{item.show}}">
+      <block wx:for="{{levels}}" wx:key="index">
+        <view class="item{{selected == item.key ? ' active' : ''}}" data-key="{{item.key}}" bindtap="{{item.enable ? 'tapFilter' : ''}}" wx:if="{{item.show}}">
           <text>{{item.name}}</text>
-          <view class="tip" wx:if="{{userLevel == item.key}}"><image src="/images/checked.png"/></view>
+          <view class="tip" wx:if="{{selected == item.key}}"><image src="/images/checked.png"/></view>
         </view>
       </block>
     </view>

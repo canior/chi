@@ -6,11 +6,12 @@ Page({
    * 页面的初始数据
    */
   data: {
-    userLevels: [
+    levels: [
       { key: 'ADVANCED', name: '高级学员', show: true, enable: true },
-      { key: 'PARTNER', name: '合伙人', show: true, enable: true }
+      { key: 'PARTNER', name: '合伙人', show: true, enable: true },
+      { key: 'DISTRIBUTOR', name: '分院', show: false, enable: false },
     ],
-    userLevel: null,
+    selected: null,
     upgradeUserOrder: null,
     btnText: '申请'
   },
@@ -21,6 +22,12 @@ Page({
   onLoad: function (options) {
   },
 
+  // 判断空数组或空对象
+  isEmpty: function (ret) {
+    return (Array.isArray(ret) && ret.length === 0) || (Object.prototype.isPrototypeOf(ret) && Object.keys(ret).length === 0);
+  },
+
+  // 获取已申请的订单
   getUpgradeUserOrder: function () {
     const that = this;
     wx.showLoading({
@@ -36,31 +43,28 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           const user = res.data.data.user;
-          let userLevels = this.data.userLevels;
-          let upgradeUserOrder = res.data.data.upgradeUserOrder
-          let userLevel = null;
-          let btnText = '申请';
+          const upgradeUserOrder = this.isEmpty(res.data.data.upgradeUserOrder) ? null : res.data.data.upgradeUserOrder;
+          //是否已申请过
+          let selected = upgradeUserOrder ? upgradeUserOrder.userLevel : null;
+          let btnText = upgradeUserOrder ? upgradeUserOrder.statusText : '申请';
+          //可申请哪些等级
+          let levels = this.data.levels;
           if (user.userLevel == '普通学员') {
-            userLevel = upgradeUserOrder ? upgradeUserOrder.userLevel : null;
-            userLevels = [
-              { key: 'ADVANCED', name: '高级学员', show: true, enable: userLevel == 'ADVANCED' },
-              { key: 'PARTNER', name: '合伙人', show: true, enable: userLevel == 'PARTNER' }
-            ];
-            btnText = upgradeUserOrder ? upgradeUserOrder.statusText : '申请'
+            levels.forEach((item) => {
+              item.enable = selected ? false : true
+            })
           }
-          else {// 高级学员
-            userLevel = upgradeUserOrder ? upgradeUserOrder.userLevel : null;
-            userLevels = [
-              { key: 'ADVANCED', name: '高级学员', show: false, enable: false },
-              { key: 'PARTNER', name: '合伙人', show: true, enable: userLevel == 'PARTNER' }
-            ];
-            btnText = upgradeUserOrder ? upgradeUserOrder.statusText : '申请'
+          else if(user.userLevel == '高级学员') {
+            levels.forEach((item) => {
+              if (item.key == 'ADVANCED') item.show = false;
+              item.enable = selected ? false : true
+            })
           }
           that.setData({
-            upgradeUserOrder: upgradeUserOrder,
             user: user,
-            userLevel: userLevel,
-            userLevels: userLevels,
+            upgradeUserOrder: upgradeUserOrder,
+            selected: selected,
+            levels: levels,
             btnText: btnText
           })
         } else {
@@ -78,7 +82,7 @@ Page({
   tapFilter: function (e) {
     const key = e.currentTarget.dataset.key;
     this.setData({
-      userLevel: key
+      selected: key
     })
   },
 
@@ -86,10 +90,12 @@ Page({
   tapApply: function (e) {
     const that = this;
     if (this.data.btnText != '申请') return;
-    if (this.data.userLevel) {
+    if (this.data.selected) {
+      let selectedName = '';
+      this.data.levels.forEach((item) => { if (item.key == this.data.selected) selectedName = item.name});
       wx.showModal({
         title: '提示',
-        content: '您是否确认要升级到' + (this.data.userLevel == 'PARTNER' ? '合伙人' : '高级学员'),
+        content: '您是否确认要升级到' + selectedName,
         confirmText: '是',
         cancelText: '否',
         success: function (res) {
@@ -113,7 +119,7 @@ Page({
     wx.request({
       url: app.globalData.baseUrl + '/user/upgradeUserOrder/create',
       data: {
-        userLevel: that.data.userLevel,
+        userLevel: that.data.selected,
         thirdSession: wx.getStorageSync('thirdSession')
       },
       method: 'POST',
