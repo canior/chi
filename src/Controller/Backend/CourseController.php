@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\Command\Product\Image\CreateOrUpdateProductImagesCommand;
 use App\Entity\Product;
+use App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommand;
 
 /**
  * @Route("/backend")
@@ -123,6 +124,20 @@ class CourseController extends BackendController
             $form->get('images')->setData($images);
         }
 
+        $productSpecImages = $course->getCourseSpecImages();
+        if (!$productSpecImages->isEmpty()) {
+            $images = [];
+            foreach ($productSpecImages as $image) {
+                $images[$image->getFile()->getId()] = [
+                    'id' => $image->getId(),
+                    'fileId' => $image->getFile()->getId(),
+                    'priority' => $image->getPriority(),
+                    'name' => $image->getFile()->getName(),
+                    'size' => $image->getFile()->getSize()
+                ];
+            }
+            $form->get('specImages')->setData($images);
+        }
 
         $form->handleRequest($request);
 
@@ -139,6 +154,20 @@ class CourseController extends BackendController
                 $this->getCommandBus()->handle($imagesCommand);
             } catch (\Exception $e) {
                 $this->getLog()->error('can not run CreateOrUpdateProductImagesCommand because of' . $e->getMessage());
+                if ($this->isDev()) {
+                    dump($e->getFile());
+                    dump($e->getMessage());
+                    die;
+                }
+                return new Response('页面错误', 500);
+            }
+
+            try {
+                $specImages = isset($request->request->get('course')['specImages']) ? $request->request->get('course')['specImages'] : [];
+                $specImagesCommand = new CreateOrUpdateProductSpecImagesCommand($course->getProduct()->getId(), $specImages);
+                $this->getCommandBus()->handle($specImagesCommand);
+            } catch (\Exception $e) {
+                $this->getLog()->error('can not run CreateOrUpdateProductSpecImagesCommand because of' . $e->getMessage());
                 if ($this->isDev()) {
                     dump($e->getFile());
                     dump($e->getMessage());

@@ -13,8 +13,10 @@ class ProjectBannerMetaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('memo', null, ['label' => '描述', 'attr' => ['rows' => 5]])
-            ->add('redirectUrl', null, ['label' => '跳转页面'])
+            ->add('redirectUrl', null, [
+                'label' => '跳转页面',
+                'required' => false,
+            ])
             ->add('bannerFileId', DropzoneType::class, [
                 'label' => '图片',
                 'maxFiles' => 1,

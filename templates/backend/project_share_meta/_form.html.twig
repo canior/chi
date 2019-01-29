@@ -2,15 +2,15 @@
 <div class="row col-sm-12 col-md-12">
     <div class="form-group">
         <label class="control-label">KEY</label>
-        <span>{{ project_share_metum.metaKey }}</span>
+        <div>{{ project_share_metum.metaKey }}</div>
     </div>
     <div class="form-group">
         <label class="control-label">场景</label>
-        <span>{{ project_share_metum.shareSceneText }}</span>
+        <div>{{ project_share_metum.shareSceneText }}</div>
     </div>
     <div class="form-group">
         <label class="control-label">类型</label>
-        <span>{{ project_share_metum.shareType }}</span>
+        <div>{{ project_share_metum.shareType }}</div>
     </div>
     {{ form_widget(form) }}
     <a class="btn btn-danger" href="{{ path('project_share_meta_index') }}">{{ '返回分享配置'|trans }}</a>

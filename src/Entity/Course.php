@@ -304,6 +304,13 @@ class Course implements Dao
     }
 
     /**
+     * @return ProductSpecImage[]|Collection
+     */
+    public function getCourseSpecImages() {
+        return $this->getProduct()->getProductSpecImages();
+    }
+
+    /**
      * @return CourseStudent[]|ArrayCollection
      */
     public function getCourseStudents()

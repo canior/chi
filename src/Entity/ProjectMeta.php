@@ -24,7 +24,6 @@ abstract class ProjectMeta implements Dao
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Assert\NotBlank()
      */
     private $metaValue;
 

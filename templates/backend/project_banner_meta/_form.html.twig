@@ -1,29 +1,11 @@
 {{ form_start(form) }}
-<div class="row col-sm-12 col-md-6">
+<div class="row col-sm-12 col-md-12">
     <div class="form-group">
         <label class="control-label">KEY</label>
-        <h4>{{ project_banner_metum.metaKey }}</h4>
-    </div>
-    <div class="form-group{% if form.memo.vars.errors|length %} has-error{% endif %}">
-        {{ form_label(form.memo) }}
-        {{ form_errors(form.memo) }}
-        {{ form_widget(form.memo) }}
-        {{ form_help(form.memo) }}
-    </div>
-    <div class="form-group{% if form.redirectUrl.vars.errors|length %} has-error{% endif %}">
-        {{ form_label(form.redirectUrl) }}
-        {{ form_errors(form.redirectUrl) }}
-        {{ form_widget(form.redirectUrl) }}
-        {{ form_help(form.redirectUrl) }}
-    </div>
-    <div class="form-group{% if form.bannerFileId.vars.errors|length %} has-error{% endif %}">
-        {{ form_label(form.bannerFileId) }}
-        {{ form_errors(form.bannerFileId) }}
-        {{ form_widget(form.bannerFileId) }}
-        {{ form_help(form.bannerFileId) }}
+        <div>{{ project_banner_metum.metaKey }}</div>
     </div>
     {{ form_widget(form) }}
-    <a class="btn btn-danger" href="{{ path('project_banner_meta_index') }}">{{ 'Back to list'|trans }}</a>
-    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    <a class="btn btn-danger" href="{{ path('project_banner_meta_index') }}">{{ '返回横幅配置'|trans }}</a>
+    <button class="btn btn-primary">{{ button_label|default('提交') }}</button>
 </div>
 {{ form_end(form) }}

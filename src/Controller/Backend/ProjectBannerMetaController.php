@@ -17,6 +17,9 @@ class ProjectBannerMetaController extends BackendController
 {
     /**
      * @Route("/project/banner/meta/", name="project_banner_meta_index", methods="GET")
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @param Request $request
+     * @return Response
      */
     public function index(ProjectBannerMetaRepository $projectBannerMetaRepository, Request $request): Response
     {
@@ -34,6 +37,10 @@ class ProjectBannerMetaController extends BackendController
 
     /**
      * @Route("/project/banner/meta/{id}/edit", name="project_banner_meta_edit", methods="GET|POST")
+     * @param Request $request
+     * @param ProjectBannerMeta $projectBannerMetum
+     * @param FileRepository $fileRepository
+     * @return Response
      */
     public function edit(Request $request, ProjectBannerMeta $projectBannerMetum, FileRepository $fileRepository): Response
     {

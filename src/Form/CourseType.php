@@ -57,7 +57,7 @@ class CourseType extends AbstractType
                 'required' => true
             ])
             ->add('address', TextType::class, [
-                'label' => '开课地址',
+                'label' => '开课地址 (必填)',
                 'required' => true
             ])
             ->add('teacher', EntityType::class, [
@@ -73,7 +73,14 @@ class CourseType extends AbstractType
                 'required' => true
             ])
             ->add('images', DropzoneType::class, [
-                'label' => '课程介绍图片（最多5张图片）',
+                'label' => '课程简介图片（最多5张）',
+                'maxFiles' => 5,
+                'priority' => true,
+                'data_class' => null,
+                'mapped' => false,
+            ])
+            ->add('specImages', DropzoneType::class, [
+                'label' => '课程详细介绍图片（最多5张）',
                 'maxFiles' => 5,
                 'priority' => true,
                 'data_class' => null,
