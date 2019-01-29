@@ -49,41 +49,81 @@ class BianxianProjectBootstrapConsoleCommand extends ContainerAwareCommand
 
         $projectBannerMetaRepository = $this->entityManager->getRepository(ProjectBannerMeta::class);
         $homeBanner1 = $projectBannerMetaRepository->findOneBy(['metaKey' => 'banner_home_1']);
+        if ($homeBanner1 == null) {
+            $homeBanner1 = new ProjectBannerMeta("banner_home_1");
+            $this->entityManager->persist($homeBanner1);
+            $this->entityManager->flush();
+        }
+
         $homeBanner2 = $projectBannerMetaRepository->findOneBy(['metaKey' => 'banner_home_2']);
+        if ($homeBanner2 == null) {
+            $homeBanner2 = new ProjectBannerMeta("banner_home_2");
+            $this->entityManager->persist($homeBanner2);
+            $this->entityManager->flush();
+        }
+
         $homeBanner3 = $projectBannerMetaRepository->findOneBy(['metaKey' => 'banner_home_3']);
+        if ($homeBanner3 == null) {
+            $homeBanner3 = new ProjectBannerMeta("banner_home_3");
+            $this->entityManager->persist($homeBanner3);
+            $this->entityManager->flush();
+        }
+
         $loginBanner = $projectBannerMetaRepository->findOneBy(['metaKey' => 'banner_login']);
+        if ($loginBanner == null) {
+            $loginBanner = new ProjectBannerMeta("banner_login");
+            $this->entityManager->persist($loginBanner);
+            $this->entityManager->flush();
+        }
 
 
         //创建用户分享
-        $referUserShareMeta = new ProjectShareMeta(ShareSource::REFER_USER);
-        $referUserShareMeta->setShareMeta(ShareSource::$types[ShareSource::REFER_USER], ShareSource::$types[ShareSource::REFER], '邀请您来加入变现商学院', null, true);
-        $this->entityManager->persist($referUserShareMeta);
+        $projectShareRepository = $this->entityManager->getRepository(ProjectShareMeta::class);
 
-        $quanUserShareMeta = new ProjectShareMeta(ShareSource::QUAN_USER);
-        $quanUserShareMeta->setShareMeta(ShareSource::$types[ShareSource::QUAN_USER], ShareSource::$types[ShareSource::QUAN], null, null, true);
-        $this->entityManager->persist($quanUserShareMeta);
+        if ($projectShareRepository->findOneBy(['metaKey' => ShareSource::REFER_USER]) == null) {
+            $referUserShareMeta = new ProjectShareMeta(ShareSource::REFER_USER);
+            $referUserShareMeta->setShareMeta(ShareSource::$types[ShareSource::REFER_USER], ShareSource::$types[ShareSource::REFER], '邀请您来加入变现商学院', null, true);
+            $this->entityManager->persist($referUserShareMeta);
+            $this->entityManager->flush();
+        }
+
+        if ($projectShareRepository->findOneBy(['metaKey' => ShareSource::QUAN_USER]) == null) {
+            $quanUserShareMeta = new ProjectShareMeta(ShareSource::QUAN_USER);
+            $quanUserShareMeta->setShareMeta(ShareSource::$types[ShareSource::QUAN_USER], ShareSource::$types[ShareSource::QUAN], null, null, true);
+            $this->entityManager->persist($quanUserShareMeta);
+            $this->entityManager->flush();
+        }
 
         //创建产品分享
-        $referCourseShareMeta = new ProjectShareMeta(ShareSource::REFER_PRODUCT);
-        $referCourseShareMeta->setShareMeta(ShareSource::$types[ShareSource::REFER_PRODUCT], ShareSource::$types[ShareSource::REFER], '邀请您来学习课程', null, false);
-        $this->entityManager->persist($referCourseShareMeta);
+        if ($projectShareRepository->findOneBy(['metaKey' => ShareSource::REFER_PRODUCT]) == null) {
+            $referCourseShareMeta = new ProjectShareMeta(ShareSource::REFER_PRODUCT);
+            $referCourseShareMeta->setShareMeta(ShareSource::$types[ShareSource::REFER_PRODUCT], ShareSource::$types[ShareSource::REFER], '邀请您来学习课程', null, false);
+            $this->entityManager->persist($referCourseShareMeta);
+            $this->entityManager->flush();
+        }
 
-        $quanCourseShareMeta = new ProjectShareMeta(ShareSource::QUAN_PRODUCT);
-        $quanCourseShareMeta->setShareMeta(ShareSource::$types[ShareSource::QUAN_PRODUCT], ShareSource::$types[ShareSource::QUAN], null, null, false);
-        $this->entityManager->persist($quanCourseShareMeta);
+        if ($projectShareRepository->findOneBy(['metaKey' => ShareSource::QUAN_PRODUCT]) == null) {
+            $quanCourseShareMeta = new ProjectShareMeta(ShareSource::QUAN_PRODUCT);
+            $quanCourseShareMeta->setShareMeta(ShareSource::$types[ShareSource::QUAN_PRODUCT], ShareSource::$types[ShareSource::QUAN], null, null, false);
+            $this->entityManager->persist($quanCourseShareMeta);
+            $this->entityManager->flush();
+        }
 
 
         //创建团购分享
-        $referGroupOrderShareMeta = new ProjectShareMeta(ShareSource::REFER_GROUP_ORDER);
-        $referGroupOrderShareMeta->setShareMeta(ShareSource::$types[ShareSource::REFER_GROUP_ORDER], ShareSource::$types[ShareSource::REFER], '邀请您来集call', null, false);
-        $this->entityManager->persist($referGroupOrderShareMeta);
+        if ($projectShareRepository->findOneBy(['metaKey' => ShareSource::REFER_GROUP_ORDER]) == null) {
+            $referGroupOrderShareMeta = new ProjectShareMeta(ShareSource::REFER_GROUP_ORDER);
+            $referGroupOrderShareMeta->setShareMeta(ShareSource::$types[ShareSource::REFER_GROUP_ORDER], ShareSource::$types[ShareSource::REFER], '邀请您来集call', null, false);
+            $this->entityManager->persist($referGroupOrderShareMeta);
+            $this->entityManager->flush();
+        }
 
-        $quanGroupOrderShareMeta = new ProjectShareMeta(ShareSource::QUAN_GROUP_ORDER);
-        $quanGroupOrderShareMeta->setShareMeta(ShareSource::$types[ShareSource::QUAN_GROUP_ORDER], ShareSource::$types[ShareSource::QUAN], null, null, false);
-        $this->entityManager->persist($quanGroupOrderShareMeta);
-
-        $this->entityManager->flush();
-
+        if ($projectShareRepository->findOneBy(['metaKey' => ShareSource::QUAN_GROUP_ORDER]) == null) {
+            $quanGroupOrderShareMeta = new ProjectShareMeta(ShareSource::QUAN_GROUP_ORDER);
+            $quanGroupOrderShareMeta->setShareMeta(ShareSource::$types[ShareSource::QUAN_GROUP_ORDER], ShareSource::$types[ShareSource::QUAN], null, null, false);
+            $this->entityManager->persist($quanGroupOrderShareMeta);
+            $this->entityManager->flush();
+        }
 
 
     }
