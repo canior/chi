@@ -1165,11 +1165,12 @@ class User extends BaseUser implements Dao
      * @param float $amount
      * @param UpgradeUserOrder|null $upgradeUserOrder
      * @param Course|null $course
+     * @param string|null $memo
      * @return UserAccountOrder
      */
-    public function createUserAccountOrder($userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null, Course $course = null)
+    public function createUserAccountOrder($userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null, Course $course = null, $memo = null)
     {
-        $userAccountOrder = UserAccountOrder::factory($this, $userAccountOrderType, $amount, $upgradeUserOrder, $course);
+        $userAccountOrder = UserAccountOrder::factory($this, $userAccountOrderType, $amount, $upgradeUserOrder, $course, $memo);
         $this->userAccountOrders->add($userAccountOrder);
         return $userAccountOrder;
     }

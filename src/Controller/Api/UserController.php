@@ -47,6 +47,7 @@ use App\Repository\UserRepository;
 use App\Service\ImageGenerator;
 use App\Service\Wx\WxCommon;
 use App\Command\File\UploadFileCommand;
+use Doctrine\Common\Collections\ArrayCollection;
 use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -824,18 +825,18 @@ class UserController extends BaseController
         $user = $this->getWxUser($thirdSession);
 
         $stockBalance = $user->getRecommandStock();
+        $totalStock = $user->getTotalRecommandStock();
+        $usedStockTotal = $user->getTotalUserAccountOrdersAsRecommander();
 
-        $usedStockTotal = 0;
         $recommandChildrenArray = [];
-        foreach ($user->getSubUsers() as $child) {
-            $usedStockTotal++;
-            $recommandChildrenArray[] = $child->getArray();
+        foreach($user->getUserRecommandStockOrders() as $stockOrder) {
+            $recommandChildrenArray[] = $stockOrder->getArray();
         }
 
         return $this->responseJson('success', 200, [
             'stockBalance' => $stockBalance,
             'childrenNum' => $usedStockTotal,
-            'totalStock' => $stockBalance + $usedStockTotal,
+            'totalStock' => $totalStock,
             'recommandChildren' => $recommandChildrenArray
         ]);
     }

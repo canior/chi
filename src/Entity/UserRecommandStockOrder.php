@@ -139,4 +139,15 @@ class UserRecommandStockOrder implements Dao
         $this->memo = $memo;
     }
 
+    public function getArray() {
+        return [
+            'id' => $this->getId(),
+            'createdAt' => $this->getCreatedAt(),
+            'createdAtFormatted' => $this->getCreatedAtFormatted(),
+            'memo' => $this->getMemo(),
+            'upgradeUserOrder' => $this->getUpgradeUserOrder() ? $this->getUpgradeUserOrder()->getArray() : null,
+            'qty' => $this->getQty(),
+        ];
+    }
+
 }

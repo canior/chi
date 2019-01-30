@@ -70,9 +70,8 @@
                                 <th class="col-md-2">交易类型	</th>
                                 <th class="col-md-1">科目</th>
                                 <th class="col-md-1">课程</th>
-                                <th class="col-md-1">佣金</th>
-                                <th class="col-md-2">支付状态</th>
-                                <th class="col-md-1">用户账单号</th>
+                                <th class="col-md-2">佣金</th>
+                                <th class="col-md-2">用户账单号</th>
                             </tr>
                             {% for userAccountOrder in userAccountOrders %}
                             <tr>
@@ -86,7 +85,6 @@
                                 <td>{{ userAccountOrder.course ? userAccountOrder.course.subjectText : null}}</td>
                                 <td>{{ userAccountOrder.course ? userAccountOrder.course.title : null}}</td>
                                 <td>￥{{ userAccountOrder.amount }}</td>
-                                <td>{{ userAccountOrder.paymentStatusText }}</td>
                                 <td>
                                     {% if userAccountOrder.id %}
                                     <a href="{{ path('user_account_order_edit', {'id': userAccountOrder.id}) }}">

@@ -353,9 +353,10 @@ class UpgradeUserOrder implements Dao
         if ($recommander != null and $recommander->getRecommandStock() > 0) {
             $recommanderRewards = UserLevel::$userLevelRecommanderRewardsArray[$userLevel];
             if ($this->isApproved()) {
-                $recommander->createUserAccountOrder(UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this);
+                $memo = '推荐' . UserLevel::$userLevelTextArray[$userLevel] . $this->getUser()->getName() . '成功, 减少名额';
+
+                $recommander->createUserAccountOrder(UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this, $memo);
                 //推荐名额减1
-                $memo = '推荐' . UserLevel::$userLevelTextArray[$userLevel] . '成功, 减少名额';
                 $recommander->createUserRecommandStockOrder(-1, $this, $memo);
             } else {
                 $userAccountOrder = UserAccountOrder::factory($recommander, UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this);
@@ -376,7 +377,8 @@ class UpgradeUserOrder implements Dao
             $teacherUser = $latestCourse->getTeacher()->getUser();
             if ($teacherUser != null) {
                 if ($this->isApproved()){
-                    $teacherUser->createUserAccountOrder(UserAccountOrder::TEACHER_REWARDS, $teacherRewards, $this, $latestCourse);
+                    $memo = '直接促成' . UserLevel::$userLevelTextArray[$userLevel] . $this->getUser()->getName() . '成功';
+                    $teacherUser->createUserAccountOrder(UserAccountOrder::TEACHER_REWARDS, $teacherRewards, $this, $latestCourse, $memo);
                 } else {
                     $userAccountOrder = UserAccountOrder::factory($teacherUser, UserAccountOrder::TEACHER_REWARDS, $teacherRewards, $this, $latestCourse);
                     //这里是虚拟账单，要把余额还回来
@@ -394,7 +396,8 @@ class UpgradeUserOrder implements Dao
                     $oldTeacherUser = $oldCourse->getTeacher()->getUser();
                     if ($oldTeacherUser != null) {
                         if ($this->isApproved()) {
-                            $oldTeacherUser->createUserAccountOrder(UserAccountOrder::OLD_TEACHER_REWARDS, $oldSubjectConfigs[$this->getUserLevel()], $this, $oldCourse);
+                            $memo = '间接促成' . UserLevel::$userLevelTextArray[$userLevel] . $this->getUser()->getName() . '成功';
+                            $oldTeacherUser->createUserAccountOrder(UserAccountOrder::OLD_TEACHER_REWARDS, $oldSubjectConfigs[$this->getUserLevel()], $this, $oldCourse, $memo);
                         } else {
                             $userAccountOrder = UserAccountOrder::factory($oldTeacherUser, UserAccountOrder::OLD_TEACHER_REWARDS, $oldSubjectConfigs[$this->getUserLevel()], $this, $oldCourse);
                             //这里是虚拟账单，要把余额还回来

@@ -92,15 +92,18 @@ class UserAccountOrder implements Dao
      * @param $amount
      * @param UpgradeUserOrder|null $upgradeUserOrder
      * @param Course|null $course
+     * @param string|null $memo
+     *
      * @return UserAccountOrder
      */
-    public static function factory(User $user, $userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null, Course $course = null) {
+    public static function factory(User $user, $userAccountOrderType, $amount, UpgradeUserOrder $upgradeUserOrder = null, Course $course = null, $memo = null) {
         $userAccountOrder = new UserAccountOrder();
         $userAccountOrder->setUser($user);
         $userAccountOrder->setAmount($amount);
         $userAccountOrder->setUserAccountOrderType($userAccountOrderType);
         $userAccountOrder->setUpgradeUserOrder($upgradeUserOrder);
         $userAccountOrder->setCourse($course);
+        $userAccountOrder->setMemo($memo);
 
         if (!$userAccountOrder->isWithdraw()) {
             $userAccountOrder->setPaid();
@@ -301,6 +304,7 @@ class UserAccountOrder implements Dao
             'createdAt' => $this->getCreatedAt(true),
             'upgradeUserOrder' => $this->getUpgradeUserOrder() ? $this->getUpgradeUserOrder()->getArray() : null,
             'course' => $this->getCourse() ? $this->getCourse()->getArray() : null,
+            'memo' => $this->getMemo(),
         ];
     }
 }
