@@ -745,7 +745,8 @@ class User extends BaseUser implements Dao
         return [
             'id' => $this->getId(),
             'nickname' => $this->getNickname(),
-            'userLevel' => $this->getUserLevel() ? UserLevel::$userLevelTextArray[$this->getUserLevel()] : null,
+            'userLevel' => $this->getUserLevel() ? $this->getUserLevel() : null,
+            'userLevelText' => $this->getUserLevel() ? UserLevel::$userLevelTextArray[$this->getUserLevel()] : null,
             'userAccountTotal' => $this->getUserAccountTotal(),
             'userRecommandStock' => $this->getRecommandStock(),
             'avatarUrl' => $this->getAvatarUrl(),

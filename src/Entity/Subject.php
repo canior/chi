@@ -28,27 +28,31 @@ class Subject
      * @var array
      */
     public static $subjectUserLevelConstraintArray = [
-        self::THINKING => [UserLevel::VISITOR, UserLevel::ADVANCED, UserLevel::PARTNER],
-        self::TRADING => [UserLevel::VISITOR, UserLevel::ADVANCED, UserLevel::PARTNER],
-        self::SYSTEM_1 => [UserLevel::ADVANCED, UserLevel::PARTNER],
-        self::SYSTEM_2 => [UserLevel::ADVANCED, UserLevel::PARTNER],
+        self::THINKING => [UserLevel::VISITOR, UserLevel::ADVANCED, UserLevel::PARTNER, UserLevel::DISTRIBUTOR],
+        self::TRADING => [UserLevel::VISITOR, UserLevel::ADVANCED, UserLevel::PARTNER, UserLevel::DISTRIBUTOR],
+        self::SYSTEM_1 => [UserLevel::ADVANCED, UserLevel::PARTNER, UserLevel::DISTRIBUTOR],
+        self::SYSTEM_2 => [UserLevel::ADVANCED, UserLevel::PARTNER, UserLevel::DISTRIBUTOR],
     ];
 
     /* 课上成交老师的佣金 */
     public static $teacherRewards = [
         self::THINKING => [
             UserLevel::ADVANCED => 500,
-            UserLevel::PARTNER => 5000
+            UserLevel::PARTNER => 5000,
+            UserLevel::DISTRIBUTOR => 5000
         ],
         self::TRADING => [
             UserLevel::ADVANCED => 500,
-            UserLevel::PARTNER => 5000
+            UserLevel::PARTNER => 5000,
+            UserLevel::DISTRIBUTOR => 5000
         ],
         self::SYSTEM_1 => [
-            UserLevel::PARTNER => 4000
+            UserLevel::PARTNER => 4000,
+            UserLevel::DISTRIBUTOR => 4000
         ],
         self::SYSTEM_2 => [
-            UserLevel::PARTNER => 4000
+            UserLevel::PARTNER => 4000,
+            UserLevel::DISTRIBUTOR => 4000
         ],
     ];
 
@@ -57,23 +61,28 @@ class Subject
         self::TRADING => [ //current subject
             self::THINKING => [ //old subject
                 UserLevel::ADVANCED => 500,
-                UserLevel::PARTNER => 3000
+                UserLevel::PARTNER => 3000,
+                UserLevel::DISTRIBUTOR => 3000
             ]
         ],
         self::SYSTEM_1 => [
             self::THINKING => [
-                UserLevel::PARTNER => 3000
+                UserLevel::PARTNER => 3000,
+                UserLevel::DISTRIBUTOR => 3000
             ],
             self::TRADING => [
-                UserLevel::PARTNER => 3000
+                UserLevel::PARTNER => 3000,
+                UserLevel::DISTRIBUTOR => 3000
             ],
         ],
         self::SYSTEM_2 => [
             self::THINKING => [
-                UserLevel::PARTNER => 3000
+                UserLevel::PARTNER => 3000,
+                UserLevel::DISTRIBUTOR => 3000
             ],
             self::TRADING => [
-                UserLevel::PARTNER => 3000
+                UserLevel::PARTNER => 3000,
+                UserLevel::DISTRIBUTOR => 3000
             ],
         ],
     ];

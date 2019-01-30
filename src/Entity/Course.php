@@ -485,7 +485,8 @@ class Course implements Dao
             'teacher' => $this->getTeacher()->getArray(),
             'courseImages' => $courseImageArray,
             'courseSpecImages' => $courseSpecImagesArray,
-            'reviewsNum' => $this->getProduct()->getTotalReviews()
+            'reviewsNum' => $this->getProduct()->getTotalReviews(),
+            'eligibleUserLevels' => Subject::$subjectUserLevelConstraintArray[$this->getSubject()]
         ];
     }
 }
