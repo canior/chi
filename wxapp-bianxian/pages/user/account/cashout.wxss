@@ -1,0 +1,14 @@
+/* pages/user/account/cashout.wxss */
+.line {
+  display: flex;
+}.line text {
+  font-size: 36rpx;
+}
+.bottom {
+  font-size: 30rpx;
+  text-align: center;
+  background-color: #ffdf00;
+  margin: 50rpx 70rpx;
+  padding: 20rpx 0;
+  border-radius: 40rpx;
+}

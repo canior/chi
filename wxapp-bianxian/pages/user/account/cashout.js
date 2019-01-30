@@ -1,4 +1,4 @@
-// pages/user/account/index.js
+// pages/user/account/cashout.js
 const app = getApp()
 Page({
 
@@ -6,18 +6,17 @@ Page({
    * 页面的初始数据
    */
   data: {
-    isLogin: null,
-    user: null,
     userAccount: null,
+    amount: null
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    //app.buriedPoint(options)
+    this.getMyAccount()
   },
-  
+
   getMyAccount: function () {
     const that = this;
     wx.showLoading({
@@ -46,11 +45,52 @@ Page({
     })
   },
 
-  //提现
-  toCashOut: function() {
-    wx.navigateTo({
-      url: '/pages/user/account/cashout',
+  inputAmount: function (e) {
+    this.setData({
+      amount: e.detail.value
     })
+  },
+
+  submit: function (e) {
+    const that = this;
+    const amount = this.data.amount;
+    if (!this.validation(amount)) return;
+    wx.request({
+      url: app.globalData.baseUrl + '/user/account/withdraw',
+      data: {
+        amount: this.data.amount,
+        thirdSession: wx.getStorageSync('thirdSession')
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          wx.navigateBack({})
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) { },
+      complete(e) { }
+    })
+  },
+
+  validation: function (amount) {
+    if (!(/^\d+(\.\d+)?$/.test(amount))) {
+      wx.showModal({
+        content: '提现金额有误',
+        showCancel: false,
+      });
+      return false;
+    }
+    if (amount > this.data.userAccount.balance) {
+      wx.showModal({
+        content: '提现金额超出最大可提现金额',
+        showCancel: false,
+      });
+      return false;
+    }
+    return true;
   },
 
   /**
@@ -64,13 +104,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.setData({
-      isLogin: app.globalData.isLogin,
-      user: app.globalData.user
-    })
-    if (this.data.isLogin) {
-      this.getMyAccount()
-    }
+
   },
 
   /**

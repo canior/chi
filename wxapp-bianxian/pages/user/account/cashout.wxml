@@ -1,0 +1,13 @@
+<!--pages/user/account/cashout.wxml-->
+<view class="container">
+  <view class="">当前金额 <text>{{userAccount.balance}}</text></view>
+  <view class="split-line"/>
+  <view class="">提现金额</view>
+  <view class="line">
+    <text>￥</text>
+    <input placeholder="输入提现金额" value="{{amount}}" bindblur="inputAmount"/>
+  </view>
+  <view class="split-line"/>
+</view>
+
+<view class="bottom" bindtap="submit">提现</view>
