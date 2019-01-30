@@ -3,7 +3,6 @@
   <view class="top">
     <view class="title">账户余额(元)</view>
     <view class="total">￥{{userAccount.balance ? userAccount.balance : 0}}</view>
-    <view class="btn"><text>提现</text></view>
     <view class="tip"/>
   </view>
 </view>
@@ -11,26 +10,23 @@
   <view class="nav">已提现：￥{{userAccount.withdrawedTotal}}</view>
   <view class="nav">提现中：￥{{userAccount.withdrawingTotal}}</view>
 </view>
-<view class="split-brand"/>
 
 <!--列表-->
 <view class="container">
   <view class="rank">
-    <view class="title"><image src="/images/top.png"/>账户列表</view>
     <view class="table">
       <view class="tr">
-        <view class="th">时间</view>
-        <view class="th">备注</view>
-        <view class="th">学员</view>
-        <view class="th idx">金额(元)</view>
+        <view class="th">日期</view>
+        <view class="th">备注（推荐了谁）</view>
+        <view class="th">金额（元）</view>
       </view>
       <view class="tr" wx:for="{{userAccount.userAccountOrders}}" wx:key="index">
         <view class="td">{{item.createdAt}}</view>
         <view class="td">{{item.type}}</view>
-        <view class="td user"><image src="{{item.user.avatarUrl}}"/><text>{{item.user.nickname}}</text></view>
-        <view class="td idx">¥{{item.amount}}</view>
+        <view class="td">¥{{item.amount}}</view>
       </view>
     </view>
   </view>
 </view><!--列表-->
 <view class="split-brand"/>
+<view class="bottom" bindtap="toCashOut">我要提现</view>

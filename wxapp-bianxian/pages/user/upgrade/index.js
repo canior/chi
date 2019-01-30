@@ -44,19 +44,25 @@ Page({
           console.log(res.data.data)
           const user = res.data.data.user;
           const upgradeUserOrder = this.isEmpty(res.data.data.upgradeUserOrder) ? null : res.data.data.upgradeUserOrder;
-          //是否已申请过
-          let selected = upgradeUserOrder ? upgradeUserOrder.userLevel : null;
-          let btnText = upgradeUserOrder ? upgradeUserOrder.statusText : '申请';
+          //是否已提交申请且尚未通过
+          let selected = upgradeUserOrder && upgradeUserOrder.status != 'approved' ? upgradeUserOrder.userLevel : null;
+          let btnText = upgradeUserOrder && upgradeUserOrder.status != 'approved' ? upgradeUserOrder.statusText : '申请';
           //可申请哪些等级
           let levels = this.data.levels;
-          if (user.userLevel == '普通学员') {
+          if (user.userLevel == 'VISITOR') {
             levels.forEach((item) => {
               item.enable = selected ? false : true
             })
           }
-          else if(user.userLevel == '高级学员') {
+          else if (user.userLevel == 'ADVANCED') {
             levels.forEach((item) => {
               if (item.key == 'ADVANCED') item.show = false;
+              item.enable = selected ? false : true
+            })
+          }
+          else if (user.userLevel == 'PARTNER') {
+            levels.forEach((item) => {
+              if (item.key == 'ADVANCED' || item.key == 'PARTNER') item.show = false;
               item.enable = selected ? false : true
             })
           }

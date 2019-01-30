@@ -107,8 +107,8 @@ Page({
                   if (res.statusCode == 200 && res.data.code == 200) {
                     console.log(res.data.data)
                     //转订单详情页
-                    wx.redirectTo({
-                      url: '/pages/user/course/detail?id=' + groupUserOrderId,
+                    wx.switchTab({
+                      url: '/pages/user/course/index',
                     })
                   } else {
                     console.log('wx.request return error', res.statusCode);

@@ -1,16 +1,20 @@
 <!--pages/user/address/edit.wxml-->
 <view class="container">
   <view class="row">
-    <input placeholder="姓名" value="{{user.name}}" bindblur="inputName"/>
+    <view>姓名</view>
+    <input placeholder="请输入姓名" value="{{user.name}}" bindblur="inputName"/>
   </view>
   <view class="row">
-    <input placeholder="手机号码" value="{{user.phone}}" bindblur="inputPhone"/>
+    <view>手机号码</view>
+    <input placeholder="请输入手机号码" value="{{user.phone}}" bindblur="inputPhone"/>
   </view>
   <view class="row">
-    <input placeholder="身份证号码" value="{{user.idNum}}" bindblur="inputIdNum"/>
+    <view>身份证号码</view>
+    <input placeholder="请输入身份证号码" value="{{user.idNum}}" bindblur="inputIdNum"/>
   </view>
   <view class="row">
-    <input placeholder="推荐人姓名" value="{{user.recommanderName}}" bindblur="inputRefereeName"/>
+    <view>推荐人姓名</view>
+    <input placeholder="请输入推荐人姓名" value="{{user.recommanderName}}" bindblur="inputRefereeName"/>
   </view>
   <!--<view class="row">
     <input placeholder="推荐人手机号码" value="{{user.recommanderPhone}}" bindblur="inputRefereePhone"/>

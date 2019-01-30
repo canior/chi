@@ -12,7 +12,8 @@
         <image src="/images/service.png"/>
         <text>客服</text>
       </button>-->
-      <button class="item btn group" bindtap="wxCreateOrder" disabled="{{btnDisabled}}"><text>我要报名￥{{course.price}}</text></button>
+      <button class="item btn group" bindtap="wxCreateOrder" disabled="{{btnDisabled}}" wx:if="{{eligible}}"><text>我要报名￥{{course.price}}</text></button>
+      <button class="item btn group" bindtap="wxUpgrade" disabled="{{btnDisabled}}" wx:if="{{!eligible}}"><text>学员升级</text></button>
   </view>
 
 </template>

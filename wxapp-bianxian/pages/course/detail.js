@@ -9,6 +9,8 @@ Page({
    */
   data: {
     isLogin: false,
+    user: null,
+    eligible: true,
     imgUrlPrefix: app.globalData.imgUrlPrefix,
     course: null,
     courseReviewData: {},
@@ -30,7 +32,8 @@ Page({
     /*app.userActivityCallback = res => {
       app.buriedPoint(options)
       this.setData({
-        isLogin: app.globalData.isLogin
+        isLogin: app.globalData.isLogin,
+        user: app.globalData.user
       })
     }*/
   },
@@ -52,8 +55,15 @@ Page({
           course.courseSpecImages.forEach((item) => {
             item.loading = true
           })
+          // eligible
+          let eligible = false;
+          let userLevel = that.data.user ? that.data.user.userLevel : 'VISITOR';
+          course.eligibleUserLevels.forEach((level) => {
+            if (level == userLevel) { eligible = true }
+          })
           that.setData({
-            course: course
+            course: course,
+            eligible: eligible
           })
           share.setShareSources(that, res.data.data.shareSources)
         } else {
@@ -100,6 +110,13 @@ Page({
   wxCreateGroup: function(e) {
     bottom.createGroup(this, app.globalData.baseUrl + '/groupOrder/create', this.data.course.id)
   },
+  
+  // 转学员升级
+  wxUpgrade: function(e) {
+    wx.navigateTo({
+      url: '/pages/user/upgrade/index',
+    })
+  },
 
   // 分享:邀请好友
   wxShowShareModal: function (e) {
@@ -132,7 +149,8 @@ Page({
    */
   onShow: function () {
     this.setData({
-      isLogin: app.globalData.isLogin
+      isLogin: app.globalData.isLogin,
+      user: app.globalData.user
     })
     bottom.init(this)
     share.init(this)

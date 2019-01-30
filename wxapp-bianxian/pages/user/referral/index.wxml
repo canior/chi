@@ -21,7 +21,7 @@
         <view class="td user"><image src="{{item.user.avatarUrl}}"/>
           <text>{{item.user.name}}</text>
         </view>
-        <view class="td"><text>{{item.user.userLevel}}</text></view>
+        <view class="td"><text>{{item.user.userLevelText}}</text></view>
         <view class="td">{{item.createdAt}}</view>
       </view>
     </view>

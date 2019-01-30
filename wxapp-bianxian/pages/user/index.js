@@ -1,5 +1,6 @@
 // pages/user/index.js
 const app = getApp()
+const util = require('../../utils/util.js');
 Page({
 
   /**
@@ -108,14 +109,39 @@ Page({
       onlyFromCamera: true,
       success: (res) => {
         console.log(res);
-        var tmp = res.result.split('id=');
-        var id = tmp[1];
-        wx.navigateTo({
-          url: '/pages/user/course?id=' + id + '&qr=1', //qr=1表示扫码进入
-        });
+        var courseId = util.getQueryVariable(res.result, 'courseId');
+        var status = util.getQueryVariable(res.result, 'status');
+        this.createCourseStudent(courseId, status);
       }
     });
   },
+
+  // 报到或签到
+  createCourseStudent: function (courseId, status) {
+    const that = this;
+    wx.request({
+      url: app.globalData.baseUrl + '/user/signInCourse',
+      data: {
+        thirdSession: wx.getStorageSync('thirdSession'),
+        courseId: courseId,
+        courseStudentStatus: status
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          wx.navigateTo({
+            url: '/pages/user/course/log?id=' + courseId
+          });
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
+    })
+  },  
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -128,10 +154,13 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.setData({
-      isLogin: app.globalData.isLogin,
-      user: app.globalData.user
-    })
+    app.userActivityCallback = res => {
+      this.setData({
+        isLogin: app.globalData.isLogin,
+        user: app.globalData.user
+      })
+    }
+    app.getUserInfo();
   },
 
   /**
