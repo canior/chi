@@ -1,5 +1,6 @@
 {
   "pages":[
+
     "pages/course/index",
     "pages/course/detail",
     "pages/course/pay",
@@ -7,6 +8,8 @@
     "pages/user/index",
     "pages/user/info/update",
     "pages/user/account/index",
+    "pages/user/account/cashout",
+    
     "pages/user/upgrade/index",    
     "pages/user/referral/index",
     "pages/user/quota/index",
