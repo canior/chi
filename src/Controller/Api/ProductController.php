@@ -64,7 +64,11 @@ class ProductController extends BaseController
 
         $products = $productRepository->findActiveProducts();
         foreach($products as $product) {
-            $productsArray[] = $product->getArray();
+            if ($product->getCourse()) {
+                if (!$product->getCourse()->isExpired()) {
+                    $productsArray[] = $product->getArray();
+                }
+            }
         }
 
         $data = [

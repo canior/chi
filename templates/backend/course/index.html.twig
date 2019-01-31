@@ -38,9 +38,8 @@
                             <tr>
                                 <th class="col-md-1">ID</th>
                                 <th class="col-md-1">科目</th>
-                                <th class="col-md-1">讲师</th>
-                                <th class="col-md-2">开始日期</th>
-                                <th class="col-md-2">结束日期</th>
+                                <th class="col-md-2">讲师</th>
+                                <th class="col-md-3">日期</th>
                                 <th class="col-md-3">地址</th>
                                 <th class="col-md-1">状态</th>
                                 <th class="col-md-1 text-center hidden-xs">操作</th>
@@ -53,8 +52,7 @@
                                         <td>{{ item.id }}</td>
                                         <td>{{ item.subjectText }}</td>
                                         <td>{{ item.teacher.name }}</td>
-                                        <td>{{ item.startDateFormatted }}</td>
-                                        <td>{{ item.endDateFormatted }}</td>
+                                        <td><span {% if item.isExpired %} class="text-red fa fa-clock-o" {% else %} class="text-green fa fa-clock-o"  {% endif %}></span> {{ item.startDateFormatted }} - {{ item.endDateFormatted }}</td>
                                         <td>{{ item.address }}</td>
                                         <td>{{ item.product.statusText }}</td>
                                         <td class="text-center">

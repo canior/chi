@@ -732,7 +732,7 @@ class GroupUserOrder implements Dao
             'id' => $this->getId(),
             'groupOrderId' => $this->isGroupOrder() ? $this->getGroupOrder()->getId() : null,
             'status' => $this->getStatus(),
-            'statusText' => $this->getStatusText(),
+            'statusText' => $this->isCourseOrder() ? $this->getCourseStatusText() : $this->getStatusText(),
             'paymentStatus' => $this->getPaymentStatus(),
             'paymentStatusText' => $this->getPaymentStatusText(),
             'product' => $this->getProduct()->getArray(),
