@@ -661,21 +661,16 @@ class UserController extends BaseController
         //个人信息页面转发分享
         $referShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::REFER_USER]);
         if ($referShareSource == null) {
-            $referShareSource = new ShareSource();
-            $referShareSource->setType(ShareSource::REFER_USER);
-            $referShareSource->setTitle($user->getNickname() . ' ' . $referMeta->getShareTitle());
 
-
+            $referBannerFile = null;
             if ($referMeta->getShareBannerFileId()) {
                 /**
                  * @var File $referBannerFile
                  */
                 $referBannerFile = $fileRepository->find($referMeta->getShareBannerFileId());
-                $referShareSource->setBannerFile($referBannerFile);
             }
+            $referShareSource = ShareSource::factory(ShareSource::REFER_USER, $page, $user, $referBannerFile, $referMeta->getShareTitle());
 
-            $referShareSource->setPage($page, true);
-            $referShareSource->setUser($user);
             $this->getEntityManager()->persist($referShareSource);
             $this->getEntityManager()->flush();
         }
@@ -683,29 +678,28 @@ class UserController extends BaseController
         //个人信息朋友圈图片
         $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::QUAN_USER]);
         if ($quanShareSource == null) {
-            $quanShareSource = new ShareSource();
+
+            $quanShareSource = ShareSource::factory(ShareSource::QUAN_USER, $page, $user);
             $wx = new WxCommon($this->getLog());
             $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
 
-            $quanShareSource->setType(ShareSource::QUAN_USER);
-
+            $quanBannerFile = null;
             if ($quanMeta->getShareBannerFileId()) {
                 /**
                  * @var File $quanBannerFile
                  */
                 $quanBannerFile = $fileRepository->find($quanMeta->getShareBannerFileId());
-                $quanShareSource->setBannerFile(ImageGenerator::createShareQuanBannerImage($userQrFile, $quanBannerFile));
             }
 
-            $quanShareSource->setUser($user);
-            $quanShareSource->setPage($page, true);
+            $bannerFile = ImageGenerator::createShareQuanBannerImage($userQrFile, $quanBannerFile);
+            $quanShareSource->setBannerFile($bannerFile);
+
             $this->getEntityManager()->persist($quanShareSource);
             $this->getEntityManager()->flush();
         }
 
         $shareSources[ShareSource::REFER] = $referShareSource->getArray();
         $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();
-
 
         return $shareSources;
     }

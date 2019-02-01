@@ -86,6 +86,43 @@ class ShareSource implements Dao
         self::QUAN_USER => '朋友圈用户分享',
     ];
 
+    /**
+     * @param $shareSourceType
+     * @param $page
+     * @param User|null $user
+     * @param null $shareMetaTitle
+     * @param Product|null $product
+     * @param File|null $bannerFile
+     * @param GroupOrder|null $groupOrder
+     * @return ShareSource
+     */
+    public static function factory($shareSourceType, $page, User $user, File $bannerFile = null, $shareMetaTitle = null, Product $product = null, GroupOrder $groupOrder = null) {
+
+        $shareSource = new ShareSource();
+        $shareSource->setType($shareSourceType);
+        $shareSource->setUser($user);
+
+        if ($shareSourceType == self::REFER_PRODUCT) {
+            $shareSource->setTitle($user->getNickname() . $shareMetaTitle . $product->getTitle());
+            if ($product and $product->getMainProductImage()) {
+                $shareSource->setBannerFile($product->getMainProductImage()->getFile());
+            }
+        }
+        else if ($shareSourceType == self::REFER_USER) {
+            $shareSource->setTitle($user->getNickname() . ' ' . $shareMetaTitle);
+            $shareSource->setBannerFile($bannerFile);
+        } else if ($shareSourceType == self::REFER_GROUP_ORDER) {
+            //TODO
+        } else {
+            $shareSource->setBannerFile($bannerFile);
+        }
+
+        $shareSource->setProduct($product);
+        $shareSource->setPage($page, true);
+        return $shareSource;
+    }
+
+
     public function __construct()
     {
         $this->id = uniqid(rand(10000,99999));

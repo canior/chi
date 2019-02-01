@@ -143,29 +143,26 @@ class ProductController extends BaseController
         //产品信息页面转发分享
         $referShareSource = $shareSourceRepository->findOneBy(['user'=> $user, 'product' => $product, 'type' => ShareSource::REFER_PRODUCT]);
         if ($referShareSource == null) {
-            $referShareSource = new ShareSource();
-            $referShareSource->setType(ShareSource::REFER_PRODUCT);
-            $referShareSource->setTitle($user->getNickname() . $referProductShare->getShareTitle() . $product->getTitle());
-            $referShareSource->setUser($user);
-            if ($product->getMainProductImage()) {
-                $referShareSource->setBannerFile($product->getMainProductImage()->getFile());
-            }
-            $referShareSource->setPage($page, true);
+            $referShareSource = ShareSource::factory(ShareSource::REFER_PRODUCT, $page, $user, null, $referProductShare->getShareTitle(), $product);
+            $this->getEntityManager()->persist($referShareSource);
+            $this->getEntityManager()->flush();
         }
-
 
         //产品信息朋友圈图片
         $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'product' => $product, 'type' => ShareSource::QUAN_PRODUCT]);
         if ($quanShareSource == null) {
-            $quanShareSource = new ShareSource();
+            $quanShareSource = ShareSource::factory(ShareSource::QUAN_PRODUCT, $page, $user);
             $wx = new WxCommon($this->getLog());
             $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
-            $quanShareSource->setUser($user);
-            $quanShareSource->setType(ShareSource::QUAN_PRODUCT);
-            if ($product->getMainProductImage() and $userQrFile) {
-                $quanShareSource->setBannerFile(ImageGenerator::createShareQuanBannerImage($userQrFile, $product->getMainProductImage()->getFile()));
+
+            $bannerFile = null;
+            if ($product->getMainProductImage() and $product->getMainProductImage()->getFile()) {
+                $bannerFile = ImageGenerator::createShareQuanBannerImage($userQrFile, $product->getMainProductImage()->getFile());
             }
-            $quanShareSource->setPage($page, true);
+            $quanShareSource->setBannerFile($bannerFile);
+
+            $this->getEntityManager()->persist($quanShareSource);
+            $this->getEntityManager()->flush();
         }
 
         $shareSources[ShareSource::REFER] = $referShareSource->getArray();
