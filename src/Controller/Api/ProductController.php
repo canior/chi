@@ -145,7 +145,7 @@ class ProductController extends BaseController
         if ($referShareSource == null) {
             $referShareSource = new ShareSource();
             $referShareSource->setType(ShareSource::REFER_PRODUCT);
-            $referShareSource->setTitle($product->getTitle());
+            $referShareSource->setTitle($user->getNickname() . $referProductShare->getShareTitle() . $product->getTitle());
             $referShareSource->setUser($user);
             if ($product->getMainProductImage()) {
                 $referShareSource->setBannerFile($product->getMainProductImage()->getFile());
