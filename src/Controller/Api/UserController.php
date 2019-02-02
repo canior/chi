@@ -847,13 +847,12 @@ class UserController extends BaseController
     public function viewShareUsersAction(Request $request, UserRepository $userRepository) {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
-        $userLevel = isset($data['userLevel']) ? $data['userLevel'] : null;
         $url = isset($data['url']) ? $data['url'] : null;
         $page = isset($data['page']) ? $data['page'] : 1;
 
         $user = $this->getWxUser($thirdSession);
-        $totalShareSourceUsers = $userRepository->findTotalShareUsers($user->getId(), $userLevel);
-        $shareSourceUsers = $userRepository->findShareUsers($user->getId(), $userLevel, $page, self::PAGE_LIMIT);
+        $totalShareSourceUsers = $userRepository->findTotalShareUsers($user->getId(), null);
+        $shareSourceUsers = $userRepository->findShareUsers($user->getId(), null, $page, self::PAGE_LIMIT);
 
         $shareSourceUserArray = [];
         foreach($shareSourceUsers as $shareSourceUser) {
@@ -861,7 +860,6 @@ class UserController extends BaseController
         }
 
         return $this->responseJson('success', 200, [
-            'userLevels' => UserLevel::$userLevelTextArray,
             'shareSourceUsersTotal' => $totalShareSourceUsers,
             'shareSourceUsers' => $shareSourceUserArray,
             'shareSources' => $this->createShareSource($user, $url)
