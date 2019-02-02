@@ -6,13 +6,6 @@ Page({
    * 页面的初始数据
    */
   data: {
-    menu: [
-      { name: '全部', level: null },
-      { name: '普通学员', level: 'visitor' },
-      { name: '高级学员', level: 'advanced' },
-      { name: '合伙人', level: 'partner' },
-    ],
-    userLevel: null,
     shareUser: null,
     isLogin: null,
     user: null,
@@ -63,9 +56,6 @@ Page({
     })
   },
 
-  tapMenu: function (e) {
-    this.getReferral(e.currentTarget.dataset.level)
-  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成

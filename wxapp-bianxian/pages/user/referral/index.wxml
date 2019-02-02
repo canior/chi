@@ -1,28 +1,35 @@
 <!--pages/user/referral/index.wxml-->
 <view class="top-container">
   <view class="top">
-    <view class="title">我的推荐(人)</view>
+    <view class="title">我的分享(人)</view>
     <view class="total">{{shareUser.shareSourceUsersTotal}}</view>
     <view class="tip"/>
   </view>
 </view>
 <view class="navbar">
-  <block wx:for="{{menu}}" wx:key="index">
-    <view class="nav{{userLevel==item.level ? ' active' : ''}}" data-level="{{item.level}}" bindtap="tapMenu">{{item.name}}</view>
-  </block>
+  <view class="nav"></view>
+  <view class="nav"></view>
 </view>
-<view class="split-brand"/>
 
 <!--列表-->
 <view class="container">
   <view class="rank">
     <view class="table">
+      <view class="tr">
+        <view class="th">日期</view>
+        <view class="th">类型</view>
+        <view class="th">好友</view>
+        <view class="th">等级</view>
+      </view>
       <view class="tr" wx:for="{{shareUser.shareSourceUsers}}" wx:key="index">
-        <view class="td user"><image src="{{item.user.avatarUrl}}"/>
+        <view class="td">{{item.createdAt}}</view>
+        <view class="td">{{item.shareSource.typeText}}</view>
+        <view class="td user">
+          <image src="{{item.user.avatarUrl}}"/>
           <text>{{item.user.name}}</text>
         </view>
         <view class="td"><text>{{item.user.userLevelText}}</text></view>
-        <view class="td">{{item.createdAt}}</view>
+        
       </view>
     </view>
   </view>

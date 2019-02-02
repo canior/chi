@@ -31,9 +31,13 @@
   <view class="container">
     <view class="rank">
       <view class="table">
-        <view class="tr" wx:for="{{course.courseStudents}}" wx:key="index">
+      <view class="tr"  wx:key="index">
+          <view class="th">日期</view>
+          <view class="th">状态</view>
+        </view>
+        <view class="tr" wx:for="{{courseStudents}}" wx:key="index">
           <view class="td">{{item.createdAt}}</view>
-          <view class="td">{{item.status}}</view>
+          <view class="td">{{item.statusText}}</view>
         </view>
       </view>
     </view>

@@ -1,7 +1,7 @@
 <!--pages/user/quota/index.wxml-->
 <view class="top-container">
   <view class="top">
-    <view class="title">剩余名额(人)</view>
+    <view class="title">剩余名额</view>
     <view class="total">{{quota.recommandStock ? quota.recommandStock : 0}}</view>
     <view class="tip"/>
   </view>
@@ -15,13 +15,22 @@
 <!--列表-->
 <view class="container">
   <view class="rank">
-    <view class="title"><image src="/images/top.png"/>下线列表</view>
     <view class="table">
+    <view class="tr">
+        <view class="th">日期</view>
+        <view class="th">备注</view>
+        <view class="th">数量</view>
+      </view>
       <view class="tr" wx:for="{{quota.children}}" wx:key="index">
-        <view class="td user"><image src="{{item.avatarUrl}}"/>
-          <text>{{item.name}}</text>
+        <view class="td user">
+          <text>{{item.createdAtFormatted}}</text>
         </view>
-        <view class="td"><text>{{item.userLevel}}</text></view>
+        <view class="td user">
+          <text>{{item.memo}}</text>
+        </view>
+        <view class="td">
+          <text>{{item.qty}}</text>
+        </view>
       </view>      
     </view>
   </view>

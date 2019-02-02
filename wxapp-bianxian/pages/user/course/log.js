@@ -8,6 +8,7 @@ Page({
   data: {
     options: null,
     course: null,
+    courseStudents: null,
     imgUrlPrefix: app.globalData.imgUrlPrefix,
   },
 
@@ -36,6 +37,7 @@ Page({
           console.log(res.data.data)
           that.setData({
             course: res.data.data.groupUserOrder,
+            courseStudents: res.data.data.courseStudents
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -50,14 +52,14 @@ Page({
   // 评价
   toUserComment: function (e) {
     wx.navigateTo({
-      url: '/pages/user/order/review?id=' + this.data.groupUserOrder.id,
+      url: '/pages/user/course/review?id=' + this.data.course.id,
     })
   },
 
   // 分享
   toProductDetail: function (e) {
     wx.reLaunch({
-      url: '/pages/course/detail?id=' + this.data.groupUserOrder.product.id,
+      url: '/pages/course/detail?id=' + this.data.course.product.id,
     })
   },
 

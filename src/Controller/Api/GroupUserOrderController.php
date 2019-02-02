@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\ShareSource;
+use App\Entity\ProjectShareMeta;
 
 /**
  * @Route("/wxapi")
@@ -101,7 +102,7 @@ class GroupUserOrderController extends BaseController
             /**
              * @var CourseStudent[] $courseStudents
              */
-            $courseStudents = $this->getEntityManager()->getRepository(CourseStudent::class)->findBy(["studentUser" => $user]);
+            $courseStudents = $this->getEntityManager()->getRepository(CourseStudent::class)->findBy(["course" => $groupUserOrder->getProduct()->getCourse(), "studentUser" => $user]);
             foreach ($courseStudents as $courseStudent) {
                 $courseStudentArray[] = $courseStudent->getArray();
             }
@@ -110,7 +111,7 @@ class GroupUserOrderController extends BaseController
         $data = [
             'groupUserOrder' => $groupUserOrder->getArray(),
             'courseStudents' => $courseStudentArray,
-            'shareSources' => $this->createShareSource($groupUserOrder->getProduct(), $url)
+            'shareSources' => $this->createShareSource($user, $groupUserOrder->getProduct(), $url)
         ];
 
         return $this->responseJson('success', 200, $data);
@@ -280,30 +281,53 @@ class GroupUserOrderController extends BaseController
     }
 
     /**
-     * //TODO 需要确定转发配置
      * 返回转发和朋友圈的shareSource
      *
+     * @param User $user
      * @param Product $product
      * @param $page
      * @return array
      */
-    public function createShareSource(Product $product, $page) {
+    private function createShareSource(User $user, Product $product, $page) {
+
+        $fileRepository = $this->getEntityManager()->getRepository(File::class);
+        $projectShareMeta = $this->getEntityManager()->getRepository(ProjectShareMeta::class);
+        $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);
+
+        /**
+         * @var ProjectShareMeta $referProductShare
+         */
+        $referProductShare = $projectShareMeta->findOneBy(['metaKey' => ShareSource::REFER_PRODUCT]);
 
         $shareSources = [];
 
-        $referShareSource = new ShareSource();
-        $referShareSource->setType(ShareSource::REFER);
-        $referShareSource->setTitle($product->getTitle());
-        $referShareSource->setBannerFile($product->getMainProductImage() ? $product->getMainProductImage()->getFile() : null);
-        $referShareSource->setPage($page, true);
+        //产品信息页面转发分享
+        $referShareSource = $shareSourceRepository->findOneBy(['user'=> $user, 'product' => $product, 'type' => ShareSource::REFER_PRODUCT]);
+        if ($referShareSource == null) {
+            $referShareSource = ShareSource::factory(ShareSource::REFER_PRODUCT, $page, $user, null, $referProductShare->getShareTitle(), $product);
+            $this->getEntityManager()->persist($referShareSource);
+            $this->getEntityManager()->flush();
+        }
 
-        $quanShareSource = new ShareSource();
-        $quanShareSource->setType(ShareSource::QUAN);
-        $quanShareSource->setBannerFile($product->getMainProductImage() ? $product->getMainProductImage()->getFile() : null);
-        $quanShareSource->setPage($page, true);
+        //产品信息朋友圈图片
+        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'product' => $product, 'type' => ShareSource::QUAN_PRODUCT]);
+        if ($quanShareSource == null) {
+            $quanShareSource = ShareSource::factory(ShareSource::QUAN_PRODUCT, $page, $user);
+            $wx = new WxCommon($this->getLog());
+            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
 
-        $shareSources[] = $referShareSource->getArray();
-        $shareSources[] = $quanShareSource->getArray();
+            $bannerFile = null;
+            if ($product->getMainProductImage() and $product->getMainProductImage()->getFile()) {
+                $bannerFile = ImageGenerator::createShareQuanBannerImage($userQrFile, $product->getMainProductImage()->getFile());
+            }
+            $quanShareSource->setBannerFile($bannerFile);
+
+            $this->getEntityManager()->persist($quanShareSource);
+            $this->getEntityManager()->flush();
+        }
+
+        $shareSources[ShareSource::REFER] = $referShareSource->getArray();
+        $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();
 
 
         return $shareSources;

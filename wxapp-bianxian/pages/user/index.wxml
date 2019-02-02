@@ -22,10 +22,10 @@
       <text>我的账户</text><text>￥{{user.userAccountTotal ? user.userAccountTotal : 0}}</text>
     </view>
     <view class="step" bindtap="toReferral" data-status="pending">
-      <text>我的推荐</text><text>{{user.totalShares ? user.totalShares : 0}}人</text>
+      <text>我的分享</text><text>{{user.totalShares ? user.totalShares : 0}}人</text>
     </view>
     <view class="step" bindtap="toQuota" data-status="shipping">
-      <text>我的名额</text><text>{{user.userRecommandStock ? user.userRecommandStock : 0}}人</text>
+      <text>我的名额</text><text>{{user.userRecommandStock ? user.userRecommandStock : 0}}</text>
     </view>
   </view>
 </view>

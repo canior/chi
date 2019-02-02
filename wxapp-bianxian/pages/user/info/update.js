@@ -10,6 +10,8 @@ Page({
       name: '',
       phone: '',
       idNum: '',
+      company: '',
+      wechat: '',
       recommanderName: '',
     },
     groupUserOrderId: null, //从支付页因无地址而转来
@@ -47,8 +49,9 @@ Page({
             ['user.name']: user.name,
             ['user.phone']: user.phone,
             ['user.idNum']: user.idNum,
+            ['user.company']: user.company,
+            ['user.wechat']: user.wechat,
             ['user.recommanderName']: user.recommanderName,
-            //['user.recommanderPhone']: user.recommanderPhone
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -78,6 +81,18 @@ Page({
     })
   },
 
+  inputCompany: function (e) {
+    this.setData({
+      ['user.company']: e.detail.value
+    })
+  },
+
+  inputWechat: function (e) {
+    this.setData({
+      ['user.wechat']: e.detail.value
+    })
+  },
+
   inputRefereeName: function (e) {
     this.setData({
       ['user.recommanderName']: e.detail.value
@@ -95,6 +110,8 @@ Page({
         name: user.name,
         phone: user.phone,
         idNum: user.idNum,
+        company: user.company,
+        wechat: user.wechat,
         recommanderName: user.recommanderName,
         thirdSession: wx.getStorageSync('thirdSession')
       },

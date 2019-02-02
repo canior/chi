@@ -274,6 +274,7 @@ class ShareSource implements Dao
             'id' => $this->id,
             'userId' => $this->getUser() ? $this->getUser()->getId() : null,
             'type' => $this->type,
+            'typeText' => $this->getTypeText(),
             'title' => $this->title,
             'bannerFileId' => $this->getBannerFile() ? $this->getBannerFile()->getId() : null,
             'page' => $this->getPage(),
