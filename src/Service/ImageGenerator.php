@@ -17,11 +17,11 @@ class ImageGenerator
     /**
      * TODO
      * 合并配置背景图片和用户的QR图片
-     * @param File $userQrFile
-     * @param File $bannerFile
+     * @param File|null $userQrFile
+     * @param File|null $bannerFile
      * @return File|null
      */
-    public static function createShareQuanBannerImage(File $userQrFile, File $bannerFile) {
+    public static function createShareQuanBannerImage(?File $userQrFile, ?File $bannerFile) {
         return null;
     }
 }
