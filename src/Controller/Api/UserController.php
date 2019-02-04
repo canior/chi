@@ -487,35 +487,38 @@ class UserController extends BaseController
 
         $data = json_decode($request->getContent(), true);
 
-        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+//        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+//        $shareSourceId = isset($data['shareSourceId']) ? $data['shareSourceId'] : null;
+//        $productId = isset($data['productId']) ? $data['productId'] : null;
+//        $shareSourceType = isset($data['shareSourceType']) ? $data['shareSourceType'] : null;
+//        $url = isset($data['url']) ? $data['url'] : null;
+//        $groupOrderId = isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
+//        $bannerFileId = isset($data['bannerFileId']) ? $data['bannerFileId'] : null;
+//        $title = isset($data['title']) ? $data['title'] : null;
+//
+//        $user = $this->getWxUser($thirdSession);
+//        $product = $productId == null ? null : $productRepository->find($productId);
+//        $groupOrder = $groupOrderId == null ? null : $groupOrderRepository->find($groupOrderId);
+//        $bannerFile = $fileRepository->find($bannerFileId);
+//
+//        $shareSource = $shareSourceRepository->find($shareSourceId);
+//        if ($shareSource == null) {
+//            $shareSource = new ShareSource();
+//        }
+//        $shareSource->setId($shareSourceId);
+//        $shareSource->setUser($user);
+//        $shareSource->setProduct($product);
+//        $shareSource->setType($shareSourceType);
+//        $shareSource->setPage($url);
+//        $shareSource->setBannerFile($bannerFile);
+//        $shareSource->setGroupOrder($groupOrder);
+//        $shareSource->setTitle($title);
+//
+//        $this->getEntityManager()->persist($shareSource);
+//        $this->getEntityManager()->flush();
+
         $shareSourceId = isset($data['shareSourceId']) ? $data['shareSourceId'] : null;
-        $productId = isset($data['productId']) ? $data['productId'] : null;
-        $shareSourceType = isset($data['shareSourceType']) ? $data['shareSourceType'] : null;
-        $url = isset($data['url']) ? $data['url'] : null;
-        $groupOrderId = isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
-        $bannerFileId = isset($data['bannerFileId']) ? $data['bannerFileId'] : null;
-        $title = isset($data['title']) ? $data['title'] : null;
-
-        $user = $this->getWxUser($thirdSession);
-        $product = $productId == null ? null : $productRepository->find($productId);
-        $groupOrder = $groupOrderId == null ? null : $groupOrderRepository->find($groupOrderId);
-        $bannerFile = $fileRepository->find($bannerFileId);
-
         $shareSource = $shareSourceRepository->find($shareSourceId);
-        if ($shareSource == null) {
-            $shareSource = new ShareSource();
-        }
-        $shareSource->setId($shareSourceId);
-        $shareSource->setUser($user);
-        $shareSource->setProduct($product);
-        $shareSource->setType($shareSourceType);
-        $shareSource->setPage($url);
-        $shareSource->setBannerFile($bannerFile);
-        $shareSource->setGroupOrder($groupOrder);
-        $shareSource->setTitle($title);
-
-        $this->getEntityManager()->persist($shareSource);
-        $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
             'shareSource' => $shareSource->getArray()

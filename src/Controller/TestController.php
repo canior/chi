@@ -64,7 +64,7 @@ class TestController extends DefaultController
         putenv('GDFONTPATH=' . __DIR__.'/../../assets/font/'); //设置中文字体路径
         $font = "msyh.ttf";//字体
         $color = imagecolorallocate($bg_img, 255, 255, 255);
-        imagettftext($bg_img, 20, 0, 50, $bg_info[1]-$qr_info[1]-50, $color, $font, '文字文字文字文字文字');
+        //imagettftext($bg_img, 20, 0, 50, $bg_info[1]-$qr_info[1]-50, $color, $font, '文字文字文字文字文字');
         //输出到浏览器
         header('content-type:image/png');
         imagepng($bg_img);

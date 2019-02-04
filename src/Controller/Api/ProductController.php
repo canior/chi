@@ -151,7 +151,7 @@ class ProductController extends BaseController
         //产品信息朋友圈图片
         $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'product' => $product, 'type' => ShareSource::QUAN_PRODUCT]);
         if ($quanShareSource == null) {
-            $quanShareSource = ShareSource::factory(ShareSource::QUAN_PRODUCT, $page, $user);
+            $quanShareSource = ShareSource::factory(ShareSource::QUAN_PRODUCT, $page, $user, null, null, $product);
             $wx = new WxCommon($this->getLog());
             $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
 

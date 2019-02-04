@@ -7,7 +7,7 @@ imports:
 - { resource: parameters.yaml }
 
 parameters:
-    locale: 'cn'
+    locale: 'en'
 
 services:
     # default configuration for services in *this* file
