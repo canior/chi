@@ -986,15 +986,16 @@ class UserController extends BaseController
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $user = $this->getWxUser($thirdSession);
 
-        $asRecommanders = $user->getUserAccountOrdersAsRecommander();
+        $userStockOrders = $user->getUserRecommandStockOrders();
+
         $childrenArray = [];
-        foreach ($asRecommanders as $userAccountOrder) {
-            $childrenArray[] = $userAccountOrder->getArray();
+        foreach ($userStockOrders as $userStockOrder) {
+            $childrenArray[] = $userStockOrder->getArray();
         }
 
         return $this->responseJson('success', 200, [
             'recommandStock' => $user->getRecommandStock(),
-            'usedStock' => $asRecommanders->count(),
+            'usedStock' => $user->getUserAccountOrdersAsRecommander()->count(),
             'totalStock' => $user->getTotalRecommandStock(),
             'children' => $childrenArray
         ]);
