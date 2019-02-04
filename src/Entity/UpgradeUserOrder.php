@@ -337,8 +337,10 @@ class UpgradeUserOrder implements Dao
         /* 更新名额 */
         $increasedStock = UserLevel::$userLevelRecommanderStockArray[$userLevel];
 
-        $memo = '升级至' . UserLevel::$userLevelTextArray[$userLevel] . '成功';
-        $user->createUserRecommandStockOrder($increasedStock, $this, $memo);
+        if ($increasedStock > 0) {
+            $memo = '升级至' . UserLevel::$userLevelTextArray[$userLevel];
+            $user->createUserRecommandStockOrder($increasedStock, $this, $memo);
+        }
 
         $this->populateUserAccountOrders();
     }
@@ -353,7 +355,7 @@ class UpgradeUserOrder implements Dao
         if ($recommander != null and $recommander->getRecommandStock() > 0) {
             $recommanderRewards = UserLevel::$userLevelRecommanderRewardsArray[$userLevel];
             if ($this->isApproved()) {
-                $memo = '推荐' . UserLevel::$userLevelTextArray[$userLevel] . $this->getUser()->getName() . '成功, 减少名额';
+                $memo = '推荐' . $user->getName() . '成为' . UserLevel::$userLevelTextArray[$userLevel] . $this->getUser()->getName();
 
                 $recommander->createUserAccountOrder(UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this, null, $memo);
                 //推荐名额减1
