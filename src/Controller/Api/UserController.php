@@ -989,7 +989,7 @@ class UserController extends BaseController
         $asRecommanders = $user->getUserAccountOrdersAsRecommander();
         $childrenArray = [];
         foreach ($asRecommanders as $userAccountOrder) {
-            $childrenArray[] = $userAccountOrder->getUser()->getArray();
+            $childrenArray[] = $userAccountOrder->getArray();
         }
 
         return $this->responseJson('success', 200, [
