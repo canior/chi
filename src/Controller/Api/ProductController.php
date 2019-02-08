@@ -62,13 +62,9 @@ class ProductController extends BaseController
             $bannersArray[] = $projectBannerMeta->getArray();
         }
 
-        $products = $productRepository->findActiveProducts();
+        $products = $this->findActiveProducts($productRepository);
         foreach($products as $product) {
-            if ($product->getCourse()) {
-                if (!$product->getCourse()->isExpired()) {
-                    $productsArray[] = $product->getArray();
-                }
-            }
+            $productsArray[] = $product->getArray();
         }
 
         $data = [
@@ -78,6 +74,14 @@ class ProductController extends BaseController
         ];
         
         return $this->responseJson('success', 200, $data);
+    }
+
+    /**
+     * @param ProductRepository $productRepository
+     * @return Product[]
+     */
+    protected function findActiveProducts(ProductRepository $productRepository) {
+        return $productRepository->findActiveProducts();
     }
 
     /**
@@ -128,7 +132,6 @@ class ProductController extends BaseController
      * @return array
      */
     private function createShareSource(User $user, Product $product, $page) {
-
         $fileRepository = $this->getEntityManager()->getRepository(File::class);
         $projectShareMeta = $this->getEntityManager()->getRepository(ProjectShareMeta::class);
         $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);

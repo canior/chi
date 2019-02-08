@@ -86,6 +86,7 @@ class User extends BaseUser implements Dao
     private $region;
 
     /**
+     * @var User
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="subUsers", cascade={"persist"})
      * @ORM\JoinColumn(name="parent_user_id", referencedColumnName="id")
      */
@@ -256,11 +257,24 @@ class User extends BaseUser implements Dao
     private $userRecommandStockOrders;
 
     /**
-     * @var File|null $wxShareQrFile
-     * @ORM\ManyToOne(targetEntity="App\Entity\File")
-     * @ORM\JoinColumn(nullable=true)
+     * @var Product[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Product", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
-    private $wxShareQrFile;
+    private $supplierProducts;
+
+
+    /**
+     * @var User|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="recommandStudentUsers", cascade={"persist"})
+     * @ORM\JoinColumn(name="teacher_recommander_user_id", referencedColumnName="id")
+     */
+    private $teacherRecommanderUser;
+
+    /**
+     * @var ArrayCollection|User[]
+     */
+    private $recommandStudentUsers;
 
     public function __construct()
     {
@@ -282,6 +296,7 @@ class User extends BaseUser implements Dao
         $this->userStatistics = new ArrayCollection();
         $this->shareSourceUsers = new ArrayCollection();
         $this->userCommands = new ArrayCollection();
+        $this->supplierProducts = new ArrayCollection();
 
         $this->setUserLevel(UserLevel::VISITOR);
         $this->setUserAccountTotal(0);
@@ -291,6 +306,7 @@ class User extends BaseUser implements Dao
         $this->userAccountOrders = new ArrayCollection();
         $this->courseStudents = new ArrayCollection();
         $this->userRecommandStockOrders = new ArrayCollection();
+        $this->recommandStudentUsers = new ArrayCollection();
     }
 
     public function setId($id)
@@ -1012,8 +1028,10 @@ class User extends BaseUser implements Dao
      */
     public function getUserLevelText(): string
     {
-        if ($this->getUserLevel())
+        if ($this->getUserLevel()) {
             return UserLevel::$userLevelTextArray[$this->userLevel];
+        }
+
         return "";
     }
 
@@ -1079,6 +1097,13 @@ class User extends BaseUser implements Dao
     public function getUserAccountOrders()
     {
         return $this->userAccountOrders;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalUserAccountOrders() {
+        return $this->userAccountOrders->count();
     }
 
     /**
@@ -1151,11 +1176,12 @@ class User extends BaseUser implements Dao
     /**
      * 创建升级会员订单
      * @param string $userLevel
+     * @param GroupUserOrder $groupUserOrder
      * @return UpgradeUserOrder
      */
-    public function createUpgradeUserOrder($userLevel)
+    public function createUpgradeUserOrder($userLevel, GroupUserOrder $groupUserOrder)
     {
-        $upgradeUserOrder = UpgradeUserOrder::factory($this, $userLevel, UserLevel::$userLevelPriceArray[$userLevel]);
+        $upgradeUserOrder = UpgradeUserOrder::factory($this, $userLevel, $groupUserOrder);
         $this->upgradeUserOrders->add($upgradeUserOrder);
         return $upgradeUserOrder;
     }
@@ -1459,27 +1485,87 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @return File|null
+     * @return Product[]|ArrayCollection
      */
-    public function getWxShareQrFile(): ?File
+    public function getSupplierProducts()
     {
-        return $this->wxShareQrFile;
+        return $this->supplierProducts;
     }
 
     /**
-     * @param File|null $wxShareQrFile
+     * @param Product[]|ArrayCollection $supplierProducts
      */
-    public function setWxShareQrFile(?File $wxShareQrFile): void
+    public function setSupplierProducts($supplierProducts): void
     {
-        $this->wxShareQrFile = $wxShareQrFile;
+        $this->supplierProducts = $supplierProducts;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getTeacherRecommanderUser(): ?User
+    {
+        return $this->teacherRecommanderUser;
+    }
+
+    /**
+     * @param User|null $teacherRecommanderUser
+     */
+    public function setTeacherRecommanderUser(?User $teacherRecommanderUser): void
+    {
+        $this->teacherRecommanderUser = $teacherRecommanderUser;
+    }
+
+    /**
+     * @return User[]|ArrayCollection
+     */
+    public function getRecommandStudentUsers()
+    {
+        return $this->recommandStudentUsers;
+    }
+
+    /**
+     * @param User[]|ArrayCollection $recommandStudentUsers
+     */
+    public function setRecommandStudentUsers($recommandStudentUsers): void
+    {
+        $this->recommandStudentUsers = $recommandStudentUsers;
+    }
+
+    /**
+     * 返回最上线的一个合伙人
+     * @return User|null
+     */
+    public function getParentPartnerUser() {
+
+        //如果自己就是partner则就是自己
+        if ($this->isPartnerUser()) {
+            return $this;
+        }
+
+        $user = $this;
+        while ($parent = $user->getParentUser()) {
+            if ($parent->isPartnerUser()) {
+                return $parent;
+            }
+            $user = $parent;
+        }
+        return null;
+    }
+
+    /**
+     * 合并姓名和昵称
+     * @return string
+     */
+    public function getDisplayName() {
+        return $this->getNickname() . '('. $this->getName() . ')';
     }
 
     public function __toString()
     {
-        return '用户ID: ' . $this->getId()
-            . ' 用户昵称: ' . $this->getNickname()
-            . ' 姓名: ' . $this->getName()
-            . ' 会员等级: ' . $this->getUserLevelText();
+        return 'ID: ' . $this->getId()
+            . ' 名称: ' . $this->getDisplayName()
+            . ' 等级: ' . $this->getUserLevelText();
     }
 
 }

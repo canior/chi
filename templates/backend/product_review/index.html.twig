@@ -18,15 +18,6 @@
                     <div class="row">
                         <form class="cmxform" id="myForm">
                             <div class="col-md-2 form-group">
-                                <label>科目</label>
-                                <select name="subject" class="form-control chosen">
-                                    <option value="">全部</option>
-                                    {% for subject, text in subjects %}
-                                        <option value="{{ subject }}"{% if subject == form.subject %} selected{% endif %}>{{ text }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-2 form-group">
                                 <label>评分</label>
                                 <select name="rate" class="form-control chosen">
                                     <option value="">全部</option>
@@ -55,13 +46,10 @@
                             <thead>
                             <tr>
                                 <th class="col-md-1">评价ID</th>
-                                <th class="col-md-1">课程订单号</th>
-                                <th class="col-md-1">科目</th>
-                                <th class="col-md-1">讲师</th>
-                                <th class="col-md-1">用户ID</th>
-                                <th class="col-md-1">姓名</th>
+                                <th class="col-md-1">产品订单号</th>
+                                <th class="col-md-2">用户</th>
                                 <th class="col-md-1">评分</th>
-                                <th class="col-md-1">评价</th>
+                                <th class="col-md-4">评价</th>
                                 <th class="col-md-1">状态</th>
                                 <th class="col-md-1">创建时间</th>
                                 <th class="col-md-1 text-center hidden-xs">操作</th>
@@ -76,16 +64,7 @@
                                             {{ item.groupUserOrder.id }}
                                         </td>
                                         <td>
-                                            {{ item.product.course.subjectText }}
-                                        </td>
-                                        <td>
-                                            {{ item.product.course.teacher.name }}
-                                        </td>
-                                        <td>
-                                            {{ item.groupUserOrder.user.id}}
-                                        </td>
-                                        <td>
-                                            {{ item.groupUserOrder.user.name }}
+                                            {{ item.groupUserOrder.user}}
                                         </td>
                                         <td>{{ item.rate }}</td>
                                         <td>{{ item.review }}</td>
@@ -103,7 +82,7 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="11" class="alert">no records found</td>
+                                    <td colspan="8" class="alert">no records found</td>
                                 </tr>
                             {% endif %}
                             </tbody>

@@ -63,6 +63,12 @@ class ProductReview implements Dao
     private $productReviewImages;
 
     /**
+     * @var CourseStudent|null
+     * @ORM\ManyToOne(targetEntity="CourseStudent", inversedBy="productReviews")
+     */
+    private $courseStudent;
+
+    /**
      * ProductReview constructor.
      */
     public function __construct()
@@ -170,6 +176,22 @@ class ProductReview implements Dao
         }
 
         return $this;
+    }
+
+    /**
+     * @return CourseStudent|null
+     */
+    public function getCourseStudent(): ?CourseStudent
+    {
+        return $this->courseStudent;
+    }
+
+    /**
+     * @param CourseStudent|null $courseStudent
+     */
+    public function setCourseStudent(?CourseStudent $courseStudent): void
+    {
+        $this->courseStudent = $courseStudent;
     }
 
     /**

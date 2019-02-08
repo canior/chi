@@ -42,13 +42,13 @@ class Course implements Dao
 
     /**
      * @var int
-     * @ORM\Column(name="start_date", type="integer", nullable=false)
+     * @ORM\Column(name="start_date", type="integer", nullable=true)
      */
     private $startDate;
 
     /**
      * @var int
-     * @ORM\Column(name="end_date", type="integer", nullable=false)
+     * @ORM\Column(name="end_date", type="integer", nullable=true)
      */
     private $endDate;
 
@@ -80,18 +80,18 @@ class Course implements Dao
     }
 
     /**
-     * @param string $title
-     * @param string $shortDescription
-     * @param float $price
-     * @param string $subject
+     * @param $title
+     * @param $shortDescription
      * @param Teacher $teacher
-     * @param int $startDate
-     * @param int $endDate
-     * @param Region $region
-     * @param string|null $address
+     * @param null $price
+     * @param null $subject
+     * @param null $startDate
+     * @param null $endDate
+     * @param Region|null $region
+     * @param null $address
      * @return Course
      */
-    public static function factory($title, $shortDescription, $price, $subject, Teacher $teacher, $startDate, $endDate, Region $region = null, $address = null) {
+    public static function factory($title, $shortDescription, Teacher $teacher, $price = null, $subject = null, $startDate = null, $endDate = null, Region $region = null, $address = null) {
         $product = new Product();
         $product->setTitle($title);
         $product->setShortDescription($shortDescription);
@@ -135,9 +135,9 @@ class Course implements Dao
     }
 
     /**
-     * @param string $subject
+     * @param null|string $subject
      */
-    public function setSubject(string $subject): void
+    public function setSubject(?string $subject): void
     {
         $this->subject = $subject;
     }
@@ -311,6 +311,13 @@ class Course implements Dao
     }
 
     /**
+     * @return ProductVideo[]|ArrayCollection
+     */
+    public function getCourseVideos() {
+        return $this->getProduct()->getProductVideos();
+    }
+
+    /**
      * @return CourseStudent[]|ArrayCollection
      */
     public function getCourseStudents()
@@ -366,23 +373,6 @@ class Course implements Dao
     }
 
     /**
-     * 全部报到学生 （无重复）
-     * @return int
-     */
-    public function getTotalWelcomeStudentUsers() {
-        return count($this->getStudentUsers(CourseStudent::WELCOME));
-    }
-
-
-    /**
-     * 全部签到学生 （无重复）
-     * @return int
-     */
-    public function getTotalSignInStudentUsers() {
-        return count($this->getStudentUsers(CourseStudent::SIGNIN));
-    }
-
-    /**
      * @param CourseStudent[] $courseStudents
      */
     public function setCourseStudents($courseStudents): void
@@ -412,30 +402,6 @@ class Course implements Dao
         $this->addStudentUser($studentUser, CourseStudent::REGISTERED);
     }
 
-    /**
-     * 学生报到
-     * @param $studentUser
-     */
-    public function welcomeStudent($studentUser) {
-        $this->addStudentUser($studentUser, CourseStudent::WELCOME);
-    }
-
-    /**
-     * 学生签到
-     * @param $studentUser
-     */
-    public function signInStudent($studentUser) {
-        $this->addStudentUser($studentUser, CourseStudent::SIGNIN);
-    }
-
-    /**
-     * 拒绝学生
-     * @param $studentUser
-     * @param $memo
-     */
-    public function refuseStudent($studentUser, $memo) {
-        $this->addStudentUser($studentUser, CourseStudent::REFUSED, $memo);
-    }
 
     /**
      * @return string
@@ -459,6 +425,44 @@ class Course implements Dao
     }
 
     /**
+     * @return File|null
+     */
+    public function getMainCourseVideoFile() {
+        if ($this->getProduct()->getProductVideos()->isEmpty()) {
+            return null;
+        }
+        return $this->getProduct()->getProductVideos()[0]->getFile();
+    }
+
+    /**
+     * @param int|null $groupOrderValidForHours
+     */
+    public function setGroupOrderValidForHours(?int $groupOrderValidForHours) {
+        $this->getProduct()->setGroupOrderValidForHours($groupOrderValidForHours);
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getGroupOrderValidForHours() {
+        return $this->getProduct()->getGroupOrderValidForHours();
+    }
+
+    /**
+     * @param int|null $totalGroupUserOrdersRequired
+     */
+    public function setTotalGroupUserOrdersRequired(?int $totalGroupUserOrdersRequired) {
+        $this->getProduct()->setTotalGroupUserOrdersRequired($totalGroupUserOrdersRequired);
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTotalGroupUserOrdersRequired() {
+        return $this->getProduct()->getTotalGroupUserOrdersRequired();
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {
@@ -472,10 +476,14 @@ class Course implements Dao
             $courseSpecImagesArray[] = $productSpecImage->getArray();
         }
 
+        $courseVideosArray = [];
+        foreach ($this->getProduct()->getProductVideos() as $productVideo) {
+            $courseVideosArray[] = $productVideo->getArray();
+        }
+
         return [
             'id' => $this->getId(),
             'title' => $this->getProduct()->getTitle(),
-            'subjectText' => Subject::$subjectTextArray[$this->getSubject()],
             'price' => $this->getProduct()->getPrice(),
             'shortDescription' => $this->getProduct()->getShortDescription(),
             'startDate' =>  date(self::DATE_FORMAT, $this->getStartDate()),
@@ -486,7 +494,7 @@ class Course implements Dao
             'courseImages' => $courseImageArray,
             'courseSpecImages' => $courseSpecImagesArray,
             'reviewsNum' => $this->getProduct()->getTotalReviews(),
-            'eligibleUserLevels' => Subject::$subjectUserLevelConstraintArray[$this->getSubject()]
+            'courseVideos' => $courseVideosArray,
         ];
     }
 }

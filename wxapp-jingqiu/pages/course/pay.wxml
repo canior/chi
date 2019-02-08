@@ -1,0 +1,26 @@
+<!--pages/course/pay.wxml-->
+<import src="/pages/tmpl/price.wxml"/>
+<import src="/pages/tmpl/address.wxml"/>
+
+<view class="container">
+  <view class="chi-item">
+    <view class="left"><image src="{{imgUrlPrefix + '/' + groupUserOrder.product.courseImages[0].fileId}}"/></view>
+    <view class="right">
+      <view class="line title">{{groupUserOrder.product.subjectText}}</view>
+      <view class="line desc">时间：{{groupUserOrder.product.startDate}}至{{groupUserOrder.product.endDate}}</view>
+      <view class="line desc">地点：{{groupUserOrder.product.region.fullname}} {{groupUserOrder.product.address}}</view>
+      <view class="line"><view class="price">￥{{groupUserOrder.product.price}}</view></view>
+    </view>
+  </view>
+</view>
+
+<view class="container">
+  <view class="split-line"/>
+  <view class="title">个人资料</view>
+  <template is="address" data="{{user:groupUserOrder.user, unpaid:true}}"/>
+</view>
+
+<view class="bottom">
+  <view>实付：<text>￥{{groupUserOrder.product.price}}</text></view>
+  <button class="btn" bindtap="tapPay" disabled="{{btnDisabled}}">支付</button>
+</view>

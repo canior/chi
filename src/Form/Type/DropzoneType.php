@@ -36,7 +36,7 @@ class DropzoneType extends AbstractType
             'route' => 'fileUpload',
             'maxFiles' => 1,
             'maxFilesize' => 5,
-            'acceptedFiles' => 'image/*',
+            'acceptedFiles' => 'image/*, .mp4, .mkv, .avi',
             'uploadMultiple' => 'false',
             'priority' => false
         ]);

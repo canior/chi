@@ -1,6 +1,6 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}GroupOrder{% endblock %}
+{% block title %}集call订单{% endblock %}
 
 {% import 'form/macros.html.twig' as macros %}
 
@@ -17,17 +17,17 @@
                     <div class="row">
                         <form class="cmxform" id="myForm">
                             <div class="col-md-2 form-group">
-                                <label>拼团ID</label>
+                                <label>集call ID</label>
                                 <input type="text" name="groupOrderId" class="form-control" value="{{ form.groupOrderId > 0 ? form.groupOrderId : '' }}"
-                                       placeholder="按 拼团ID 查询">
+                                       placeholder="按 集callID 查询">
                             </div>
                             <div class="col-md-2 form-group">
-                                <label>订单ID</label>
+                                <label>集call订单ID</label>
                                 <input type="number" name="groupUserOrderId" class="form-control" value="{{ form.groupUserOrderId > 0 ? form.groupUserOrderId : '' }}"
-                                       placeholder="按 订单ID 查询">
+                                       placeholder="按 集call订单ID 查询">
                             </div>
                             <div class="col-md-2 form-group">
-                                <label>拼团用户ID</label>
+                                <label>集call用户ID</label>
                                 <input type="number" name="userId" class="form-control" value="{{ form.userId > 0 ? form.userId : '' }}"
                                        placeholder="按 拼团用户ID 查询">
                             </div>
@@ -55,17 +55,14 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th width="8%">拼团ID</th>
-                                <th width="8%">订单ID</th>
-                                <th width="8%">团长ID</th>
-                                <th width="10%">团长昵称</th>
-                                <th width="10%">产品图片</th>
-                                <th width="10%">产品名</th>
-                                <th width="10%">拼团价格</th>
-                                <th width="10%">拼团状态</th>
-                                <th width="10%">创建时间</th>
-                                <th width="10%">过期时间</th>
-                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                <th class="col-md-1">集call ID</th>
+                                <th class="col-md-2">团长</th>
+                                <th class="col-md-3">课程</th>
+                                <th class="col-md-2">讲师</th>
+                                <th class="col-md-1">状态</th>
+                                <th class="col-md-1">创建时间</th>
+                                <th class="col-md-1">过期时间</th>
+                                <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -74,32 +71,14 @@
                                     <tr>
                                         <td>{{ item.id }}</td>
                                         <td>
-                                            {% for groupUserOrder in item.groupUserOrders %}
-                                                <a class="btn btn-info btn-xs" href="{{ path('group_user_order_info', {id: groupUserOrder.id}) }}">{{ groupUserOrder.id }}</a>
-                                                {% if not loop.last %}<br />{% endif %}
-                                            {% endfor %}
+                                            {{ item.user }}
                                         </td>
                                         <td>
-                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.user.id }}
-                                            </a>
+                                            {{ item.product.title }}
                                         </td>
                                         <td>
-                                            <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.user.nickname }}
-                                            </a>
+                                            {{ item.product.course.teacher.user }}
                                         </td>
-                                        <td>
-                                            {% if item.product.mainProductImage %}
-                                                <img src="{{ path('imagePreview', {fileId: item.product.mainProductImage.file.id}) }}" width="40" height="40"/>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-info btn-xs" href="{{ path('product_edit', {'id': item.product.id}) }}" target="_blank" title="查看详情">
-                                                {{ item.product.title }}
-                                            </a>
-                                        </td>
-                                        <td>{{ item.product.groupPrice }}</td>
                                         <td>{{ item.statusText }}</td>
                                         <td>{{ item.createdAt }}</td>
                                         <td>{{ item.expiredAt }}</td>
@@ -114,7 +93,7 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="11" class="alert">no records found</td>
+                                    <td colspan="8" class="alert">no records found</td>
                                 </tr>
                             {% endif %}
                             </tbody>

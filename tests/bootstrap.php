@@ -24,10 +24,12 @@ if ($_ENV['DROP_TABLE']) {
     ));
 }
 
-passthru(sprintf(
-    'php "%s/../bin/console" doctrine:migrations:migrate',
-    __DIR__,
-    1
-));
+if ($_ENV['DB_MIGRATION']) {
+    passthru(sprintf(
+        'php "%s/../bin/console" doctrine:migrations:migrate',
+        __DIR__,
+        1
+    ));
+}
 
 require __DIR__.'/../vendor/autoload.php';

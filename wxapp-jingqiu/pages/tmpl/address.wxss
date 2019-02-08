@@ -1,0 +1,32 @@
+.section {
+  display: flex;
+  justify-content: space-between;
+  /*background-color: #ff5353;*/
+  padding: 20rpx 0 60rpx;
+}
+.section .left {
+  display: flex;
+  align-items: center;
+}
+.section .left image {
+  width: 120rpx;
+  height: 120rpx;
+  vertical-align: text-bottom;
+  margin-right: 20rpx;
+}
+.section .line {
+  font-size: 30rpx;
+  color: #888;
+}
+.section .right {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+}
+.section .right .arrow-right {
+  border-top: 3px solid #888;
+  border-right: 3px solid #888;
+  width: 25rpx;
+  height: 25rpx;
+  transform: rotate(45deg);
+}

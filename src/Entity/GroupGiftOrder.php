@@ -15,5 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class GroupGiftOrder extends GroupOrder
 {
-
+    public function __construct() {
+        parent::__construct();
+    }
 }

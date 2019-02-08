@@ -20,6 +20,10 @@
                                 <td>{{ upgrade_user_order.statusText }}</td>
                             </tr>
                             <tr>
+                                <th>用户</th>
+                                <td>{{ upgrade_user_order.user }}</td>
+                            </tr>
+                            <tr>
                                 <th>会员等级</th>
                                 <td>{{ upgrade_user_order.oldUserLevelText }} -> {{ upgrade_user_order.userLevelText }}</td>
                             </tr>
@@ -28,16 +32,12 @@
                                 <td>￥{{ upgrade_user_order.total }}</td>
                             </tr>
                             <tr>
-                                <th>用户ID</th>
-                                <td>{{ upgrade_user_order.user.id }}</td>
-                            </tr>
-                            <tr>
-                                <th>姓名</th>
-                                <td>{{ upgrade_user_order.user.name }}</td>
-                            </tr>
-                            <tr>
-                                <th>电话</th>
-                                <td>{{ upgrade_user_order.user.phone }}</td>
+                                <th>产品订单</th>
+                                <td>
+                                    <a href="{{ path('group_user_order_info', {'id': upgrade_user_order.groupUserOrder.id}) }}">
+                                    {{ upgrade_user_order.groupUserOrder }}
+                                    </a>
+                                </td>
                             </tr>
                             <tr>
                                 <th>创建时间</th>
@@ -65,25 +65,19 @@
                         </h3>
                         <table class="table table-bordered table-striped">
                             <tr>
-                                <th class="col-md-2">用户ID</th>
-                                <th class="col-md-2">姓名</th>
-                                <th class="col-md-2">交易类型	</th>
-                                <th class="col-md-1">科目</th>
-                                <th class="col-md-1">课程</th>
-                                <th class="col-md-2">佣金</th>
-                                <th class="col-md-2">用户账单号</th>
+                                <th class="col-md-3">用户</th>
+                                <th class="col-md-3">交易类型	</th>
+                                <th class="col-md-3">佣金</th>
+                                <th class="col-md-3">用户账单号</th>
                             </tr>
                             {% for userAccountOrder in userAccountOrders %}
                             <tr>
-                                <td>{{ userAccountOrder.user.id }}</td>
                                 <td>
                                     <a href="{{ path('user_account_order_index', {'userId': userAccountOrder.user.id}) }}">
-                                        {{ userAccountOrder.user.name }}
+                                        {{ userAccountOrder.user }}
                                     </a>
                                 </td>
                                 <td>{{ userAccountOrder.userAccountOrderTypeText }}</td>
-                                <td>{{ userAccountOrder.course ? userAccountOrder.course.subjectText : null}}</td>
-                                <td>{{ userAccountOrder.course ? userAccountOrder.course.title : null}}</td>
                                 <td>￥{{ userAccountOrder.amount }}</td>
                                 <td>
                                     {% if userAccountOrder.id %}

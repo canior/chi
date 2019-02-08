@@ -161,19 +161,19 @@ class ProductReviewRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param bool $isCourse
      * @param null $productId
      * @param null $rate
      * @param null $status
-     * @param null $subject
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findProductReviewsQueryBuilder($productId = null, $rate = null, $status = null, $subject = null)
+    public function findProductReviewsQueryBuilder($isCourse = false, $productId = null, $rate = null, $status = null)
     {
         $query = $this->createQueryBuilder('pr')
             ->orderBy('pr.id', 'DESC');
 
         if ($productId) {
-            $query->where('pr.product = :productId')
+            $query->andwhere('pr.product = :productId')
                 ->setParameter('productId', $productId);
         }
 
@@ -187,11 +187,12 @@ class ProductReviewRepository extends ServiceEntityRepository
                 ->setParameter('status', $status);
         }
 
-        if ($subject) {
+        if ($isCourse) {
             $query->leftJoin('pr.product', 'p')
-                ->leftJoin('p.course', 'c')
-                ->andWhere('c.subject = :subject')
-                ->setParameter('subject', $subject);
+                ->andWhere('p.course is not null');
+        } else {
+            $query->leftJoin('pr.product', 'p')
+                ->andWhere('p.course is null');
         }
 
         return $query;

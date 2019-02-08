@@ -1,0 +1,60 @@
+/* pages/user/course/index.wxss */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #ececec;
+  padding: 20rpx 40rpx;
+}
+.nav {
+  font-size: 30rpx;
+}.nav.active {
+  border-bottom: 3px solid #ffdf00;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 40rpx;
+  border-bottom: 1px solid #ececec;
+}.row:last-child {
+  border: none;
+}
+.row .left {
+  font-size: 24rpx;
+  color: #888;
+  display: flex;
+  align-items: center;
+}
+.row .left image {
+  width: 135rpx;
+  height: 135rpx;
+  margin-right: 20rpx;
+}
+.row .right {
+  font-size: 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}.row .right.pending {
+  color: #ffc018;
+}.row .right.completed {
+  color: #353535;
+}.row .right.fail {
+  color: #ff4d42;
+}
+.row .line {
+  display: flex;
+}
+.row .line.name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+.row .right button {
+  font-size: 24rpx;
+  background-color: #fff;
+}.row .right button::after {
+  border-color: #000;
+}.row .right button:first-child {
+  margin-right: 20rpx;
+}

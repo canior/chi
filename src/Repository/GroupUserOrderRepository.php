@@ -29,7 +29,7 @@ class GroupUserOrderRepository extends ServiceEntityRepository
      * @param null $paymentStatus
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findGroupUserOrdersQueryBuilder($groupOrderId = null, $groupUserOrderId = null, $userId = null, $productName = null, $type = null, $status = null, $paymentStatus = null)
+    public function findGroupUserOrdersQueryBuilder($isCourse = false, $groupOrderId = null, $groupUserOrderId = null, $userId = null, $productName = null, $type = null, $status = null, $paymentStatus = null)
     {
         $query = $this->createQueryBuilder('guo')
             ->orderBy('guo.id', 'DESC');
@@ -72,6 +72,14 @@ class GroupUserOrderRepository extends ServiceEntityRepository
         if ($paymentStatus) {
             $query->andWhere('guo.paymentStatus = :paymentStatus')
                 ->setParameter('paymentStatus', $paymentStatus);
+        }
+
+        if ($isCourse) {
+            $query->leftJoin('guo.product', 'p')
+                ->andWhere('p.course is not null');
+        } else {
+            $query->leftJoin('guo.product', 'p')
+                ->andWhere('p.course is null');
         }
 
         return $query;

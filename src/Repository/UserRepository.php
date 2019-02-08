@@ -11,6 +11,7 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use App\Entity\CourseStudent;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -100,6 +101,31 @@ class UserRepository extends ServiceEntityRepository
             $query->andWhere('u.createdAt <= :createdAtEnd')
                 ->setParameter('createdAtEnd', $createdAtEnd);
         }
+
+        return $query;
+    }
+
+    /**
+     * @param int $userId
+     * @param int $courseId
+     * @return QueryBuilder
+     */
+    public function findCourseStudentQuery($userId, $courseId = null)
+    {
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('cs')
+            ->from(CourseStudent::class, 'cs')
+            ->innerJoin('cs.studentUser', 'u')
+            ->innerJoin('cs.course', 'c')
+            ->where('u.id = :userId')
+            ->setParameter('userId', $userId);
+
+        if ($courseId) {
+                $query->andWhere('c.id = :courseId')
+                ->setParameter('courseId', $courseId);
+        }
+        $query->groupBy('c');
+        $query->orderBy('cs.id', 'DESC');
 
         return $query;
     }

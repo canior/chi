@@ -87,9 +87,9 @@ class BackendController extends DefaultController
             ]
         ],
         [
-            'path' => 'product_index',
+            'path' => 'course_index',
             'name' => '课程中心',
-            'icon' => 'fa fa-product-hunt',
+            'icon' => 'fa fa-book',
             'active' => false,
             'role' => 'ROLE_ADMIN',
             'subMenus' => [
@@ -122,19 +122,47 @@ class BackendController extends DefaultController
                         'course_student_new',
                         'course_student_edit',
                     ],
-                    'name' => '报到管理',
+                    'name' => '注册管理',
                     'icon' => 'fa fa-calendar-check-o',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
                 [
                     'path' => [
-                        'product_review_index',
-                        'product_review_info',
-                        'product_review_new',
-                        'product_review_edit',
+                        'course_review_index',
+                        'course_review_edit',
                     ],
                     'name' => '课程评价',
+                    'icon' => 'fa fa-comments',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+            ]
+        ],
+        [
+            'path' => 'product_index',
+            'name' => '产品中心',
+            'icon' => 'fa fa-product-hunt',
+            'active' => false,
+            'role' => 'ROLE_ADMIN',
+            'subMenus' => [
+                [
+                    'path' => [
+                        'product_index',
+                        'product_new',
+                        'product_edit',
+                    ],
+                    'name' => '产品管理',
+                    'icon' => 'fa fa-cube',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        'product_review_index',
+                        'product_review_edit',
+                    ],
+                    'name' => '产品评价',
                     'icon' => 'fa fa-comments',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
@@ -150,11 +178,12 @@ class BackendController extends DefaultController
             'subMenus' => [
                 [
                     'path' => [
-                        'group_user_order_index',
-                        'group_user_order_edit',
+                        'group_order_index',
+                        'group_order_info',
+                        'group_order_edit'
                     ],
-                    'name' => '课程订单',
-                    'icon' => 'fa fa-shopping-cart',
+                    'name' => '集call订单',
+                    'icon' => 'fa fa-gift',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
@@ -166,6 +195,17 @@ class BackendController extends DefaultController
                     ],
                     'name' => '会员升级',
                     'icon' => 'fa fa-level-up',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        'group_user_order_index',
+                        'group_user_order_info',
+                        'group_user_order_edit',
+                    ],
+                    'name' => '产品订单',
+                    'icon' => 'fa fa-shopping-cart',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],

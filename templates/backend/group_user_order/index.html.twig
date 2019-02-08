@@ -1,6 +1,6 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}课程订单{% endblock %}
+{% block title %}产品订单{% endblock %}
 
 {% import 'form/macros.html.twig' as macros %}
 
@@ -17,22 +17,22 @@
                     <div class="row">
                         <form class="cmxform" id="myForm">
                             <div class="col-md-2 form-group">
-                                <label>课程订单号</label>
+                                <label>产品订单号</label>
                                 <input type="number" name="groupUserOrderId" class="form-control"
                                        value="{{ form.groupUserOrderId > 0 ? form.groupUserOrderId : '' }}"
                                        placeholder="按 订单ID 查询">
                             </div>
                             <div class="col-md-2 form-group">
-                                <label>用户ID</label>
+                                <label>用户</label>
                                 <input type="number" name="userId" class="form-control"
                                        value="{{ form.userId > 0 ? form.userId : '' }}"
-                                       placeholder="按 拼团用户ID 查询">
+                                       placeholder="按 用户ID 查询">
                             </div>
                             <div class="col-md-2 form-group">
-                                <label>课程名称</label>
+                                <label>产品名称</label>
                                 <input type="text" name="productName" class="form-control"
                                        value="{{ form.productName }}"
-                                       placeholder="按课程名称查询">
+                                       placeholder="按产品名称查询">
                             </div>
                             <div class="col-md-2 form-group">
                                 <label>订单状态</label>
@@ -62,14 +62,13 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th class="col-md-1">课程订单号</th>
-                                <th class="col-md-2">创建时间</th>
-                                <th class="col-md-2">课程</th>
-                                <th class="col-md-1">用户ID</th>
-                                <th class="col-md-1">姓名</th>
+                                <th class="col-md-1">产品订单号</th>
+                                <th class="col-md-2">产品</th>
+                                <th class="col-md-2">用户</th>
                                 <th class="col-md-1">支付金额</th>
                                 <th class="col-md-1">订单状态</th>
                                 <th class="col-md-1">支付状态</th>
+                                <th class="col-md-2">创建时间</th>
                                 <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
@@ -78,23 +77,19 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>{{ item.id }}</td>
-                                        <td>{{ item.createdAtFormatted }}</td>
                                         <td>
                                             {{ item.product.title }}
                                         </td>
                                         <td>
-                                            {{ item.user.id }}
+                                            {{ item.user }}
                                         </td>
-                                        <td>
-                                            {{ item.user.name }}
-                                        </td>
-                                        <td>{{ item.total }}</td>
-                                        <td>{{ item.courseStatusText }}</td>
+                                        <td>￥{{ item.total }}</td>
+                                        <td>{{ item.statusText }}</td>
                                         <td>{{ item.paymentStatusText }}</td>
-
+                                        <td>{{ item.createdAtFormatted }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{ path('group_user_order_edit', {'id': item.id}) }}"
+                                                <a href="{{ path('group_user_order_info', {'id': item.id}) }}"
                                                    title="查看详情">
                                                     <span class="fa fa-edit"></span>
                                                 </a>
@@ -104,7 +99,7 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="11" class="alert">no records found</td>
+                                    <td colspan="8" class="alert">no records found</td>
                                 </tr>
                             {% endif %}
                             </tbody>

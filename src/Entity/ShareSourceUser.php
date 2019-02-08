@@ -38,6 +38,7 @@ class ShareSourceUser implements Dao
      */
     public static function factory(ShareSource $shareSource, User $child)
     {
+        //TODO 金秋的推荐逻辑
         $shareSourceUser = new ShareSourceUser();
         $shareSourceUser->setShareSource($shareSource);
         $shareSourceUser->setUser($child);
@@ -46,7 +47,7 @@ class ShareSourceUser implements Dao
         $parentUser = $shareSource->getUser();
 
         if ($child->getParentUser() == null) {
-            if ($parentUser->isPartnerUser()) { //如果受邀者的推荐人为空，并且推荐人是合伙人
+            if ($parentUser->isPartnerUser() or $parentUser->isAdvancedUser()) { //如果受邀者的推荐人为空，并且推荐人是合伙人或者高级用户
                 $parentUser->addSubUser($child, time() + User::PARENT_EXPIRES_SECONDS);
             }
         } else {

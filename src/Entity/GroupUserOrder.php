@@ -141,6 +141,13 @@ class GroupUserOrder implements Dao
      */
     private $product;
 
+    /**
+     * @var UpgradeUserOrder|null
+     * @ORM\OneToOne(targetEntity="App\Entity\UpgradeUserOrder", mappedBy="groupUserOrder", cascade={"persist"})
+     */
+    private $upgradeUserOrder;
+
+
     public function __construct() {
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
@@ -168,14 +175,12 @@ class GroupUserOrder implements Dao
         $groupUserOrder->setCreated();
         $groupUserOrder->setUnPaid();
 
+        $groupUserOrder->setTotal($product->getPrice() + $product->getFreight());
+        $groupUserOrder->setOrderRewards($product->getGroupOrderRewards());
+
         if ($groupOrder) {
             $groupUserOrder->setGroupOrder($groupOrder);
-            $groupUserOrder->setTotal($product->getGroupPrice() + $product->getFreight());
-            $groupUserOrder->setOrderRewards($groupOrder->getProduct()->getGroupOrderRewards());
             $groupOrder->addGroupUserOrder($groupUserOrder);
-        } else {
-            $groupUserOrder->setTotal($product->getPrice() + $product->getFreight());
-            $groupUserOrder->setOrderRewards($product->getGroupOrderRewards());
         }
 
         return $groupUserOrder;
@@ -226,12 +231,6 @@ class GroupUserOrder implements Dao
         $log->setFromStatus($oldStatus);
         $log->setToStatus($newStatus);
         $this->addGroupUserOrderLog($log);
-
-        //拼团成功后或者普通订单购买成功后，订单状态变为待发货，此时给订单返现
-        $this->getUser()->increasePendingTotalRewards($this->getOrderRewards());
-        $this->getUser()->getOrCreateTodayUserStatistics()->increaseOrderRewardsTotal($this->getOrderRewards());
-        $this->getUser()->addUserCommand(CommandMessage::createSendOrderRewardsCommand($this));
-        $this->getUser()->addUserCommand(CommandMessage::createNotifyOrderRewardsSentCommand($this));
 
         return $this;
     }
@@ -372,38 +371,28 @@ class GroupUserOrder implements Dao
             return $this;
         }
 
-        /*
-         * 支付订单成功后确认用户上线
-         *
-         * 拼团订单-团长： 找到团长的最近分享源用户更新上线
-         * 拼团订单-团员： 团长就是上线
-         * 普通订单：最近的分享源用户，更新上线
-         *
-         */
-        $parentUser = null;
-        if ($this->isGroupOrder()) {
-            if ($this->isMasterOrder()) {
-                $fromShareSource = $this->getUser()->getLatestFromShareSource();
-                if ($fromShareSource != null) {
-                    $parentUser = $fromShareSource->getUser();
-                }
-            } else {
-                $parentUser = $this->getGroupOrder()->getUser();
-            }
-        } else {
-            $fromShareSource = $this->getUser()->getLatestFromShareSource();
-            if ($fromShareSource != null) {
-                $parentUser = $fromShareSource->getUser();
-            }
-        }
-
-        $this->getUser()->setParentUser($parentUser);
         $this->getUser()->addGroupUserOrder($this);
 
         $log = new GroupUserOrderLog($this);
         $log->setFromPaymentStatus($oldStatus);
         $log->setToPaymentStatus($newStatus);
         $this->addGroupUserOrderLog($log);
+
+        //如果是最后一张拼团订单则触发整个拼团完成
+        if ($this->getGroupOrder()) {
+            if ($this->getGroupOrder()->getRestGroupUserOrdersRequired() == 0) {
+                $this->getGroupOrder()->setCompleted();
+            }
+        } else {
+            $this->setPending();
+        }
+
+        //如果是会员升级订单
+        if ($this->getUpgradeUserOrder()) {
+            $this->getUpgradeUserOrder()->setApproved();
+            $memo = "购买产品自动升级";
+            $this->getUpgradeUserOrder()->addPayment($this->getTotal(), $memo);
+        }
 
         $this->getUser()->getOrCreateTodayUserStatistics()->increaseSpentTotal($this->getTotal());
         $this->getUser()->getOrCreateTodayUserStatistics()->increaseGroupUserOrderNum(1);
@@ -700,7 +689,7 @@ class GroupUserOrder implements Dao
      */
     public function isMasterOrder() : bool {
         if ($this->isGroupOrder())
-            return $this->getUser()->getId() == $this->getGroupOrder()->getUser()->getId();
+            return $this->getUser() == $this->getGroupOrder()->getUser();
         return false;
     }
 
@@ -717,6 +706,53 @@ class GroupUserOrder implements Dao
     public function isGroupOrder() {
         return $this->getGroupOrder() != null;
     }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
+
+        return $this;
+    }
+
+    public function setPaymentStatus(string $paymentStatus)
+    {
+        switch ($paymentStatus) {
+            case self::UNPAID: return $this->setUnPaid();
+            case self::PAID: return $this->setPaid();
+            case self::REFUNDING: return $this->setRefunding();
+            case self::REFUNDED: return $this->setRefunded();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getCourseStatusText() : string
+    {
+        return isset(self::$courseStatuses) && isset(self::$courseStatuses[$this->status]) ? self::$courseStatuses[$this->status] : $this->status;
+    }
+
+    /**
+     * @return UpgradeUserOrder|null
+     */
+    public function getUpgradeUserOrder(): ?UpgradeUserOrder
+    {
+        return $this->upgradeUserOrder;
+    }
+
+    /**
+     * @param UpgradeUserOrder|null $upgradeUserOrder
+     */
+    public function setUpgradeUserOrder(?UpgradeUserOrder $upgradeUserOrder): void
+    {
+        $this->upgradeUserOrder = $upgradeUserOrder;
+    }
+
 
     /**
      * @return array
@@ -749,33 +785,11 @@ class GroupUserOrder implements Dao
         ];
     }
 
-    public function getProduct(): ?Product
+    public function __toString()
     {
-        return $this->product;
-    }
-
-    public function setProduct(?Product $product): self
-    {
-        $this->product = $product;
-
-        return $this;
-    }
-
-    public function setPaymentStatus(string $paymentStatus)
-    {
-        switch ($paymentStatus) {
-            case self::UNPAID: return $this->setUnPaid();
-            case self::PAID: return $this->setPaid();
-            case self::REFUNDING: return $this->setRefunding();
-            case self::REFUNDED: return $this->setRefunded();
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getCourseStatusText() : string
-    {
-        return isset(self::$courseStatuses) && isset(self::$courseStatuses[$this->status]) ? self::$courseStatuses[$this->status] : $this->status;
+        return '订单ID: ' . $this->getId()
+            . ' 金额：￥' . $this->getTotal()
+            . ' 状态：' . $this->getStatusText()
+            . ' 支付状态 ' . $this->getPaymentStatusText();
     }
 }

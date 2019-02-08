@@ -1,6 +1,6 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}Group User Order Info{% endblock %}
+{% block title %}产品订单{% endblock %}
 
 {% import 'form/macros.html.twig' as macros %}
 
@@ -14,117 +14,58 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-sm-12 col-md-6">
+                        <div class="col-sm-12 col-md-12">
                             <!-- BAR CHART -->
                             <div class="box box-info">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">订单信息</h3>
-
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                                    class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
                                 </div>
                                 <div class="box-body">
-                                    <div class="chart" style="min-height: 300px;">
-                                        <div class="box box-solid">
-                                            <div class="box-body">
-                                                <div class="media">
-                                                    <div class="media-body">
-                                                        <div class="clearfix"></div>
-                                                        <h5>下单时间: {{ group_user_order.createdAt }}</h5>
-                                                        <h5>订单类型: {{ group_user_order.groupOrder ? '拼团订单' : '普通订单' }}</h5>
-                                                        <h5>订单ID: {{ group_user_order.id }}</h5>
-                                                        {% if group_user_order.groupOrder %}
-                                                            <h5>
-                                                                拼团ID:
-                                                                {% if group_user_order.groupOrder %}
-                                                                    <a href="{{ path('group_order_info', {id: group_user_order.groupOrder.id}) }}"
-                                                                       target="_blank"
-                                                                       class="btn btn-info btn-xs ad-click-event">
-                                                                        {{ group_user_order.groupOrder.id }}
-                                                                    </a>
-                                                                {% endif %}
-                                                            </h5>
-                                                        {% endif %}
-                                                        <h5>订单状态: {{ group_user_order.statusText }}</h5>
-                                                        {% if group_user_order.product %}
-                                                            <h5>
-                                                                产品ID:
-                                                                <a href="{{ path('product_edit', {id: group_user_order.product.id}) }}"
-                                                                   target="_blank"
-                                                                   class="btn btn-info btn-xs ad-click-event">
-                                                                    {{ group_user_order.product.id }}
-                                                                </a>
-                                                            </h5>
-                                                            <h5>产品名: {{ group_user_order.product.title|default }}</h5>
-                                                        {% endif %}
-                                                            <h5>拼团价: ￥{{ group_user_order.product.groupPrice|default(0)|number_format }} | 零售价: ￥{{ group_user_order.product.price|default(0)|number_format }} | 原价: <del>￥{{ group_user_order.product.originalPrice|default(0)|number_format }}</del></h5>
-                                                        <h5>运费: ￥{{ group_user_order.product.freight|default(0)|number_format }}</h5>
-                                                        <h5>支付金额: ￥{{ group_user_order.total|default(0)|number_format }}</h5>
-
-                                                        <div class="well">
-                                                            <h5>拼团返现: ￥{{ group_user_order.orderRewards|default(0)|number_format }}</h5>
-                                                            {% if group_user_order.user.parentUser %}
-                                                                <h5>上线用户ID:
-                                                                    <a class="btn btn-info btn-xs" href="{{ path('user_info', {'id': group_user_order.user.parentUser.id}) }}" target="_blank" title="查看详情">
-                                                                        {{ group_user_order.user.parentUser.id|default }}
-                                                                    </a>
-                                                                </h5>
-                                                                <h5>上线用户昵称: {{ group_user_order.user.parentUser.nickname|default }}</h5>
-                                                            {% endif %}
-                                                            <h5>传销返现: ￥{{ group_user_order.groupUserOrderRewards.first.userRewards|default(0)|number_format }}</h5>
-                                                        </div>
-                                                    </div>
-                                                    <div class="media-right">
-                                                        <div class="well" style="width: 300px;">
-                                                            <strong><i class="fa fa-map-marker margin-r-5"></i> {{ group_user_order.userAddress.name|default }} {{ group_user_order.userAddress.phone|default }}</strong>
-                                                            <h5>地址: {{ group_user_order.userAddress.address|default }}</h5>
-                                                            <h5>物流商: {{ group_user_order.carrierName|default }}</h5>
-                                                            <h5>物流单号: {{ group_user_order.trackingNo|default }}</h5>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <div class="box box-solid">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-striped">
+                                                <tr>
+                                                    <th>产品订单号</th>
+                                                    <td>{{ group_user_order.id }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>用户</th>
+                                                    <td>{{ group_user_order.user }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>会员升级订单</th>
+                                                    <td>
+                                                        <a href="{{ path('upgrade_user_order_edit', {'id': group_user_order.upgradeUserOrder.id}) }}">
+                                                            {{ group_user_order.upgradeUserOrder }}
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>产品</th>
+                                                    <td>{{ group_user_order.product }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>金额</th>
+                                                    <td>￥{{ group_user_order.total }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>状态</th>
+                                                    <td>{{ group_user_order.statusText }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>支付状态</th>
+                                                    <td>{{ group_user_order.paymentStatusText }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>创建时间</th>
+                                                    <td>{{ group_user_order.createdAt }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>更新时间</th>
+                                                    <td>{{ group_user_order.updatedAt }}</td>
+                                                </tr>
+                                            </table>
                                         </div>
-                                    </div>
-                                </div>
-                                <!-- /.box-body -->
-                            </div>
-                            <!-- /.box -->
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <!-- BAR CHART -->
-                            <div class="box box-info">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">修改订单</h3>
-
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                                    class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="box-body">
-                                    <div class="row" style="min-height: 200px;">
-                                        {{ form_start(form) }}
-                                        <div class="form-group col-md-6">
-                                            {{ form_row(form.status) }}
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            {{ form_row(form.paymentStatus) }}
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            {{ form_row(form.carrierName) }}
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            {{ form_row(form.trackingNo) }}
-                                        </div>
-                                        <div class="text-center">
-                                            <button class="btn btn-primary">{{ button_label|default('Update') }}</button>
-                                        </div>
-                                        {{ form_end(form) }}
                                     </div>
                                 </div>
                                 <!-- /.box-body -->
@@ -132,18 +73,49 @@
                             <!-- /.box -->
                         </div>
                     </div>
+
+                    <div class="col-sm-12 col-md-12">
+                        <!-- BAR CHART -->
+                        <div class="box box-info">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">更新订单</h3>
+                            </div>
+                            <div class="box-body">
+                                <div class="row">
+                                    {{ form_start(form) }}
+                                    <div class="form-group col-md-12">
+                                        <label class="control-label">物流地址</label>
+                                        <div class="form-control-static"><label>sgdsa{{ group_user_order.userAddress }}</label></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.status) }}
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.paymentStatus) }}
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.carrierName) }}
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.trackingNo) }}
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <button class="btn btn-primary">{{ button_label|default('提交') }}</button>
+                                    </div>
+                                    {{ form_end(form) }}
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+                    </div>
+
                     <div class="row">
                         <div class="col-sm-12 col-md-12">
                             <!-- BAR CHART -->
                             <div class="box box-warning">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">最近5条操作记录</h3>
-
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                                    class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
                                 </div>
                                 <div class="box-body">
                                     <div class="table-responsive">
@@ -171,167 +143,6 @@
                                             <tfoot>
                                             <tr>
                                                 <th colspan="2">总计({{ group_user_order.groupUserOrderLogs.count }})</th>
-                                            </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                    <!-- /table -->
-                                </div>
-                                <!-- /.box-body -->
-                            </div>
-                            <!-- /.box -->
-                        </div>
-                    </div>
-                    <div class="row">
-                        {% if group_user_order.groupOrder %}
-                        <div class="col-sm-12 col-md-12">
-                            <!-- BAR CHART -->
-                            <div class="box box-warning">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">拼团信息</h3>
-
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                                    class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="box-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped">
-                                            <thead>
-                                            <tr>
-                                                <th width="10%">订单ID</th>
-                                                <th width="10%">用户ID</th>
-                                                <th width="10%">用户名</th>
-                                                <th width="10%">角色</th>
-                                                <th width="10%">订单状态</th>
-                                                <th width="10%">支付状态</th>
-                                                <th width="10%">支付金额</th>
-                                                <th width="10%">创建时间</th>
-                                                <th width="10%" class="text-center hidden-xs">操作</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {% if group_user_order.groupOrder and group_user_order.groupOrder.groupUserOrders.count > 1 %}
-                                                {% for item in group_user_order.groupOrder.groupUserOrders %}
-                                                    {% if item.id != group_user_order.id %}
-                                                        <tr>
-                                                            <td>{{ item.id }}</td>
-                                                            <td>
-                                                                <a class="btn btn-info btn-xs"
-                                                                   href="{{ path('user_info', {'id': item.user.id}) }}"
-                                                                   target="_blank" title="查看详情">
-                                                                    {{ item.user.id }}
-                                                                </a>
-                                                            </td>
-                                                            <td>
-                                                                <a class="btn btn-info btn-xs"
-                                                                   href="{{ path('user_info', {'id': item.user.id}) }}"
-                                                                   target="_blank" title="查看详情">
-                                                                    {{ item.user.nickname }}
-                                                                </a>
-                                                            </td>
-                                                            <td>{{ item.role }}</td>
-                                                            <td>{{ item.statusText }}</td>
-                                                            <td>{{ item.paymentStatusText }}</td>
-                                                            <td>{{ item.total|number_format }}</td>
-                                                            <td>{{ item.createdAt }}</td>
-                                                            <td class="text-center">
-                                                                <div class="btn-group">
-                                                                    <a href="{{ path('group_user_order_info', {id: item.id}) }}"
-                                                                       title="查看详情">
-                                                                        <span class="fa fa-arrow-circle-right"></span>
-                                                                    </a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            {% else %}
-                                                <tr>
-                                                    <td colspan="9" class="alert">no records found</td>
-                                                </tr>
-                                            {% endif %}
-                                            </tbody>
-                                            <tfoot>
-                                            <tr>
-                                                <th colspan="9">
-                                                    总计({{ group_user_order.groupOrder.groupUserOrders.count|default(0) }}
-                                                    )
-                                                </th>
-                                            </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                    <!-- /table -->
-                                </div>
-                                <!-- /.box-body -->
-                            </div>
-                            <!-- /.box -->
-                        </div>
-                        {% endif %}
-                        <div class="col-sm-12 col-md-12">
-                            <!-- BAR CHART -->
-                            <div class="box box-warning">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">客户评价</h3>
-
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                                    class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="box-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped">
-                                            <thead>
-                                            <tr>
-                                                <th width="10%">评价ID</th>
-                                                <th width="10%">评分</th>
-                                                <th width="10%">评价</th>
-                                                <th width="10%">图片</th>
-                                                <th width="10%">评价时间</th>
-                                                <th width="10%" class="text-center hidden-xs">操作</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {% if group_user_order.productReviews.count %}
-                                                {% for item in group_user_order.productReviews %}
-                                                    <tr>
-                                                        <td>{{ item.id }}</td>
-                                                        <td>{{ item.rate }}</td>
-                                                        <td>{{ item.review }}</td>
-                                                        <td>
-                                                            {% if item.productReviewImages.count %}
-                                                                {% for productReviewImage in item.productReviewImages %}
-                                                                    <img src="{{ path('imagePreview', {fileId: productReviewImage.imageFile.id}) }}"
-                                                                         width="40" height="40"/>
-                                                                    {% if not loop.last %}<br/>{% endif %}
-                                                                {% endfor %}
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>{{ item.createdAt }}</td>
-                                                        <td class="text-center">
-                                                            <div class="btn-group">
-                                                                <a href="{{ path('product_review_edit', {id: item.id, productId: item.product.id}) }}"
-                                                                   title="修改">
-                                                                    <span class="fa fa-edit"></span>
-                                                                </a>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                            {% else %}
-                                                <tr>
-                                                    <td colspan="6" class="alert">no records found</td>
-                                                </tr>
-                                            {% endif %}
-                                            </tbody>
-                                            <tfoot>
-                                            <tr>
-                                                <th colspan="6">总计({{ group_user_order.productReviews.count }})</th>
                                             </tr>
                                             </tfoot>
                                         </table>

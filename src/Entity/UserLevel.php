@@ -14,30 +14,25 @@ class UserLevel
     const VISITOR = 'VISITOR';
     const ADVANCED = 'ADVANCED';
     const PARTNER = 'PARTNER';
+    const PARTNER_TEACHER = 'PARTNER_TEACHER';
 
     public static $userLevelTextArray = [
-        self::VISITOR => '普通学员',
-        self::ADVANCED => '高级学员',
+        self::VISITOR => '普通用户',
+        self::ADVANCED => '高级用户',
         self::PARTNER => '合伙人',
     ];
 
-    /* 学员身份的推荐资格 */
-    public static $userLevelPriceArray = [
-        self::VISITOR => 0,
-        self::ADVANCED => 0,
-    ];
-
-    /* 学员身份的推荐资格 */
+    /* 学员身份的名额 */
     public static $userLevelRecommanderStockArray = [
         self::VISITOR => 0,
         self::ADVANCED => 0,
         self::PARTNER => 1000,
     ];
 
-    /* 推荐人的佣金 */
-    public static $userLevelRecommanderRewardsArray = [
-        self::VISITOR => 0,
-        self::ADVANCED => 9000,
-        self::PARTNER => 30000,
+    /* 推荐高级用户的佣金 */
+    public static $advanceUserUpgradeRewardsArray = [
+        self::ADVANCED => 400,
+        self::PARTNER => 600,
+        self::PARTNER_TEACHER => 100
     ];
 }

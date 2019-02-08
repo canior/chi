@@ -16,7 +16,7 @@ class CourseStudentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('id', null, ['label' => '报到签到ID', 'disabled' => true])
+            ->add('id', null, ['label' => '注册ID', 'disabled' => true])
             ->add('course', EntityType::class, [
                 'label' => '课程',
                 'attr' => ['class' => 'form-control chosen'],
@@ -29,12 +29,6 @@ class CourseStudentType extends AbstractType
                 'label' => '学生',
                 'attr' => ['class' => 'form-control chosen'],
                 'class' => User::class,
-            ])
-            ->add('status', ChoiceType::class, [
-                'label' => '科目',
-                'mapped' => false,
-                'choices' => array_flip(CourseStudent::$statusTexts),
-                'required' => true
             ])
         ;
     }

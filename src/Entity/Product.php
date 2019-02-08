@@ -84,7 +84,7 @@ class Product implements Dao
     private $regularOrderUserRewards;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $stock;
 
@@ -142,6 +142,40 @@ class Product implements Dao
 
 
     /**
+     * @var ProductVideo[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductVideo", mappedBy="product", orphanRemoval=true, cascade={"persist","remove"})
+     * @ORM\OrderBy({"priority" = "DESC"})
+     */
+    private $productVideos;
+
+    /**
+     * @var integer|null
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $totalGroupUserOrdersRequired;
+
+    /**
+     * @var float|null
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $supplierPrice;
+
+
+    /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="supplierProducts", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $supplierUser;
+
+    /**
+     * @var int|null
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $groupOrderValidForHours;
+
+
+    /**
      * Product constructor.
      */
     public function __construct()
@@ -149,6 +183,7 @@ class Product implements Dao
         $this->setUpdatedAt(time());
         $this->setCreatedAt(time());
         $this->setActive();
+        $this->setPrice(0);
         $this->setFreight(0);
         $this->productImages = new ArrayCollection();
         $this->productSpecImages = new ArrayCollection();
@@ -157,12 +192,14 @@ class Product implements Dao
         $this->productStatistics = new ArrayCollection([new ProductStatistics($this)]);
         $this->productSimilars = new ArrayCollection();
         $this->groupUserOrders = new ArrayCollection();
+        $this->productVideos = new ArrayCollection();
 
         $this->setTitle('');
         $this->setGroupOrderRewards(0);
         $this->setGroupOrderUserRewards(0);
         $this->setRegularOrderRewards(0);
         $this->setRegularOrderUserRewards(0);
+        $this->setTotalGroupUserOrdersRequired(2);
     }
 
     public function getSku(): ?string
@@ -321,12 +358,12 @@ class Product implements Dao
         return $this;
     }
 
-    public function getStock(): ?string
+    public function getStock()
     {
         return $this->stock;
     }
 
-    public function setStock(?string $stock): self
+    public function setStock($stock)
     {
         $this->stock = $stock;
 
@@ -479,48 +516,6 @@ class Product implements Dao
         }
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getArray() : array {
-
-        if ($this->isCourseProduct()) {
-            return $this->getCourse()->getArray();
-        }
-
-        $productImageArray = [];
-        foreach ($this->getProductImages() as $productImage) {
-            $productImageArray[] = $productImage->getArray();
-        }
-
-        $productSpecImagesArray = [];
-        foreach ($this->getProductSpecImages() as $productSpecImage) {
-            $productSpecImagesArray[] = $productSpecImage->getArray();
-        }
-
-        $similarProductsArray = [];
-        foreach ($this->getProductSimilars() as $similarProduct) {
-            $similarProductsArray[] = $similarProduct->getArray();
-        }
-
-        return [
-            'id' => $this->getId(),
-            'title' => $this->getTitle(),
-            'price' => $this->getPrice(),
-            'groupPrice' => $this->getGroupPrice(),
-            'originalPrice' => $this->getOriginalPrice(),
-            'freight' => $this->getFreight(),
-            'shortDescription' => $this->getShortDescription(),
-            'rewards' => $this->getRewards(),
-            'productImages' => $productImageArray,
-            'productSpecImages' => $productSpecImagesArray,
-            'stock' => $this->getStock(),
-            'similarProducts' => $similarProductsArray,
-            'soldNum' => 1000, //TODO 需要从product statistics里拿
-            'reviewsNum' => $this->getTotalReviews(),
-        ];
     }
 
     /**
@@ -698,6 +693,182 @@ class Product implements Dao
      */
     public function isCourseProduct() {
         return $this->getCourse() != null;
+    }
+
+    /**
+     * @return ProductVideo[]|ArrayCollection
+     */
+    public function getProductVideos()
+    {
+        return $this->productVideos;
+    }
+
+    /**
+     * @param ProductVideo[]|ArrayCollection $productVideos
+     */
+    public function setProductVideos($productVideos): void
+    {
+        $this->productVideos = $productVideos;
+    }
+
+    public function addProductVideo(ProductVideo $productVideo): self
+    {
+        if (!$this->productVideos->contains($productVideo)) {
+            $this->productVideos[] = $productVideo;
+            $productVideo->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductVideo(ProductVideo $productVideo): self
+    {
+        if ($this->productVideos->contains($productVideo)) {
+            $this->productVideos->removeElement($productVideo);
+            // set the owning side to null (unless already changed)
+            if ($productVideo->getProduct() === $this) {
+                $productVideo->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @return int|null
+     */
+    public function getTotalGroupUserOrdersRequired(): ?int
+    {
+        return $this->totalGroupUserOrdersRequired;
+    }
+
+    /**
+     * @param int|null $totalGroupUserOrdersRequired
+     */
+    public function setTotalGroupUserOrdersRequired(?int $totalGroupUserOrdersRequired): void
+
+    {
+        $this->totalGroupUserOrdersRequired = $totalGroupUserOrdersRequired;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getSupplierPrice(): ?float
+    {
+        return $this->supplierPrice;
+    }
+
+    /**
+     * @param float|null $supplierPrice
+     */
+    public function setSupplierPrice(?float $supplierPrice): void
+    {
+        $this->supplierPrice = $supplierPrice;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getSupplierUser() : ?User
+    {
+        return $this->supplierUser;
+    }
+
+    /**
+     * @param User|null
+     */
+    public function setSupplierUser(?User $supplierUser): void
+    {
+        $this->supplierUser = $supplierUser;
+    }
+
+    public function getRegularOrderUnitProfit() {
+        return $this->getPrice() - $this->getSupplierPrice();
+    }
+
+    public function getGroupOrderUnitProfit() {
+        return $this->getGroupPrice() - $this->getSupplierPrice();
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getGroupOrderValidForHours(): ?int
+    {
+        return $this->groupOrderValidForHours;
+    }
+
+    /**
+     * @param int|null $groupOrderValidForHours
+     */
+    public function setGroupOrderValidForHours(?int $groupOrderValidForHours): void
+    {
+        $this->groupOrderValidForHours = $groupOrderValidForHours;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArray() : array {
+
+        if ($this->isCourseProduct()) {
+            return $this->getCourse()->getArray();
+        }
+
+        $productImageArray = [];
+        foreach ($this->getProductImages() as $productImage) {
+            $productImageArray[] = $productImage->getArray();
+        }
+
+        $productSpecImagesArray = [];
+        foreach ($this->getProductSpecImages() as $productSpecImage) {
+            $productSpecImagesArray[] = $productSpecImage->getArray();
+        }
+
+        $similarProductsArray = [];
+        foreach ($this->getProductSimilars() as $similarProduct) {
+            $similarProductsArray[] = $similarProduct->getArray();
+        }
+
+        $productVideosArray = [];
+        foreach ($this->getProductVideos() as $productVideo) {
+            $productVideosArray[] = $productVideo->getArray();
+        }
+
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'price' => $this->getPrice(),
+            'groupPrice' => $this->getGroupPrice(),
+            'originalPrice' => $this->getOriginalPrice(),
+            'freight' => $this->getFreight(),
+            'shortDescription' => $this->getShortDescription(),
+            'rewards' => $this->getRewards(),
+            'productImages' => $productImageArray,
+            'productSpecImages' => $productSpecImagesArray,
+            'stock' => $this->getStock(),
+            'similarProducts' => $similarProductsArray,
+            'soldNum' => 1000, //TODO 需要从product statistics里拿
+            'reviewsNum' => $this->getTotalReviews(),
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        if ($this->getCourse()) {
+            return ' 名称: ' . $this->getTitle()
+                . ' , 讲师: ' . $this->getCourse()->getTeacher()->getUser();
+
+        } else {
+            return '名称: ' . $this->getTitle()
+                . ' , 价格: ￥' . $this->getPrice();
+        }
+
     }
 
 }

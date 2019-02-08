@@ -19,6 +19,7 @@ use App\Entity\GroupUserOrder;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Entity\UserAddress;
+use App\Entity\UserLevel;
 use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
@@ -38,45 +39,6 @@ use App\Entity\ProjectShareMeta;
  */
 class GroupUserOrderController extends BaseController
 {
-    /**
-     * 测试普通订单
-     * @Route("/groupUserOrder/test", name="testGroupUserOrder", methods="POST")
-     * @param Request $request
-     * @param ProductRepository $productRepository
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function testAction(Request $request, ProductRepository $productRepository) {
-        if ($this->getEnvironment() != 'dev') exit;
-
-        $data = json_decode($request->getContent(), true);
-        $productId =  isset($data['productId']) ? $data['productId'] : null;
-        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
-
-        $user = $this->getWxUser($thirdSession);
-        $product = $productRepository->find($productId);
-
-        //创建支付订单
-        $groupUserOrder = GroupUserOrder::factory($user, $product);
-        $groupUserOrder->setTotal($product->getPrice());
-
-        //完成支付
-        $groupUserOrder->setPending();
-        $groupUserOrder->setPaid();
-
-        //确认收货
-        $groupUserOrder->setDelivered();
-
-        $this->getEntityManager()->persist($groupUserOrder);
-        $this->getEntityManager()->flush();
-
-
-        $data = [
-            'groupUserOrder' => $groupUserOrder->getArray()
-        ];
-
-
-       return $this->responseJson('success', 200, $data);
-    }
 
     /**
      * 订单待支付页面
@@ -89,7 +51,7 @@ class GroupUserOrderController extends BaseController
     public function viewAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
         $data = json_decode($request->getContent(), true);
         $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
-        $url = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
+        $url = isset($data['url']) ? $data['url'] : null;
 
         /**
          * @var GroupUserOrder $groupUserOrder
@@ -167,7 +129,8 @@ class GroupUserOrderController extends BaseController
         $product = $productRepository->find($productId);
 
         $groupUserOrder = GroupUserOrder::factory($user, $product);
-        $this->getEntityManager()->persist($groupUserOrder);
+        $user->createUpgradeUserOrder(UserLevel::ADVANCED, $groupUserOrder);
+        $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
@@ -176,7 +139,7 @@ class GroupUserOrderController extends BaseController
     }
 
     /**
-     * 支付订单 (开团，参团）
+     * 支付订单
      *
      * @Route("/groupUserOrder/pay", name="payGroupUserOrder", methods="POST")
      * @param Request $request
@@ -191,20 +154,6 @@ class GroupUserOrderController extends BaseController
 
         $user = $this->getWxUser($thirdSession);
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
-
-        /**
-         * 如果是拼团订单，并且是已完成或者已过期，则把当前订单取消不让支付继续
-         */
-        if ($groupUserOrder->isGroupOrder()) {
-            if (!$groupUserOrder->getGroupOrder()->isPending() and !$groupUserOrder->isMasterOrder()) {
-
-                $groupUserOrder->setCancelled();
-                $this->getEntityManager()->persist($groupUserOrder);
-                $this->getEntityManager()->flush();
-
-                return $this->responseJson('success', 302, []);
-            }
-        }
 
         $body = "create order"; //TODO 开团信息要怎么写
         $wxPaymentApi = new WxPayment($this->getLog());
@@ -225,15 +174,6 @@ class GroupUserOrderController extends BaseController
     }
 
     /**
-     * 支付开团订单成功
-     * 1. 更新拼团订单状态pending（拼团中）
-     * 2. 微信支付通知
-     *
-     * 团员支付参团订单成功
-     * 1. 微信支付通知
-     * 2. 拼团的状态改为completed（拼团成功）
-     * 3. 团长小程序通知拼团成功
-     *
      * 支付普通订单成功
      * 1. 微信支付通知
      * 2. 普通购买完成
@@ -257,21 +197,10 @@ class GroupUserOrderController extends BaseController
             return $this->responseJson('group_order_created_fail', 200, $data);
         }
 
-        if ($groupUserOrder->isGroupOrder()) { //拼团订单
-            $groupOrder = $groupUserOrder->getGroupOrder();
-            if ($groupUserOrder->isMasterOrder()) {
-                $groupOrder->setPending();
-            } else {
-                $groupOrder->setCompleted($user);
-            }
-            $this->getEntityManager()->persist($groupOrder);
-            $this->getEntityManager()->flush();
-        } else { //普通订单
-            $groupUserOrder->setPending();
-            $groupUserOrder->setPaid();
-            $this->getEntityManager()->persist($groupUserOrder);
-            $this->getEntityManager()->flush();
-        }
+        $groupUserOrder->setPending();
+        $groupUserOrder->setPaid();
+        $this->getEntityManager()->persist($groupUserOrder);
+        $this->getEntityManager()->flush();
 
         $data = [
             'groupUserOrder' => $groupUserOrder->getArray()

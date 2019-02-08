@@ -77,11 +77,16 @@ class UploadFileController extends DefaultController
          * @var File $file
          */
         $file = $this->getDataAccess()->getDao(File::class, $fileId);
-        //if (!$file) {
-        //TODO
-        //return place holder of image
-        //}
-        $response = new BinaryFileResponse($file->getAbsolutePath());
+        if ($file->isImage()) {
+            $response = new BinaryFileResponse($file->getAbsolutePath());
+        } else if ($file->isVideo()) {
+            $response = new BinaryFileResponse($file->getAbsolutePath());
+            $response->setAutoEtag();
+            $response->headers->set('Content-Type', 'video/ogg');
+            // cache video for one week, not work for streaming?
+            $response->setSharedMaxAge(604800);
+        }
+
         return $response;
     }
 

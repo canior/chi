@@ -1,0 +1,57 @@
+<!--pages/course/detail.wxml-->
+
+<import src="/pages/tmpl/courseReview.wxml"/>
+<import src="/pages/tmpl/share.wxml"/>
+<import src="/pages/tmpl/bottom.wxml"/>
+<view class="container">
+
+  <view class="banner">
+    <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
+      <swiper-item wx:for="{{course.courseImages}}" wx:key="id" wx:for-item="courseImage">
+        <image src="{{imgUrlPrefix + '/' + courseImage.fileId}}" />
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <view class="course">
+    <view class="left">
+      <view class="line name">{{course.subjectText}}</view>
+      <view class="line desc">时间：{{course.startDate}}至{{course.endDate}}</view>
+      <view class="line desc">地点：{{course.region.fullname}} {{course.address}}</view>
+    </view>
+    <view class="right">
+      <view class="line price">￥{{course.price}}</view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="chi-item">
+      <view class="left"><image src="{{imgUrlPrefix + '/' + course.teacher.avatarFileId}}"/></view>
+      <view class="right">
+        <view class="line title">{{course.teacher.title}}：{{course.teacher.name}}</view>
+        <view class="line desc">{{course.teacher.description}}</view>
+      </view>
+    </view>
+  </view>
+</view>
+<view class="split-line"/>
+
+<view class="container">
+  <view class="specs">
+    <view class="title">课程详情</view>
+    <block wx:for="{{course.courseSpecImages}}" wx:key="id" wx:for-item="courseSpecImage">
+      <view class="img">
+        <image src="{{imgUrlPrefix + '/' + courseSpecImage.fileId}}" bindload="imgLoadDone" data-index="{{index}}"/>
+        <image class="loading" src="/images/loading.gif" wx:if="{{courseSpecImage.loading}}"/>
+      </view>
+    </block>
+  </view>
+</view>
+<view class="split-line"/>
+
+<view class="container">
+  <template is="courseReview" data="{{...courseReviewData, imgUrlPrefix, course}}"/>
+</view>
+
+<template is="bottom" data="{{course, eligible, ...bottomData}}"/>
+<template is="share" data="{{...shareData}}"/>

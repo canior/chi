@@ -19,11 +19,14 @@ class GroupUserOrderController extends BackendController
 {
     /**
      * @Route("/group/user/order/", name="group_user_order_index", methods="GET")
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @param Request $request
+     * @return Response
      */
     public function index(GroupUserOrderRepository $groupUserOrderRepository, Request $request): Response
     {
         $data = [
-            'title' => '用户订单',
+            'title' => '产品订单',
             'form' => [
                 'groupOrderId' => $request->query->getInt('groupOrderId', null),
                 'groupUserOrderId' => $request->query->getInt('groupUserOrderId', null),
@@ -34,11 +37,10 @@ class GroupUserOrderController extends BackendController
                 'paymentStatus' => $request->query->get('paymentStatus', null),
                 'page' => $request->query->getInt('page', 1)
             ],
-            'types' => ['NOT NULL' => '拼团订单', 'NULL' => '普通订单'],
-            'statuses' => GroupUserOrder::$courseStatuses,
+            'statuses' => GroupUserOrder::$statuses,
             'paymentStatuses' => GroupUserOrder::$paymentStatuses,
         ];
-        $data['data'] = $groupUserOrderRepository->findGroupUserOrdersQueryBuilder($data['form']['groupOrderId'], $data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['productName'], $data['form']['type'], $data['form']['status'], $data['form']['paymentStatus']);
+        $data['data'] = $groupUserOrderRepository->findGroupUserOrdersQueryBuilder(false, $data['form']['groupOrderId'], $data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['productName'], $data['form']['type'], $data['form']['status'], $data['form']['paymentStatus']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/group_user_order/index.html.twig', $data);
     }
@@ -77,7 +79,7 @@ class GroupUserOrderController extends BackendController
 
         return $this->render('backend/group_user_order/info.html.twig', [
             'group_user_order' => $groupUserOrder,
-            'title' => '用户订单详情',
+            'title' => '产品订单',
             'form' => $form->createView(),
         ]);
     }

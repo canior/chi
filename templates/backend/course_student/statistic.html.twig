@@ -1,6 +1,6 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}报到管理{% endblock %}
+{% block title %}注册管理{% endblock %}
 
 {% import 'form/macros.html.twig' as macros %}
 
@@ -14,36 +14,15 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <div class="row">
-                        <form class="cmxform" id="myForm">
-                            <div class="col-md-3 form-group">
-                                <label>科目</label>
-                                <select name="subject" class="form-control chosen">
-                                    <option value="">全部</option>
-                                    {% for subject, text in subjects %}
-                                        <option value="{{ subject }}"{% if subject == form.subject %} selected{% endif %}>{{ text }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-3 form-group">
-                                <label>&nbsp;</label>
-                                <input class="form-control btn btn-primary" type="submit" value="搜索"/>
-                            </div>
-                        </form>
-                    </div>
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
                                 <th class="col-md-1">ID</th>
-                                <th class="col-md-1">科目</th>
-                                <th class="col-md-1">讲师</th>
-                                <th class="col-md-2">开始日期</th>
-                                <th class="col-md-2">结束日期</th>
-                                <th class="col-md-1">状态</th>
+                                <th class="col-md-4">课程</th>
+                                <th class="col-md-2">讲师</th>
+                                <th class="col-md-2">状态</th>
                                 <th class="col-md-1">学生注册数</th>
-                                <th class="col-md-1">学生报到数</th>
-                                <th class="col-md-1">学生签到数</th>
                                 <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
@@ -52,14 +31,10 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>{{ item.id }}</td>
-                                        <td>{{ item.subjectText }}</td>
+                                        <td>{{ item.title }}</td>
                                         <td>{{ item.teacher.name }}</td>
-                                        <td>{{ item.startDateFormatted }}</td>
-                                        <td>{{ item.endDateFormatted }}</td>
                                         <td>{{ item.product.statusText }}</td>
                                         <td>{{ item.totalStudentUsers }}</td>
-                                        <td>{{ item.totalWelcomeStudentUsers }}</td>
-                                        <td>{{ item.totalSignInStudentUsers }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
                                                 <a href="{{ path('course_student_index', {'courseId': item.id}) }}" title="学生报到">

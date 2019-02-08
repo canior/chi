@@ -1,0 +1,21 @@
+<wxs src="phone.wxs" module="phone"/>
+<template name="address">
+  <view class="section">
+    <view class="left">
+      <image src="{{user.avatarUrl}}"/>
+      <view class="info">
+        <block wx:if="{{user.isCompletedPersonalInfo}}">
+          <view class="line">{{user.name}} {{user.phone ? phone.encode(user.phone) : ''}}</view>
+          <view class="line">{{user.idNum ? phone.encode(user.idNum) : ''}}</view>
+          <view class="line">推荐人：{{user.recommanderName}}</view>
+        </block>
+        <block wx:else>
+          <view class="line">请输入您的个人资料</view>
+        </block>
+      </view>
+    </view>
+    <view class="right" bindtap="wxUserInfo" wx:if="{{unpaid}}">
+      <view class="arrow-right"/>
+    </view>
+  </view>
+</template>

@@ -26,15 +26,17 @@ class UserAccountOrder implements Dao
         self::UNPAID => '未支付',
     ];
 
-    const OLD_TEACHER_REWARDS = 'old_teacher_rewards';
-    const TEACHER_REWARDS = 'teacher_rewards';
     const RECOMMAND_REWARDS = 'recommand_rewards';
+    const SUPPLIER_REWARDS = 'supplier_rewards';
+    const PARTNER_REWARDS = 'partner_rewards';
+    const PARTNER_TEACHER_REWARDS = 'partner_teacher_rewards';
     const WITHDRAW = 'withdraw';
 
     public static $userAccountOrderTypes = [
-        self::OLD_TEACHER_REWARDS => '间接讲师佣金',
-        self::TEACHER_REWARDS => '直接讲师佣金',
         self::RECOMMAND_REWARDS => '推荐佣金',
+        self::SUPPLIER_REWARDS => '供货商货款',
+        self::PARTNER_REWARDS => '合伙人佣金',
+        self::PARTNER_TEACHER_REWARDS => '合伙人讲师佣金',
         self::WITHDRAW => '提现',
     ];
 
@@ -136,6 +138,13 @@ class UserAccountOrder implements Dao
     /**
      * @return bool
      */
+    public function isSupplierRewards() {
+        return $this->getUserAccountOrderType() == self::SUPPLIER_REWARDS;
+    }
+
+    /**
+     * @return bool
+     */
     public function isRecommandRewards() {
         return $this->getUserAccountOrderType() == self::RECOMMAND_REWARDS;
     }
@@ -143,15 +152,15 @@ class UserAccountOrder implements Dao
     /**
      * @return bool
      */
-    public function isTeacherRewards() {
-        return $this->getUserAccountOrderType() == self::TEACHER_REWARDS;
+    public function isPartnerTeacherRewards() {
+        return $this->getUserAccountOrderType() == self::PARTNER_TEACHER_REWARDS;
     }
 
     /**
      * @return bool
      */
-    public function isOldTeacherRewards() {
-        return $this->getUserAccountOrderType() == self::OLD_TEACHER_REWARDS;
+    public function isPartnerRewards() {
+        return $this->getUserAccountOrderType() == self::PARTNER_REWARDS;
     }
 
     public function isPaid() {

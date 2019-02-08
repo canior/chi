@@ -15,15 +15,9 @@ use Doctrine\ORM\Mapping as ORM;
 class CourseStudent implements Dao
 {
     const REGISTERED = 'registered';
-    const WELCOME = 'welcome';
-    const SIGNIN = 'signin';
-    const REFUSED = 'refused';
 
     public static $statusTexts = [
         self::REGISTERED => '已注册',
-        self::WELCOME => '已报到',
-        self::SIGNIN => '已签到',
-        self::REFUSED => '已拒绝',
     ];
 
 
@@ -151,13 +145,6 @@ class CourseStudent implements Dao
      */
     public function isRegistered() {
         return self::REGISTERED == $this->getStatus();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRefused() {
-        return self::REFUSED == $this->getStatus();
     }
 
     /**

@@ -1,6 +1,6 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}课程评价{% endblock %}
+{% block title %}产品评价{% endblock %}
 
 {% block body %}
     <div class="row">
@@ -9,39 +9,23 @@
             <div class="box">
                 <div class="box-body">
                     <div class="table-responsive">
-                        <h3 class="box-title">课程订单信息</h3>
+                        <h3 class="box-title">产品订单信息</h3>
                         <table class="table table-bordered table-striped">
                             <tr>
                                 <th>评价ID</th>
                                 <td>{{ product_review.id }}</td>
                             </tr>
                             <tr>
-                                <th>课程订单号</th>
+                                <th>产品订单号</th>
                                 <td>{{ product_review.groupUserOrder.id }}</td>
                             </tr>
                             <tr>
-                                <th>科目</th>
-                                <td>{{ product_review.product.course.subjectText }}</td>
-                            </tr>
-                            <tr>
-                                <th>课程</th>
+                                <th>产品</th>
                                 <td>{{ product_review.product.title }}</td>
                             </tr>
                             <tr>
-                                <th>讲师</th>
-                                <td>{{ product_review.product.course.teacher.name }}</td>
-                            </tr>
-                            <tr>
-                                <th>用户ID</th>
-                                <td>{{ product_review.groupUserOrder.user.id }}</td>
-                            </tr>
-                            <tr>
-                                <th>姓名</th>
-                                <td>{{ product_review.groupUserOrder.user.name}}</td>
-                            </tr>
-                            <tr>
-                                <th>电话</th>
-                                <td>{{ product_review.groupUserOrder.user.phone}}</td>
+                                <th>用户</th>
+                                <td>{{ product_review.groupUserOrder.user }}</td>
                             </tr>
                         </table>
                     </div>

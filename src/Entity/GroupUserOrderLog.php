@@ -133,19 +133,18 @@ class GroupUserOrderLog implements Dao
      */
     public function getDescription() : string {
 
-        $nickname = $this->getGroupUserOrder()->getUser()->getNickname();
-        if ($this->getUser() != null) {
-            $nickname = $this->getUser()->getUsername();
-        }
+        $description = '';
 
-        $description = '用户:' . $nickname . '更新';
-
+        $statusTexts = GroupUserOrder::$statuses;
+        $statusTexts[null] = '';
         if ($this->getToStatus() != null) {
-            $description .= '订单状态：' . $this->fromStatus . '=>' . $this->toStatus;
+            $description .= '订单状态：' . $statusTexts[$this->fromStatus] . '->' . $statusTexts[$this->toStatus];
         }
 
+        $paymentStatusTexts = GroupUserOrder::$paymentStatuses;
+        $paymentStatusTexts[null] = '';
         if ($this->getToPaymentStatus() != null) {
-            $description .= '支付状态：' . $this->fromPaymentStatus . '=>' . $this->toPaymentStatus;
+            $description .= '支付状态：' . $paymentStatusTexts[$this->fromPaymentStatus] . '->' . $paymentStatusTexts[$this->toPaymentStatus];
         }
 
         return $description;

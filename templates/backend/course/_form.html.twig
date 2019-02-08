@@ -2,4 +2,9 @@
     {{ form_widget(form) }}
     <a class="btn btn-danger" href="{{ path('course_index') }}">{{ '返回课程管理'|trans }}</a>
     <button class="btn btn-primary">{{ button_label|default('提交') }}</button>
+    {% if course.mainCourseVideoFile %}
+    <div class="pull-right">
+        <a class="btn btn-vimeo" target="_blank" href="{{ path('imagePreview', {fileId: course.mainCourseVideoFile.id}) }}">{{ '观看视频'|trans }}</a>
+    </div>
+    {% endif %}
 {{ form_end(form) }}

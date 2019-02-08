@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\Subject;
@@ -24,41 +25,14 @@ class CourseType extends AbstractType
     {
         $builder
             ->add('id', null, ['label' => 'ID', 'disabled' => true])
-            ->add('subject', ChoiceType::class, [
-                'label' => '科目',
-                'mapped' => false,
-                'choices' => array_flip(Subject::$subjectTextArray),
-                'required' => true
-            ])
             ->add('title', TextType::class, [
                 'label' => '课程名称',
-                'required' => true
-            ])
-            ->add('price', MoneyType::class, [
-                'currency' => 'CNY',
-                'label' => '会务费',
                 'required' => true
             ])
             ->add('status', ChoiceType::class, [
                 'label' => '状态',
                 'mapped' => false,
                 'choices' => array_flip(Product::$statuses)
-            ])
-            ->add('startDate', DateType::class, [
-                'label' => '开始时间',
-                'input' => 'timestamp',
-                'placeholder' => ['year' => '年', 'month' => '月', 'day' => '日'],
-                'required' => true
-            ])
-            ->add('endDate', DateType::class, [
-                'label' => '结束时间',
-                'input' => 'timestamp',
-                'placeholder' => ['year' => '年', 'month' => '月', 'day' => '日'],
-                'required' => true
-            ])
-            ->add('address', TextType::class, [
-                'label' => '开课地址 (必填)',
-                'required' => true
             ])
             ->add('teacher', EntityType::class, [
                 'label' => '讲师',
@@ -67,6 +41,14 @@ class CourseType extends AbstractType
                 'choice_label' => function (Teacher $teacher) {
                     return $teacher->getName();
                 }
+            ])
+            ->add('groupOrderValidForHours', IntegerType::class, [
+                'label' => '集call有效期 (小时)',
+                'required' => true
+            ])
+            ->add('totalGroupUserOrdersRequired', IntegerType::class, [
+                'label' => '集call开启课程订单量',
+                'required' => true
             ])
             ->add('shortDescription', TextareaType::class, [
                 'label' => '课程描述',
@@ -86,7 +68,13 @@ class CourseType extends AbstractType
                 'data_class' => null,
                 'mapped' => false,
             ])
-
+            ->add('courseVideo', DropzoneType::class, [
+                'label' => '课程视频（1个）',
+                'maxFiles' => 1,
+                'priority' => true,
+                'data_class' => null,
+                'mapped' => false,
+            ])
         ;
     }
 

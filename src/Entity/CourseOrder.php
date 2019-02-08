@@ -35,15 +35,6 @@ class CourseOrder extends GroupUserOrder
     }
 
     /**
-     * @return $this|GroupUserOrder
-     */
-    public function setCreated() {
-        $this->status = GroupUserOrder::CREATED;
-        $this->setUpdatedAt();
-        return $this;
-    }
-
-    /**
      * @return $this
      */
     public function setRegistered()
@@ -68,46 +59,10 @@ class CourseOrder extends GroupUserOrder
     }
 
     /**
-     * @return $this|GroupUserOrder
-     */
-    public function setCancelled()
-    {
-        $this->status = GroupUserOrder::CANCELLED;
-        $this->setUpdatedAt();
-        return $this;
-    }
-
-    /**
      * @return bool
      */
     public function isRegistered() {
         return $this->getStatus() == GroupUserOrder::DELIVERED;
     }
-
-    /**
-     * @return $this|GroupUserOrder
-     */
-    public function setPaid() {
-        if ($this->isPaid())
-            return $this;
-
-        $this->paymentStatus = GroupUserOrder::PAID;
-        $this->setUpdatedAt();
-        $this->setRegistered();
-        return $this;
-    }
-
-    /**
-     * @return $this|GroupUserOrder
-     */
-    public function setUnPaid()
-    {
-        $this->paymentStatus = GroupUserOrder::UNPAID;
-        $this->setUpdatedAt();
-        return $this;
-    }
-
-
-
 
 }

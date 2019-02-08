@@ -6,7 +6,6 @@ use App\Entity\CourseStudent;
 use App\Form\CourseStudentType;
 use App\Repository\CourseRepository;
 use App\Repository\CourseStudentRepository;
-use App\Entity\Subject;
 use Endroid\QrCode\QrCode;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,19 +27,13 @@ class CourseStudentController extends BackendController
     public function statisticIndex(Request $request, CourseStudentRepository $courseStudentRepository, CourseRepository $courseRepository): Response
     {
         $data = [
-            'title' => '报到管理',
-            'subjects' => Subject::$subjectTextArray,
+            'title' => '注册管理',
             'form' => [
-                'subject' => $request->query->get('subject', null),
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
 
-        if($data['form']['subject']) {
-            $data['data'] = $courseRepository->findBy(['subject' => $data['form']['subject']]);
-        } else {
-            $data['data'] = $courseRepository->findAll();
-        }
+        $data['data'] = $courseRepository->findAll();
 
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/course_student/statistic.html.twig', $data);
@@ -56,7 +49,7 @@ class CourseStudentController extends BackendController
     public function index(Request $request, $courseId, CourseStudentRepository $courseStudentRepository): Response
     {
         $data = [
-            'title' => '报到管理',
+            'title' => '注册管理',
         ];
 
         $course = $this->getEntityManager()->getRepository(Course::class)->find($courseId);
@@ -77,11 +70,9 @@ class CourseStudentController extends BackendController
         $course = $this->getEntityManager()->getRepository(Course::class)->find($courseId);
         $total = $courseStudentRepository->count(['course' => $courseId]);
         $registedTotal = $course->getTotalRegisteredStudentUsers();
-        $welcomedTotal = $course->getTotalWelcomeStudentUsers();
         $json = json_encode([
             'total' => $total,
             'registeredTotal' => $registedTotal,
-            'welcomedTotal' => $welcomedTotal
         ]);
         return new Response($json);
     }

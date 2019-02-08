@@ -24,9 +24,10 @@ class GroupOrderRepository extends ServiceEntityRepository
      * 返回当前用户开团或参与的团 （拼团中， 拼团成功，拼团过期）
      * @param int $userId
      * @param array $groupOrderStatusArray
-     * @return GroupOrder[]
+     * @param bool $isCourse
+     * @return \Doctrine\ORM\Query
      */
-    public function findGroupOrdersForUser(int $userId, $groupOrderStatusArray = []) {
+    public function findGroupOrdersForUserQuery(int $userId, $groupOrderStatusArray = [], $isCourse = true) {
         if (empty($groupOrderStatusArray)) {
             $groupOrderStatusArray = [GroupOrder::PENDING, GroupOrder::COMPLETED, GroupOrder::EXPIRED];
         }
@@ -36,9 +37,13 @@ class GroupOrderRepository extends ServiceEntityRepository
         $query->setParameter('userId', $userId);
         $query->andWhere('go.status in (:status) ');
         $query->setParameter('status', $groupOrderStatusArray);
+        if ($isCourse) {
+            $query->leftJoin('go.product', 'p')
+                ->andWhere('p.course is not null');
+        }
         $query->orderBy('go.id', 'DESC');
 
-        return $query->getQuery()->getResult();
+        return $query->getQuery();
     }
 
     /**

@@ -1,0 +1,48 @@
+<!--pages/user/course/log.wxml-->
+<import src="/pages/tmpl/price.wxml"/>
+<view class="top">
+  <!--<view>课程公告：临时通知临时通知临时通知临时通知临时</view>-->
+</view>
+<view class="split-brand"/>
+
+<view class="section">
+  <view class="row">
+    <view class="left">
+      <image src="{{imgUrlPrefix+'/'+course.product.courseImages[0].fileId}}"/>
+      <view>
+        <view class="line name">{{course.product.subjectText}}</view>
+        <view class="line desc">{{course.product.startDate}} - {{course.product.endDate}}</view>
+        <view class="line desc">{{course.product.address}}</view>
+      </view>
+    </view>
+  </view>
+  <view class="row">
+    <block wx:if="{{course.status == 'delivered'}}">
+      <button bindtap="toUserComment" wx:if="{{course.productReviews.length == 0}}">课程评价</button>
+      <button bindtap="toUserComment" wx:if="{{course.productReviews.length > 0}}">查看评价</button>
+    </block>
+    <button open-type="contact">客服咨询</button>
+  </view>
+</view>
+<view class="split-brand"/>
+
+<block>
+  <!--列表-->
+  <view class="container">
+    <view class="rank">
+      <view class="table">
+      <view class="tr"  wx:key="index">
+          <view class="th">日期</view>
+          <view class="th">状态</view>
+        </view>
+        <view class="tr" wx:for="{{courseStudents}}" wx:key="index">
+          <view class="td">{{item.createdAt}}</view>
+          <view class="td">{{item.statusText}}</view>
+        </view>
+      </view>
+    </view>
+  </view><!--列表-->
+  <view class="split-brand"/>
+</block>
+
+<view class="bottom" bindtap="toProductDetail">分享课程</view>

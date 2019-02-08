@@ -31,10 +31,10 @@ class GroupOrder implements Dao
     const EXPIRED = 'expired';
 
     public static $statuses = [
-        self::CREATED => '创建拼团中',
-        self::PENDING => '拼团中',
-        self::COMPLETED => '拼团成功',
-        self::EXPIRED => '拼团过期',
+        self::CREATED => '已创建',
+        self::PENDING => '集call中',
+        self::COMPLETED => '集call成功',
+        self::EXPIRED => '集call过期',
     ];
 
 
@@ -71,19 +71,48 @@ class GroupOrder implements Dao
     private $shareSources;
 
     /**
-     * Group constructor.
+     * @var integer
+     * @ORM\Column(type="integer", nullable=false)
+     */
+    private $totalGroupUserOrdersRequired;
+
+
+    /**
+     * @param $groupOrderType
      * @param User $user
      * @param Product $product
+     * @return GroupGiftOrder|GroupOrder
      */
-    public function __construct(User $user, Product $product)
+    public static function factory($groupOrderType, User $user, Product $product) {
+        $groupOrder = new GroupOrder();
+        if ($groupOrderType == GroupOrder::GROUP_GIFT) {
+            $groupOrder = new GroupGiftOrder();
+        }
+        $groupOrder->setUser($user);
+        $groupOrder->setProduct($product);
+        $groupOrder->setTotalGroupUserOrdersRequired($product->getTotalGroupUserOrdersRequired());
+        $groupOrder->setCreated();
+
+        if ($product->getGroupOrderValidForHours()) {
+            $seconds =  3600 * (int)$product->getGroupOrderValidForHours();
+            $groupOrder->setExpiredAt(time() + (int)$seconds);
+        }
+
+
+        return $groupOrder;
+    }
+
+    /**
+     * Group constructor.
+     */
+    public function __construct()
     {
         $this->groupUserOrders = new ArrayCollection();
-        $this->setUser($user);
-        $this->setProduct($product);
+        $this->shareSources = new ArrayCollection();
         $this->setUpdatedAt();
         $this->setCreatedAt();
-        $this->setCreated();
-        $this->shareSources = new ArrayCollection();
+        $this->setTotalGroupUserOrdersRequired(1);
+        $this->status = self::CREATED;
     }
 
     /**
@@ -125,7 +154,7 @@ class GroupOrder implements Dao
     }
 
     /**
-     * @return Collection|GroupUserOrder[]
+     * @return Collection|GroupUserOrder[]|CourseOrder[]
      */
     public function getGroupUserOrders(): Collection
     {
@@ -177,15 +206,18 @@ class GroupOrder implements Dao
             return $this;
         }
 
-        $this->setExpiredAt(time() + 72*3600); //TODO 需要再产品加入拼团配置
-        $this->getProduct()->decreaseStock(2);//两人团减少2减库存
+        $this->getProduct()->decreaseStock($this->getTotalGroupUserOrdersRequired());//两人团减少2减库存
 
         $masterUserOrder = $this->getMasterGroupUserOrder();
+        $masterUserOrder->setPending();
         $masterUserOrder->setPaid();
 
         $this->getUser()->getOrCreateTodayUserStatistics()->increaseGroupOrderNum(1);
-        $this->getUser()->addUserCommand(CommandMessage::createNotifyPendingGroupOrderCommand($this));
-        $this->getUser()->addUserCommand(CommandMessage::createNotifyExpiringGroupOrderCommand($this));
+
+        if ($this->getId()) {
+            $this->getUser()->addUserCommand(CommandMessage::createNotifyPendingGroupOrderCommand($this));
+            $this->getUser()->addUserCommand(CommandMessage::createNotifyExpiringGroupOrderCommand($this));
+        }
 
         $this->setUpdatedAt();
         return $this;
@@ -205,29 +237,15 @@ class GroupOrder implements Dao
      * 2. 创建团员订单
      * 3. 改变用户订单status, paymentStatus
      *
-     * @param User $joiner
      * @return GroupOrder
      */
-    public function setCompleted(User $joiner) : self  {
+    public function setCompleted() : self  {
         $this->status = self::COMPLETED;
+        $this->completeAllGroupUserOrders();
 
-        $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedGroupOrderCommand($this));
-
-        //如果已经有了支付过的参团订单则不做任何操作
-        $slaveGroupUserOrder = $this->getSlaveGroupUserOrder($joiner);
-        if ($slaveGroupUserOrder != null and $slaveGroupUserOrder->isPaid()) {
-            return $this;
+        if ($this->getId()) {
+            $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedGroupOrderCommand($this));
         }
-
-        $slaveGroupUserOrder->setPaid();
-        $slaveGroupUserOrder->setPending();
-
-        $masterGroupUserOrder = $this->getMasterGroupUserOrder();
-        $masterGroupUserOrder->setPending();
-        $masterGroupUserOrder->setUpdatedAt();
-
-        $this->getUser()->getOrCreateTodayUserStatistics()->increaseChildrenNum(1);
-        $joiner->getOrCreateTodayUserStatistics()->increaseGroupOrderJoinedNum(1);
 
         $this->setUpdatedAt();
         return $this;
@@ -325,33 +343,11 @@ class GroupOrder implements Dao
      */
     public function getSlaveGroupUserOrder(User $user) : ?GroupUserOrder {
         foreach ($this->getGroupUserOrders() as $groupUserOrder) {
-            if (!$groupUserOrder->isMasterOrder() and $groupUserOrder->getUser()->getId() == $user->getId()) {
+            if (!$groupUserOrder->isMasterOrder() and $groupUserOrder->getUser() == $user) {
                 return $groupUserOrder;
             }
         }
         return null;
-    }
-
-    /**
-     * @return array
-     */
-    public function getArray() : array {
-
-        $groupUserOrdersArray = [];
-        foreach ($this->getGroupUserOrders() as $groupUserOrder) {
-            $groupUserOrdersArray[] = $groupUserOrder->getArray();
-        }
-
-        return [
-            'id' => $this->getId(),
-            'status' => $this->getStatus(),
-            'statusText' => $this->getStatusText(),
-            'user' => $this->getUser()->getArray(),
-            'product' => $this->getProduct()->getArray(),
-            'groupUserOrders' => $groupUserOrdersArray,
-            'createdAt' => $this->getCreatedAt(true),
-            'expiredAt' => $this->getExpiredAt(true)
-        ];
     }
 
     /**
@@ -383,5 +379,68 @@ class GroupOrder implements Dao
         }
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalGroupUserOrdersRequired(): int
+    {
+        return $this->totalGroupUserOrdersRequired;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalGroupUserOrders(): int
+    {
+        return $this->groupUserOrders->count();
+    }
+
+    /**
+     * @param int $totalGroupUserOrdersRequired
+     */
+    public function setTotalGroupUserOrdersRequired(int $totalGroupUserOrdersRequired): void
+    {
+        $this->totalGroupUserOrdersRequired = $totalGroupUserOrdersRequired;
+    }
+
+    public function completeAllGroupUserOrders() {
+        foreach($this->getGroupUserOrders() as $groupUserOrder) {
+            if ($groupUserOrder instanceof CourseOrder) {
+                $groupUserOrder->setRegistered();
+            } else {
+                $groupUserOrder->setPending();
+            }
+        }
+    }
+
+    /**
+     * @return int
+     */
+    public function getRestGroupUserOrdersRequired() {
+        return $this->getTotalGroupUserOrdersRequired() - $this->getTotalGroupUserOrders();
+    }
+
+    /**
+     * @return array
+     */
+    public function getArray() : array {
+
+        $groupUserOrdersArray = [];
+        foreach ($this->getGroupUserOrders() as $groupUserOrder) {
+            $groupUserOrdersArray[] = $groupUserOrder->getArray();
+        }
+
+        return [
+            'id' => $this->getId(),
+            'status' => $this->getStatus(),
+            'statusText' => $this->getStatusText(),
+            'user' => $this->getUser()->getArray(),
+            'product' => $this->getProduct()->getArray(),
+            'groupUserOrders' => $groupUserOrdersArray,
+            'createdAt' => $this->getCreatedAt(true),
+            'expiredAt' => $this->getExpiredAt(true)
+        ];
     }
 }

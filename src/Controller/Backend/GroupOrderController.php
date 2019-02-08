@@ -20,7 +20,7 @@ class GroupOrderController extends BackendController
     public function index(GroupOrderRepository $groupOrderRepository, Request $request): Response
     {
         $data = [
-            'title' => '拼团订单',
+            'title' => '集call订单',
             'form' => [
                 'groupOrderId' => $request->query->getInt('groupOrderId', null),
                 'groupUserOrderId' => $request->query->getInt('groupUserOrderId', null),
@@ -68,7 +68,7 @@ class GroupOrderController extends BackendController
 
         return $this->render('backend/group_order/info.html.twig', [
             'group_order' => $groupOrder,
-            'title' => '拼团订单详情',
+            'title' => '集call详情',
             'form' => $form->createView(),
         ]);
     }

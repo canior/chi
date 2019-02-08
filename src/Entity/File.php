@@ -146,4 +146,18 @@ class File implements Dao
 
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function isImage() {
+        return in_array(strtolower($this->getType()), ['png', 'jpeg', 'jpg', 'bmp']);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVideo() {
+        return in_array(strtolower($this->getType()), ['mp4', 'ogg', 'ogv']);
+    }
 }

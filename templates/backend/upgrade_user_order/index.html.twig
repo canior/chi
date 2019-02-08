@@ -70,8 +70,7 @@
                             <tr>
                                 <th class="col-md-1">升级订单号</th>
                                 <th class="col-md-2">创建时间</th>
-                                <th class="col-md-1">用户ID</th>
-                                <th class="col-md-1">姓名</th>
+                                <th class="col-md-2">用户</th>
                                 <th class="col-md-2">会员等级</th>
                                 <th class="col-md-1">订单金额</th>
                                 <th class="col-md-1">订单状态</th>
@@ -85,9 +84,8 @@
                                     <tr>
                                         <td>{{ item.UpgradeUserOrder.id }}</td>
                                         <td>{{ item.UpgradeUserOrder.createdAtFormatted }}</td>
-                                        <td>{{ item.UpgradeUserOrder.user.id }}</td>
-                                        <td>{{ item.UpgradeUserOrder.user.name }}</td>
-                                        <td>{{ item.UpgradeUserOrder.oldUserLevelText }} - {{ item.UpgradeUserOrder.userLevelText }}</td>
+                                        <td>{{ item.UpgradeUserOrder.user }}</td>
+                                        <td>{{ item.UpgradeUserOrder.oldUserLevelText }} -> {{ item.UpgradeUserOrder.userLevelText }}</td>
                                         <td>￥{{ item.UpgradeUserOrder.total }}</td>
                                         <td>{{ item.UpgradeUserOrder.statusText }}</td>
                                         <td>
@@ -113,7 +111,7 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="11" class="alert">no records found</td>
+                                    <td colspan="8" class="alert">no records found</td>
                                 </tr>
                             {% endif %}
                             </tbody>

@@ -29,6 +29,7 @@ use App\Entity\UserActivity;
 use App\Entity\UserAddress;
 use App\Entity\UserLevel;
 use App\Entity\UserStatistics;
+use App\Repository\CourseStudentRepository;
 use App\Repository\FileRepository;
 use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
@@ -163,6 +164,7 @@ class UserController extends BaseController
 
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $page = isset($data['page']) ? $data['page'] : 1;
 
         /**
          * @var string $groupOrderStatus pending, completed, expired
@@ -177,8 +179,11 @@ class UserController extends BaseController
 
         $groupOrdersArray = [];
 
-        $groupOrders = $groupOrderRepository->findGroupOrdersForUser($user->getId(), $groupOrderStatusArray);
-
+        $groupOrdersQuery = $groupOrderRepository->findGroupOrdersForUserQuery($user->getId(), $groupOrderStatusArray);
+        /**
+         * @var GroupUserOrder[] $groupOrders
+         */
+        $groupOrders = $this->getPaginator()->paginate($groupOrdersQuery, $page,self::PAGE_LIMIT);
         foreach ($groupOrders as $groupOrder) {
             $groupOrdersArray[] = $groupOrder->getArray();
         }
@@ -943,6 +948,55 @@ class UserController extends BaseController
     }
 
     /**
+     * 注册过的课程列表
+     * @Route("/user/courses", name="listUserCourses", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return Response
+     */
+    public function listCoursesAction(Request $request, UserRepository $userRepository, GroupOrderRepository $groupOrderRepository) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $page = isset($data['page']) ? $data['page'] : 1;
+
+        /**
+         * null => all
+         * pending
+         * completed
+         * expired
+         */
+        $type = isset($data['type']) ? $data['type'] : null;
+
+        $courseArray = [];
+
+        if ($type == null) {
+            $courseStudentsQuery = $userRepository->findCourseStudentQuery($thirdSession);
+            /**
+             * @var CourseStudent[] $courseStudents
+             */
+            $courseStudents = $this->getPaginator()->paginate($courseStudentsQuery, $page, self::PAGE_LIMIT);
+            foreach ($courseStudents as $courseStudent) {
+                $courseArray[] = $courseStudent->getCourse()->getArray();
+            }
+        } else {
+            $groupOrdersQuery = $groupOrderRepository->findGroupOrdersForUserQuery($thirdSession, [], true);
+            /**
+             * @var GroupUserOrder[] $groupOrders
+             */
+            $groupOrders = $this->getPaginator()->paginate($groupOrdersQuery, $page,self::PAGE_LIMIT);
+            foreach ($groupOrders as $groupOrder) {
+                $courseArray[] = $groupOrder->getProduct()->getCourse()->getArray();
+            }
+        }
+
+
+        return $this->responseJson('success', 200, [
+            'courses' => $courseArray
+        ]);
+    }
+
+    /**
      * 讲师交过的课程学生列表
      * @Route("/user/teacher/course/student", name="listTeacherStudents", methods="POST")
      * @param Request $request
@@ -1054,7 +1108,7 @@ class UserController extends BaseController
 
 
     /**
-     * 扫一扫报到，签到课程
+     * 注册课程
      * @Route("/user/signInCourse", name="signInCourse", methods="POST")
      * @param Request $request
      * @return Response
@@ -1063,29 +1117,16 @@ class UserController extends BaseController
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $courseId = isset($data['courseId']) ? $data['courseId'] : null;
-        $courseStudentStatus = isset($data['courseStudentStatus']) ? $data['courseStudentStatus'] : null;
         $user = $this->getWxUser($thirdSession);
 
         /**
          * @var Course $course
          */
         $course = $this->getEntityManager()->getRepository(Course::class)->find($courseId);
-
-        if (!$course->hasStudent($user)) {
-            $memo = '未找到注册记录';
-            $course->refuseStudent($user, $memo);
-        } else if ($course->isExpired()) {
-            $memo = '课程已结束';
-            $course->refuseStudent($user, $memo);
-        } else if (!$course->getProduct()->isActive()) {
-            $memo = '课程未发布';
-            $course->refuseStudent($user, $memo);
-        } else {
-            if ($courseStudentStatus == CourseStudent::WELCOME) {
-                $course->welcomeStudent($user);
-            } else if ($courseStudentStatus == CourseStudent::SIGNIN) {
-                $course->signInStudent($user);
-            }
+        $courseStudent = $this->getEntityManager()->getRepository(CourseStudent::class)
+            ->findOneBy(['course' => $course, 'studentUser' => $user, 'status' => CourseStudent::REGISTERED]);
+        if ($courseStudent == null) {
+            $course->registerStudent($user);
         }
 
         $this->getEntityManager()->persist($course);

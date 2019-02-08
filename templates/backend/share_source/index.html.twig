@@ -37,16 +37,14 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th width="10%">分享源ID</th>
-                                <th width="10%">用户ID</th>
-                                <th width="10%">昵称</th>
-                                <th width="10%">姓名</th>
-                                <th width="10%">科目</th>
-                                <th width="10%">课程</th>
-                                <th width="10%">分享类型</th>
-                                <th width="10%">分享名称</th>
-                                <th width="10%">分享时间</th>
-                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                <th class="col-md-2">分享源ID</th>
+                                <th class="col-md-1">昵称</th>
+                                <th class="col-md-1">姓名</th>
+                                <th class="col-md-2">课程</th>
+                                <th class="col-md-1">分享类型</th>
+                                <th class="col-md-2">分享名称</th>
+                                <th class="col-md-2">分享时间</th>
+                                <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -55,24 +53,10 @@
                                     <tr>
                                         <td>{{ item.id }}</td>
                                         <td>
-                                            <a class="btn btn-info btn-xs"
-                                               href="{{ path('user_info', {'id': item.user.id}) }}" target="_blank"
-                                               title="查看详情">
-                                                {{ item.user.id }}
-                                            </a>
-                                        </td>
-                                        <td>
                                             {{ item.user.nickname }}
                                         </td>
                                         <td>
                                             {{ item.user.name }}
-                                        </td>
-                                        <td>
-                                            {% if item.product %}
-                                                {% if item.product.course %}
-                                                    {{ item.product.course.subjectText }}
-                                                {% endif %}
-                                            {% endif %}
                                         </td>
                                         <td>
                                             {% if item.product %}
@@ -96,7 +80,7 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="11" class="alert">no records found</td>
+                                    <td colspan="8" class="alert">no records found</td>
                                 </tr>
                             {% endif %}
                             </tbody>

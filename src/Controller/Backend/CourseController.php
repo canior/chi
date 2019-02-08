@@ -3,7 +3,9 @@
 namespace App\Controller\Backend;
 
 use App\Entity\Course;
+use App\Entity\File;
 use App\Entity\ProductImage;
+use App\Entity\ProductVideo;
 use App\Entity\Subject;
 use App\Form\CourseType;
 use App\Repository\CourseRepository;
@@ -31,17 +33,13 @@ class CourseController extends BackendController
     {
         $data = [
             'title' => '课程管理',
-            'subjects' => Subject::$subjectTextArray,
             'form' => [
                 'subject' => $request->query->get('subject', null),
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
-        if ($data['form']['subject']){
-            $data['data'] = $courseRepository->findBy(['subject' => $data['form']['subject']]);
-        } else {
-            $data['data'] = $courseRepository->findAll();
-        }
+
+        $data['data'] = $courseRepository->findAll();
 
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/course/index.html.twig', $data);
@@ -63,9 +61,7 @@ class CourseController extends BackendController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $status = $request->request->get('course')['status'];
-            $subject = $request->request->get('course')['subject'];
             $course->setStatus($status);
-            $course->setSubject($subject);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($course);
@@ -83,6 +79,36 @@ class CourseController extends BackendController
                     die;
                 }
                 return new Response('页面错误', 500);
+            }
+
+            try {
+                $specImages = isset($request->request->get('course')['specImages']) ? $request->request->get('course')['specImages'] : [];
+                $specImagesCommand = new CreateOrUpdateProductSpecImagesCommand($course->getProduct()->getId(), $specImages);
+                $this->getCommandBus()->handle($specImagesCommand);
+            } catch (\Exception $e) {
+                $this->getLog()->error('can not run CreateOrUpdateProductSpecImagesCommand because of' . $e->getMessage());
+                if ($this->isDev()) {
+                    dump($e->getFile());
+                    dump($e->getMessage());
+                    die;
+                }
+                return new Response('页面错误', 500);
+            }
+
+            //add videos
+            $videoFileId = isset($request->request->get('course')['courseVideo']) ? $request->request->get('course')['courseVideo'] : null;
+            if ($videoFileId) {
+                /**
+                 * @var File $videoFile
+                 */
+                $videoFile = $this->getEntityManager()->getRepository(File::class)->find($videoFileId);
+                $productVideo = new ProductVideo();
+                $productVideo->setProduct($course->getProduct());
+                $productVideo->setFile($videoFile);
+                $course->getProduct()->addProductVideo($productVideo);
+                $this->getEntityManager()->persist($course->getProduct());
+                $this->getEntityManager()->persist($course);
+                $this->getEntityManager()->flush();
             }
 
             $this->addFlash('notice', '创建成功');
@@ -105,7 +131,6 @@ class CourseController extends BackendController
     public function edit(Request $request, Course $course): Response
     {
         $form = $this->createForm(CourseType::class, $course);
-        $form->get('subject')->setData(array_search($course->getSubjectText(), Subject::$subjectTextArray));
         $form->get('status')->setData(array_search($course->getProduct()->getStatusText(), Product::$statuses));
 
         // init images
@@ -139,12 +164,25 @@ class CourseController extends BackendController
             $form->get('specImages')->setData($images);
         }
 
+        $productVideos = $course->getProduct()->getProductVideos();
+        if (!$productVideos->isEmpty()) {
+            $videos = [];
+            foreach ($productVideos as $video) {
+                $videos[$video->getFile()->getId()] = [
+                    'id' => $video->getId(),
+                    'fileId' => $video->getFile()->getId(),
+                    'priority' => $video->getPriority(),
+                    'name' => $video->getFile()->getName(),
+                    'size' => $video->getFile()->getSize()
+                ];
+            }
+            $form->get('courseVideo')->setData($videos);
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $subject = $request->request->get('course')['subject'];
             $status = $request->request->get('course')['status'];
-            $course->setSubject($subject);
             $course->setStatus($status);
             $this->getEntityManager()->persist($course);
 
@@ -175,6 +213,9 @@ class CourseController extends BackendController
                 }
                 return new Response('页面错误', 500);
             }
+
+            //update videos
+            //TODO
 
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');

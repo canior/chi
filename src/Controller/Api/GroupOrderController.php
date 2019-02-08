@@ -30,58 +30,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ *
+ * 集call拼团
+ *
  * @Route("/wxapi")
  */
 class GroupOrderController extends BaseController
 {
-    /**
-     * 测试拼团订单
-     * @Route("/groupOrder/test", name="testGroupOrder", methods="POST")
-     * @param Request $request
-     * @param ProductRepository $productRepository
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function testAction(Request $request, ProductRepository $productRepository) {
-        if ($this->getEnvironment() != 'dev') exit;
-
-        $data = json_decode($request->getContent(), true);
-        $productId =  isset($data['productId']) ? $data['productId'] : null;
-        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
-        $joinerId = isset($data['joinerId']) ? $data['joinerId'] : null;
-
-        $user = $this->getWxUser($thirdSession);
-        $product = $productRepository->find($productId);
-
-        //开团
-        $groupOrder = new GroupOrder($user, $product);
-        $groupOrder->setPending();
-
-        //参团
-        /**
-         * @var User $joiner
-         */
-        $joiner = $this->getEntityManager()->getRepository(User::class)->find($joinerId);
-        $joinerGroupUserOrder = new GroupUserOrder($joiner, $product);
-        $joinerGroupUserOrder->setTotal($product->getGroupPrice());
-        $joinerGroupUserOrder->setGroupOrder($groupOrder);
-        $groupOrder->addGroupUserOrder($joinerGroupUserOrder);
-
-        //完成拼团
-        $groupOrder->setCompleted($joiner);
-
-        //团长确认收货
-        $groupOrder->getMasterGroupUserOrder()->setDelivered();
-
-
-        $this->getEntityManager()->persist($groupOrder);
-        $this->getEntityManager()->flush();
-
-        $data = [
-            'groupOrder' => $groupOrder->getArray()
-        ];
-
-        return $this->responseJson('success', 200, $data);
-    }
 
     /**
      * 创建开团订单
@@ -104,7 +59,8 @@ class GroupOrderController extends BaseController
          */
         $product = $this->getEntityManager()->getRepository(Product::class)->find($productId);
 
-        $groupOrder = new GroupOrder($user, $product);
+        $groupOrder = GroupOrder::factory(GroupOrder::GROUP_GIFT, $user, $product);
+        $groupOrder->setPending();
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
@@ -142,6 +98,9 @@ class GroupOrderController extends BaseController
         if ($groupUserOrder == null) {
             $groupUserOrder = GroupUserOrder::factory($user, $groupOrder->getProduct(), $groupOrder);
         }
+        $groupUserOrder->setPending();
+        $groupUserOrder->setPaid();
+
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
@@ -214,7 +173,7 @@ class GroupOrderController extends BaseController
         $shareSources = [];
 
         $product = $groupOrder->getProduct();
-        $title = "快来拼" . $product->getTitle();
+        $title = "快来集call" . $product->getTitle();
         if ($groupOrder->isPending()) {
             $title = "【仅剩1人】" .  $title;
         }

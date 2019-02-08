@@ -2,9 +2,9 @@
     <table class="table table-bordered table-striped">
         <thead>
         <tr>
-            <th class="col-md-1">报到签到ID</th>
+            <th class="col-md-1">注册ID</th>
             <th class="col-md-2">时间</th>
-            <th class="col-md-2">学生姓名</th>
+            <th class="col-md-2">学生</th>
             <th class="col-md-2">状态</th>
             <th class="col-md-4">备注</th>
             <th class="col-md-1 text-center hidden-xs">操作</th>
@@ -16,8 +16,8 @@
                 <tr>
                     <td>{{ item.id }}</td>
                     <td>{{ item.createdAtFormatted }}</td>
-                    <td>{{ item.studentUser.name }}</td>
-                    <td {% if item.refused %} class="text-red" {% else %} class="text-green"{% endif %}>{{ item.statusText }} </td>
+                    <td>{{ item.studentUser }}</td>
+                    <td>{{ item.statusText }} </td>
                     <td>{{ item.memo }}</td>
                     <td class="text-center">
                         <div class="btn-group">

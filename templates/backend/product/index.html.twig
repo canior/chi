@@ -1,6 +1,6 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}Product{% endblock %}
+{% block title %}产品管理{% endblock %}
 
 {% import 'form/macros.html.twig' as macros %}
 
@@ -41,16 +41,14 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th width="10%">产品ID</th>
-                                <th width="10%">产品名</th>
-                                <th width="10%">产品图片</th>
-                                <th width="10%">零售价</th>
-                                <th width="10%">拼团价</th>
-                                <th width="10%">原价</th>
-                                <th width="10%">库存</th>
-                                <th width="10%">状态</th>
-                                <th width="10%">创建时间</th>
-                                <th width="10%" class="text-center hidden-xs">操作</th>
+                                <th class="col-md-1">产品ID</th>
+                                <th class="col-md-4">产品名</th>
+                                <th class="col-md-1">零售价</th>
+                                <th class="col-md-1">运费</th>
+                                <th class="col-md-1">库存</th>
+                                <th class="col-md-1">状态</th>
+                                <th class="col-md-2">创建时间</th>
+                                <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -59,14 +57,8 @@
                                     <tr>
                                         <td>{{ item.id }}</td>
                                         <td>{{ item.title }}</td>
-                                        <td>
-                                            {% if item.mainProductImage %}
-                                                <img src="{{ path('imagePreview', {fileId: item.mainProductImage.file.id}) }}" width="40" height="40"/>
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ item.price }}</td>
-                                        <td>{{ item.groupPrice }}</td>
-                                        <td>{{ item.originalPrice }}</td>
+                                        <td>￥{{ item.price }}</td>
+                                        <td>￥{{ item.freight }}</td>
                                         <td>{{ item.stock }}</td>
                                         <td>{{ item.statusText }}</td>
                                         <td>{{ item.createdAt }}</td>
