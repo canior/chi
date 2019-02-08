@@ -111,7 +111,7 @@ class GroupUserOrderController extends BaseController
         $data = [
             'groupUserOrder' => $groupUserOrder->getArray(),
             'courseStudents' => $courseStudentArray,
-            'shareSources' => $this->createShareSource($user, $groupUserOrder->getProduct(), $url)
+            'shareSources' => []//$this->createShareSource($user, $groupUserOrder->getProduct(), $url)
         ];
 
         return $this->responseJson('success', 200, $data);
