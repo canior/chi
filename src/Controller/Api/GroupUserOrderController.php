@@ -318,7 +318,7 @@ class GroupUserOrderController extends BaseController
 
             $bannerFile = null;
             if ($product->getMainProductImage() and $product->getMainProductImage()->getFile()) {
-                $bannerFile = ImageGenerator::createShareQuanBannerImage($userQrFile, $product->getMainProductImage()->getFile());
+                $bannerFile = null;//ImageGenerator::createShareQuanBannerImage($userQrFile, $product->getMainProductImage()->getFile());
             }
             $quanShareSource->setBannerFile($bannerFile);
 
