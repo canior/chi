@@ -1,5 +1,6 @@
 // pages/user/referral/index.js
 const app = getApp()
+const share = require('../../tmpl/share.js');
 Page({
 
   /**
@@ -9,12 +10,14 @@ Page({
     shareUser: null,
     isLogin: null,
     user: null,
+    shareData: {},
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     //app.buriedPoint(options)
     this.setData({
       userLevel: options.level ? options.level : null
@@ -39,12 +42,12 @@ Page({
       method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
-          //userLevels(包含了学员等级), shareSourceUsersTotal, shareSourceUsers, shareSources(转发和图片)
           console.log(res.data.data)
           that.setData({
             shareUser: res.data.data,
             userLevel: level
           })
+          share.setShareSources(that, res.data.data.shareSources)
         } else {
           console.log('wx.request return error', res.statusCode);
         }
@@ -56,6 +59,10 @@ Page({
     })
   },
 
+  // 邀请好友
+  wxSaveShareSource: function (e) {
+    share.saveShareSource(this, e, app.globalData.baseUrl + '/user/shareSource/create')
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -74,6 +81,7 @@ Page({
     })
     if (this.data.isLogin) {
       this.getReferral(this.data.userLevel)
+      share.init(this)
     }
   },
 
@@ -108,7 +116,7 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-
+  onShareAppMessage: function (res) {
+    return share.shareObject(this, res)
   }
 })

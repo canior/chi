@@ -1,6 +1,13 @@
 <!--pages/user/account/cashout.wxml-->
+<view class="top-container">
+  <view class="top">
+    <view class="title">账户余额(元)</view>
+    <view class="total">￥{{userAccount.balance}}</view>
+    <view class="tip"/>
+  </view>
+</view>
+
 <view class="container">
-  <view class="">当前金额 <text>{{userAccount.balance}}</text></view>
   <view class="split-line"/>
   <view class="">提现金额</view>
   <view class="line">
@@ -10,4 +17,4 @@
   <view class="split-line"/>
 </view>
 
-<view class="bottom" bindtap="submit">提现</view>
+<button class="bottom" bindtap="submit" disabled="{{btnDisabled}}">提现</button>

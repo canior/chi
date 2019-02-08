@@ -15,6 +15,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     //app.buriedPoint(options)
   },
 
@@ -93,9 +94,17 @@ Page({
   // 转学员升级
   toUpgrade: function () {
     if (this.data.isLogin) {
-      wx.navigateTo({
-        url: '/pages/user/upgrade/index',
-      })
+      // 判断个人资料是否完整
+      if (this.data.user.isCompletedPersonalInfo) {
+        wx.navigateTo({
+          url: '/pages/user/upgrade/index',
+        })
+      } else {
+        // 转新建个人资料
+        wx.navigateTo({
+          url: '/pages/user/info/update?upgrade=1',
+        })
+      }
     } else {
       wx.navigateTo({
         url: '/pages/user/login',

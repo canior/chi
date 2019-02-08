@@ -6,7 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    groupUserOrder: null,
+    course: null,
     imgUrlPrefix: app.globalData.imgUrlPrefix,    
     rate: 0,
     review: '',
@@ -23,6 +23,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     app.buriedPoint(options)
     this.getGroupUserOrder(options.id);
   },
@@ -33,7 +34,8 @@ Page({
       url: app.globalData.baseUrl + '/groupUserOrder/view',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
-        groupUserOrderId: id
+        groupUserOrderId: id,
+        url: '/pages/course/detail?id=' + id        
       },
       method: 'POST',
       success: (res) => {
@@ -47,7 +49,7 @@ Page({
               { tmpImageFilePath: '', fileId: null },
               { tmpImageFilePath: '', fileId: null },
             ],
-            stackIndex = 0;
+            stackIndex = 0, editable = true;
           if (groupUserOrder.productReviews.length > 0) {
             const productReview = groupUserOrder.productReviews[0];
             rate = productReview.rate;
@@ -61,13 +63,15 @@ Page({
                 stackIndex = Math.max(stackIndex, index + 1)
               }
             })
+            editable = false
           }
           that.setData({
-            groupUserOrder: groupUserOrder,
+            course: groupUserOrder,
             rate: rate,
             review: review,
             uploadStack: uploadStack,
-            stackIndex: stackIndex
+            stackIndex: stackIndex,
+            editable: editable
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -91,7 +95,7 @@ Page({
       url: app.globalData.baseUrl + '/user/groupUserOrder/review',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
-        groupUserOrderId: that.data.groupUserOrder.id,
+        groupUserOrderId: that.data.course.id,
         rate: that.data.rate,
         review: that.data.review,
         imageIds: imageIds
@@ -100,8 +104,16 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          wx.navigateBack({
-          })
+          wx.showModal({
+            content: '您的评价已提交',
+            showCancel: false,
+            success: function (res) {
+              if (res.confirm) {
+                wx.navigateBack({
+                })
+              }
+            }
+          });
         } else {
           console.log('wx.request return error', res.statusCode);
         }

@@ -37,4 +37,6 @@
 </view><!--列表-->
 <view class="split-brand"/>
 
-<view class="bottom" bindtap="">邀请好友</view>
+<button class="bottom" open-type="share" bindtap="wxSaveShareSource" data-type="refer">
+  <text>邀请好友</text>
+</button>

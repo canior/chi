@@ -9,7 +9,7 @@ Page({
     levels: [
       { key: 'ADVANCED', name: '高级学员', show: true, enable: true },
       { key: 'PARTNER', name: '合伙人', show: true, enable: true },
-      { key: 'DISTRIBUTOR', name: '分院', show: false, enable: false },
+      { key: 'DISTRIBUTOR', name: '分院', show: true, enable: true },
     ],
     selected: null,
     upgradeUserOrder: null,
@@ -84,6 +84,13 @@ Page({
     })
   },
 
+  // 转个人资料
+  wxUserInfo: function (e) {
+    wx.navigateTo({
+      url: '/pages/user/info/update?upgrade=1',
+    })
+  },
+
   // 选择升级通道
   tapFilter: function (e) {
     const key = e.currentTarget.dataset.key;
@@ -132,7 +139,15 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          this.onShow();
+          //this.onShow();
+          wx.showToast({
+            title: '您的申请已提交，请耐心等待',
+            icon: 'success',
+            duration: 2000
+          })
+          wx.switchTab({
+            url: '/pages/user/index',
+          })
         } else {
           console.log('wx.request return error', res.statusCode);
         }

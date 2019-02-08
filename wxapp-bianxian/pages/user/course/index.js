@@ -6,12 +6,6 @@ Page({
    * 页面的初始数据
    */
   data: {
-    menu: [
-      { name: '全部', status: null },
-      { name: '待注册', status: 'created' },
-      { name: '已注册', status: 'delivered' },
-      { name: '已取消', status: 'cancelled' },
-    ],
     curStatus: null,
     myCourses: [],
     imgUrlPrefix: app.globalData.imgUrlPrefix,
@@ -21,6 +15,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     //app.buriedPoint(options)
     this.setData({
       curStatus: options.status ? options.status : null
@@ -29,6 +24,9 @@ Page({
 
   getMyCourses: function (status) {
     const that = this;
+    wx.showLoading({
+      title: '玩命加载中',
+    })    
     wx.request({
       url: app.globalData.baseUrl + '/user/groupUserOrders/',
       data: {
@@ -47,14 +45,9 @@ Page({
           console.log('wx.request return error', res.statusCode);
         }
       },
-      fail(e) {
-      },
-      complete(e) { }
+      fail(e) {},
+      complete(e) { wx.hideLoading() }
     })
-  },
-
-  tapMenu: function (e) {
-    this.getMyCourses(e.currentTarget.dataset.status)
   },
 
   // 转课程日志
@@ -62,6 +55,13 @@ Page({
     const orderId = e.currentTarget.dataset.id;
     wx.navigateTo({
       url: '/pages/user/course/log?id=' + orderId,
+    })
+  },
+
+  // 发现更多课程
+  toHome: function () {
+    wx.switchTab({
+      url: '/pages/course/index',
     })
   },
 

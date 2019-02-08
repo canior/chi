@@ -104,10 +104,12 @@
   font-size: 24rpx;
   color: #b2b2b2;
 }
-.chi-item .right .line .price {
+.chi-item .right .line .price, .chi-item .right-append .price {
   font-size: 36rpx;
   font-weight: bold;  
   color: #ff4d42;
+}.chi-item .right-append {
+  display: flex;
 }
 .chi-item .right .line button {
   font-size: 30rpx;

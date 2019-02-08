@@ -1,22 +1,6 @@
 /* pages/user/student/list.wxss */
-.chi-item .left image {
-  width: 135rpx;
-  height: 135rpx;
-}
-.chi-item .right .line.title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}.chi-item .right .line.title text {
-  font-weight: normal;
-  color: #888;
-}.chi-item .right .line.desc {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}.chi-item .right .line.desc text {
-  font-size: 30rpx;
-  color: #333;
+.chi-item .right-append {
+  width: 150rpx;
 }
 .rank .title {
   font-size: 30rpx;

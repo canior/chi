@@ -14,7 +14,8 @@ Page({
       wechat: '',
       recommanderName: '',
     },
-    groupUserOrderId: null, //从支付页因无地址而转来
+    groupUserOrderId: null, //从支付因个人资料不完整而转来
+    upgrade: false, //从学员升级因个人资料不完整而来
   },
 
   /**
@@ -22,9 +23,13 @@ Page({
    */
   onLoad: function (options) {
     app.buriedPoint(options)
-    if (options.orderId) {//从支付页因无个人资料而转来
+    if (options.orderId) {//从支付因个人资料不完整而转来
       this.setData({
         groupUserOrderId: options.orderId
+      })
+    } else if (options.upgrade) {//从学员升级因个人资料不完整而来
+      this.setData({
+        upgrade: true
       })
     }
     this.getUserInfo();
@@ -122,6 +127,10 @@ Page({
           if (that.data.groupUserOrderId) {
             wx.redirectTo({
               url: '/pages/course/pay?orderId=' + that.data.groupUserOrderId,
+            })
+          } else if (that.data.upgrade) {
+            wx.redirectTo({
+              url: '/pages/user/upgrade/index',
             })
           } else {
             wx.navigateBack({

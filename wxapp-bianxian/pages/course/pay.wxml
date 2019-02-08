@@ -4,11 +4,15 @@
 
 <view class="container">
   <view class="chi-item">
-    <view class="left"><image src="{{imgUrlPrefix + '/' + groupUserOrder.product.courseImages[0].fileId}}"/></view>
+    <view class="left"><image mode="aspectFit" src="{{imgUrlPrefix + '/' + groupUserOrder.product.courseImages[0].fileId}}"/></view>
     <view class="right">
-      <view class="line title">{{groupUserOrder.product.subjectText}}</view>
-      <view class="line desc">时间：{{groupUserOrder.product.startDate}}至{{groupUserOrder.product.endDate}}</view>
-      <view class="line desc">地点：{{groupUserOrder.product.region.fullname}} {{groupUserOrder.product.address}}</view>
+      <view class="line title">{{groupUserOrder.product.title}}</view>
+      <view class="line desc">科目: {{groupUserOrder.product.subjectText}}</view>
+      <view class="line desc">时间: {{groupUserOrder.product.startDate}} - {{groupUserOrder.product.endDate}}</view>
+      <view class="line desc">地点: {{groupUserOrder.product.region.fullname}} {{groupUserOrder.product.address}}</view>
+      <view class="line desc">讲师: {{groupUserOrder.product.teacher.name}} | {{groupUserOrder.product.teacher.title}}</view>      
+    </view>
+    <view class="right-append">
       <view class="line"><view class="price">￥{{groupUserOrder.product.price}}</view></view>
     </view>
   </view>

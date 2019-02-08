@@ -63,14 +63,15 @@
   align-items: center;
 }
 .row .left image {
-  width: 130rpx;
-  height: 130rpx;
+  width: 145rpx;
+  height: 145rpx;
   margin-right: 20rpx;
+  border: 1px solid #e5e5e5;
 }
 .row .right {
-  font-size: 30rpx;
-}.row .right.active {
-  color: #ffc018;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .row .line {
   font-size: 24rpx;
@@ -78,12 +79,17 @@
   line-height: 30rpx;
 }
 .row .line.title {
-  font-size: 32rpx;
+  font-size: 30rpx;
+  font-weight: bold;
   color: #333;
   line-height: 50rpx;
 }
+.row .line.desc {
+  font-size: 24rpx;
+  color: #b2b2b2;
+}
 .row .right .reward {
-  font-size: 48rpx;
+  font-size: 36rpx;
   color: #ff4d42;
 }
 .row .right .btn {

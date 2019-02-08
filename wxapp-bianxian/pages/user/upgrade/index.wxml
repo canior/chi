@@ -1,6 +1,13 @@
 <!--pages/user/upgrade/index.wxml-->
 <import src="/pages/tmpl/address.wxml"/>
 <view class="container">
+    <view class="banner">
+      <image src=""></image>
+      <view class="desc">学员升级说明学员升级说明学员升级说明学员升级说明</view>
+    </view>
+</view>
+<view class="split-brand"/>
+<view class="container">
     <!--排序筛选body-->
     <view class="filter">
       <block wx:for="{{levels}}" wx:key="index">
@@ -15,7 +22,7 @@
 <view class="container">
   <view class="split-line"/>
   <view class="title">个人资料</view>
-  <template is="address" data="{{user:user, unpaid:false}}"/>
+  <template is="address" data="{{user:user, unpaid:true}}"/>
 </view>
 
 <view class="bottom">

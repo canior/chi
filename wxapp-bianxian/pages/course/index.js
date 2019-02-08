@@ -1,5 +1,6 @@
 // pages/course/index.js
 const app = getApp()
+const share = require('../tmpl/share.js');
 Page({
 
   /**
@@ -10,7 +11,7 @@ Page({
     banners: [],
     courses: [],
     page: 1,
-    limit: 20,
+    limit: 4,
     hasMore: false,    
   },
 
@@ -29,7 +30,7 @@ Page({
     const that = this;
     wx.showLoading({
       title: '玩命加载中',
-    })    
+    })
     wx.request({
       url: app.globalData.baseUrl + '/products/',
       data: {
@@ -67,9 +68,11 @@ Page({
   },
 
   redirect: function(e) {
-    wx.reLaunch({
-      url: e.currentTarget.dataset.url,
-    })
+    if (e.currentTarget.dataset.url) {
+      wx.reLaunch({
+        url: e.currentTarget.dataset.url,
+      })
+    }
   },
 
   /**

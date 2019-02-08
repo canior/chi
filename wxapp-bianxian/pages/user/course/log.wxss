@@ -1,4 +1,5 @@
 /* pages/user/course/log.wxss */
+@import "/pages/tmpl/share.wxss";
 .top {
   font-size: 24rpx;
   color: #888;
@@ -9,7 +10,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20rpx 40rpx;
+  padding: 20rpx 20rpx;
   border-bottom: 1px solid #ececec;
 }.row:last-child {
   border: none;
@@ -21,20 +22,17 @@
   align-items: center;
 }
 .row .left image {
-  width: 135rpx;
-  height: 135rpx;
+  width: 150rpx;
+  height: 150rpx;
+  border: 1px solid #e5e5e5;
   margin-right: 20rpx;
 }
 .row .right {
   font-size: 24rpx;
   display: flex;
-}.row .right.pending {
-  color: #ffc018;
-}.row .right.shipping {
-  color: #353535;
-}.row .right.delivered {
-  color: #353535;
-}.row .right.completed {
+}
+.row .right .reward {
+  font-size: 36rpx;
   color: #ff4d42;
 }
 .row .line {
@@ -44,6 +42,10 @@
   font-size: 30rpx;
   font-weight: bold;
   color: #333;
+}
+.row .line.desc {
+  font-size: 24rpx;
+  color: #b2b2b2;
 }
 .row button {
   font-size: 24rpx;
@@ -79,11 +81,19 @@
 }.payment text.highlight {
   color: #ff4d42;
 }
+.bottom-container {
+  background-color: #fff;
+  height: 80px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;  
+}
 .bottom {
   font-size: 30rpx;
   text-align: center;
   background-color: #ffdf00;
-  margin: 50rpx 70rpx;
+  margin: 40rpx 70rpx;
   padding: 20rpx 0;
   border-radius: 40rpx;
 }
@@ -100,7 +110,7 @@
   vertical-align: text-top;
 }
 .table {
-  margin-bottom: 40rpx;
+  margin-bottom: 80px;
 }
 .table .tr {
   display: flex;

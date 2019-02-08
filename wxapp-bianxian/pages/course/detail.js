@@ -113,9 +113,17 @@ Page({
   
   // 转学员升级
   wxUpgrade: function(e) {
-    wx.navigateTo({
-      url: '/pages/user/upgrade/index',
-    })
+    // 判断个人资料是否完整
+    if (this.data.user.isCompletedPersonalInfo) {
+      wx.navigateTo({
+        url: '/pages/user/upgrade/index',
+      })
+    } else {
+      // 转新建个人资料
+      wx.navigateTo({
+        url: '/pages/user/info/update?upgrade=1',
+      })
+    }
   },
 
   // 分享:邀请好友

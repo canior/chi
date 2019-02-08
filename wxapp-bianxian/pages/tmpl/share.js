@@ -52,7 +52,7 @@ function __saveShareSource(that, url, shareSourceType) {
     success: (res) => {
       if (res.statusCode == 200 && res.data.code == 200) {
         console.log(res.data.data);
-        if (shareSourceType == 'quan') {//生成朋友圈图片
+        if (shareSourceType == 'quan' && shareSource.bannerFileId) {//生成朋友圈图片
           wx.navigateTo({
             url: '/pages/share/moment?imageUrl=' + encodeURIComponent(that.data.imgUrlPrefix + '/' + shareSource.bannerFileId),
           })

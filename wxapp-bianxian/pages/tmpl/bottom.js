@@ -64,7 +64,7 @@ function __createOrder(that, url, productId) {
       if (res.statusCode == 200 && res.data.code == 200) {
         //console.log(res.data.data)
         const groupUserOrder = res.data.data.groupUserOrder;
-        // 判断有无个人资料
+        // 判断个人资料是否完整
         if (groupUserOrder.user.isCompletedPersonalInfo) {
           wx.navigateTo({
             url: '/pages/course/pay?orderId=' + groupUserOrder.id,

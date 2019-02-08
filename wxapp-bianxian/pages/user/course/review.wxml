@@ -3,12 +3,17 @@
 <view class="container">
   <view class="row">
     <view class="left">
-      <image src="/images/demo/course1.jpg"/>
+      <image mode="aspectFit" src="{{imgUrlPrefix+'/'+course.product.courseImages[0].fileId}}"/>
+      <view>
+        <view class="line name">{{course.product.title}}</view>
+        <view class="line desc">科目: {{course.product.subjectText}}</view>
+        <view class="line desc">时间: {{course.product.startDate}} - {{course.product.endDate}}</view>
+        <view class="line desc">地点: {{course.product.address}}</view>
+        <view class="line desc">讲师: {{course.product.teacher.name}} | {{course.product.teacher.title}}</view>
+      </view>
     </view>
     <view class="right">
-      <view class="name">变现思维课</view>
-      <view class="line desc">2019.01.20 - 2019.01.22</view>
-      <view class="line desc">上海市松江区漕河泾双子楼</view>
+      <view class="reward">￥{{course.paymentTotal}}</view>
     </view>
   </view>
 </view>
@@ -42,7 +47,7 @@
     </view>
 
     <view class="review">  
-      <textarea placeholder="亲，请提出您的意见和建议" value="{{review}}" maxlength="200" placeholder-style="font-size:24rpx;color:#888" bindblur="review" disabled="{{groupUserOrder.productReviews.length > 0}}"></textarea>
+      <textarea placeholder="亲，请提出您的意见和建议" value="{{review}}" maxlength="200" placeholder-style="font-size:24rpx;color:#888" bindblur="review" disabled="{{!editable}}"></textarea>
     </view>
   </view>
 </view>

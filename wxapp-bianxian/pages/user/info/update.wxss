@@ -18,6 +18,5 @@
   font-size: 30rpx;
   text-align: center;
   padding: 30rpx 0;
-  color: #fff;
-  background-color: #434343;
+  background-color: #ffdf00;
 }

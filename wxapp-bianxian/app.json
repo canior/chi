@@ -1,6 +1,5 @@
 {
   "pages":[
-
     "pages/course/index",
     "pages/course/detail",
     "pages/course/pay",
@@ -44,8 +43,8 @@
       {
         "pagePath": "pages/user/course/index",
         "text": "我的课程",
-        "iconPath": "images/reward.png",
-        "selectedIconPath": "images/reward-active.png"
+        "iconPath": "images/course.png",
+        "selectedIconPath": "images/course-active.png"
       },
       {
         "pagePath": "pages/user/index",

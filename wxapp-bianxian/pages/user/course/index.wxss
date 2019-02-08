@@ -26,35 +26,55 @@
   align-items: center;
 }
 .row .left image {
-  width: 135rpx;
-  height: 135rpx;
+  width: 145rpx;
+  height: 145rpx;
   margin-right: 20rpx;
+  border: 1px solid #e5e5e5;
 }
 .row .right {
-  font-size: 24rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}.row .right.pending {
+  font-size: 30rpx;
+}.row .right.active {
   color: #ffc018;
-}.row .right.completed {
-  color: #353535;
-}.row .right.fail {
-  color: #ff4d42;
 }
 .row .line {
-  display: flex;
+  font-size: 24rpx;
+  color: #888;
+  line-height: 30rpx;
 }
-.row .line.name {
+.row .line.title {
   font-size: 30rpx;
   font-weight: bold;
   color: #333;
+  line-height: 50rpx;
 }
-.row .right button {
+.row .line.desc {
   font-size: 24rpx;
-  background-color: #fff;
-}.row .right button::after {
-  border-color: #000;
-}.row .right button:first-child {
-  margin-right: 20rpx;
+  color: #b2b2b2;
+}
+.row .right .reward {
+  font-size: 36rpx;
+  color: #ff4d42;
+}
+.row .right .btn {
+  font-size: 24rpx;
+  color: #ff4d42;
+  text-align: center;
+  border: 1px solid #ff4d42;
+  border-radius: 20rpx;
+  margin: 0 10rpx;
+  padding: 0 10rpx;
+}
+.none {
+  display: flex;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #888;
+}
+.bottom {
+  font-size: 30rpx;
+  text-align: center;
+  background-color: #ffdf00;
+  margin: 50rpx 70rpx;
+  padding: 20rpx 0;
+  border-radius: 40rpx;
 }

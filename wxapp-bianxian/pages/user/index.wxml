@@ -17,7 +17,7 @@
       <navigator url="/pages/user/login">请登录</navigator>
     </view>    
   </view>
-  <view class="row">
+  <view class="row" wx:if="{{isLogin}}">
     <view class="step" bindtap="toMyAccount" data-status="created">
       <text>我的账户</text><text>￥{{user.userAccountTotal ? user.userAccountTotal : 0}}</text>
     </view>
@@ -32,7 +32,7 @@
 <view class="split-brand"/>
 <view class="container">
   <view class="row" bindtap="toUpgrade" wx:if="{{user.userLevel == 'VISITOR' || user.userLevel == 'ADVANCED'}}">
-    <view class="left">学员升级</view>
+    <view class="left"><image src="/images/receive.png"/>学员升级</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>
   <!--<view class="split-line"/>
@@ -43,18 +43,18 @@
   <block wx:if="{{isLogin && user.totalStudents > 0}}">
     <view class="split-line"/>
     <view class="row" bindtap="toMyStudent">
-      <view class="left">我的学员</view>
+      <view class="left"><image src="/images/wx.png"/>我的学员</view>
       <view class="right">{{user.totalStudents}}人<view class="arrow-right"/></view>
     </view>
   </block>
   <view class="split-line"/>
   <view class="row" bindtap="toScan">
-    <view class="left">扫一扫</view>
+    <view class="left"><image src="/images/edit.png"/>扫一扫</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>
   <view class="split-line"/>
   <button class="row btn-clear" open-type='contact'>
-    <view class="left">客服咨询</view>
+    <view class="left"><image src="/images/service.png"/>客服咨询</view>
     <view class="right"><view class="arrow-right"/></view>
   </button>
   <view class="split-line"/>

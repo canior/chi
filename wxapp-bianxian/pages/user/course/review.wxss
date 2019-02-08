@@ -1,34 +1,44 @@
 /* pages/user/course/review.wxss */
 .row {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 20rpx 0;
+  padding: 20rpx 20rpx;
+  border-bottom: 1px solid #ececec;
+}.row:last-child {
+  border: none;
 }
 .row .left {
-  width: 161rpx;
+  font-size: 24rpx;
+  color: #888;
+  display: flex;
+  align-items: center;
+}
+.row .left image {
+  width: 150rpx;
+  height: 150rpx;
+  border: 1px solid #e5e5e5;
   margin-right: 20rpx;
 }
-.row image {
-  width: 161rpx;
-  height: 161rpx;
-  margin-right: 20rpx;
+.row .right {
+  font-size: 24rpx;
+  display: flex;
 }
-.row .name {
+.row .right .reward {
+  font-size: 36rpx;
+  color: #ff4d42;
+}
+.row .line {
+  display: flex;
+}
+.row .line.name {
   font-size: 30rpx;
   font-weight: bold;
   color: #333;
 }
-.row .desc {
+.row .line.desc {
   font-size: 24rpx;
   color: #b2b2b2;
-  line-height: 30rpx;
-  width: 260px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;  
-}
-.row .chi-price-container {
-  display: flex;
 }
 .comment {
   text-align: center;

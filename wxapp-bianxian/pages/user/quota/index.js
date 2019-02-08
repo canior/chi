@@ -1,5 +1,6 @@
 // pages/user/quota/index.js
 const app = getApp()
+const share = require('../../tmpl/share.js');
 Page({
 
   /**
@@ -9,6 +10,15 @@ Page({
     isLogin: null,
     user: null,
     quota: null,
+    shareData: {},    
+  },
+
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    wx.hideShareMenu()
+    //app.buriedPoint(options)
   },
 
   getQuota: function () {
@@ -28,6 +38,7 @@ Page({
           that.setData({
             quota: res.data.data
           })
+          share.setShareSources(that, res.data.data.shareSources)
         } else {
           console.log('wx.request return error', res.statusCode);
         }
@@ -39,11 +50,9 @@ Page({
     })
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-    //app.buriedPoint(options)
+  // 邀请好友
+  wxSaveShareSource: function (e) {
+    share.saveShareSource(this, e, app.globalData.baseUrl + '/user/shareSource/create')
   },
 
   /**
@@ -63,6 +72,7 @@ Page({
     })
     if (this.data.isLogin) {
       this.getQuota()
+      share.init(this)
     }
   },
 
@@ -97,7 +107,7 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-
+  onShareAppMessage: function (res) {
+    return share.shareObject(this, res)
   }
 })

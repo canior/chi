@@ -1,5 +1,6 @@
 // pages/user/course/log.js
 const app = getApp()
+const share = require('../../tmpl/share.js');
 Page({
 
   /**
@@ -10,12 +11,14 @@ Page({
     course: null,
     courseStudents: null,
     imgUrlPrefix: app.globalData.imgUrlPrefix,
+    shareData: {},
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     //app.buriedPoint(options)
     this.setData({
       options: options
@@ -24,6 +27,9 @@ Page({
 
   getMyCourseLog: function (id) {
     const that = this;
+    wx.showLoading({
+      title: '玩命加载中',
+    })
     wx.request({
       url: app.globalData.baseUrl + '/groupUserOrder/view',
       data: {
@@ -39,13 +45,15 @@ Page({
             course: res.data.data.groupUserOrder,
             courseStudents: res.data.data.courseStudents
           })
+          share.setShareSources(that, res.data.data.shareSources)
         } else {
           console.log('wx.request return error', res.statusCode);
         }
       },
-      fail(e) {
-      },
-      complete(e) { }
+      fail(e) {},
+      complete(e) {
+        wx.hideLoading()
+      }
     })
   },
 
@@ -57,10 +65,14 @@ Page({
   },
 
   // 分享
-  toProductDetail: function (e) {
-    wx.reLaunch({
-      url: '/pages/course/detail?id=' + this.data.course.product.id,
-    })
+  wxShowShareModal: function (e) {
+    share.showModal(this)
+  },
+  wxHideShareModal: function (e) {
+    share.hideModal(this)
+  },
+  wxSaveShareSource: function (e) {
+    share.saveShareSource(this, e, app.globalData.baseUrl + '/user/shareSource/create')
   },
 
   /**
@@ -75,6 +87,7 @@ Page({
    */
   onShow: function () {
     this.getMyCourseLog(this.data.options.id)
+    share.init(this)
   },
 
   /**
@@ -108,7 +121,7 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-
+  onShareAppMessage: function (res) {
+    return share.shareObject(this, res)
   }
 })

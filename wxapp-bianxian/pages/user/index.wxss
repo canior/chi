@@ -6,6 +6,7 @@
   align-items: center;
   border: 1px solid #ededed;
   padding: 20rpx;
+  background-color: #ffee94;
 }
 .top .left {
   display: flex;
@@ -54,6 +55,12 @@
 .row .left {
   font-size: 30rpx;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+}.row .left image {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 20rpx;
 }
 .row .right {
   font-size: 24rpx;

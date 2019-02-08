@@ -94,7 +94,6 @@
   text-align: center;
   background-color: #ffdf00;
   margin: 50rpx 70rpx;
-  padding: 20rpx 0;
   border-radius: 40rpx;
 }
 .rule {
