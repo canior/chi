@@ -8,7 +8,9 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\CourseOrder;
 use App\Entity\CourseStudent;
+use App\Entity\GroupUserOrder;
 use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Entity\ProjectBannerMeta;
@@ -107,17 +109,20 @@ class ProductController extends BaseController
         $url = $request->query->get('url');
 
         $user = $this->getWxUser($thirdSession);
-        $course = $product->getCourse();
-        $courseStudentRepository = $this->getEntityManager()->getRepository(CourseStudent::class);
-        $courseStudent = $courseStudentRepository->findOneBy(['studentUser' => $user, 'course' => $course, 'status' => CourseStudent::REGISTERED]);
-        $userRegistered = false;
-        if ($courseStudent) {
-            $userRegistered = true;
+
+        /**
+         * @var GroupUserOrder $groupUserOrder
+         */
+        $groupUserOrder = $this->getEntityManager()->getRepository(CourseOrder::class)->findOneBy(['user' => $user, 'product' => $product, 'status' => CourseOrder::DELIVERED]);
+
+        $groupUserOrderId = null;
+        if ($groupUserOrder) {
+            $groupUserOrderId = $groupUserOrder->getId();
         }
 
         return $this->responseJson('success', 200, [
             'product' => $product->getArray(),
-            'userRegistered' => $userRegistered,
+            'groupUserOrderId' => $groupUserOrderId,
             'shareSources' => $this->createProductShareSource($user, $product, $url)
         ]);
     }

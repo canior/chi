@@ -35,6 +35,7 @@ use App\Repository\GroupUserOrderRepository;
 use App\Repository\GroupUserOrderRewardsRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProjectBannerMetaRepository;
+use App\Repository\ProjectMetaRepository;
 use App\Repository\ProjectShareMetaRepository;
 use App\Repository\ProjectTextMetaRepository;
 use App\Repository\RegionRepository;
@@ -58,6 +59,18 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class UserController extends BaseController
 {
+    /**
+     * 获取用户登录页面 banner 等信息
+     * @Route("/user/preLogin", name="userPreLogin", methods="GET")
+     * @param Request $request
+     * @param ProjectBannerMetaRepository $projectMetaRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function preLoginAction(Request $request, ProjectBannerMetaRepository $projectMetaRepository) {
+        $projectLoginBanner = $projectMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_LOGIN]);
+        return $this->responseJson('success', 200, $projectLoginBanner->getArray());
+    }
+
     /**
      * 获取用户openId
      *
@@ -88,6 +101,7 @@ class UserController extends BaseController
 
         if ($user != null) {
             $msg = 'login_success';
+            $user->setLastLogin(time());
             $this->getLog()->info("input nickName=" . $nickName . ' and avatarUrl =' . $avatarUrl);
             if ($defaultNickname == $user->getNickname() and $defaultAvatarUrl == $user->getAvatarUrl()) {
                 $this->getLog()->info("update user nickname and avatar url");
@@ -114,6 +128,7 @@ class UserController extends BaseController
                     $user->setEmailCanonical($openId . '@qq.com');
                     $user->setPassword("IamCustomer");
                     $user->setWxOpenId($openId);
+                    $user->setLastLogin(time());
 
                     $userStatistics = new UserStatistics($user);
                     $user->addUserStatistic($userStatistics);
