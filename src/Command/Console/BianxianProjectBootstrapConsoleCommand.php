@@ -10,6 +10,7 @@ namespace App\Command\Console;
 
 
 use App\Entity\ProjectShareMeta;
+use App\Entity\ProjectTextMeta;
 use App\Entity\ShareSource;
 use Psr\Log\LoggerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -73,6 +74,21 @@ class BianxianProjectBootstrapConsoleCommand extends ContainerAwareCommand
         if ($loginBanner == null) {
             $loginBanner = new ProjectBannerMeta("banner_login");
             $this->entityManager->persist($loginBanner);
+            $this->entityManager->flush();
+        }
+
+        $upgradeUserBanner = $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_USER_UPGRADE]);
+        if ($upgradeUserBanner == null) {
+            $upgradeUserBanner = new ProjectBannerMeta(ProjectBannerMeta::BANNER_USER_UPGRADE);
+            $this->entityManager->persist($upgradeUserBanner);
+            $this->entityManager->flush();
+        }
+
+        $upgradeUserText = $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::UPGRADE_USER_TEXT]);
+        if ($upgradeUserText == null) {
+            $upgradeUserText = new ProjectTextMeta(ProjectTextMeta::UPGRADE_USER_TEXT);
+            $upgradeUserText->setTextMeta("请描述不同用户等级的区别");
+            $this->entityManager->persist($upgradeUserText);
             $this->entityManager->flush();
         }
 

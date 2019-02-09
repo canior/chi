@@ -656,9 +656,11 @@ class UserController extends BaseController
      *
      * @Route("/user/upgradeUserOrder/view", name="viewUpgradeUserOrder", methods="POST")
      * @param Request $request
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @param ProjectTextMetaRepository $projectTextMetaRepository
      * @return Response
      */
-    public function viewUpgradeUserOrderAction(Request $request) : Response {
+    public function viewUpgradeUserOrderAction(Request $request, ProjectBannerMetaRepository $projectBannerMetaRepository, ProjectTextMetaRepository $projectTextMetaRepository) : Response {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $user = $this->getWxUser($thirdSession);
@@ -668,10 +670,23 @@ class UserController extends BaseController
             $upgradeUserOrderArray = $upgradeUserOrder->getArray();
         }
 
+        /**
+         * @var ProjectBannerMeta $bannerMeta
+         */
+        $bannerMeta = $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_USER_UPGRADE]);
+
+        /**
+         * @var ProjectTextMeta $textMeta
+         */
+        $textMeta = $projectTextMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::UPGRADE_USER_TEXT]);
+
+
         return $this->responseJson('success', 200, [
             'upgradeUserOrder' => $upgradeUserOrderArray,
             'user' => $user->getArray(),
-            'userLevels' => UserLevel::$userLevelTextArray
+            'userLevels' => UserLevel::$userLevelTextArray,
+            'bannerMeta' => $bannerMeta->getArray(),
+            'textMeta' => $textMeta->getArray(),
         ]);
     }
 
@@ -686,15 +701,14 @@ class UserController extends BaseController
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $userLevel = isset($data['userLevel']) ? $data['userLevel'] : null;
-        $recommanderName = isset($data['recommanderName']) ? $data['recommanderName'] : null;
         $user = $this->getWxUser($thirdSession);
 
-        $upgradeUserOrder = $user->createUpgradeUserOrder($userLevel, $recommanderName);
+        $upgradeUserOrder = $user->createUpgradeUserOrder($userLevel);
         $this->getEntityManager()->persist($upgradeUserOrder);
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
-            'upgradeUserOrder' => $upgradeUserOrder->getArray()
+            'upgradeUserOrder' => $upgradeUserOrder->getArray(),
         ]);
     }
 

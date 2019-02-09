@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ProjectTextMeta extends ProjectMeta
 {
+    const UPGRADE_USER_TEXT = 'upgrade_user_text';
 
     public function isTextMeta()
     {
