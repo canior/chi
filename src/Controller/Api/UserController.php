@@ -778,6 +778,7 @@ class UserController extends BaseController
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $user = $this->getWxUser($thirdSession);
+        $url = isset($data['url']) ? $data['url'] : null;
 
         $stockBalance = $user->getRecommandStock();
         $totalStock = $user->getTotalRecommandStock();
@@ -792,7 +793,8 @@ class UserController extends BaseController
             'stockBalance' => $stockBalance,
             'childrenNum' => $usedStockTotal,
             'totalStock' => $totalStock,
-            'recommandChildren' => $recommandChildrenArray
+            'recommandChildren' => $recommandChildrenArray,
+            'shareSources' => $this->createUserShareSource($user, $url)
         ]);
     }
 

@@ -89,7 +89,7 @@ class GroupUserOrderController extends BaseController
     public function viewAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
         $data = json_decode($request->getContent(), true);
         $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
-        $url = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
+        $url = isset($data['$url']) ? $data['$url'] : null;
 
         /**
          * @var GroupUserOrder $groupUserOrder
@@ -111,7 +111,7 @@ class GroupUserOrderController extends BaseController
         $data = [
             'groupUserOrder' => $groupUserOrder->getArray(),
             'courseStudents' => $courseStudentArray,
-            'shareSources' => []//$this->createShareSource($user, $groupUserOrder->getProduct(), $url)
+            'shareSources' => $this->createShareSource($user, $groupUserOrder->getProduct(), $url)
         ];
 
         return $this->responseJson('success', 200, $data);
