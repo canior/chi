@@ -21,7 +21,7 @@
         <view class="th">等级</view>
       </view>
       <view class="tr" wx:for="{{shareUser.shareSourceUsers}}" wx:key="index">
-        <view class="td">{{item.createdAt}}</view>
+        <view class="td">{{item.createdAtDateFormatted}}</view>
         <view class="td user">
           <image src="{{item.user.avatarUrl}}"/>
           <text>{{item.user.nickname}}</text>

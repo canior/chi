@@ -637,77 +637,6 @@ class UserController extends BaseController
 
 
     /**
-     * 返回转发和朋友圈的shareSource
-     *
-     * @param User $user
-     * @param $page
-     * @return array
-     */
-    private function createShareSource(User $user, $page) {
-
-        $fileRepository = $this->getEntityManager()->getRepository(File::class);
-        $projectShareMeta = $this->getEntityManager()->getRepository(ProjectShareMeta::class);
-        $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);
-
-        /**
-         * @var ProjectShareMeta $referMeta
-         */
-        $referMeta = $projectShareMeta->findOneBy(['metaKey' => ShareSource::REFER_USER]);
-
-        /**
-         * @var ProjectShareMeta $quanMeta
-         */
-        $quanMeta = $projectShareMeta->findOneBy(['metaKey' => ShareSource::QUAN_USER]);
-
-        $shareSources = [];
-
-        //个人信息页面转发分享
-        $referShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::REFER_USER]);
-        if ($referShareSource == null) {
-
-            $referBannerFile = null;
-            if ($referMeta->getShareBannerFileId()) {
-                /**
-                 * @var File $referBannerFile
-                 */
-                $referBannerFile = $fileRepository->find($referMeta->getShareBannerFileId());
-            }
-            $referShareSource = ShareSource::factory(ShareSource::REFER_USER, $page, $user, $referBannerFile, $referMeta->getShareTitle());
-
-            $this->getEntityManager()->persist($referShareSource);
-            $this->getEntityManager()->flush();
-        }
-
-        //个人信息朋友圈图片
-        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::QUAN_USER]);
-        if ($quanShareSource == null) {
-
-            $quanShareSource = ShareSource::factory(ShareSource::QUAN_USER, $page, $user);
-            $wx = new WxCommon($this->getLog());
-            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
-
-            $quanBannerFile = null;
-            if ($quanMeta->getShareBannerFileId()) {
-                /**
-                 * @var File $quanBannerFile
-                 */
-                $quanBannerFile = $fileRepository->find($quanMeta->getShareBannerFileId());
-            }
-
-            $bannerFile = ImageGenerator::createShareQuanBannerImage($userQrFile, $quanBannerFile);
-            $quanShareSource->setBannerFile($bannerFile);
-
-            $this->getEntityManager()->persist($quanShareSource);
-            $this->getEntityManager()->flush();
-        }
-
-        $shareSources[ShareSource::REFER] = $referShareSource->getArray();
-        $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();
-
-        return $shareSources;
-    }
-
-    /**
      * 查看最近一张提交学员升级订单，如果没有则显示表单
      *
      * @Route("/user/upgradeUserOrder/view", name="viewUpgradeUserOrder", methods="POST")
@@ -865,7 +794,7 @@ class UserController extends BaseController
         return $this->responseJson('success', 200, [
             'shareSourceUsersTotal' => $totalShareSourceUsers,
             'shareSourceUsers' => $shareSourceUserArray,
-            'shareSources' => $this->createShareSource($user, $url)
+            'shareSources' => $this->createUserShareSource($user, $url)
         ]);
     }
 

@@ -54,6 +54,12 @@ class ProductController extends BaseController
      * @return Response
      */
     public function indexAction(Request $request, ProductRepository $productRepository, ProjectBannerMetaRepository $projectBannerMetaRepository) : Response {
+
+        $thirdSession = $request->query->get('thirdSession');
+        $page = $request->query->get('page', 1);
+        $url = $request->query->get('url');
+
+        $user = $this->getWxUser($thirdSession);
         $bannersArray = [];
         $productsArray = [];
 
@@ -62,7 +68,13 @@ class ProductController extends BaseController
             $bannersArray[] = $projectBannerMeta->getArray();
         }
 
-        $products = $productRepository->findActiveProducts();
+        $productsQuery = $productRepository->findActiveProductsQuery();
+
+        /**
+         * @var Product[] $products
+         */
+        $products = $this->getPaginator()->paginate($productsQuery, $page, self::PAGE_LIMIT);
+
         foreach($products as $product) {
             if ($product->getCourse()) {
                 if (!$product->getCourse()->isExpired()) {
@@ -75,8 +87,9 @@ class ProductController extends BaseController
             'banners' => $bannersArray,
             'products' => $productsArray,
             'baseUrl' => $request->getUri(),
+            'shareSources' => $this->createUserShareSource($user, $url)
         ];
-        
+
         return $this->responseJson('success', 200, $data);
     }
 
@@ -96,7 +109,7 @@ class ProductController extends BaseController
 
         return $this->responseJson('success', 200, [
             'product' => $product->getArray(),
-            'shareSources' => $this->createShareSource($user, $product, $url)
+            'shareSources' => $this->createProductShareSource($user, $product, $url)
         ]);
     }
 
@@ -110,66 +123,19 @@ class ProductController extends BaseController
      * @return Response
      */
     public function productReviewIndexAction(Request $request, int $productId, ProductReviewRepository $productReviewRepository): Response {
+
         $page = $request->query->get('page', 1);
-        $productReviews = $productReviewRepository->findActiveProductReviews($productId, $page, 5);
+
+        $productReviewsQuery = $productReviewRepository->findActiveProductReviewsQuery($productId);
+        /**
+         * @var ProductReview[] $productReviews
+         */
+        $productReviews = $this->getPaginator()->paginate($productReviewsQuery, $page, self::PAGE_LIMIT);
         $data = [];
         foreach($productReviews as $productReview) {
             $data[] = $productReview->getArray();
         }
         return $this->responseJson('success', 200, $data);
-    }
-
-    /**
-     * 返回转发和朋友圈的shareSource
-     *
-     * @param User $user
-     * @param Product $product
-     * @param $page
-     * @return array
-     */
-    private function createShareSource(User $user, Product $product, $page) {
-
-        $fileRepository = $this->getEntityManager()->getRepository(File::class);
-        $projectShareMeta = $this->getEntityManager()->getRepository(ProjectShareMeta::class);
-        $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);
-
-        /**
-         * @var ProjectShareMeta $referProductShare
-         */
-        $referProductShare = $projectShareMeta->findOneBy(['metaKey' => ShareSource::REFER_PRODUCT]);
-
-        $shareSources = [];
-
-        //产品信息页面转发分享
-        $referShareSource = $shareSourceRepository->findOneBy(['user'=> $user, 'product' => $product, 'type' => ShareSource::REFER_PRODUCT]);
-        if ($referShareSource == null) {
-            $referShareSource = ShareSource::factory(ShareSource::REFER_PRODUCT, $page, $user, null, $referProductShare->getShareTitle(), $product);
-            $this->getEntityManager()->persist($referShareSource);
-            $this->getEntityManager()->flush();
-        }
-
-        //产品信息朋友圈图片
-        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'product' => $product, 'type' => ShareSource::QUAN_PRODUCT]);
-        if ($quanShareSource == null) {
-            $quanShareSource = ShareSource::factory(ShareSource::QUAN_PRODUCT, $page, $user, null, null, $product);
-            $wx = new WxCommon($this->getLog());
-            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
-
-            $bannerFile = null;
-            if ($product->getMainProductImage() and $product->getMainProductImage()->getFile()) {
-                $bannerFile = ImageGenerator::createShareQuanBannerImage($userQrFile, $product->getMainProductImage()->getFile());
-            }
-            $quanShareSource->setBannerFile($bannerFile);
-
-            $this->getEntityManager()->persist($quanShareSource);
-            $this->getEntityManager()->flush();
-        }
-
-        $shareSources[ShareSource::REFER] = $referShareSource->getArray();
-        $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();
-
-
-        return $shareSources;
     }
 
 }

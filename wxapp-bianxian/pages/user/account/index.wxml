@@ -21,7 +21,7 @@
         <view class="th">金额（元）</view>
       </view>
       <view class="tr" wx:for="{{userAccount.userAccountOrders}}" wx:key="index">
-        <view class="td">{{item.createdAt}}</view>
+        <view class="td">{{item.createdAtDateFormatted}}</view>
         <view class="td">{{item.type}}</view>
         <view class="td">¥{{item.amount}}</view>
       </view>

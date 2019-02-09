@@ -11,6 +11,7 @@ namespace App\Entity;
 use App\Entity\Traits\IdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -325,17 +326,11 @@ class Course implements Dao
      * @return User[]|Collection
      */
     public function getStudentUsers($status = null){
-        $students = new ArrayCollection();
-        foreach ($this->getCourseStudents() as $courseStudent) {
-            if (!$students->contains($courseStudent->getStudentUser())) {
-                if ($status == null) {
-                    $students->add($courseStudent->getStudentUser());
-                } else if ($status == $courseStudent->getStatus()) {
-                    $students->add($courseStudent->getStudentUser());
-                }
-            }
+        $criteria = Criteria::create();
+        if ($status) {
+            $criteria->where(Criteria::expr()->eq('status', $status));
         }
-        return $students;
+        return $this->courseStudents->matching($criteria)->count();
     }
 
     public function isExpired() {
@@ -486,7 +481,8 @@ class Course implements Dao
             'courseImages' => $courseImageArray,
             'courseSpecImages' => $courseSpecImagesArray,
             'reviewsNum' => $this->getProduct()->getTotalReviews(),
-            'eligibleUserLevels' => Subject::$subjectUserLevelConstraintArray[$this->getSubject()]
+            'eligibleUserLevels' => Subject::$subjectUserLevelConstraintArray[$this->getSubject()],
+            'totalStudents' => $this->getTotalRegisteredStudentUsers(),
         ];
     }
 }

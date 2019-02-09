@@ -8,6 +8,7 @@ use App\Entity\Traits\StatusTrait;
 use App\Entity\Traits\UpdatedAtTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -452,10 +453,17 @@ class Product implements Dao
     }
 
     /**
+     * @param bool $isActive
      * @return int
      */
-    public function getTotalReviews() {
-        return $this->getProductReviews()->count();
+    public function getTotalReviews($isActive = true) {
+        if (!$isActive) {
+            return $this->getProductReviews()->count();
+        }
+        $criteria = Criteria::create();
+        $criteria->where(Criteria::expr()->eq('status', ProductReview::ACTIVE));
+        return $this->productReviews->matching($criteria)->count();
+
     }
 
     public function addProductReview(ProductReview $productReview): self

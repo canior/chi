@@ -21,24 +21,17 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $page
-     * @param int $pageLimit
-     * @return Product[] Returns an array of Product objects
+     * @return \Doctrine\ORM\Query
      */
-    public function findActiveProducts($page = null, $pageLimit = null)
+    public function findActiveProductsQuery()
     {
         $query = $this->createQueryBuilder('p')
             ->where('p.status = :status')
             ->setParameter('status', Product::ACTIVE);
 
-        if ($page) {
-            $query->setFirstResult(($page - 1) * $pageLimit);
-            $query->setMaxResults($pageLimit);
-        }
 
         return $query->orderBy('p.id', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
     }
 
     /**

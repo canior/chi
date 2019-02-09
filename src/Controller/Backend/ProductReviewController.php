@@ -120,6 +120,7 @@ class ProductReviewController extends BackendController
     {
         $form = $this->createForm(ProductReviewType::class, $productReview);
         $form->get('status')->setData(array_search($productReview->getStatusText(), ProductReview::$statuses));
+        $form->get('rate')->setData($productReview->getRate());
 
         // init images
         if (!$productReview->getProductReviewImages()->isEmpty()) {
@@ -144,6 +145,7 @@ class ProductReviewController extends BackendController
                 $setMethod = 'set' . ucwords($status);
                 $productReview->$setMethod();
             }
+            $productReview->setRate($request->request->get('product_review')['rate']);
 
             try {
                 $images = isset($request->request->get('product_review')['images']) ? $request->request->get('product_review')['images'] : [];
