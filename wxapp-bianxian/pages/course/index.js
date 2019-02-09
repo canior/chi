@@ -12,7 +12,8 @@ Page({
     courses: [],
     page: 1,
     limit: 4,
-    hasMore: false,    
+    hasMore: false,
+    shareData: {},
   },
 
   /**
@@ -28,13 +29,17 @@ Page({
 
   getCourses: function (page) {
     const that = this;
+    const pages = getCurrentPages();
+    const currentPageUrl = '/' + pages[pages.length - 1].route;    
     wx.showLoading({
       title: '玩命加载中',
     })
     wx.request({
       url: app.globalData.baseUrl + '/products/',
       data: {
-        page: page
+        page: page,
+        thirdSession: wx.getStorageSync('thirdSession'),
+        url: currentPageUrl        
       },
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
@@ -49,6 +54,7 @@ Page({
             page: nextPage,
             hasMore: hasMore
           })
+          share.setShareSources(that, res.data.data.shareSources)
         } else {
           console.log('wx.request return error', res.statusCode);
         }
@@ -86,8 +92,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    
-    
+    share.init(this)
   },
 
   /**
@@ -123,7 +128,7 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-
+  onShareAppMessage: function (res) {
+    return share.shareObject(this, res)
   }
 })
