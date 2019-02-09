@@ -26,6 +26,7 @@ class ImageGenerator
      * @return File
      */
     public static function createShareQuanBannerImage(ObjectManager $entityManager, File $userQrFile, ?File $bannerFile) {
+        return $userQrFile;
         if ($bannerFile == null) {
             return $userQrFile;
         }
