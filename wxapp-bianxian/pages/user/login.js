@@ -6,6 +6,8 @@ Page({
    * 页面的初始数据
    */
   data: {
+    bannerMeta: null,
+    imgUrlPrefix: app.globalData.imgUrlPrefix,
     canIUse: wx.canIUse('button.open-type.getUserInfo')
   },
 
@@ -15,8 +17,39 @@ Page({
   onLoad: function (options) {
     wx.hideShareMenu()
     app.buriedPoint(options)
+    this.getBanner()
   },
 
+  // 获取banner
+  getBanner: function () {
+    const that = this;
+    wx.request({
+      url: app.globalData.baseUrl + '/user/preLogin',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          that.setData({
+            bannerMeta: res.data.data
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
+    })
+  },
+
+  // Banner跳转
+  redirect: function (e) {
+    if (e.currentTarget.dataset.url) {
+      wx.reLaunch({
+        url: e.currentTarget.dataset.url,
+      })
+    }
+  },
+  
   // bindgetuserinfo: 授权并登录
   getUserInfo: function (e) {
     let userInfo = e.detail.userInfo
