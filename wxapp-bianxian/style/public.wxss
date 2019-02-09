@@ -100,6 +100,10 @@
   font-weight: bold;
   color: #333;
 }
+.chi-item .right .line.sub-title {
+  font-size: 26rpx;
+  color: #333;
+}
 .chi-item .right .line.desc {
   font-size: 24rpx;
   color: #b2b2b2;

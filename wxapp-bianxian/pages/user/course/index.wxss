@@ -32,9 +32,11 @@
   border: 1px solid #e5e5e5;
 }
 .row .right {
-  font-size: 30rpx;
-}.row .right.active {
-  color: #ffc018;
+  font-size: 26rpx;
+  width: 72px;
+  text-align: center;
+}.row .right.pending {
+  color: #888;
 }
 .row .line {
   font-size: 24rpx;

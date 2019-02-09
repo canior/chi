@@ -11,7 +11,7 @@ Page({
     banners: [],
     courses: [],
     page: 1,
-    limit: 4,
+    limit: 20,
     hasMore: false,
     shareData: {},
   },

@@ -17,6 +17,7 @@ Page({
     bottomData: {},
     shareData: {},
     loading: true,
+    groupUserOrderId: null,
   },
 
   /**
@@ -63,7 +64,8 @@ Page({
           })
           that.setData({
             course: course,
-            eligible: eligible
+            eligible: eligible,
+            groupUserOrderId: res.data.data.groupUserOrderId
           })
           share.setShareSources(that, res.data.data.shareSources)
         } else {
@@ -113,15 +115,34 @@ Page({
   
   // 转学员升级
   wxUpgrade: function(e) {
-    // 判断个人资料是否完整
-    if (this.data.user.isCompletedPersonalInfo) {
+    if (this.data.isLogin) {
+      // 判断个人资料是否完整
+      if (this.data.user.isCompletedPersonalInfo) {
+        wx.navigateTo({
+          url: '/pages/user/upgrade/index',
+        })
+      } else {
+        // 转新建个人资料
+        wx.navigateTo({
+          url: '/pages/user/info/update?upgrade=1',
+        })
+      }
+    } else {
       wx.navigateTo({
-        url: '/pages/user/upgrade/index',
+        url: '/pages/user/login',
+      })
+    }
+  },
+
+  // 转课程日志
+  wxToCourseLog: function () {
+    if (this.data.isLogin) {
+      wx.redirectTo({
+        url: '/pages/user/course/log?id=' + this.data.groupUserOrderId,
       })
     } else {
-      // 转新建个人资料
       wx.navigateTo({
-        url: '/pages/user/info/update?upgrade=1',
+        url: '/pages/user/login',
       })
     }
   },

@@ -30,6 +30,8 @@
 .row .right {
   font-size: 24rpx;
   display: flex;
+}.row .right.status {
+  color: #888;
 }
 .row .right .reward {
   font-size: 36rpx;

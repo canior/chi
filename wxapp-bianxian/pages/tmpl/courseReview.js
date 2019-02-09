@@ -1,7 +1,7 @@
 var __data = {
   courseReviews: [],  
   page: 1,
-  limit: 5,
+  limit: 20,
   hasMore: false,
   url: ''
 }

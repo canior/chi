@@ -13,7 +13,9 @@ Page({
     ],
     selected: null,
     upgradeUserOrder: null,
-    btnText: '申请'
+    btnText: '申请',
+    isLogin: null,
+    user: null,    
   },
 
   /**
@@ -168,7 +170,17 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.getUpgradeUserOrder()
+    this.setData({
+      isLogin: app.globalData.isLogin,
+      user: app.globalData.user
+    })
+    if (this.data.isLogin) {
+      this.getUpgradeUserOrder()
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
   },
 
   /**

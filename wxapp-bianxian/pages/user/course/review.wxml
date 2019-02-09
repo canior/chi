@@ -3,7 +3,7 @@
 <view class="container">
   <view class="row">
     <view class="left">
-      <image mode="aspectFit" src="{{imgUrlPrefix+'/'+course.product.courseImages[0].fileId}}"/>
+      <image mode="widthFix" src="{{imgUrlPrefix+'/'+course.product.courseImages[0].fileId}}"/>
       <view>
         <view class="line name">{{course.product.title}}</view>
         <view class="line desc">科目: {{course.product.subjectText}}</view>

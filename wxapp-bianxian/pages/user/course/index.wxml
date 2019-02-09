@@ -10,7 +10,7 @@
     </view>
     <view class="row" bindtap="toMyCourseLog" data-id="{{item.id}}">
       <view class="left">
-        <image mode="aspectFit" src="{{imgUrlPrefix+'/'+item.product.courseImages[0].fileId}}"/>
+        <image mode="widthFix" src="{{imgUrlPrefix+'/'+item.product.courseImages[0].fileId}}"/>
         <view>
           <view class="line title">{{item.product.title}}</view>
           <view class="line desc">科目: {{item.product.subjectText}}</view>

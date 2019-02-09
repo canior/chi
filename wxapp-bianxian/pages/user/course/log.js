@@ -35,7 +35,7 @@ Page({
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
         groupUserOrderId: id,
-        url: '/pages/course/detail?id=' + id
+        url: '/pages/course/log?id=' + id
       },
       method: 'POST',
       success: (res) => {

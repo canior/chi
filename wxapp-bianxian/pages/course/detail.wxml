@@ -8,7 +8,7 @@
   <view class="banner">
     <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
       <swiper-item wx:for="{{course.courseImages}}" wx:key="id" wx:for-item="courseImage">
-        <image mode="aspectFit" src="{{imgUrlPrefix + '/' + courseImage.fileId}}" />
+        <image mode="widthFix" src="{{imgUrlPrefix + '/' + courseImage.fileId}}" />
       </swiper-item>
     </swiper>
   </view>
@@ -19,7 +19,7 @@
       <view class="line desc">科目: {{course.subjectText}}</view>
       <view class="line desc">时间: {{course.startDate}} - {{course.endDate}}</view>
       <view class="line desc">地点: {{course.region.fullname}} {{course.address}}</view>
-      <view class="line desc">讲师: {{course.teacher.name}} | {{course.teacher.title}}</view>
+      <!--<view class="line desc">讲师: {{course.teacher.name}} | {{course.teacher.title}}</view>-->
     </view>
     <view class="right">
       <view class="line price">￥{{course.price}}</view>
@@ -31,7 +31,7 @@
       <view class="left"><image src="{{imgUrlPrefix + '/' + course.teacher.avatarFileId}}"/></view>
       <view class="right">
         <view class="line title">{{course.teacher.name}}</view>
-        <view class="line title">{{course.teacher.title}}</view>
+        <view class="line sub-title">{{course.teacher.title}}</view>
         <view class="line desc">{{course.teacher.description}}</view>
       </view>
     </view>
@@ -45,7 +45,7 @@
     <view class="desc">{{course.shortDescription}}</view>
     <block wx:for="{{course.courseSpecImages}}" wx:key="id" wx:for-item="courseSpecImage">
       <view class="img">
-        <image mode="aspectFit" src="{{imgUrlPrefix + '/' + courseSpecImage.fileId}}" bindload="imgLoadDone" data-index="{{index}}"/>
+        <image mode="widthFix" src="{{imgUrlPrefix + '/' + courseSpecImage.fileId}}" bindload="imgLoadDone" data-index="{{index}}"/>
         <image class="loading" src="/images/loading.gif" wx:if="{{courseSpecImage.loading}}"/>
       </view>
     </block>
@@ -57,5 +57,5 @@
   <template is="courseReview" data="{{...courseReviewData, imgUrlPrefix, course}}"/>
 </view>
 
-<template is="bottom" data="{{course, eligible, ...bottomData}}"/>
+<template is="bottom" data="{{course, eligible, groupUserOrderId, ...bottomData}}"/>
 <template is="share" data="{{...shareData}}"/>

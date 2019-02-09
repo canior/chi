@@ -23,12 +23,12 @@
       </view>
       <view class="review-text">{{courseReview.review}}</view>
       <view class="imgs">
-        <block wx:for="{{courseReview.courseReviewImages}}" wx:key="index" wx:for-item="courseReviewImage">
+        <block wx:for="{{courseReview.productReviewImages}}" wx:key="index" wx:for-item="courseReviewImage">
           <image src="{{imgUrlPrefix + '/' + courseReviewImage.fileId}}" bindtap="wxPreviewImage" data-id="{{courseReview.id}}" data-current="{{imgUrlPrefix + '/' + courseReviewImage.fileId}}"/>
         </block>
       </view>
       <view class="split-line"/>
     </view>
-    <view class="nomore" wx:if="{{!hasMore}}">暂时没有更多评价</view>
+    <!--<view class="nomore" wx:if="{{!hasMore}}">暂时没有更多评价</view>-->
   </view>
 </template>

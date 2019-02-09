@@ -9,6 +9,8 @@ Page({
     curStatus: null,
     myCourses: [],
     imgUrlPrefix: app.globalData.imgUrlPrefix,
+    isLogin: null,
+    user: null,
   },
 
   /**
@@ -76,7 +78,17 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.getMyCourses(this.data.curStatus)
+    this.setData({
+      isLogin: app.globalData.isLogin,
+      user: app.globalData.user
+    })
+    if (this.data.isLogin) {
+      this.getMyCourses(this.data.curStatus)
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
   },
 
   /**

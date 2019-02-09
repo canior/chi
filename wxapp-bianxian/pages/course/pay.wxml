@@ -4,7 +4,7 @@
 
 <view class="container">
   <view class="chi-item">
-    <view class="left"><image mode="aspectFit" src="{{imgUrlPrefix + '/' + groupUserOrder.product.courseImages[0].fileId}}"/></view>
+    <view class="left"><image mode="widthFix" src="{{imgUrlPrefix + '/' + groupUserOrder.product.courseImages[0].fileId}}"/></view>
     <view class="right">
       <view class="line title">{{groupUserOrder.product.title}}</view>
       <view class="line desc">科目: {{groupUserOrder.product.subjectText}}</view>

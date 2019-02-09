@@ -20,4 +20,9 @@
             <text>手机号登录</text>
         </button>
     </view>-->
+    <view class="btn-container">
+        <button bindtap="toHome" class="btn mobile">
+            <text>返回首页</text>
+        </button>
+    </view>
 </view>
