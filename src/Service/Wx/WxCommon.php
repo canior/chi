@@ -253,6 +253,10 @@ class WxCommon
      * @return FileDao|null
      */
     public function createWxQRFile(ObjectManager $entityManager, string $scene, $page, $isHyaline = false) {
+        //TODO FIXME 这里正式要去掉
+        $page = "pages/index/index";
+
+
         $accessToken = $this->getAccessToken();
         $this->log->info("got access token" . $accessToken);
         $client = new Client(['base_uri' => self::API_URL]);
