@@ -330,7 +330,7 @@ class Course implements Dao
         if ($status) {
             $criteria->where(Criteria::expr()->eq('status', $status));
         }
-        return $this->courseStudents->matching($criteria)->count();
+        return $this->courseStudents->matching($criteria);
     }
 
     public function isExpired() {
