@@ -34,10 +34,10 @@ class UpgradeUserOrder implements Dao
 
 
     public static $statusTexts = [
-        self::CREATED => '已创建',
-        self::PENDING => '处理中',
-        self::APPROVED => '已通过',
-        self::REJECTED => '已拒绝',
+        self::CREATED => '申请已提交',
+        self::PENDING => '申请处理中',
+        self::APPROVED => '申请已通过',
+        self::REJECTED => '申请已拒绝',
     ];
 
     /**
