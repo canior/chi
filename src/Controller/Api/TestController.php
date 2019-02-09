@@ -32,13 +32,22 @@ use App\Service\ImageGenerator;
 class TestController extends BaseController
 {
     /**
-     * @Route("/test", name="test", methods="GET")
+     * @Route("/testYadi", name="testYadi", methods="GET")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
+        /**
+         * @var User $user
+         */
+        $user = $this->getEntityManager()->getRepository(User::class)->find(2);
 
+        $user->setLastLoginTimestamp(time());
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+echo "cao";
+        exit;
         $fileRepository = $this->getEntityManager()->getRepository(File::class);
         $projectShareMeta = $this->getEntityManager()->getRepository(ProjectShareMeta::class);
         $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);

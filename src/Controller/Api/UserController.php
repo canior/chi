@@ -101,6 +101,7 @@ class UserController extends BaseController
 
         if ($user != null) {
             $msg = 'login_success';
+            $user->setLastLoginTimestamp(time());
             $this->getLog()->info("input nickName=" . $nickName . ' and avatarUrl =' . $avatarUrl);
             if ($defaultNickname == $user->getNickname() and $defaultAvatarUrl == $user->getAvatarUrl()) {
                 $this->getLog()->info("update user nickname and avatar url");
@@ -127,6 +128,7 @@ class UserController extends BaseController
                     $user->setEmailCanonical($openId . '@qq.com');
                     $user->setPassword("IamCustomer");
                     $user->setWxOpenId($openId);
+                    $user->setLastLoginTimestamp(time());
 
                     $userStatistics = new UserStatistics($user);
                     $user->addUserStatistic($userStatistics);
