@@ -31,7 +31,7 @@ class ImageGenerator
         }
 
         $banner = Image::make($bannerFile->getAbsolutePath());
-        $qr = Image::make($userQrFile->getAbsolutePath());
+        $qr = Image::make(file_get_contents($userQrFile->getAbsolutePath()));
         $banner->insert($qr, 'bottom', 0, 50);
 
         $fileName = uniqid();
