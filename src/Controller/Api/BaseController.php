@@ -110,7 +110,7 @@ class BaseController extends DefaultController
 
             $bannerFile = null;
             if ($product->getMainProductImage() and $product->getMainProductImage()->getFile()) {
-                $bannerFile = ImageGenerator::createShareQuanBannerImage($userQrFile, $product->getMainProductImage()->getFile());
+                $bannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $product->getMainProductImage()->getFile());
             }
             $quanShareSource->setBannerFile($bannerFile);
 
@@ -183,7 +183,7 @@ class BaseController extends DefaultController
                 $quanBannerFile = $fileRepository->find($quanMeta->getShareBannerFileId());
             }
 
-            $bannerFile = ImageGenerator::createShareQuanBannerImage($userQrFile, $quanBannerFile);
+            $bannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $quanBannerFile);
             $quanShareSource->setBannerFile($bannerFile);
 
             $this->getEntityManager()->persist($quanShareSource);

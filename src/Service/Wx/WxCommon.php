@@ -270,18 +270,19 @@ class WxCommon
         $code = $response->getStatusCode(); // 200
 
         if($code === 200) {
+            //TODO 找到正确的存储地址
             $file = $response->getBody();
-            $fileName = uniqid() . ".jpeg";
+            $fileName = uniqid();
             $filePath = __DIR__ . "/../../../public/upload/";
-            file_put_contents($filePath . $fileName, $file);
+            file_put_contents($filePath . $fileName . ".jpeg", $file);
 
             $fileDao = new FileDao();
             $fileDao->setUploadUser(null)
-                ->setName($fileName)
+                ->setName($fileName .".jpeg")
                 ->setType('jpeg')
                 ->setSize($file->getSize())
                 ->setPath($filePath)
-                ->setMd5($filePath . $fileName)
+                ->setMd5($fileName)
                 ->setUploadAt(time());
             try {
                 $entityManager->persist($fileDao);

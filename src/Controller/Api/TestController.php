@@ -25,6 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\File;
 use App\Entity\ProjectShareMeta;
 use App\Service\ImageGenerator;
+use App\Entity\Product;
 
 /**
  * @Route("/wxapi")
@@ -42,11 +43,19 @@ class TestController extends BaseController
          * @var User $user
          */
         $user = $this->getEntityManager()->getRepository(User::class)->find(2);
+        $page = "pages/index/index";
+        /**
+         * @var Product $product
+         */
+        $product = $this->getEntityManager()->getRepository(Product::class)->find(10);
 
-        $user->setLastLoginTimestamp(time());
-        $this->getEntityManager()->persist($user);
-        $this->getEntityManager()->flush();
-echo "cao";
+        //$shareSources = $this->createUserShareSource($user, $page);
+        $shareSources = $this->createProductShareSource($user, $product, $page);
+        var_dump($shareSources);
+
+
+
+
         exit;
         $fileRepository = $this->getEntityManager()->getRepository(File::class);
         $projectShareMeta = $this->getEntityManager()->getRepository(ProjectShareMeta::class);

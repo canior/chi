@@ -47,7 +47,7 @@ class ShareSource implements Dao
     private $page;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\File")
+     * @ORM\ManyToOne(targetEntity="App\Entity\File", cascade={"persist"} )
      * @ORM\JoinColumn(nullable=true)
      */
     private $bannerFile;
