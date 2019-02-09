@@ -9,6 +9,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\IdTrait;
 
@@ -52,7 +53,7 @@ class Teacher implements Dao
     private $user;
 
     /**
-     * @var Course[]
+     * @var Course[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\Course", mappedBy="teacher", cascade={"persist"}, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
@@ -154,11 +155,21 @@ class Teacher implements Dao
     }
 
     /**
-     * @return Course[]
+     * @return Course[]|ArrayCollection
      */
     public function getCourses()
     {
         return $this->courses;
+    }
+
+    /**
+     * @return Course[]|ArrayCollection
+     */
+    public function getActiveCourses() {
+        return $this->getCourses()->filter(
+            function(Course $entry) {
+                return $entry->getProduct()->isActive();
+            });
     }
 
     /**

@@ -860,7 +860,7 @@ class UserController extends BaseController
             return $this->responseJson('invalid', 200, []);
         }
 
-        $courses = $user->getTeacher()->getCourses();
+        $courses = $user->getTeacher()->getActiveCourses();
         $courseArray = [];
         foreach ($courses as $course) {
             $courseArray[] = $course->getArray();

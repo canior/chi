@@ -330,6 +330,7 @@ class Course implements Dao
         if ($status) {
             $criteria->where(Criteria::expr()->eq('status', $status));
         }
+
         return $this->courseStudents->matching($criteria);
     }
 
@@ -357,7 +358,7 @@ class Course implements Dao
      * @return int
      */
     public function getTotalRegisteredStudentUsers() {
-        return count($this->getStudentUsers(CourseStudent::REGISTERED));
+        return $this->getStudentUsers(CourseStudent::REGISTERED)->count();
     }
 
     /**
@@ -365,7 +366,7 @@ class Course implements Dao
      * @return int
      */
     public function getTotalWelcomeStudentUsers() {
-        return count($this->getStudentUsers(CourseStudent::WELCOME));
+        return $this->getStudentUsers(CourseStudent::WELCOME)->count();
     }
 
 
@@ -374,7 +375,7 @@ class Course implements Dao
      * @return int
      */
     public function getTotalSignInStudentUsers() {
-        return count($this->getStudentUsers(CourseStudent::SIGNIN));
+        return $this->getStudentUsers(CourseStudent::SIGNIN)->count();
     }
 
     /**
