@@ -8,6 +8,7 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\CourseStudent;
 use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Entity\ProjectBannerMeta;
@@ -106,9 +107,17 @@ class ProductController extends BaseController
         $url = $request->query->get('url');
 
         $user = $this->getWxUser($thirdSession);
+        $course = $product->getCourse();
+        $courseStudentRepository = $this->getEntityManager()->getRepository(CourseStudent::class);
+        $courseStudent = $courseStudentRepository->findOneBy(['studentUser' => $user, 'course' => $course, 'status' => CourseStudent::REGISTERED]);
+        $userRegistered = false;
+        if ($courseStudent) {
+            $userRegistered = true;
+        }
 
         return $this->responseJson('success', 200, [
             'product' => $product->getArray(),
+            'userRegistered' => $userRegistered,
             'shareSources' => $this->createProductShareSource($user, $product, $url)
         ]);
     }
