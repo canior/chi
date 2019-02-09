@@ -53,6 +53,7 @@ function __saveShareSource(that, url, shareSourceType) {
       if (res.statusCode == 200 && res.data.code == 200) {
         console.log(res.data.data);
         if (shareSourceType == 'quan' && shareSource.bannerFileId) {//生成朋友圈图片
+          console.log('/pages/share/moment?imageUrl=' + encodeURIComponent(that.data.imgUrlPrefix + '/' + shareSource.bannerFileId))
           wx.navigateTo({
             url: '/pages/share/moment?imageUrl=' + encodeURIComponent(that.data.imgUrlPrefix + '/' + shareSource.bannerFileId),
           })

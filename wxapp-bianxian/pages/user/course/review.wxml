@@ -35,7 +35,7 @@
     </view>
 
     <view class="upload-row">
-      <view class="upload-box" wx:for="{{uploadStack}}" wx:key="index" data-index="{{index}}" bindtap="{{index == stackIndex && editable ? 'upload' : ''}}" wx:if="{{index <= stackIndex}}">
+      <view class="upload-box" wx:for="{{uploadStack}}" wx:key="index" data-index="{{index}}" bindtap="{{index == stackIndex && editable ? 'upload' : ''}}" wx:if="{{index < stackIndex || (index == stackIndex && editable)}}">
           <view class="tl"/><view class="tr"/><view class="bl"/><view class="br"/>
           <block wx:if="{{!item.tmpImageFilePath}}">
               <image class="camera" src="/images/camera.png"/>

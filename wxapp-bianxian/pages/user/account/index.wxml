@@ -23,10 +23,12 @@
       <view class="tr" wx:for="{{userAccount.userAccountOrders}}" wx:key="index">
         <view class="td">{{item.createdAtDateFormatted}}</view>
         <view class="td">{{item.type}}</view>
-        <view class="td">¥{{item.amount}}</view>
+        <view class="td">{{item.amount}}</view>
       </view>
     </view>
   </view>
 </view><!--列表-->
 <view class="split-brand"/>
-<view class="bottom" bindtap="toCashOut">我要提现</view>
+<view class="bottom-container">
+  <view class="bottom" bindtap="toCashOut">我要提现</view>
+</view>

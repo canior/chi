@@ -12,7 +12,7 @@
   <view class="">提现金额</view>
   <view class="line">
     <text>￥</text>
-    <input placeholder="输入提现金额" value="{{amount}}" bindblur="inputAmount"/>
+    <input placeholder="输入提现金额" value="{{amount}}" bindblur="inputAmount" type="digit"/>
   </view>
   <view class="split-line"/>
 </view>

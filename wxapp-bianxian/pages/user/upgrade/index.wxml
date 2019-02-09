@@ -1,10 +1,13 @@
 <!--pages/user/upgrade/index.wxml-->
 <import src="/pages/tmpl/address.wxml"/>
 <view class="container">
-    <view class="banner">
-      <image src=""></image>
-      <view class="desc">学员升级说明学员升级说明学员升级说明学员升级说明</view>
+    <view class="banner" bindtap="redirect" data-url="{{bannerMeta.redirectUrl}}">
+      <image mode="widthFix" src="{{imgUrlPrefix + '/' + bannerMeta.bannerFileId}}"></image>
     </view>
+</view>
+<view class="split-brand"/>
+<view class="container">
+    <view class="banner desc">{{textMeta.textMeta}}</view>
 </view>
 <view class="split-brand"/>
 <view class="container">

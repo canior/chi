@@ -22,6 +22,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     app.buriedPoint(options)
     if (options.orderId) {//从支付因个人资料不完整而转来
       this.setData({

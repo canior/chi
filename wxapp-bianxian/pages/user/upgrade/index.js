@@ -15,13 +15,17 @@ Page({
     upgradeUserOrder: null,
     btnText: '申请',
     isLogin: null,
-    user: null,    
+    user: null,
+    bannerMeta: null,
+    textMeta: null,
+    imgUrlPrefix: app.globalData.imgUrlPrefix
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
   },
 
   // 判断空数组或空对象
@@ -73,7 +77,9 @@ Page({
             upgradeUserOrder: upgradeUserOrder,
             selected: selected,
             levels: levels,
-            btnText: btnText
+            btnText: btnText,
+            bannerMeta: res.data.data.bannerMeta,
+            textMeta: res.data.data.textMeta
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -84,6 +90,15 @@ Page({
         wx.hideLoading()
       }
     })
+  },
+
+  // Banner跳转
+  redirect: function (e) {
+    if (e.currentTarget.dataset.url) {
+      wx.reLaunch({
+        url: e.currentTarget.dataset.url,
+      })
+    }
   },
 
   // 转个人资料
@@ -141,15 +156,12 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          //this.onShow();
           wx.showToast({
             title: '您的申请已提交，请耐心等待',
             icon: 'success',
             duration: 2000
           })
-          wx.switchTab({
-            url: '/pages/user/index',
-          })
+          this.onShow();
         } else {
           console.log('wx.request return error', res.statusCode);
         }

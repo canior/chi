@@ -11,6 +11,7 @@ Page({
     isLogin: null,
     user: null,
     shareData: {},
+    imgUrlPrefix: app.globalData.imgUrlPrefix,
   },
 
   /**
@@ -60,9 +61,15 @@ Page({
   },
 
   // 邀请好友
+  wxShowShareModal: function (e) {
+    share.showModal(this)
+  },
+  wxHideShareModal: function (e) {
+    share.hideModal(this)
+  },
   wxSaveShareSource: function (e) {
     share.saveShareSource(this, e, app.globalData.baseUrl + '/user/shareSource/create')
-  },
+  },  
 
   /**
    * 生命周期函数--监听页面初次渲染完成
