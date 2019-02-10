@@ -1,7 +1,0 @@
-<!--pages/share/moment.wxml-->
-<view class="container">
-  <view class="image-container">
-    <image src="{{imageUrl}}"/>
-    <button class="btn" bindtap="tapSaveShareImage">保存图片</button>
-  </view>
-</view>
