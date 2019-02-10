@@ -44,7 +44,7 @@ class ProductRepository extends ServiceEntityRepository
      * @param null $status
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findProductsQueryBuilder($keyword = null, $status = null)
+    public function findProductsQueryBuilder($isCourse = false, $keyword = null, $status = null)
     {
         $query = $this->createQueryBuilder('p');
 
@@ -54,6 +54,12 @@ class ProductRepository extends ServiceEntityRepository
             $orX->add($query->expr()->like('p.title', $literal));
             $orX->add($query->expr()->like('p.shortDescription', $literal));
             $query->andWhere($orX);
+        }
+
+        if ($isCourse) {
+            $query->andWhere('p.course is not null');
+        } else {
+            $query->andWhere('p.course is null');
         }
 
         if ($status) {
