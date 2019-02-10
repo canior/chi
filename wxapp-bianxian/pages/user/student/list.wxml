@@ -21,9 +21,12 @@
     <view class="rank">
       <view class="table">
         <view class="tr" wx:for="{{students}}" wx:key="index">
-          <view class="td"><text>{{item.id}}</text></view>
-          <view class="td"><text>{{item.createdAt}}</text></view>
-          <view class="td">{{item.statusText}}</view>
+          <view class="td user">
+            <image src="{{item.avatarUrl}}"/>
+            <text>{{item.nickname}}</text>
+          </view>
+          <view class="td">{{item.phone}}</view>
+          <view class="td">{{item.userLevelText}}</view>
         </view>      
       </view>
     </view>

@@ -49,7 +49,7 @@
 .table .tr .td.user image {
   width: 86rpx;
   height: 86rpx;
-  margin-right: 5rpx;
+  margin-right: 10rpx;
   border-radius: 50%;
 }
 .table .tr .td.user text {
