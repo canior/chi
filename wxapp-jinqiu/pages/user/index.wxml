@@ -36,17 +36,17 @@
     <view class="right"><view class="arrow-right"/></view>
   </view>
   <view class="split-line"/>
-  <view class="row" bindtap="toScan">
+  <view class="row" bindtap="toUserAddress">
     <view class="left"><image src="/images/addr.png"/>我的地址</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>
   <view class="split-line"/>
-  <view class="row" bindtap="toScan">
+  <view class="row" bindtap="toMyOrder">
     <view class="left"><image src="/images/receive.png"/>我的订单</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>
   <view class="split-line"/>
-  <view class="row" bindtap="toScan">
+  <view class="row" bindtap="toMyCall">
     <view class="left"><image src="/images/receive.png"/>我的集Call</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>    

@@ -10,7 +10,8 @@
     "pages/user/info/update",
     "pages/user/account/index",
     "pages/user/account/cashout",
-    
+    "pages/user/address/index",
+    "pages/user/address/edit",    
     "pages/user/upgrade/index",    
     "pages/user/referral/index",
     "pages/user/quota/index",
@@ -21,7 +22,11 @@
     "pages/user/student/list",
     "pages/user/login",
     "pages/user/mobile/login",
-    "pages/share/moment"
+    "pages/share/moment",
+    "pages/user/call/index",
+    "pages/user/call/detail",
+    "pages/user/order/index",
+    "pages/user/order/detail"
   ],
   "window":{
     "backgroundTextStyle":"light",

@@ -1,0 +1,128 @@
+/* pages/user/order/review.wxss */
+.row {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+}
+.row .left {
+  width: 161rpx;
+  margin-right: 20rpx;
+}
+.row image {
+  width: 161rpx;
+  height: 161rpx;
+  margin-right: 20rpx;
+}
+.row .name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+.row .desc {
+  font-size: 24rpx;
+  color: #b2b2b2;
+  line-height: 30rpx;
+  width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;  
+}
+.row .chi-price-container {
+  display: flex;
+}
+.comment {
+  text-align: center;
+}
+.comment .title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #353535;
+  padding: 30rpx;
+}
+.comment .upload-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 30rpx;
+}
+.comment .upload-box {
+  width: 172rpx;
+  height: 172rpx;
+  margin: 40rpx 20rpx 40rpx 0rpx;
+  border: 1px dashed #aeaeae;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.comment icon {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+}
+.comment .upload-box .tl {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid #f23560;
+  border-left: 2px solid #f23560;
+  width: 15rpx;
+  height: 15rpx;
+}
+.comment .upload-box .tr {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  border-top: 2px solid #f23560;
+  border-right: 2px solid #f23560;
+  width: 15rpx;
+  height: 15rpx;
+}
+.comment .upload-box .bl {
+  position: absolute;
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 2px solid #f23560;
+  border-left: 2px solid #f23560;
+  width: 15rpx;
+  height: 15rpx;
+}
+.comment .upload-box .br {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid #f23560;
+  border-right: 2px solid #f23560;
+  width: 15rpx;
+  height: 15rpx;
+}
+.comment .upload-box image {
+  width: 172rpx;
+  height: 172rpx; 
+}.comment .upload-box image.camera {
+  width: 63rpx;
+  height: 50rpx;
+}
+.comment .upload-box text {
+  font-size: 22rpx;
+  color: #888;
+  margin-top: 10rpx;
+}
+.comment .review {
+  background-color: #f5f5f5;
+  margin: 20rpx 30rpx;
+  padding: 20rpx;
+  text-align: left;
+}
+.bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 30rpx;
+  color: #000;
+  background-color: #ffdf00;
+  padding: 30rpx;
+}
+

@@ -112,17 +112,43 @@ Page({
     }
   },  
 
-  // 扫一扫
-  toScan: function () {
-    wx.scanCode({
-      onlyFromCamera: true,
-      success: (res) => {
-        console.log(res);
-        var courseId = util.getQueryVariable(res.result, 'courseId');
-        var status = util.getQueryVariable(res.result, 'status');
-        this.createCourseStudent(courseId, status);
-      }
-    });
+  // 转我的地址
+  toUserAddress: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/address/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },
+
+  // 转我的集Call
+  toMyCall: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/call/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },
+
+  // 转我的订单
+  toMyOrder: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/order/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
   },
 
   // 报到或签到
