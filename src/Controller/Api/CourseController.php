@@ -8,6 +8,8 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\GroupOrder;
+use App\Entity\GroupUserOrder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,6 +17,7 @@ use App\Repository\ProductRepository;
 use App\Repository\ProjectBannerMetaRepository;
 use App\Entity\Product;
 use App\Repository\ProductReviewRepository;
+use App\Entity\User;
 
 /**
  * @Route("/wxapi")
@@ -40,6 +43,20 @@ class CourseController extends ProductController
      */
     protected function findActiveProducts(ProductRepository $productRepository) {
         return $productRepository->findActiveProductsQuery(true);
+    }
+
+    /**
+     * @param User $user
+     * @param Product $product
+     * @return GroupUserOrder | null
+     */
+    protected function findGroupUserOrder(User $user, Product $product) {
+        $groupUserOrderRepository = $this->getEntityManager()->getRepository(GroupUserOrder::class);
+        /**
+         * @var GroupUserOrder $groupUserOrder
+         */
+        $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $product, 'user' => $user, 'status' => GroupUserOrder::DELIVERED]);
+        return $groupUserOrder;
     }
 
     /**

@@ -117,7 +117,7 @@ class ProductController extends BaseController
         /**
          * @var GroupUserOrder $groupUserOrder
          */
-        $groupUserOrder = $this->getEntityManager()->getRepository(CourseOrder::class)->findOneBy(['user' => $user, 'product' => $product, 'status' => CourseOrder::DELIVERED]);
+        $groupUserOrder = $this->findGroupUserOrder($user, $product);
 
         $groupUserOrderId = null;
         if ($groupUserOrder) {
@@ -129,6 +129,15 @@ class ProductController extends BaseController
             'groupUserOrderId' => $groupUserOrderId,
             'shareSources' => $this->createProductShareSource($user, $product, $url)
         ]);
+    }
+
+    /**
+     * @param User $user
+     * @param Product $product
+     * @return null|GroupUserOrder
+     */
+    protected function findGroupUserOrder(User $user, Product $product) {
+        return null;
     }
 
     /**
