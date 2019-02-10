@@ -615,7 +615,7 @@ class UserController extends BaseController
         /**
          * @var Product $product
          */
-        $product = $productRepository->findOneBy(['status' => Product::ACTIVE]);
+        $product = $productRepository->findOneBy(['status' => Product::ACTIVE, 'course' => null]);
 
         return $this->responseJson('success', 200, [
             'product' => $product->getArray(),
