@@ -1,0 +1,34 @@
+<!--pages/user/address/edit.wxml-->
+<view class="container">
+  <view class="row">
+    <view>姓名</view>
+    <input placeholder="请输入姓名" value="{{user.name}}" bindblur="inputName"/>
+  </view>
+  <view class="row">
+    <view>手机号码</view>
+    <input placeholder="请输入手机号码" value="{{user.phone}}" bindblur="inputPhone"/>
+  </view>
+  <view class="row">
+    <view>身份证号码</view>
+    <input placeholder="请输入身份证号码" value="{{user.idNum}}" bindblur="inputIdNum"/>
+  </view>
+  <view class="row">
+    <view>微信号</view>
+    <input placeholder="请输入微信号" value="{{user.wechat}}" bindblur="inputWechat"/>
+  </view>
+  <view class="row">
+    <view>公司</view>
+    <input placeholder="请输入公司名称" value="{{user.company}}" bindblur="inputCompany"/>
+  </view>
+  <view class="row">
+    <view>推荐人</view>
+    <input placeholder="请输入推荐人姓名" value="{{user.recommanderName}}" bindblur="inputRefereeName"/>
+  </view>
+  <!--<view class="row">
+    <input placeholder="推荐人手机号码" value="{{user.recommanderPhone}}" bindblur="inputRefereePhone"/>
+  </view>-->
+</view>
+
+<view class="bottom" bindtap="save">
+  <view class="btn">保存</view>
+</view>

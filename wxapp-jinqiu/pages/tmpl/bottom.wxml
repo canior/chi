@@ -1,0 +1,20 @@
+<template name="bottom">
+  <view class="chi-bottom">
+      <view class="item home" bindtap="wxHome">
+        <image src="/images/home2.png"/>
+        <text>首页</text>
+      </view>
+      <view class="item service" bindtap="wxShowShareModal">
+        <image src="/images/share.png"/>
+        <text>分享</text>
+      </view>
+      <!--<button class="item service btn-clear" open-type='contact'>
+        <image src="/images/service.png"/>
+        <text>客服</text>
+      </button>-->
+      <button class="item btn group" bindtap="wxCreateOrder" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrderId && eligible}}"><text>我要报名￥{{course.price}}</text></button>
+      <button class="item btn group" bindtap="wxUpgrade" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrderId && !eligible}}"><text>学员升级</text></button>
+      <button class="item btn group" bindtap="wxToCourseLog" disabled="{{btnDisabled}}" wx:if="{{groupUserOrderId}}"><text>课程已注册</text></button>
+  </view>
+
+</template>

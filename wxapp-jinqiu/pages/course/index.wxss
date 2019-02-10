@@ -1,0 +1,12 @@
+/* pages/course/index.wxss */
+.banner {
+  text-align: center;
+}
+.banner swiper {
+  height: 340rpx;
+}
+.banner swiper image {
+  width: 100%;
+  /*width: 690rpx;*/
+  height: 340rpx;
+}
