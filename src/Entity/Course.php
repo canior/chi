@@ -66,7 +66,7 @@ class Course implements Dao
     private $address;
 
     /**
-     * @var CourseStudent[]
+     * @var CourseStudent[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="CourseStudent", mappedBy="course", indexBy="studentUser", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
@@ -323,7 +323,7 @@ class Course implements Dao
      * 返回课程学生列表（无重复）
      *
      * @param string $status
-     * @return User[]|Collection
+     * @return User[]|ArrayCollection
      */
     public function getStudentUsers($status = null){
         $criteria = Criteria::create();
@@ -331,7 +331,15 @@ class Course implements Dao
             $criteria->where(Criteria::expr()->eq('status', $status));
         }
 
-        return $this->courseStudents->matching($criteria);
+        $courseStudents =  $this->courseStudents->matching($criteria);
+        $studentUsers = new ArrayCollection();
+        foreach($courseStudents as $courseStudent) {
+            $studentUser = $courseStudent->getStudentUser();
+            if (!$studentUsers->contains($studentUser)) {
+                $studentUsers->add($studentUser);
+            }
+        }
+        return $studentUsers;
     }
 
     public function isExpired() {
