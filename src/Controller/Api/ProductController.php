@@ -79,11 +79,7 @@ class ProductController extends BaseController
         $products = $this->getPaginator()->paginate($productsQuery, $page, self::PAGE_LIMIT);
 
         foreach($products as $product) {
-            if ($product->getCourse()) {
-                if (!$product->getCourse()->isExpired()) {
-                    $productsArray[] = $product->getArray();
-                }
-            }
+            $productsArray[] = $product->getArray();
         }
 
         $data = [
