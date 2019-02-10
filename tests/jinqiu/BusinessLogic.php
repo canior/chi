@@ -13,6 +13,7 @@ use App\Entity\CourseOrder;
 use App\Entity\GroupGiftOrder;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
+use App\Entity\ShareSourceUser;
 use App\Entity\UpgradeUserOrderPayment;
 use App\Entity\UserLevel;
 
@@ -318,5 +319,20 @@ class BusinessLogic extends JinqiuBaseTestCase
         $this->assertEquals(1, $partner->getTotalRecommandStockOrders());
         $userStockOrder = $partner->getUserRecommandStockOrders()[0];
         $this->assertEquals(-1, $userStockOrder->getQty());
+    }
+
+    public function testSetRecommander() {
+        $user = $this->createUser();
+        $recommander1 = $this->createUser();
+        $recommander2 = $this->createUser();
+
+        $shareSource1 = $this->createShareSource($recommander1);
+        $shareSource2 = $this->createShareSource($recommander2);
+
+        $shareSourceUser1 = ShareSourceUser::factory($shareSource1, $user);
+        $this->assertEquals($recommander1, $user->getParentUser());
+
+        $shareSourceUser2 = ShareSourceUser::factory($shareSource2, $user);
+        $this->assertEquals($recommander2, $user->getParentUser());
     }
 }

@@ -15,7 +15,7 @@ use FOS\UserBundle\Model\User as BaseUser;
  */
 class User extends BaseUser implements Dao
 {
-    const PARENT_EXPIRES_SECONDS = 8640000; //推荐人锁定100天
+    const PARENT_EXPIRES_SECONDS = 0; //推荐人锁定0天
 
     const ROLE_CUSTOMER = 'ROLE_CUSTOMER';
     const ROLE_CUSTOMER_SERVICE = 'ROLE_CUSTOMER_SERVICE';
