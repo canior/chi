@@ -57,8 +57,6 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           var groupOrder = res.data.data.groupOrder;
-          groupOrder.product.realPrice = app.roundFixed(parseFloat(groupOrder.product.price) + parseFloat(groupOrder.product.freight), 2);
-          groupOrder.product.realGroupPrice = app.roundFixed(parseFloat(groupOrder.product.groupPrice) + parseFloat(groupOrder.product.freight), 2);
           that.setGroupData(groupOrder);
           share.setShareSources(that, res.data.data.shareSources)          
           if (groupOrder.status == 'completed') {//拼团完成

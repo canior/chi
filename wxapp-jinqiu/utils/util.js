@@ -33,8 +33,14 @@ const getRandomColor = () => {
   return '#' + rgb.join('')
 }
 
+// 判断空数组或空对象
+const isEmpty = (ret) => {
+  return (Array.isArray(ret) && ret.length === 0) || (Object.prototype.isPrototypeOf(ret) && Object.keys(ret).length === 0);
+}
+
 module.exports = {
   formatTime: formatTime,
   getQueryVariable: getQueryVariable,
+  isEmpty: isEmpty,
   getRandomColor: getRandomColor
 }

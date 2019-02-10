@@ -1,24 +1,21 @@
 // pages/user/upgrade/index.js
 const app = getApp()
+const productReview = require('../../tmpl/productReview.js');
+const share = require('../../tmpl/share.js');
+const bottom = require('../../tmpl/bottom.js');
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    levels: [
-      { key: 'ADVANCED', name: '高级学员', show: true, enable: true },
-      { key: 'PARTNER', name: '合伙人', show: true, enable: true },
-      { key: 'DISTRIBUTOR', name: '分院', show: true, enable: true },
-    ],
-    selected: null,
-    upgradeUserOrder: null,
-    btnText: '申请',
-    isLogin: null,
-    user: null,
-    bannerMeta: null,
-    textMeta: null,
-    imgUrlPrefix: app.globalData.imgUrlPrefix
+    isLogin: false,
+    imgUrlPrefix: app.globalData.imgUrlPrefix,
+    product: null,
+    productReviewData: {},
+    bottomData: {},
+    shareData: {},
+    loading: true,
   },
 
   /**
@@ -28,147 +25,63 @@ Page({
     wx.hideShareMenu()
   },
 
-  // 判断空数组或空对象
-  isEmpty: function (ret) {
-    return (Array.isArray(ret) && ret.length === 0) || (Object.prototype.isPrototypeOf(ret) && Object.keys(ret).length === 0);
-  },
-
-  // 获取已申请的订单
-  getUpgradeUserOrder: function () {
+  getProduct: function () {
     const that = this;
+    const pages = getCurrentPages();
+    const currentPageUrl = '/' + pages[pages.length - 1].route;
     wx.showLoading({
       title: '载入中',
     })
     wx.request({
       url: app.globalData.baseUrl + '/user/upgradeUserOrder/view',
       data: {
-        thirdSession: wx.getStorageSync('thirdSession')
+        thirdSession: wx.getStorageSync('thirdSession'),
+        url: currentPageUrl
       },
       method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          const user = res.data.data.user;
-          const upgradeUserOrder = this.isEmpty(res.data.data.upgradeUserOrder) ? null : res.data.data.upgradeUserOrder;
-          //是否已提交申请且尚未通过
-          let selected = upgradeUserOrder && upgradeUserOrder.status != 'approved' ? upgradeUserOrder.userLevel : null;
-          let btnText = upgradeUserOrder && upgradeUserOrder.status != 'approved' ? upgradeUserOrder.statusText : '申请';
-          //可申请哪些等级
-          let levels = this.data.levels;
-          if (user.userLevel == 'VISITOR') {
-            levels.forEach((item) => {
-              item.enable = selected ? false : true
-            })
-          }
-          else if (user.userLevel == 'ADVANCED') {
-            levels.forEach((item) => {
-              if (item.key == 'ADVANCED') item.show = false;
-              item.enable = selected ? false : true
-            })
-          }
-          else if (user.userLevel == 'PARTNER') {
-            levels.forEach((item) => {
-              if (item.key == 'ADVANCED' || item.key == 'PARTNER') item.show = false;
-              item.enable = selected ? false : true
-            })
-          }
+          var product = res.data.data.product
+          product.productSpecImages.forEach((item) => {
+            item.loading = true
+          })
           that.setData({
-            user: user,
-            upgradeUserOrder: upgradeUserOrder,
-            selected: selected,
-            levels: levels,
-            btnText: btnText,
-            bannerMeta: res.data.data.bannerMeta,
-            textMeta: res.data.data.textMeta
+            product: product
           })
+          share.setShareSources(that, res.data.data.shareSources)
         } else {
           console.log('wx.request return error', res.statusCode);
         }
       },
-      fail(e) { },
-      complete(e) {
-        wx.hideLoading()
-      }
+      fail(e) {
+      },
+      complete(e) { wx.hideLoading() }
     })
   },
 
-  // Banner跳转
-  redirect: function (e) {
-    if (e.currentTarget.dataset.url) {
-      wx.reLaunch({
-        url: e.currentTarget.dataset.url,
-      })
-    }
-  },
-
-  // 转个人资料
-  wxUserInfo: function (e) {
-    wx.navigateTo({
-      url: '/pages/user/info/update?upgrade=1',
-    })
-  },
-
-  // 选择升级通道
-  tapFilter: function (e) {
-    const key = e.currentTarget.dataset.key;
+  imgLoadDone: function (e) {
+    //console.log('bindload:imgLoadDone', e)
+    const index = e.currentTarget.dataset.index
     this.setData({
-      selected: key
+      ['product.productSpecImages[' + index + '].loading']: false
     })
   },
 
-  // 申请升级
-  tapApply: function (e) {
-    const that = this;
-    if (this.data.btnText != '申请') return;
-    if (this.data.selected) {
-      let selectedName = '';
-      this.data.levels.forEach((item) => { if (item.key == this.data.selected) selectedName = item.name});
-      wx.showModal({
-        title: '提示',
-        content: '您是否确认要升级到' + selectedName,
-        confirmText: '是',
-        cancelText: '否',
-        success: function (res) {
-          if (res.confirm) {
-            that.submit();
-          }
-        }
-      })
-    }
-    else {
-      wx.showModal({
-        content: '请选择升级目标',
-        showCancel: false,
-      });      
-    }
+  // 购买
+  wxCreateOrder: function (e) {
+    bottom.createOrder(this, app.globalData.baseUrl + '/groupUserOrder/create', this.data.product.id)
   },
 
-  // 提交申请
-  submit: function(e) {
-    const that = this;
-    wx.request({
-      url: app.globalData.baseUrl + '/user/upgradeUserOrder/create',
-      data: {
-        userLevel: that.data.selected,
-        thirdSession: wx.getStorageSync('thirdSession')
-      },
-      method: 'POST',
-      success: (res) => {
-        if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
-          wx.showToast({
-            title: '您的申请已提交，请耐心等待',
-            icon: 'success',
-            duration: 2000
-          })
-          this.onShow();
-        } else {
-          console.log('wx.request return error', res.statusCode);
-        }
-      },
-      fail(e) { },
-      complete(e) { }
-    })
+  // 分享:邀请好友
+  wxShowShareModal: function (e) {
+    share.showModal(this)
+  },
+  wxHideShareModal: function (e) {
+    share.hideModal(this)
+  },
+  wxSaveShareSource: function (e) {
+    share.saveShareSource(this, e, app.globalData.baseUrl + '/user/shareSource/create')
   },
 
   /**
@@ -183,11 +96,13 @@ Page({
    */
   onShow: function () {
     this.setData({
-      isLogin: app.globalData.isLogin,
-      user: app.globalData.user
+      isLogin: app.globalData.isLogin
     })
     if (this.data.isLogin) {
-      this.getUpgradeUserOrder()
+      bottom.init(this)
+      share.init(this)
+      this.setData({ ['product.productSpecImages']: [] })
+      this.getProduct()
     } else {
       wx.navigateTo({
         url: '/pages/user/login',
@@ -226,7 +141,7 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-
+  onShareAppMessage: function (res) {
+    return share.shareObject(this, res)
   }
 })

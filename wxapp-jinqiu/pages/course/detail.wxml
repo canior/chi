@@ -54,5 +54,5 @@
   <template is="courseReview" data="{{...courseReviewData, imgUrlPrefix, course}}"/>
 </view>
 
-<template is="bottom" data="{{course, user, groupUserOrderId, ...bottomData}}"/>
+<template is="bottom" data="{{course, user, groupUserOrderId, ...bottomData, type:'course'}}"/>
 <template is="share" data="{{...shareData}}"/>
