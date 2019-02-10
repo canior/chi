@@ -216,7 +216,7 @@ App({
   },
 
   globalData: {
-    appName: '变现商学院',
+    appName: '金秋课堂',
     baseUrl: 'https://laowantong.yunlishuju.com/wxapi',
     imgUrlPrefix: 'https://laowantong.yunlishuju.com/image/preview',
     //baseUrl: 'http://127.0.0.1:8000/wxapi',

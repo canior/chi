@@ -10,7 +10,6 @@ Page({
   data: {
     isLogin: false,
     user: null,
-    eligible: true,
     imgUrlPrefix: app.globalData.imgUrlPrefix,
     course: null,
     courseReviewData: {},
@@ -27,7 +26,7 @@ Page({
     wx.hideShareMenu()
     const courseId = options.id ? options.id : 2;
     this.getCourse(courseId);
-    const url = app.globalData.baseUrl + '/products/' + courseId + '/reviews'
+    const url = app.globalData.baseUrl + '/courses/' + courseId + '/reviews'
     courseReview.init(this, url);
     //app.buriedPoint(options)
     /*app.userActivityCallback = res => {
@@ -44,7 +43,7 @@ Page({
     const pages = getCurrentPages();
     const currentPageUrl = '/' + pages[pages.length - 1].route;
     wx.request({
-      url: app.globalData.baseUrl + '/products/' + id,
+      url: app.globalData.baseUrl + '/courses/' + id,
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
         url: currentPageUrl
@@ -56,15 +55,8 @@ Page({
           course.courseSpecImages.forEach((item) => {
             item.loading = true
           })
-          // eligible
-          let eligible = false;
-          let userLevel = that.data.user ? that.data.user.userLevel : 'VISITOR';
-          course.eligibleUserLevels.forEach((level) => {
-            if (level == userLevel) { eligible = true }
-          })
           that.setData({
             course: course,
-            eligible: eligible,
             groupUserOrderId: res.data.data.groupUserOrderId
           })
           share.setShareSources(that, res.data.data.shareSources)
@@ -132,6 +124,20 @@ Page({
         url: '/pages/user/login',
       })
     }
+  },
+
+  // 观看课程
+  wxViewCourse: function () {
+    wx.navigateTo({
+      url: '/pages/course/video',
+    })
+  },
+
+  // 集Call
+  wxSetCall: function () {
+    wx.navigateTo({
+      url: '/pages/group/index',
+    })
   },
 
   // 转课程日志

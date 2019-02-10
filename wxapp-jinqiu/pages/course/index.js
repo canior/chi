@@ -35,7 +35,7 @@ Page({
       title: '玩命加载中',
     })
     wx.request({
-      url: app.globalData.baseUrl + '/products/',
+      url: app.globalData.baseUrl + '/courses/',
       data: {
         page: page,
         thirdSession: wx.getStorageSync('thirdSession'),

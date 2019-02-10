@@ -8,13 +8,14 @@
         <image src="/images/share.png"/>
         <text>分享</text>
       </view>
-      <!--<button class="item service btn-clear" open-type='contact'>
-        <image src="/images/service.png"/>
-        <text>客服</text>
-      </button>-->
-      <button class="item btn group" bindtap="wxCreateOrder" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrderId && eligible}}"><text>我要报名￥{{course.price}}</text></button>
-      <button class="item btn group" bindtap="wxUpgrade" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrderId && !eligible}}"><text>学员升级</text></button>
-      <button class="item btn group" bindtap="wxToCourseLog" disabled="{{btnDisabled}}" wx:if="{{groupUserOrderId}}"><text>课程已注册</text></button>
+      <block wx:if="{{user.userLevel == 'VISITOR'}}">
+        <button class="item btn group" bindtap="wxSetCall" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrderId}}"><text>集Call</text></button>
+        <button class="item btn group" bindtap="wxViewCourse" disabled="{{btnDisabled}}" wx:if="{{groupUserOrderId}}"><text>观看课程</text></button>
+        <button class="item btn group" bindtap="wxUpgrade" disabled="{{btnDisabled}}"><text>学员升级</text></button>
+      </block>
+      <block wx:if="{{user.userLevel == 'ADVANCED'}}">
+        <button class="item btn group" bindtap="wxViewCourse" disabled="{{btnDisabled}}"><text>观看课程</text></button>
+      </block>
   </view>
 
 </template>

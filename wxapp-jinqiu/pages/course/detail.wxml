@@ -16,10 +16,7 @@
   <view class="course">
     <view class="left">
       <view class="line name">{{course.title}}</view>
-      <view class="line desc">科目: {{course.subjectText}}</view>
       <view class="line desc">时间: {{course.startDate}} - {{course.endDate}}</view>
-      <view class="line desc">地点: {{course.region.fullname}} {{course.address}}</view>
-      <!--<view class="line desc">讲师: {{course.teacher.name}} | {{course.teacher.title}}</view>-->
     </view>
     <view class="right">
       <view class="line price">￥{{course.price}}</view>
@@ -57,5 +54,5 @@
   <template is="courseReview" data="{{...courseReviewData, imgUrlPrefix, course}}"/>
 </view>
 
-<template is="bottom" data="{{course, eligible, groupUserOrderId, ...bottomData}}"/>
+<template is="bottom" data="{{course, user, groupUserOrderId, ...bottomData}}"/>
 <template is="share" data="{{...shareData}}"/>

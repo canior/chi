@@ -2,8 +2,10 @@
   "pages":[
     "pages/course/index",
     "pages/course/detail",
+    "pages/course/video",
     "pages/course/pay",
     "pages/course/reward",
+    "pages/group/index",
     "pages/user/index",
     "pages/user/info/update",
     "pages/user/account/index",
