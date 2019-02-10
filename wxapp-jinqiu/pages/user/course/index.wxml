@@ -1,0 +1,34 @@
+<!--pages/user/course/index.wxml-->
+<import src="/pages/tmpl/price.wxml"/>
+<view class="split-brand"/>
+
+<block wx:for="{{myCourses}}" wx:key="index" wx:if="{{myCourses.length > 0}}">
+  <view class="section">
+    <view class="row">
+      <view class="left">订单号：{{item.id}}</view>
+      <view class="right pending">{{item.statusText}}</view>
+    </view>
+    <view class="row" bindtap="toMyCourseLog" data-id="{{item.id}}">
+      <view class="left">
+        <image mode="widthFix" src="{{imgUrlPrefix+'/'+item.product.courseImages[0].fileId}}"/>
+        <view>
+          <view class="line title">{{item.product.title}}</view>
+          <view class="line desc">科目: {{item.product.subjectText}}</view>
+          <view class="line desc">时间: {{item.product.startDate}} - {{item.product.endDate}}</view>
+          <view class="line desc">地点: {{item.product.address}}</view>
+          <view class="line desc">讲师: {{item.product.teacher.name}} | {{item.product.teacher.title}}</view>
+        </view>
+      </view>
+      <view class="right">
+        <view class="reward">￥{{item.paymentTotal}}</view>
+        <view class="btn">课程日志</view>      
+      </view>
+    </view>
+  </view>
+  <view class="split-brand"/>
+</block>
+<block wx:if="{{myCourses.length == 0}}">
+  <view class="none">暂时没有注册课程</view>
+</block>
+
+<view class="bottom" bindtap="toHome">发现更多课程</view>

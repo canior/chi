@@ -1,0 +1,57 @@
+{
+  "pages":[
+    "pages/course/index",
+    "pages/course/detail",
+    "pages/course/pay",
+    "pages/course/reward",
+    "pages/user/index",
+    "pages/user/info/update",
+    "pages/user/account/index",
+    "pages/user/account/cashout",
+    
+    "pages/user/upgrade/index",    
+    "pages/user/referral/index",
+    "pages/user/quota/index",
+    "pages/user/course/index",
+    "pages/user/course/log",
+    "pages/user/course/review",
+    "pages/user/student/index",
+    "pages/user/student/list",
+    "pages/user/login",
+    "pages/user/mobile/login",
+    "pages/share/moment"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle":"black"
+  },
+  "tabBar": {
+    "borderStyle": "black",
+    "position": "bottom",
+    "color": "#888",
+    "selectedColor": "#000",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/course/index",
+        "text": "首页",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-active.png"
+      },
+      {
+        "pagePath": "pages/user/course/index",
+        "text": "我的课程",
+        "iconPath": "images/course.png",
+        "selectedIconPath": "images/course-active.png"
+      },
+      {
+        "pagePath": "pages/user/index",
+        "text": "个人中心",
+        "iconPath": "images/mine.png",
+        "selectedIconPath": "images/mine-active.png"
+      }
+    ]
+  }  
+}
