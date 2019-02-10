@@ -55,9 +55,15 @@ Page({
           course.courseSpecImages.forEach((item) => {
             item.loading = true
           })
-          
+          // eligible
+          let eligible = false;
+          let userLevel = that.data.user ? that.data.user.userLevel : 'VISITOR';
+          course.eligibleUserLevels.forEach((level) => {
+            if (level == userLevel) { eligible = true }
+          })
           that.setData({
             course: course,
+            eligible: eligible
           })
           share.setShareSources(that, res.data.data.shareSources)
         } else {

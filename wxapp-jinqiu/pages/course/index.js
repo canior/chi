@@ -31,7 +31,7 @@ Page({
       title: '玩命加载中',
     })    
     wx.request({
-      url: app.globalData.baseUrl + '/courses/',
+      url: app.globalData.baseUrl + '/products/',
       data: {
         page: page
       },
