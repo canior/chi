@@ -17,6 +17,7 @@ use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
 use App\Repository\ProjectBannerMetaRepository;
 use App\Repository\ProjectMetaRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,6 +26,7 @@ use App\Entity\File;
 use App\Service\Wx\WxCommon;
 use App\Entity\User;
 use App\Service\ImageGenerator;
+use App\Entity\GroupUserOrder;
 
 /**
  * @Route("/wxapi")
@@ -54,6 +56,13 @@ class ProductController extends BaseController
      * @return Response
      */
     public function indexAction(Request $request, ProductRepository $productRepository, ProjectBannerMetaRepository $projectBannerMetaRepository) : Response {
+
+        $thirdSession = $request->query->get('thirdSession');
+        $page = $request->query->get('page', 1);
+        $url = $request->query->get('url');
+
+        $user = $this->getWxUser($thirdSession);
+
         $bannersArray = [];
         $productsArray = [];
 
@@ -62,15 +71,26 @@ class ProductController extends BaseController
             $bannersArray[] = $projectBannerMeta->getArray();
         }
 
-        $products = $this->findActiveProducts($productRepository);
+        $productsQuery = $this->findActiveProducts($productRepository);
+
+        /**
+         * @var Product[] $products
+         */
+        $products = $this->getPaginator()->paginate($productsQuery, $page, self::PAGE_LIMIT);
+
         foreach($products as $product) {
-            $productsArray[] = $product->getArray();
+            if ($product->getCourse()) {
+                if (!$product->getCourse()->isExpired()) {
+                    $productsArray[] = $product->getArray();
+                }
+            }
         }
 
         $data = [
             'banners' => $bannersArray,
             'products' => $productsArray,
             'baseUrl' => $request->getUri(),
+            'shareSources' => $this->createUserShareSource($user, $url)
         ];
         
         return $this->responseJson('success', 200, $data);
@@ -78,10 +98,10 @@ class ProductController extends BaseController
 
     /**
      * @param ProductRepository $productRepository
-     * @return Product[]
+     * @return \Doctrine\ORM\Query
      */
     protected function findActiveProducts(ProductRepository $productRepository) {
-        return $productRepository->findActiveProducts();
+        return $productRepository->findActiveProductsQuery(false);
     }
 
     /**
@@ -98,9 +118,20 @@ class ProductController extends BaseController
 
         $user = $this->getWxUser($thirdSession);
 
+        /**
+         * @var GroupUserOrder $groupUserOrder
+         */
+        $groupUserOrder = $this->getEntityManager()->getRepository(CourseOrder::class)->findOneBy(['user' => $user, 'product' => $product, 'status' => CourseOrder::DELIVERED]);
+
+        $groupUserOrderId = null;
+        if ($groupUserOrder) {
+            $groupUserOrderId = $groupUserOrder->getId();
+        }
+
         return $this->responseJson('success', 200, [
             'product' => $product->getArray(),
-            'shareSources' => $this->createShareSource($user, $product, $url)
+            'groupUserOrderId' => $groupUserOrderId,
+            'shareSources' => $this->createProductShareSource($user, $product, $url)
         ]);
     }
 
@@ -114,65 +145,20 @@ class ProductController extends BaseController
      * @return Response
      */
     public function productReviewIndexAction(Request $request, int $productId, ProductReviewRepository $productReviewRepository): Response {
+
         $page = $request->query->get('page', 1);
-        $productReviews = $productReviewRepository->findActiveProductReviews($productId, $page, 5);
+
+        $productReviewsQuery = $productReviewRepository->findActiveProductReviewsQuery($productId);
+        /**
+         * @var ProductReview[] $productReviews
+         */
+        $productReviews = $this->getPaginator()->paginate($productReviewsQuery, $page, self::PAGE_LIMIT);
+
         $data = [];
         foreach($productReviews as $productReview) {
             $data[] = $productReview->getArray();
         }
         return $this->responseJson('success', 200, $data);
-    }
-
-    /**
-     * 返回转发和朋友圈的shareSource
-     *
-     * @param User $user
-     * @param Product $product
-     * @param $page
-     * @return array
-     */
-    private function createShareSource(User $user, Product $product, $page) {
-        $fileRepository = $this->getEntityManager()->getRepository(File::class);
-        $projectShareMeta = $this->getEntityManager()->getRepository(ProjectShareMeta::class);
-        $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);
-
-        /**
-         * @var ProjectShareMeta $referProductShare
-         */
-        $referProductShare = $projectShareMeta->findOneBy(['metaKey' => ShareSource::REFER_PRODUCT]);
-
-        $shareSources = [];
-
-        //产品信息页面转发分享
-        $referShareSource = $shareSourceRepository->findOneBy(['user'=> $user, 'product' => $product, 'type' => ShareSource::REFER_PRODUCT]);
-        if ($referShareSource == null) {
-            $referShareSource = ShareSource::factory(ShareSource::REFER_PRODUCT, $page, $user, null, $referProductShare->getShareTitle(), $product);
-            $this->getEntityManager()->persist($referShareSource);
-            $this->getEntityManager()->flush();
-        }
-
-        //产品信息朋友圈图片
-        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'product' => $product, 'type' => ShareSource::QUAN_PRODUCT]);
-        if ($quanShareSource == null) {
-            $quanShareSource = ShareSource::factory(ShareSource::QUAN_PRODUCT, $page, $user, null, null, $product);
-            $wx = new WxCommon($this->getLog());
-            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
-
-            $bannerFile = null;
-            if ($product->getMainProductImage() and $product->getMainProductImage()->getFile()) {
-                $bannerFile = ImageGenerator::createShareQuanBannerImage($userQrFile, $product->getMainProductImage()->getFile());
-            }
-            $quanShareSource->setBannerFile($bannerFile);
-
-            $this->getEntityManager()->persist($quanShareSource);
-            $this->getEntityManager()->flush();
-        }
-
-        $shareSources[ShareSource::REFER] = $referShareSource->getArray();
-        $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();
-
-
-        return $shareSources;
     }
 
 }

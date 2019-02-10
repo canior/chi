@@ -22,28 +22,21 @@ class ProductRepository extends ServiceEntityRepository
 
     /**
      * @param bool $isCourse
-     * @param int $page
-     * @param int $pageLimit
-     * @return Product[] Returns an array of Product objects
+     * @return \Doctrine\ORM\Query
      */
-    public function findActiveProducts($isCourse = false, $page = null, $pageLimit = null)
+    public function findActiveProductsQuery($isCourse = false)
     {
         $query = $this->createQueryBuilder('p')
             ->where('p.status = :status')
             ->setParameter('status', Product::ACTIVE);
-        if ($isCourse)
+        if ($isCourse) {
             $query->andWhere('p.course is not null');
-        else
+        } else {
             $query->andWhere('p.course is null');
-
-        if ($page) {
-            $query->setFirstResult(($page - 1) * $pageLimit);
-            $query->setMaxResults($pageLimit);
         }
 
         return $query->orderBy('p.id', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
     }
 
     /**
@@ -67,7 +60,6 @@ class ProductRepository extends ServiceEntityRepository
             $query->andWhere('p.status = :status')
                 ->setParameter('status', $status);
         }
-        $query->andWhere('p.course is null');
 
         return $query->orderBy('p.id', 'DESC');
     }

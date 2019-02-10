@@ -15,6 +15,12 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Entity\File;
+use App\Entity\ProjectShareMeta;
+use App\Service\Wx\WxCommon;
+use App\Entity\Product;
+use App\Service\ImageGenerator;
+use App\Entity\GroupOrder;
 
 class BaseController extends DefaultController
 {
@@ -65,5 +71,165 @@ class BaseController extends DefaultController
     protected function getImgUrlPrefix()
     {
         return $this->generateUrl('imagePreview', ['fileId' => null], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * 返回产品转发和朋友圈的shareSource
+     *
+     * @param User $user
+     * @param Product $product
+     * @param $page
+     * @return array
+     */
+    protected function createProductShareSource(User $user, Product $product, $page) {
+
+        $fileRepository = $this->getEntityManager()->getRepository(File::class);
+        $projectShareMeta = $this->getEntityManager()->getRepository(ProjectShareMeta::class);
+        $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);
+
+        /**
+         * @var ProjectShareMeta $referProductShare
+         */
+        $referProductShare = $projectShareMeta->findOneBy(['metaKey' => ShareSource::REFER_PRODUCT]);
+
+        $shareSources = [];
+
+        //产品信息页面转发分享
+        $referShareSource = $shareSourceRepository->findOneBy(['user'=> $user, 'product' => $product, 'type' => ShareSource::REFER_PRODUCT]);
+        if ($referShareSource == null) {
+            $referShareSource = ShareSource::factory(ShareSource::REFER_PRODUCT, $page, $user, null, $referProductShare->getShareTitle(), $product);
+            $this->getEntityManager()->persist($referShareSource);
+            $this->getEntityManager()->flush();
+        }
+
+        //产品信息朋友圈图片
+        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'product' => $product, 'type' => ShareSource::QUAN_PRODUCT]);
+        if ($quanShareSource == null) {
+            $quanShareSource = ShareSource::factory(ShareSource::QUAN_PRODUCT, $page, $user, null, null, $product);
+            $wx = new WxCommon($this->getLog());
+            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
+
+            $bannerFile = null;
+            if ($product->getMainProductImage() and $product->getMainProductImage()->getFile()) {
+                $bannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $product->getMainProductImage()->getFile());
+            }
+            $quanShareSource->setBannerFile($bannerFile);
+
+            $this->getEntityManager()->persist($quanShareSource);
+            $this->getEntityManager()->flush();
+        }
+
+        $shareSources[ShareSource::REFER] = $referShareSource->getArray();
+        $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();
+
+
+        return $shareSources;
+    }
+
+    /**
+     * 返回转发和朋友圈的shareSource
+     *
+     * @param User $user
+     * @param $page
+     * @return array
+     */
+    protected function createUserShareSource(User $user, $page) {
+
+        $fileRepository = $this->getEntityManager()->getRepository(File::class);
+        $projectShareMeta = $this->getEntityManager()->getRepository(ProjectShareMeta::class);
+        $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);
+
+        /**
+         * @var ProjectShareMeta $referMeta
+         */
+        $referMeta = $projectShareMeta->findOneBy(['metaKey' => ShareSource::REFER_USER]);
+
+        /**
+         * @var ProjectShareMeta $quanMeta
+         */
+        $quanMeta = $projectShareMeta->findOneBy(['metaKey' => ShareSource::QUAN_USER]);
+
+        $shareSources = [];
+
+        //个人信息页面转发分享
+        $referShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::REFER_USER]);
+        if ($referShareSource == null) {
+
+            $referBannerFile = null;
+            if ($referMeta->getShareBannerFileId()) {
+                /**
+                 * @var File $referBannerFile
+                 */
+                $referBannerFile = $fileRepository->find($referMeta->getShareBannerFileId());
+            }
+            $referShareSource = ShareSource::factory(ShareSource::REFER_USER, $page, $user, $referBannerFile, $referMeta->getShareTitle());
+
+            $this->getEntityManager()->persist($referShareSource);
+            $this->getEntityManager()->flush();
+        }
+
+        //个人信息朋友圈图片
+        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::QUAN_USER]);
+        if ($quanShareSource == null) {
+
+            $quanShareSource = ShareSource::factory(ShareSource::QUAN_USER, $page, $user);
+            $wx = new WxCommon($this->getLog());
+            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
+
+            $quanBannerFile = null;
+            if ($quanMeta->getShareBannerFileId()) {
+                /**
+                 * @var File $quanBannerFile
+                 */
+                $quanBannerFile = $fileRepository->find($quanMeta->getShareBannerFileId());
+            }
+
+            $bannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $quanBannerFile);
+            $quanShareSource->setBannerFile($bannerFile);
+
+            $this->getEntityManager()->persist($quanShareSource);
+            $this->getEntityManager()->flush();
+        }
+
+        $shareSources[ShareSource::REFER] = $referShareSource->getArray();
+        $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();
+
+        return $shareSources;
+    }
+
+    /**
+     * //TODO 需要确定转发配置
+     *
+     * 返回转发和朋友圈的shareSource
+     *
+     * @param GroupOrder $groupOrder
+     * @param $page
+     * @return array
+     */
+    protected function createGroupOrderShareSource(GroupOrder $groupOrder, $page) {
+
+        $shareSources = [];
+
+        $product = $groupOrder->getProduct();
+        $title = "快来集call" . $product->getTitle();
+        if ($groupOrder->isPending()) {
+            $title = "【仅剩1人】" .  $title;
+        }
+
+        $referShareSource = new ShareSource();
+        $referShareSource->setType(ShareSource::REFER);
+        $referShareSource->setTitle($title);
+        $referShareSource->setBannerFile($product->getMainProductImage()->getFile());
+        $referShareSource->setPage($page, true);
+
+        $quanShareSource = new ShareSource();
+        $quanShareSource->setType(ShareSource::QUAN);
+        $quanShareSource->setBannerFile($product->getMainProductImage()->getFile());
+        $quanShareSource->setPage($page, true);
+
+        $shareSources[] = $referShareSource->getArray();
+        $shareSources[] = $quanShareSource->getArray();
+
+        return $shareSources;
     }
 }

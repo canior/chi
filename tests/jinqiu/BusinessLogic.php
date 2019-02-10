@@ -13,6 +13,7 @@ use App\Entity\CourseOrder;
 use App\Entity\GroupGiftOrder;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
+use App\Entity\UpgradeUserOrderPayment;
 use App\Entity\UserLevel;
 
 class BusinessLogic extends JinqiuBaseTestCase
@@ -178,6 +179,10 @@ class BusinessLogic extends JinqiuBaseTestCase
         $this->assertTrue($groupUserOrder->isPending());
         $this->assertTrue($groupUserOrder->isPaid());
         $this->assertTrue($upgradeUserOrder->isApproved());
+
+        $this->assertEquals(1, $upgradeUserOrder->getUpgradeUserOrderPayments()->count());
+        $payment = $upgradeUserOrder->getUpgradeUserOrderPayments()[0];
+        $this->assertEquals(2000, $payment->getAmount());
 
         $this->assertEquals(1, $supplier->getTotalUserAccountOrders());
         $supplierUserAccountOrder = $supplier->getUserAccountOrders()[0];

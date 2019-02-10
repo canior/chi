@@ -204,7 +204,7 @@ class UpgradeUserOrder implements Dao
     }
 
     /**
-     * @return UpgradeUserOrderPayment[]
+     * @return UpgradeUserOrderPayment[]|ArrayCollection
      */
     public function getUpgradeUserOrderPayments()
     {
@@ -310,7 +310,6 @@ class UpgradeUserOrder implements Dao
     public function addPayment($amount, $memo = null) {
         $payments = UpgradeUserOrderPayment::factory($this, $amount, $memo);
         $this->upgradeUserOrderPayments->add($payments);
-        $this->setPending();
     }
 
     public function setCreated() {

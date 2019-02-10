@@ -60,6 +60,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends BaseController
 {
     /**
+     * 获取用户登录页面 banner 等信息
+     * @Route("/user/preLogin", name="userPreLogin", methods="GET")
+     * @param Request $request
+     * @param ProjectBannerMetaRepository $projectMetaRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function preLoginAction(Request $request, ProjectBannerMetaRepository $projectMetaRepository) {
+        $projectLoginBanner = $projectMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_LOGIN]);
+        return $this->responseJson('success', 200, $projectLoginBanner->getArray());
+    }
+
+    /**
      * 获取用户openId
      *
      * @Route("/user/login", name="userLogin", methods="POST")
@@ -94,6 +106,7 @@ class UserController extends BaseController
                 $this->getLog()->info("update user nickname and avatar url");
                 $user->setNickname($nickName);
                 $user->setAvatarUrl($avatarUrl);
+                $user->setLastLoginTimestamp(time());
                 $this->getEntityManager()->persist($user);
                 $this->getEntityManager()->flush();
             }
@@ -115,6 +128,7 @@ class UserController extends BaseController
                     $user->setEmailCanonical($openId . '@qq.com');
                     $user->setPassword("IamCustomer");
                     $user->setWxOpenId($openId);
+                    $user->setLastLoginTimestamp(time());
 
                     $userStatistics = new UserStatistics($user);
                     $user->addUserStatistic($userStatistics);
@@ -452,32 +466,6 @@ class UserController extends BaseController
     }
 
     /**
-     * 生成所有分享源
-     *
-     * @param User $user
-     * @param Product $product
-     * @param GroupOrder $groupOrder
-     * @return ShareSource[]
-     */
-    public function generateShareSource(User $user, ?Product $product, ?GroupOrder $groupOrder) {
-
-        $shareSources = [];
-
-        if ($groupOrder) {
-            $referShareSource = new ShareSource();
-            $referShareSource->setGroupOrder($groupOrder);
-
-
-        } else if ($product) {
-
-        } else {
-
-        }
-
-        return $shareSources;
-    }
-
-    /**
      * 创建用户分享源
      *
      * @Route("/user/shareSource/create", name="createShareSource", methods="POST")
@@ -491,37 +479,6 @@ class UserController extends BaseController
     public function saveShareSource(Request $request, ShareSourceRepository $shareSourceRepository, FileRepository $fileRepository, ProductRepository $productRepository, GroupOrderRepository $groupOrderRepository) : Response {
 
         $data = json_decode($request->getContent(), true);
-
-//        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
-//        $shareSourceId = isset($data['shareSourceId']) ? $data['shareSourceId'] : null;
-//        $productId = isset($data['productId']) ? $data['productId'] : null;
-//        $shareSourceType = isset($data['shareSourceType']) ? $data['shareSourceType'] : null;
-//        $url = isset($data['url']) ? $data['url'] : null;
-//        $groupOrderId = isset($data['groupOrderId']) ? $data['groupOrderId'] : null;
-//        $bannerFileId = isset($data['bannerFileId']) ? $data['bannerFileId'] : null;
-//        $title = isset($data['title']) ? $data['title'] : null;
-//
-//        $user = $this->getWxUser($thirdSession);
-//        $product = $productId == null ? null : $productRepository->find($productId);
-//        $groupOrder = $groupOrderId == null ? null : $groupOrderRepository->find($groupOrderId);
-//        $bannerFile = $fileRepository->find($bannerFileId);
-//
-//        $shareSource = $shareSourceRepository->find($shareSourceId);
-//        if ($shareSource == null) {
-//            $shareSource = new ShareSource();
-//        }
-//        $shareSource->setId($shareSourceId);
-//        $shareSource->setUser($user);
-//        $shareSource->setProduct($product);
-//        $shareSource->setType($shareSourceType);
-//        $shareSource->setPage($url);
-//        $shareSource->setBannerFile($bannerFile);
-//        $shareSource->setGroupOrder($groupOrder);
-//        $shareSource->setTitle($title);
-//
-//        $this->getEntityManager()->persist($shareSource);
-//        $this->getEntityManager()->flush();
-
         $shareSourceId = isset($data['shareSourceId']) ? $data['shareSourceId'] : null;
         $shareSource = $shareSourceRepository->find($shareSourceId);
 
@@ -640,78 +597,6 @@ class UserController extends BaseController
         return $this->responseJson('success', 200, []);
     }
 
-
-    /**
-     * 返回转发和朋友圈的shareSource
-     *
-     * @param User $user
-     * @param $page
-     * @return array
-     */
-    private function createShareSource(User $user, $page) {
-
-        $fileRepository = $this->getEntityManager()->getRepository(File::class);
-        $projectShareMeta = $this->getEntityManager()->getRepository(ProjectShareMeta::class);
-        $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);
-
-        /**
-         * @var ProjectShareMeta $referMeta
-         */
-        $referMeta = $projectShareMeta->findOneBy(['metaKey' => ShareSource::REFER_USER]);
-
-        /**
-         * @var ProjectShareMeta $quanMeta
-         */
-        $quanMeta = $projectShareMeta->findOneBy(['metaKey' => ShareSource::QUAN_USER]);
-
-        $shareSources = [];
-
-        //个人信息页面转发分享
-        $referShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::REFER_USER]);
-        if ($referShareSource == null) {
-
-            $referBannerFile = null;
-            if ($referMeta->getShareBannerFileId()) {
-                /**
-                 * @var File $referBannerFile
-                 */
-                $referBannerFile = $fileRepository->find($referMeta->getShareBannerFileId());
-            }
-            $referShareSource = ShareSource::factory(ShareSource::REFER_USER, $page, $user, $referBannerFile, $referMeta->getShareTitle());
-
-            $this->getEntityManager()->persist($referShareSource);
-            $this->getEntityManager()->flush();
-        }
-
-        //个人信息朋友圈图片
-        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::QUAN_USER]);
-        if ($quanShareSource == null) {
-
-            $quanShareSource = ShareSource::factory(ShareSource::QUAN_USER, $page, $user);
-            $wx = new WxCommon($this->getLog());
-            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
-
-            $quanBannerFile = null;
-            if ($quanMeta->getShareBannerFileId()) {
-                /**
-                 * @var File $quanBannerFile
-                 */
-                $quanBannerFile = $fileRepository->find($quanMeta->getShareBannerFileId());
-            }
-
-            $bannerFile = ImageGenerator::createShareQuanBannerImage($userQrFile, $quanBannerFile);
-            $quanShareSource->setBannerFile($bannerFile);
-
-            $this->getEntityManager()->persist($quanShareSource);
-            $this->getEntityManager()->flush();
-        }
-
-        $shareSources[ShareSource::REFER] = $referShareSource->getArray();
-        $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();
-
-        return $shareSources;
-    }
-
     /**
      * 查看最近一张提交学员升级订单，如果没有则显示表单
      *
@@ -722,17 +607,19 @@ class UserController extends BaseController
     public function viewUpgradeUserOrderAction(Request $request) : Response {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $url = isset($data['url']) ? $data['url'] : null;
+
         $user = $this->getWxUser($thirdSession);
-        $upgradeUserOrder = $user->getLatestUpgradeUserOrder();
-        $upgradeUserOrderArray = [];
-        if ($upgradeUserOrder) {
-            $upgradeUserOrderArray = $upgradeUserOrder->getArray();
-        }
+        $productRepository = $this->getEntityManager()->getRepository(Product::class);
+
+        /**
+         * @var Product $product
+         */
+        $product = $productRepository->findOneBy(['status' => Product::ACTIVE]);
 
         return $this->responseJson('success', 200, [
-            'upgradeUserOrder' => $upgradeUserOrderArray,
-            'user' => $user->getArray(),
-            'userLevels' => UserLevel::$userLevelTextArray
+            'product' => $product->getArray(),
+            'shareSources' => $this->createProductShareSource($user, $product, $url)
         ]);
     }
 
@@ -960,36 +847,16 @@ class UserController extends BaseController
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $page = isset($data['page']) ? $data['page'] : 1;
 
-        /**
-         * null => all
-         * pending
-         * completed
-         * expired
-         */
-        $type = isset($data['type']) ? $data['type'] : null;
 
         $courseArray = [];
-
-        if ($type == null) {
-            $courseStudentsQuery = $userRepository->findCourseStudentQuery($thirdSession);
-            /**
-             * @var CourseStudent[] $courseStudents
-             */
-            $courseStudents = $this->getPaginator()->paginate($courseStudentsQuery, $page, self::PAGE_LIMIT);
-            foreach ($courseStudents as $courseStudent) {
-                $courseArray[] = $courseStudent->getCourse()->getArray();
-            }
-        } else {
-            $groupOrdersQuery = $groupOrderRepository->findGroupOrdersForUserQuery($thirdSession, [], true);
-            /**
-             * @var GroupUserOrder[] $groupOrders
-             */
-            $groupOrders = $this->getPaginator()->paginate($groupOrdersQuery, $page,self::PAGE_LIMIT);
-            foreach ($groupOrders as $groupOrder) {
-                $courseArray[] = $groupOrder->getProduct()->getCourse()->getArray();
-            }
+        $courseStudentsQuery = $userRepository->findCourseStudentQuery($thirdSession);
+        /**
+         * @var CourseStudent[] $courseStudents
+         */
+        $courseStudents = $this->getPaginator()->paginate($courseStudentsQuery, $page, self::PAGE_LIMIT);
+        foreach ($courseStudents as $courseStudent) {
+            $courseArray[] = $courseStudent->getCourse()->getArray();
         }
-
 
         return $this->responseJson('success', 200, [
             'courses' => $courseArray

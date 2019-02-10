@@ -24,11 +24,9 @@ class ProductReviewRepository extends ServiceEntityRepository
 
     /**
      * @param $productId
-     * @param int $page
-     * @param int $pageLimit
-     * @return ProductReview[]
+     * @return \Doctrine\ORM\Query
      */
-    public function findActiveProductReviews($productId, $page = 1, $pageLimit = 5)
+    public function findActiveProductReviewsQuery($productId)
     {
         $query = $this->getEntityManager()->createQueryBuilder();
         $query->select('pr')
@@ -38,10 +36,8 @@ class ProductReviewRepository extends ServiceEntityRepository
             ->setParameter('status', ProductReview::ACTIVE)
             ->andWhere('p.id = :productId')
             ->setParameter('productId', $productId)
-            ->orderBy('pr.id', 'desc')
-            ->setFirstResult(($page - 1) * $pageLimit)
-            ->setMaxResults($pageLimit);
-        return $query->getQuery()->getResult();
+            ->orderBy('pr.id', 'desc');
+        return $query->getQuery();
     }
 
     /**

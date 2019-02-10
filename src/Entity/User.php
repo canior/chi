@@ -1174,6 +1174,16 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * @param int $timestamp
+     */
+    public function setLastLoginTimestamp(int $timestamp) {
+        $dateTime = new \DateTime();
+        $dateTime->setTimestamp($timestamp);
+        $this->setLastLogin($dateTime);
+    }
+
+
+    /**
      * 创建升级会员订单
      * @param string $userLevel
      * @param GroupUserOrder $groupUserOrder

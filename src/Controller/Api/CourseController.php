@@ -36,10 +36,10 @@ class CourseController extends ProductController
 
     /**
      * @param ProductRepository $productRepository
-     * @return Product[]
+     * @return \Doctrine\ORM\Query
      */
     protected function findActiveProducts(ProductRepository $productRepository) {
-        return $productRepository->findActiveProducts(true);
+        return $productRepository->findActiveProductsQuery(true);
     }
 
     /**
