@@ -768,7 +768,7 @@ class UserController extends BaseController
     }
 
     /**
-     * 查看用户推荐名额
+     * 查看用户推荐名额 | ???这是那个接口？？？
      *
      * @Route("/user/recommandStock/view", name="viewUserRecommandStock", methods="POST")
      * @param Request $request
@@ -945,6 +945,7 @@ class UserController extends BaseController
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $user = $this->getWxUser($thirdSession);
+        $url = isset($data['url']) ? $data['url'] : null;
 
         $userStockOrders = $user->getUserRecommandStockOrders();
 
@@ -957,7 +958,8 @@ class UserController extends BaseController
             'recommandStock' => $user->getRecommandStock(),
             'usedStock' => $user->getUserAccountOrdersAsRecommander()->count(),
             'totalStock' => $user->getTotalRecommandStock(),
-            'children' => $childrenArray
+            'children' => $childrenArray,
+            'shareSources' => $this->createUserShareSource($user, $url)
         ]);
     }
 
