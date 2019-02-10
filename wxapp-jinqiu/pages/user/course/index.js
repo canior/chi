@@ -6,7 +6,6 @@ Page({
    * 页面的初始数据
    */
   data: {
-    curStatus: null,
     myCourses: [],
     imgUrlPrefix: app.globalData.imgUrlPrefix,
     isLogin: null,
@@ -19,9 +18,6 @@ Page({
   onLoad: function (options) {
     wx.hideShareMenu()
     //app.buriedPoint(options)
-    this.setData({
-      curStatus: options.status ? options.status : null
-    })
   },
 
   getMyCourses: function (status) {
@@ -30,18 +26,17 @@ Page({
       title: '玩命加载中',
     })    
     wx.request({
-      url: app.globalData.baseUrl + '/user/groupUserOrders/',
+      url: app.globalData.baseUrl + '/user/courses',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
-        groupUserOrderStatus: status
+        page: 1
       },
       method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           that.setData({
-            myCourses: res.data.data.groupUserOrders,
-            curStatus: status
+            myCourses: res.data.data.courses
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -83,7 +78,7 @@ Page({
       user: app.globalData.user
     })
     if (this.data.isLogin) {
-      this.getMyCourses(this.data.curStatus)
+      this.getMyCourses()
     } else {
       wx.navigateTo({
         url: '/pages/user/login',
