@@ -27,7 +27,8 @@
     "pages/user/call/index",
     "pages/user/call/detail",
     "pages/user/order/index",
-    "pages/user/order/detail"
+    "pages/user/order/detail",
+    "pages/user/order/review"
   ],
   "window":{
     "backgroundTextStyle":"light",
