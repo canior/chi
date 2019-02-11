@@ -9,7 +9,8 @@
         <text>分享</text>
       </view>
       <block wx:if="{{type == 'course' && user.userLevel == 'VISITOR'}}">
-        <button class="item btn group" bindtap="wxCreateGroup" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrder || groupUserOrder.groupOrderStatus != 'completed'}}"><text>集Call</text></button>
+        <button class="item btn group" bindtap="wxCreateGroup" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrder}}"><text>集Call</text></button>
+        <button class="item btn group" bindtap="wxViewGroup" disabled="{{btnDisabled}}" wx:if="{{groupUserOrder && groupUserOrder.groupOrderStatus != 'completed'}}"><text>集Call中</text></button>
         <button class="item btn group" bindtap="wxViewCourse" disabled="{{btnDisabled}}" wx:if="{{groupUserOrder && groupUserOrder.groupOrderStatus == 'completed'}}"><text>观看课程</text></button>
         <button class="item btn group" bindtap="wxUpgrade" disabled="{{btnDisabled}}"><text>学员升级</text></button>
       </block>

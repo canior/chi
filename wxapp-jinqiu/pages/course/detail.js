@@ -84,7 +84,14 @@ Page({
   wxCreateGroup: function(e) {
     bottom.createGroup(this, app.globalData.baseUrl + '/groupOrder/create', this.data.course.id)
   },
-  
+
+  // 集Call中
+  wxViewGroup: function() {
+    wx.redirectTo({
+      url: '/pages/group/index?id=' + this.data.groupUserOrder.id,
+    })
+  },
+
   // 转学员升级
   wxUpgrade: function(e) {
     if (this.data.isLogin) {

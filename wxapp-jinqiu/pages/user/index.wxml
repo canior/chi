@@ -32,34 +32,34 @@
 <view class="split-brand"/>
 <view class="container">
   <view class="row" bindtap="toUpgrade" wx:if="{{user.userLevel == 'VISITOR' || user.userLevel == 'ADVANCED'}}">
-    <view class="left"><image src="/images/receive.png"/>学员升级</view>
+    <view class="left"><image src="/images/upgrade.png"/>学员升级</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>
   <view class="split-line"/>
   <view class="row" bindtap="toUserAddress">
-    <view class="left"><image src="/images/addr.png"/>我的地址</view>
+    <view class="left"><image src="/images/my-addr.png"/>我的地址</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>
   <view class="split-line"/>
   <view class="row" bindtap="toMyOrder">
-    <view class="left"><image src="/images/receive.png"/>我的订单</view>
+    <view class="left"><image src="/images/my-order.png"/>我的订单</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>
   <view class="split-line"/>
   <view class="row" bindtap="toMyCall">
-    <view class="left"><image src="/images/receive.png"/>我的集Call</view>
+    <view class="left"><image src="/images/my-call.png"/>我的集Call</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>    
   <block wx:if="{{isLogin && user.totalStudents > 0}}">
     <view class="split-line"/>
     <view class="row" bindtap="toMyStudent">
-      <view class="left"><image src="/images/wx.png"/>我的学员</view>
+      <view class="left"><image src="/images/my-student.png"/>我的学员</view>
       <view class="right">{{user.totalStudents}}人<view class="arrow-right"/></view>
     </view>
   </block>
   <view class="split-line"/>
   <button class="row btn-clear" open-type='contact'>
-    <view class="left"><image src="/images/service.png"/>客服咨询</view>
+    <view class="left"><image src="/images/server.png"/>客服咨询</view>
     <view class="right"><view class="arrow-right"/></view>
   </button>
   <view class="split-line"/>
