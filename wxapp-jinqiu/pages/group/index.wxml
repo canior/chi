@@ -168,7 +168,7 @@
 
 <!--拼团已完成-->
 <block wx:if="{{groupOrder.status == 'completed'}}">
-  <block wx:if="{{usetType == 'open' || userType == 'join'}}">
+  <block wx:if="{{userType == 'open' || userType == 'join'}}">
     <view class="bottom-done"><!--开团人和参团人-->
       <view class="left" bindtap="toProductDetail">继续拼团</view>
       <view class="right" bindtap="wxShowShareModal">邀请好友</view>
