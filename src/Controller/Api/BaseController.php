@@ -235,7 +235,7 @@ class BaseController extends DefaultController
                  */
                 $referBannerFile = $fileRepository->find($referMeta->getShareBannerFileId());
             }
-            $referShareSource = ShareSource::factory(ShareSource::REFER_GROUP_ORDER, $page, $user, $referBannerFile, $referMeta->getShareTitle());
+            $referShareSource = ShareSource::factory(ShareSource::REFER_GROUP_ORDER, $page, $user, $referBannerFile, $referMeta->getShareTitle(), $groupOrder->getProduct(), $groupOrder);
 
             $this->getEntityManager()->persist($referShareSource);
             $this->getEntityManager()->flush();
