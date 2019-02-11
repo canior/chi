@@ -88,7 +88,7 @@ Page({
   // 集Call中
   wxViewGroup: function() {
     wx.redirectTo({
-      url: '/pages/group/index?id=' + this.data.groupUserOrder.id,
+      url: '/pages/group/index?id=' + this.data.groupUserOrder.groupOrderId,
     })
   },
 
