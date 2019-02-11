@@ -112,7 +112,10 @@ class ShareSource implements Dao
             $shareSource->setTitle($user->getNickname() . ' ' . $shareMetaTitle);
             $shareSource->setBannerFile($bannerFile);
         } else if ($shareSourceType == self::REFER_GROUP_ORDER) {
-            //TODO
+            $shareSource->setTitle($user->getNickname() . $shareMetaTitle . $product->getTitle());
+            if ($product and $product->getMainProductImage()) {
+                $shareSource->setBannerFile($product->getMainProductImage()->getFile());
+            }
         } else {
             $shareSource->setBannerFile($bannerFile);
         }

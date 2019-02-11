@@ -198,7 +198,6 @@ class BaseController extends DefaultController
     }
 
     /**
-     * //TODO 需要确定转发配置
      *
      * 返回转发和朋友圈的shareSource
      *
@@ -208,27 +207,65 @@ class BaseController extends DefaultController
      */
     protected function createGroupOrderShareSource(GroupOrder $groupOrder, $page) {
 
+        $user = $groupOrder->getUser();
+        $fileRepository = $this->getEntityManager()->getRepository(File::class);
+        $projectShareMeta = $this->getEntityManager()->getRepository(ProjectShareMeta::class);
+        $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);
+
+        /**
+         * @var ProjectShareMeta $referMeta
+         */
+        $referMeta = $projectShareMeta->findOneBy(['metaKey' => ShareSource::REFER_GROUP_ORDER]);
+
+        /**
+         * @var ProjectShareMeta $quanMeta
+         */
+        $quanMeta = $projectShareMeta->findOneBy(['metaKey' => ShareSource::QUAN_GROUP_ORDER]);
+
         $shareSources = [];
 
-        $product = $groupOrder->getProduct();
-        $title = "快来集call" . $product->getTitle();
-        if ($groupOrder->isPending()) {
-            $title = "【仅剩1人】" .  $title;
+        //拼团页面转发分享
+        $referShareSource = $shareSourceRepository->findOneBy(['groupOrder' => $groupOrder, 'type' => ShareSource::REFER_GROUP_ORDER]);
+        if ($referShareSource == null) {
+
+            $referBannerFile = null;
+            if ($referMeta->getShareBannerFileId()) {
+                /**
+                 * @var File $referBannerFile
+                 */
+                $referBannerFile = $fileRepository->find($referMeta->getShareBannerFileId());
+            }
+            $referShareSource = ShareSource::factory(ShareSource::REFER_GROUP_ORDER, $page, $user, $referBannerFile, $referMeta->getShareTitle());
+
+            $this->getEntityManager()->persist($referShareSource);
+            $this->getEntityManager()->flush();
         }
 
-        $referShareSource = new ShareSource();
-        $referShareSource->setType(ShareSource::REFER);
-        $referShareSource->setTitle($title);
-        $referShareSource->setBannerFile($product->getMainProductImage()->getFile());
-        $referShareSource->setPage($page, true);
+        //拼团页面朋友圈图片
+        $quanShareSource = $shareSourceRepository->findOneBy(['groupOrder' => $groupOrder, 'type' => ShareSource::QUAN_GROUP_ORDER]);
+        if ($quanShareSource == null) {
 
-        $quanShareSource = new ShareSource();
-        $quanShareSource->setType(ShareSource::QUAN);
-        $quanShareSource->setBannerFile($product->getMainProductImage()->getFile());
-        $quanShareSource->setPage($page, true);
+            $quanShareSource = ShareSource::factory(ShareSource::QUAN_GROUP_ORDER, $page, $user);
+            $wx = new WxCommon($this->getLog());
+            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'groupOrderId=' . $groupOrder->getId() . '&shareSourceId=' . $quanShareSource->getId(), $page, true);
 
-        $shareSources[] = $referShareSource->getArray();
-        $shareSources[] = $quanShareSource->getArray();
+            $quanBannerFile = null;
+            if ($quanMeta->getShareBannerFileId()) {
+                /**
+                 * @var File $quanBannerFile
+                 */
+                $quanBannerFile = $fileRepository->find($quanMeta->getShareBannerFileId());
+            }
+
+            $bannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $quanBannerFile);
+            $quanShareSource->setBannerFile($bannerFile);
+
+            $this->getEntityManager()->persist($quanShareSource);
+            $this->getEntityManager()->flush();
+        }
+
+        $shareSources[ShareSource::REFER] = $referShareSource->getArray();
+        $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();
 
         return $shareSources;
     }
