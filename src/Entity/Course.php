@@ -483,6 +483,7 @@ class Course implements Dao
 
         return [
             'id' => $this->getId(),
+            'productId' => $this->getProduct()->getId(),
             'title' => $this->getProduct()->getTitle(),
             'price' => $this->getProduct()->getPrice(),
             'shortDescription' => $this->getProduct()->getShortDescription(),

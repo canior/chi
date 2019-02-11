@@ -55,7 +55,7 @@ class CourseController extends ProductController
         /**
          * @var GroupUserOrder $groupUserOrder
          */
-        $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $product, 'user' => $user, 'status' => GroupUserOrder::DELIVERED]);
+        $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $product, 'user' => $user]);
         return $groupUserOrder;
     }
 

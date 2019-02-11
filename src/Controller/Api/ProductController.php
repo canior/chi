@@ -119,14 +119,14 @@ class ProductController extends BaseController
          */
         $groupUserOrder = $this->findGroupUserOrder($user, $product);
 
-        $groupUserOrderId = null;
+        $groupUserOrderArray = null;
         if ($groupUserOrder) {
-            $groupUserOrderId = $groupUserOrder->getId();
+            $groupUserOrderArray = $groupUserOrder->getArray();
         }
 
         return $this->responseJson('success', 200, [
             'product' => $product->getArray(),
-            'groupUserOrderId' => $groupUserOrderId,
+            'groupUserOrder' => $groupUserOrderArray,
             'shareSources' => $this->createProductShareSource($user, $product, $url)
         ]);
     }
@@ -137,7 +137,12 @@ class ProductController extends BaseController
      * @return null|GroupUserOrder
      */
     protected function findGroupUserOrder(User $user, Product $product) {
-        return null;
+        $groupUserOrderRepository = $this->getEntityManager()->getRepository(GroupUserOrder::class);
+        /**
+         * @var GroupUserOrder $groupUserOrder
+         */
+        $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $product, 'user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
+        return $groupUserOrder;
     }
 
     /**
