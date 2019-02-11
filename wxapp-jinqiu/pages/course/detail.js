@@ -24,9 +24,9 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
-    const courseId = options.id ? options.id : 2;
-    this.getCourse(courseId);
-    const url = app.globalData.baseUrl + '/courses/' + courseId + '/reviews'
+    const productId = options.id ? options.id : 2;
+    this.getCourse(productId);
+    const url = app.globalData.baseUrl + '/courses/' + productId + '/reviews'
     courseReview.init(this, url);
     //app.buriedPoint(options)
     /*app.userActivityCallback = res => {
@@ -82,7 +82,7 @@ Page({
 
   // 集Call
   wxCreateGroup: function(e) {
-    bottom.createGroup(this, app.globalData.baseUrl + '/groupOrder/create', this.data.course.id)
+    bottom.createGroup(this, app.globalData.baseUrl + '/groupOrder/create', this.data.course.productId)
   },
 
   // 集Call中

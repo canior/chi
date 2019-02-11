@@ -28,7 +28,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const id = options.id;
+    const id = 43;//options.id;
     if (id) {
       this.getGroupOrder(id);      
     }
@@ -61,7 +61,7 @@ Page({
           if (groupOrder.status == 'completed') {//拼团完成
             // 更多精彩拼团
             that.setData({
-              moreProducts: res.data.data.product.similarProducts
+              moreProducts: []//res.data.data.product.similarProducts
             })
           } else {//拼团未完成:pending, expired
             // 产品评价

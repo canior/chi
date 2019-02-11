@@ -29,8 +29,6 @@ Page({
 
   getCourses: function (page) {
     const that = this;
-    const pages = getCurrentPages();
-    const currentPageUrl = '/' + pages[pages.length - 1].route;    
     wx.showLoading({
       title: '玩命加载中',
     })
@@ -39,7 +37,7 @@ Page({
       data: {
         page: page,
         thirdSession: wx.getStorageSync('thirdSession'),
-        url: currentPageUrl        
+        url: '/pages/course/index' 
       },
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
