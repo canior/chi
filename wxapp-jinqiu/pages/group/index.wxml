@@ -1,16 +1,8 @@
 <!--pages/group/index.wxml-->
 <import src="/pages/tmpl/price.wxml"/>
-<import src="/pages/tmpl/address.wxml"/>
 <import src="/pages/tmpl/productReview.wxml"/>
 <import src="/pages/tmpl/share.wxml"/>
 <import src="/pages/tmpl/bottom.wxml"/>
-<!--拼团订单地址信息,包括开团人订单和参团人订单-->
-<block wx:if="{{userType == 'open'}}">
-  <template is="address" data="{{address:openUserOrder.address, unpaid:false}}"/>
-</block>
-<block wx:if="{{userType == 'join'}}">
-  <template is="address" data="{{address:joinUserOrder.address, unpaid:false}}"/>
-</block>
 
 <!--产品信息-->
 <view class="container">
@@ -58,7 +50,7 @@
       </view>
     </view>
     <block wx:if="{{groupOrder.status != 'completed'}}">
-      <view class="hint" wx:if="{{userType == 'open'}}">仅剩<text>1</text>人，快呼唤小伙伴参加吧！</view>
+      <view class="hint" wx:if="{{userType == 'open'}}">仅剩<text>{{groupOrder.restNumOrderRequired}}</text>人，快呼唤小伙伴参加吧！</view>
       <view class="hint" wx:if="{{userType != 'open'}}">就差你了，快来助攻吧！</view>
       <block wx:if="{{groupOrder.status == 'pending'}}">
         <view class="count-down">剩余 <text class="hr">{{countdown.hr}}</text>:<text class="min">{{countdown.min}}</text>:<text class="sec">{{countdown.sec}}</text> 结束</view>
