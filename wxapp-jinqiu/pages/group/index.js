@@ -15,7 +15,7 @@ Page({
     imgUrlPrefix: app.globalData.imgUrlPrefix,
     groupOrder: null,
     openUserOrder: null, //开团人订单
-    joinUserOrder: null, //参团人订单
+    joinUserOrders: null, //参团人订单
     productReviewData: {},
     moreProducts: [],
     shareData: {},
@@ -147,13 +147,13 @@ Page({
   setGroupData: function (groupOrder) {
     var userType = null;
     var openUserOrder = null;
-    var joinUserOrder = null;
+    var joinUserOrders = [];
     // 开团订单,参团订单
     groupOrder.groupUserOrders.forEach((item) => {
         if (item.isMasterOrder) {
           openUserOrder = item
         } else {
-          joinUserOrder = item
+          joinUserOrders.push[item]
         }
     })
     // 用户类型
@@ -161,7 +161,7 @@ Page({
     if (user) {//登录用户
       if (user.id == groupOrder.user.id) {//开团人
         userType = 'open';
-      } else if (joinUserOrder && joinUserOrder.user.id == user.id) {//参团人
+      } else if (joinUserOrders.length > 0 && this.in_array(joinUserOrders, user.id)) {//参团人
         userType = 'join'
       } else {//其它登录用户
         userType = 'other'
@@ -174,9 +174,18 @@ Page({
       groupOrder: groupOrder,
       userType: userType,
       openUserOrder: openUserOrder,
-      joinUserOrder: joinUserOrder
+      joinUserOrders: joinUserOrders
     })
   },
+
+  in_array: function (joinUserOrders, useId) {
+    for (var i in joinUserOrders) {
+      if (joinUserOrders[i].user.id == useId) {
+        return true;
+      }
+    }
+    return false;
+  },  
 
   // 产品评价图片预览
   wxPreviewImage(e) {
