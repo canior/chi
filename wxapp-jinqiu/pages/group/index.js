@@ -28,7 +28,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const id = 24;//options.id ? options.id : 10216;
+    const id = options.id;
     if (id) {
       this.getGroupOrder(id);      
     }
