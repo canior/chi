@@ -51,6 +51,7 @@ class GroupOrderController extends BaseController
 
         $productId =  isset($data['productId']) ? $data['productId'] : null;
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $url = isset($data['url']) ? $data['url'] : null;
 
         $user = $this->getWxUser($thirdSession);
 
@@ -65,7 +66,9 @@ class GroupOrderController extends BaseController
         $this->getEntityManager()->flush();
 
         $data = [
-            'groupUserOrder' => $groupOrder->getMasterGroupUserOrder()->getArray()
+            'product' => $groupOrder->getProduct()->getArray(),
+            'groupOrder' => $groupOrder->getArray(),
+            'shareSources' => $this->createGroupOrderShareSource($groupOrder, $url)
         ];
 
         return $this->responseJson('success', 200, $data);
@@ -155,7 +158,7 @@ class GroupOrderController extends BaseController
         $data = [
             'product' => $groupOrder->getProduct()->getArray(),
             'groupOrder' => $groupOrder->getArray(),
-            'shareSources' => $this->createShareSource($groupOrder, $url)
+            'shareSources' => $this->createGroupOrderShareSource($groupOrder, $url)
         ];
 
         return $this->responseJson('success', 200, $data);
