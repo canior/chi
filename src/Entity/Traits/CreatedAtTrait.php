@@ -38,6 +38,13 @@ trait CreatedAtTrait
     }
 
     /**
+     * @return string
+     */
+    public function getCreatedAtDateFormatted() {
+        return date(self::DATE_FORMAT, $this->createdAt);
+    }
+
+    /**
      * Set createdAt
      *
      * @param int $createdAt | null
