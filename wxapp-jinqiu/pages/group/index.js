@@ -44,14 +44,12 @@ Page({
 
   getGroupOrder: function(id) {
     const that = this;
-    const pages = getCurrentPages();
-    const currentPageUrl = '/' + pages[pages.length - 1].route;
     wx.request({
       url: app.globalData.baseUrl + '/groupOrder/view',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),        
         groupOrderId: id,
-        url: currentPageUrl
+        url: '/pages/group/index?id=' + id
       },
       method: 'POST',
       success: (res) => {
