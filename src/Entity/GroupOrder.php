@@ -434,6 +434,8 @@ class GroupOrder implements Dao
 
         return [
             'id' => $this->getId(),
+            'numOfOrdersRequired' => $this->getTotalGroupUserOrdersRequired(),
+            'restNumOrderRequired' => $this->getRestGroupUserOrdersRequired(),
             'status' => $this->getStatus(),
             'statusText' => $this->getStatusText(),
             'user' => $this->getUser()->getArray(),
