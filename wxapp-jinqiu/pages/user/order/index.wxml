@@ -26,7 +26,7 @@
       <view class="left status">{{item.statusText}}</view>
       <view class="right">
         <button open-type="contact">客服咨询</button>
-        <button bindtap="toUserOrderDetail" data-id="{{item.id}}">订单详情</button>
+        <button catchtap="toUserOrderDetail" data-id="{{item.id}}">订单详情</button>
       </view>
     </view>
   </view>
