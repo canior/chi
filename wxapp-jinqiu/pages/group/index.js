@@ -28,7 +28,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const id = options.id ? options.id : 10216;
+    const id = 24;//options.id ? options.id : 10216;
     if (id) {
       this.getGroupOrder(id);      
     }
@@ -153,7 +153,7 @@ Page({
         if (item.isMasterOrder) {
           openUserOrder = item
         } else {
-          joinUserOrders.push[item]
+          joinUserOrders.push(item)
         }
     })
     // 用户类型

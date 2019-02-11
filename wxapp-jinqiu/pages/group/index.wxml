@@ -142,7 +142,7 @@
   <template is="bottom" data="{{product:groupOrder.product, ...bottomData}}"/>
 </block>
 <block wx:elif="{{groupOrder.status == 'pending'}}"><!--拼团进行中-->
-  <block wx:if="{{userType == 'open'}}"><!--开团人-->
+  <block wx:if="{{userType == 'open' || userType == 'join'}}"><!--开团人和参团人-->
     <view class="bottom" bindtap="wxShowShareModal" wx:if="{{!shareData.showModal}}">
       <text>邀请好友参团</text>
     </view>
@@ -161,7 +161,7 @@
         <image src="/images/service.png"/>
         <text>客服</text>
       </button>-->
-      <button class="btn" bindtap="joinGroup" disabled="{{btnDisabled}}">￥{{groupOrder.product.groupPrice}} 我要参团</button>
+      <button class="btn" bindtap="joinGroup" disabled="{{btnDisabled}}">￥{{groupOrder.product.price}} 我要参团</button>
     </view>
   </block>
 </block><!--拼团进行中-->
