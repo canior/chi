@@ -311,6 +311,7 @@ class UserAccountOrder implements Dao
             'amount' => $this->getAmount(),
             'paymentStatus' => self::$paymentStatuses[$this->getPaymentStatus()],
             'createdAt' => $this->getCreatedAt(true),
+            'createdAtDateFormatted' => $this->getCreatedAtDateFormatted(),
             'upgradeUserOrder' => $this->getUpgradeUserOrder() ? $this->getUpgradeUserOrder()->getArray() : null,
             'course' => $this->getCourse() ? $this->getCourse()->getArray() : null,
             'memo' => $this->getMemo(),

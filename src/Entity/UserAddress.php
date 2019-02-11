@@ -161,4 +161,9 @@ class UserAddress implements Dao
             'isDefault' => $this->getIsDefault(),
         ];
     }
+
+    public function __toString()
+    {
+        return $this->getName() . ' ' . $this->getPhone() . ' ' . $this->getAddress() . ' ' . $this->getRegion();
+    }
 }

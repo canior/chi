@@ -757,7 +757,7 @@ class UserController extends BaseController
         return $this->responseJson('success', 200, [
             'shareSourceUsersTotal' => $totalShareSourceUsers,
             'shareSourceUsers' => $shareSourceUserArray,
-            'shareSources' => $this->createShareSource($user, $url)
+            'shareSources' => $this->createUserShareSource($user, $url)
         ]);
     }
 

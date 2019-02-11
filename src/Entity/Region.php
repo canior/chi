@@ -211,4 +211,9 @@ class Region implements Dao
             'county' => $this->getCounty()->getName(),
         ];
     }
+
+    public function __toString()
+    {
+        return $this->getFullName();
+    }
 }
