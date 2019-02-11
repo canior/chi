@@ -78,7 +78,7 @@ function __createOrder(that, url, productId) {
   })
 }
 
-// 发起拼团
+// 发起拼团=>集Call
 function createGroup(that, url, productId) {
   if (that.data.isLogin) {
     __createGroup(that, url, productId);
@@ -104,9 +104,9 @@ function __createGroup(that, url, productId) {
     success: (res) => {
       wx.hideLoading();
       if (res.statusCode == 200 && res.data.code == 200) {
-        //console.log(res.data.data)
+        console.log(res.data.data)
         wx.navigateTo({
-          url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
+          url: '/pages/group/index?id=' + res.data.data.groupOrder.id,
         })
       } else {
         console.log('wx.request return error', res.statusCode);

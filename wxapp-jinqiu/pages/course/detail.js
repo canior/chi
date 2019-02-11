@@ -82,25 +82,7 @@ Page({
     })
   },
 
-  // 转课程返现详情
-  /*toCourseReward: function() {
-    wx.navigateTo({
-      url: "/pages/course/reward"
-    });
-  },*/
-
-  // 单独购买提醒弹窗
-  wxShowModal: function (e) {
-    bottom.showModal(this)
-  },
-  wxHideModal: function (e) {
-    bottom.hideModal(this)
-  },
-  // 单独购买
-  wxCreateOrder: function (e) {
-    bottom.createOrder(this, app.globalData.baseUrl + '/groupUserOrder/create', this.data.course.id)
-  },
-  // 发起拼团
+  // 集Call
   wxCreateGroup: function(e) {
     bottom.createGroup(this, app.globalData.baseUrl + '/groupOrder/create', this.data.course.id)
   },
@@ -108,17 +90,9 @@ Page({
   // 转学员升级
   wxUpgrade: function(e) {
     if (this.data.isLogin) {
-      // 判断个人资料是否完整
-      if (this.data.user.isCompletedPersonalInfo) {
-        wx.navigateTo({
-          url: '/pages/user/upgrade/index',
-        })
-      } else {
-        // 转新建个人资料
-        wx.navigateTo({
-          url: '/pages/user/info/update?upgrade=1',
-        })
-      }
+      wx.navigateTo({
+        url: '/pages/user/upgrade/index',
+      })
     } else {
       wx.navigateTo({
         url: '/pages/user/login',

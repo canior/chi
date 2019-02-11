@@ -49,6 +49,7 @@ Page({
     wx.request({
       url: app.globalData.baseUrl + '/groupOrder/view',
       data: {
+        thirdSession: wx.getStorageSync('thirdSession'),        
         groupOrderId: id,
         url: currentPageUrl
       },
