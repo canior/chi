@@ -18,7 +18,7 @@
         </view>
       </view>
       <view class="right">
-        <view class="reward">￥{{item.paymentTotal}}</view>
+        <view class="reward">￥{{item.product.price}}</view>
         <view class="btn">集Call详情</view>      
       </view>
     </view>

@@ -25,7 +25,6 @@
     "pages/user/mobile/login",
     "pages/share/moment",
     "pages/user/call/index",
-    "pages/user/call/detail",
     "pages/user/order/index",
     "pages/user/order/detail",
     "pages/user/order/review"

@@ -36,7 +36,7 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           that.setData({
-            myCalls: [{id:1}]//res.data.data.groupOrders
+            myCalls: res.data.data.groupOrders
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -51,7 +51,7 @@ Page({
   toMyCallDetail: function (e) {
     const orderId = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: '/pages/user/call/detail?id=' + orderId,
+      url: '/pages/group/index?id=' + orderId,
     })
   },
 

@@ -8,20 +8,17 @@
       <view class="left">订单号：{{item.id}}</view>
       <view class="right pending">{{item.statusText}}</view>
     </view>
-    <view class="row" bindtap="toMyCourseLog" data-id="{{item.id}}">
+    <view class="row">
       <view class="left">
-        <image mode="widthFix" src="{{imgUrlPrefix+'/'+item.product.courseImages[0].fileId}}"/>
+        <image mode="widthFix" src="{{imgUrlPrefix+'/'+item.courseImages[0].fileId}}"/>
         <view>
-          <view class="line title">{{item.product.title}}</view>
-          <view class="line desc">科目: {{item.product.subjectText}}</view>
-          <view class="line desc">时间: {{item.product.startDate}} - {{item.product.endDate}}</view>
-          <view class="line desc">地点: {{item.product.address}}</view>
-          <view class="line desc">讲师: {{item.product.teacher.name}} | {{item.product.teacher.title}}</view>
+          <view class="line title">{{item.title}}</view>
+          <view class="line desc">时间: {{item.startDate}} - {{item.endDate}}</view>
+          <view class="line desc">讲师: {{item.teacher.name}} | {{item.teacher.title}}</view>
         </view>
       </view>
       <view class="right">
-        <view class="reward">￥{{item.paymentTotal}}</view>
-        <view class="btn">课程日志</view>      
+        <view class="reward">￥{{item.price}}</view>
       </view>
     </view>
   </view>

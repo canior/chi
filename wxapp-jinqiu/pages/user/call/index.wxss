@@ -33,7 +33,7 @@
 }
 .row .right {
   font-size: 26rpx;
-  width: 72px;
+  width: 80px;
   text-align: center;
 }.row .right.pending {
   color: #888;
