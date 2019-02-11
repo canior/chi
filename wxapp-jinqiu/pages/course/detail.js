@@ -16,7 +16,7 @@ Page({
     bottomData: {},
     shareData: {},
     loading: true,
-    groupUserOrderId: null,
+    groupUserOrder: null,
   },
 
   /**
@@ -40,13 +40,11 @@ Page({
 
   getCourse: function (id) {
     const that = this;
-    const pages = getCurrentPages();
-    const currentPageUrl = '/' + pages[pages.length - 1].route;
     wx.request({
       url: app.globalData.baseUrl + '/courses/' + id,
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
-        url: currentPageUrl
+        url: '/pages/course/detail?id=' + id
       },
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
@@ -57,7 +55,7 @@ Page({
           })
           that.setData({
             course: course,
-            groupUserOrderId: res.data.data.groupUserOrderId
+            groupUserOrder: res.data.data.groupUserOrder
           })
           share.setShareSources(that, res.data.data.shareSources)
         } else {
@@ -112,19 +110,6 @@ Page({
     wx.navigateTo({
       url: '/pages/group/index',
     })
-  },
-
-  // 转课程日志
-  wxToCourseLog: function () {
-    if (this.data.isLogin) {
-      wx.redirectTo({
-        url: '/pages/user/course/log?id=' + this.data.groupUserOrderId,
-      })
-    } else {
-      wx.navigateTo({
-        url: '/pages/user/login',
-      })
-    }
   },
 
   // 分享:邀请好友

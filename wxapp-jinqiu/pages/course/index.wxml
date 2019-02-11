@@ -9,8 +9,8 @@
     </swiper>
   </view>
   
-  <block wx:for="{{courses}}" wx:for-item="course" wx:key="index" bindtap="toCourseDetail" data-id="{{course.id}}">
-    <view class="chi-item" bindtap="toCourseDetail" data-id="{{course.id}}">
+  <block wx:for="{{courses}}" wx:for-item="course" wx:key="index">
+    <view class="chi-item" bindtap="toCourseDetail" data-id="{{course.productId}}">
       <view class="left"><image mode="widthFix" src="{{imgUrlPrefix + '/' + course.courseImages[0].fileId}}"/></view>
       <view class="right">
         <view class="line title">{{course.title}}</view>
