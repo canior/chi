@@ -8,6 +8,7 @@ use App\Entity\Traits\StatusTrait;
 use App\Entity\Traits\UpdatedAtTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -502,6 +503,12 @@ class Product implements Dao
         return $this->getProductReviews()->count();
     }
 
+    public function getTotalActiveReviews() {
+        $criteria = Criteria::create();
+        $criteria->where($criteria::expr()->eq('status', ProductReview::ACTIVE));
+        return $this->productReviews->matching($criteria)->count();
+    }
+
     public function addProductReview(ProductReview $productReview): self
     {
         if (!$this->productReviews->contains($productReview)) {
@@ -876,7 +883,7 @@ class Product implements Dao
             'stock' => $this->getStock(),
             'similarProducts' => $similarProductsArray,
             'soldNum' => 1000, //TODO 需要从product statistics里拿
-            'reviewsNum' => $this->getTotalReviews(),
+            'reviewsNum' => $this->getTotalActiveReviews(),
         ];
     }
 

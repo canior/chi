@@ -32,9 +32,9 @@ class GroupOrder implements Dao
 
     public static $statuses = [
         self::CREATED => '已创建',
-        self::PENDING => '集call中',
-        self::COMPLETED => '集call成功',
-        self::EXPIRED => '集call过期',
+        self::PENDING => '集Call中',
+        self::COMPLETED => '集Call成功',
+        self::EXPIRED => '集Call过期',
     ];
 
 
