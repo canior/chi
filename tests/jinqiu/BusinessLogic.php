@@ -16,6 +16,7 @@ use App\Entity\GroupUserOrder;
 use App\Entity\ShareSourceUser;
 use App\Entity\UpgradeUserOrderPayment;
 use App\Entity\UserLevel;
+use App\Entity\UserParentLog;
 
 class BusinessLogic extends JinqiuBaseTestCase
 {
@@ -291,6 +292,10 @@ class BusinessLogic extends JinqiuBaseTestCase
         $this->assertTrue($groupUserOrder->isPaid());
         $this->assertTrue($upgradeUserOrder->isApproved());
 
+        $this->assertEquals($recommander, $upgradeUserOrder->getRecommanderUser());
+        $this->assertEquals($partner, $upgradeUserOrder->getPartnerUser());
+        $this->assertEquals($partnerTeacher, $upgradeUserOrder->getPartnerTeacherUser());
+
         $this->assertEquals(1, $supplier->getTotalUserAccountOrders());
         $supplierUserAccountOrder = $supplier->getUserAccountOrders()[0];
         $this->assertEquals($product->getSupplierPrice(), $supplierUserAccountOrder->getAmount());
@@ -331,8 +336,19 @@ class BusinessLogic extends JinqiuBaseTestCase
 
         $shareSourceUser1 = ShareSourceUser::factory($shareSource1, $user);
         $this->assertEquals($recommander1, $user->getParentUser());
+        $this->assertEquals(1, $user->getUserParentLogs()->count());
+        $parentUserLog1 = $user->getUserParentLogs()[0];
+        $this->assertEquals($user, $parentUserLog1->getUser());
+        $this->assertEquals($recommander1, $parentUserLog1->getParentUser());
+        $this->assertEquals($shareSource1, $parentUserLog1->getShareSource());
+
 
         $shareSourceUser2 = ShareSourceUser::factory($shareSource2, $user);
         $this->assertEquals($recommander2, $user->getParentUser());
+        $this->assertEquals(2, $user->getUserParentLogs()->count());
+        $parentUserLog2 = $user->getUserParentLogs()[1];
+        $this->assertEquals($user, $parentUserLog2->getUser());
+        $this->assertEquals($recommander2, $parentUserLog2->getParentUser());
+        $this->assertEquals($shareSource2, $parentUserLog2->getShareSource());
     }
 }

@@ -48,6 +48,27 @@ class UpgradeUserOrder implements Dao
     private $user;
 
     /**
+     * @var User|null $recommanderUser
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $recommanderUser;
+
+    /**
+     * @var User|null $partnerUser
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $partnerUser;
+
+    /**
+     * @var User|null $partnerTeacherUser
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $partnerTeacherUser;
+
+    /**
      * @var string
      * @ORM\Column(type="string")
      */
@@ -126,6 +147,7 @@ class UpgradeUserOrder implements Dao
         $upgradeUserOrder->setTotal($groupUserOrder->getTotal());
         $upgradeUserOrder->setStatus(self::CREATED);
         $upgradeUserOrder->setUserLevel($userLevel);
+
         $groupUserOrder->setUpgradeUserOrder($upgradeUserOrder);
 
         return $upgradeUserOrder;
@@ -379,6 +401,7 @@ class UpgradeUserOrder implements Dao
         if ($recommander) {
             $recommanderRewards = UserLevel::$advanceUserUpgradeRewardsArray[UserLevel::ADVANCED];
             if ($this->isApproved()) {
+                $this->setRecommanderUser($recommander);
                 $memo = '推荐' . $user->getName() . '成为' . UserLevel::$userLevelTextArray[$userLevel] . $this->getUser()->getName();
                 $recommander->createUserAccountOrder(UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this, null, $memo);
             } else {
@@ -394,6 +417,7 @@ class UpgradeUserOrder implements Dao
         if ($partner) {
             $partnerRewards = UserLevel::$advanceUserUpgradeRewardsArray[UserLevel::PARTNER];
             if ($this->isApproved()) {
+                $this->setPartnerUser($partner);
                 $memo = $user->getName() . '成为' . UserLevel::$userLevelTextArray[$userLevel] . $this->getUser()->getName();
                 $partner->createUserAccountOrder(UserAccountOrder::PARTNER_REWARDS, $partnerRewards, $this, null, $memo);
                 //推荐名额减1
@@ -410,6 +434,7 @@ class UpgradeUserOrder implements Dao
             if ($partnerTeacher) {
                 $partnerTeacherRewards = UserLevel::$advanceUserUpgradeRewardsArray[UserLevel::PARTNER_TEACHER];
                 if ($this->isApproved()) {
+                    $this->setPartnerTeacherUser($partnerTeacher);
                     $memo = $user->getName() . '成为' . UserLevel::$userLevelTextArray[$userLevel] . $this->getUser()->getName();
                     $partnerTeacher->createUserAccountOrder(UserAccountOrder::PARTNER_TEACHER_REWARDS, $partnerTeacherRewards, $this, null, $memo);
                 } else {
@@ -469,6 +494,54 @@ class UpgradeUserOrder implements Dao
         $this->groupUserOrder = $groupUserOrder;
     }
 
+    /**
+     * @return User|null
+     */
+    public function getRecommanderUser(): ?User
+    {
+        return $this->recommanderUser;
+    }
+
+    /**
+     * @param User|null $recommanderUser
+     */
+    public function setRecommanderUser(?User $recommanderUser): void
+    {
+        $this->recommanderUser = $recommanderUser;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getPartnerUser(): ?User
+    {
+        return $this->partnerUser;
+    }
+
+    /**
+     * @param User|null $partnerUser
+     */
+    public function setPartnerUser(?User $partnerUser): void
+    {
+        $this->partnerUser = $partnerUser;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getPartnerTeacherUser(): ?User
+    {
+        return $this->partnerTeacherUser;
+    }
+
+    /**
+     * @param User|null $partnerTeacherUser
+     */
+    public function setPartnerTeacherUser(?User $partnerTeacherUser): void
+    {
+        $this->partnerTeacherUser = $partnerTeacherUser;
+    }
+
     public function getArray() {
 
         $upgradeUserOrderPaymentArray = [];
@@ -478,6 +551,9 @@ class UpgradeUserOrder implements Dao
         return [
             'id' => $this->getId(),
             'user' => $this->getUser()->getArray(),
+            'recommanderUser' => $this->getRecommanderUser() ? $this->getRecommanderUser()->getArray() : null,
+            'partnerUser' => $this->getPartnerUser() ? $this->getPartnerUser()->getArray() : null,
+            'partnerTeacherUser' => $this->getPartnerTeacherUser() ? $this->getPartnerTeacherUser()->getArray() : null,
             'oldUserLevel' => $this->getOldUserLevel(),
             'oldUserLevelText' => $this->getOldUserLevelText(),
             'userLevel' => $this->getUserLevel(),

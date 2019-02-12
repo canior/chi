@@ -174,6 +174,13 @@ class Product implements Dao
      */
     private $groupOrderValidForHours;
 
+    /**
+     * @var File | null
+     * @ORM\ManyToOne(targetEntity="App\Entity\File", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $shareImageFile;
+
 
     /**
      * Product constructor.
@@ -809,6 +816,22 @@ class Product implements Dao
     }
 
     /**
+     * @return File|null
+     */
+    public function getShareImageFile(): ?File
+    {
+        return $this->shareImageFile;
+    }
+
+    /**
+     * @param File|null $shareImageFile
+     */
+    public function setShareImageFile(?File $shareImageFile): void
+    {
+        $this->shareImageFile = $shareImageFile;
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {
@@ -848,6 +871,8 @@ class Product implements Dao
             'rewards' => $this->getRewards(),
             'productImages' => $productImageArray,
             'productSpecImages' => $productSpecImagesArray,
+            'productVideos' => $productVideosArray,
+            'shareImageFileId' => $this->getShareImageFile() ? $this->getShareImageFile()->getId() : null,
             'stock' => $this->getStock(),
             'similarProducts' => $similarProductsArray,
             'soldNum' => 1000, //TODO 需要从product statistics里拿

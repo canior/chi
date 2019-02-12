@@ -50,7 +50,8 @@ class ShareSourceUser implements Dao
             if ($oldParentUser) {
                 $oldParentUser->removeSubUser($child);
             }
-            $child->setParentUser($parentUser);
+            $memo = "推荐人变更：" . $oldParentUser . "->" . $parentUser;
+            $child->setParentUser($parentUser, $shareSource, $memo);
             $parentUser->addSubUser($child, time() + User::PARENT_EXPIRES_SECONDS);
         }
 

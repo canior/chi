@@ -276,6 +276,15 @@ class User extends BaseUser implements Dao
      */
     private $recommandStudentUsers;
 
+
+    /**
+     * @var ArrayCollection|UserParentLog[] $userParentLogs
+     * @ORM\OneToMany(targetEntity="App\Entity\UserParentLog", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $userParentLogs;
+
+
     public function __construct()
     {
         parent::__construct();
@@ -307,6 +316,7 @@ class User extends BaseUser implements Dao
         $this->courseStudents = new ArrayCollection();
         $this->userRecommandStockOrders = new ArrayCollection();
         $this->recommandStudentUsers = new ArrayCollection();
+        $this->userParentLogs = new ArrayCollection();
     }
 
     public function setId($id)
@@ -497,15 +507,22 @@ class User extends BaseUser implements Dao
 
     /**
      * @param null|self $parentUser
+     * @param ShareSource|null $shareSource
+     * @param null|string $memo
      * @return User
      */
-    public function setParentUser(?User $parentUser): self
+    public function setParentUser(?User $parentUser, ShareSource $shareSource = null,  $memo = null): self
     {
         if ($parentUser == $this) {
             return $this;
         }
 
         $this->parentUser = $parentUser;
+
+        if ($memo != null) {
+            $userParentLog = UserParentLog::factory($this, $parentUser, $shareSource, $memo);
+            $this->addUserParentLog($userParentLog);
+        }
 
         return $this;
     }
@@ -537,18 +554,26 @@ class User extends BaseUser implements Dao
         return $this->getRecommandStock() + $this->getUserAccountOrdersAsRecommander()->count();
     }
 
+    /**
+     * @param User $subUser
+     * @param int $parentExpiresAt
+     * @return User
+     */
     public function addSubUser(User $subUser, $parentExpiresAt): self
     {
         if (!$this->subUsers->contains($subUser)) {
             $this->subUsers[] = $subUser;
             $subUser->setParentUser($this);
-            //锁定推荐人100天
             $subUser->setParentUserExpiresAt($parentExpiresAt);
         }
 
         return $this;
     }
 
+    /**
+     * @param User $subUser
+     * @return User
+     */
     public function removeSubUser(User $subUser): self
     {
         if ($this->subUsers->contains($subUser)) {
@@ -1564,6 +1589,29 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * @return UserParentLog[] | ArrayCollection
+     */
+    public function getUserParentLogs()
+    {
+        return $this->userParentLogs;
+    }
+
+    /**
+     * @param UserParentLog[]|ArrayCollection $userParentLogs
+     */
+    public function setUserParentLogs($userParentLogs): void
+    {
+        $this->userParentLogs = $userParentLogs;
+    }
+
+    /**
+     * @param UserParentLog $userParentLog
+     */
+    public function addUserParentLog(UserParentLog $userParentLog) {
+        $this->userParentLogs->add($userParentLog);
+    }
+
+    /**
      * 合并姓名和昵称
      * @return string
      */
@@ -1577,5 +1625,7 @@ class User extends BaseUser implements Dao
             . ' 名称: ' . $this->getDisplayName()
             . ' 等级: ' . $this->getUserLevelText();
     }
+
+
 
 }

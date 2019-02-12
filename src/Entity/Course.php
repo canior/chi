@@ -463,6 +463,20 @@ class Course implements Dao
     }
 
     /**
+     * @param File|null $shareImageFile
+     */
+    public function setShareImageFile(?File $shareImageFile) {
+        $this->getProduct()->setShareImageFile($shareImageFile);
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getShareImageFile() {
+        return $this->getProduct()->getShareImageFile();
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {
@@ -496,6 +510,7 @@ class Course implements Dao
             'courseSpecImages' => $courseSpecImagesArray,
             'reviewsNum' => $this->getProduct()->getTotalReviews(),
             'courseVideos' => $courseVideosArray,
+            'shareImageFileId' => $this->getShareImageFile() ? $this->getShareImageFile()->getId() : null,
         ];
     }
 }

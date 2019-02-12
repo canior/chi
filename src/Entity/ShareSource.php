@@ -274,18 +274,6 @@ class ShareSource implements Dao
         return $this;
     }
 
-    public function getArray() : array {
-        return [
-            'id' => $this->id,
-            'userId' => $this->getUser() ? $this->getUser()->getId() : null,
-            'type' => $this->type,
-            'typeText' => $this->getTypeText(),
-            'title' => $this->title,
-            'bannerFileId' => $this->getBannerFile() ? $this->getBannerFile()->getId() : null,
-            'page' => $this->getPage(),
-        ];
-    }
-
     public function getGroupOrder(): ?GroupOrder
     {
         return $this->groupOrder;
@@ -306,5 +294,23 @@ class ShareSource implements Dao
         $shareSourceUser = ShareSourceUser::factory($this, $user);
         $this->addShareSourceUser($shareSourceUser);
         return $shareSourceUser;
+    }
+
+    public function getArray() : array {
+        return [
+            'id' => $this->id,
+            'userId' => $this->getUser() ? $this->getUser()->getId() : null,
+            'type' => $this->type,
+            'typeText' => $this->getTypeText(),
+            'title' => $this->title,
+            'bannerFileId' => $this->getBannerFile() ? $this->getBannerFile()->getId() : null,
+            'page' => $this->getPage(),
+        ];
+    }
+
+
+    public function __toString()
+    {
+        return $this->getUser() . '的' . $this->getTypeText();
     }
 }
