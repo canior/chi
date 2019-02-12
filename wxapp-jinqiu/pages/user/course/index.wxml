@@ -4,21 +4,17 @@
 
 <block wx:for="{{myCourses}}" wx:key="index" wx:if="{{myCourses.length > 0}}">
   <view class="section">
-    <view class="row">
-      <view class="left">订单号：{{item.id}}</view>
-      <view class="right pending">{{item.statusText}}</view>
-    </view>
-    <view class="row">
+    <view class="row" bindtap="toCourseDetail" data-id="{{item.productId}}">
       <view class="left">
         <image mode="widthFix" src="{{imgUrlPrefix+'/'+item.courseImages[0].fileId}}"/>
         <view>
           <view class="line title">{{item.title}}</view>
-          <view class="line desc">时间: {{item.startDate}} - {{item.endDate}}</view>
-          <view class="line desc">讲师: {{item.teacher.name}} | {{item.teacher.title}}</view>
+          <view class="line desc-box">{{item.shortDescription}}</view>
+          <view class="line sub-title">讲师: {{item.teacher.name}} | {{item.teacher.title}}</view>
         </view>
       </view>
       <view class="right">
-        <view class="reward">￥{{item.price}}</view>
+        <view class="btn" catchtap="wxReview" data-id="{{item.productId}}">课程评价</view>
       </view>
     </view>
   </view>

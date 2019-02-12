@@ -94,17 +94,9 @@ Page({
   // 转学员升级
   toUpgrade: function () {
     if (this.data.isLogin) {
-      // 判断个人资料是否完整
-      if (this.data.user.isCompletedPersonalInfo) {
-        wx.navigateTo({
-          url: '/pages/user/upgrade/index',
-        })
-      } else {
-        // 转新建个人资料
-        wx.navigateTo({
-          url: '/pages/user/info/update?upgrade=1',
-        })
-      }
+      wx.navigateTo({
+        url: '/pages/user/upgrade/index',
+      })
     } else {
       wx.navigateTo({
         url: '/pages/user/login',

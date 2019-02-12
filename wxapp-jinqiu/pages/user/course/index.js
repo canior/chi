@@ -48,12 +48,19 @@ Page({
   },
 
   // 转课程日志
-  toMyCourseLog: function (e) {
-    const orderId = e.currentTarget.dataset.id;
+  toCourseDetail: function (e) {
+    const productId = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: '/pages/user/course/log?id=' + orderId,
+      url: '/pages/course/detail?id=' + productId,
     })
   },
+
+  wxReview: function (e) {
+    const productId = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: '/pages/user/course/review?id=' + productId,
+    })
+  },  
 
   // 发现更多课程
   toHome: function () {
