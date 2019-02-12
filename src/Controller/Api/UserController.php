@@ -992,13 +992,14 @@ class UserController extends BaseController
     public function createCourseStudent(Request $request) {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
-        $courseId = isset($data['courseId']) ? $data['courseId'] : null;
+        $productId = isset($data['productId']) ? $data['productId'] : null;
         $user = $this->getWxUser($thirdSession);
 
         /**
-         * @var Course $course
+         * @var Product $product
          */
-        $course = $this->getEntityManager()->getRepository(Course::class)->find($courseId);
+        $product = $this->getEntityManager()->getRepository(Product::class)->find($productId);
+        $course = $product->getCourse();
         $courseStudent = $this->getEntityManager()->getRepository(CourseStudent::class)
             ->findOneBy(['course' => $course, 'studentUser' => $user, 'status' => CourseStudent::REGISTERED]);
         if ($courseStudent == null) {
