@@ -25,6 +25,8 @@ final class Version20190212063826 extends AbstractMigration
         $this->addSql('alter table upgrade_user_order add column recommander_user_id int');
         $this->addSql('alter table upgrade_user_order add column partner_user_id int');
         $this->addSql('alter table upgrade_user_order add column partner_teacher_user_id int');
+        $this->addSql('alter table product_review drop column course_student_id');
+        $this->addSql('alter table product_review add column user_id int');
     }
 
 

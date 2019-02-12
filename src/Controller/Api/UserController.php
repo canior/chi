@@ -35,6 +35,7 @@ use App\Repository\GroupOrderRepository;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\GroupUserOrderRewardsRepository;
 use App\Repository\ProductRepository;
+use App\Repository\ProductReviewRepository;
 use App\Repository\ProjectBannerMetaRepository;
 use App\Repository\ProjectShareMetaRepository;
 use App\Repository\ProjectTextMetaRepository;
@@ -277,32 +278,36 @@ class UserController extends BaseController
      * 添加或修改评论
      * @Route("/user/groupUserOrder/review", name="updateProductReview", methods="POST")
      * @param Request $request
+     * @param ProductReviewRepository $productReviewRepository
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @param FileRepository $fileRepository
      * @return Response
      */
-    public function updateProductReviewAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository, FileRepository $fileRepository) : Response {
+    public function updateProductReviewAction(Request $request, ProductReviewRepository $productReviewRepository, GroupUserOrderRepository $groupUserOrderRepository, FileRepository $fileRepository) : Response {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $productReviewId = isset($data['productReviewId']) ? $data['productReviewId'] : null;
         $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
         $rate = isset($data['rate']) ? $data['rate'] : null;
         $review = isset($data['review']) ? $data['review'] : null;
         $reviewImageFileIds = isset($data['imageIds']) ? $data['imageIds'] : [];
-
-        $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+        $user = $this->getWxUser($thirdSession);
 
         $productReview = null;
-        $productReviews = $groupUserOrder->getProductReviews();
-        if ($productReviews->isEmpty()) {
-            $productReview = new ProductReview();
-        } else {
-            $productReview = $productReviews[0];
+        if ($productReviewId) {
+            $productReview = $productReviewRepository->find($productReviewId);
         }
 
+        if ($productReview == null) {
+            $productReview = new ProductReview();
+        }
+        $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
         $productReview->setGroupUserOrder($groupUserOrder);
+
         $productReview->setProduct($groupUserOrder->getProduct());
         $productReview->setRate($rate);
         $productReview->setReview($review);
+        $productReview->setUser($user);
 
         foreach ($reviewImageFileIds as $fileId) {
             $file = $fileRepository->find($fileId);
@@ -311,7 +316,11 @@ class UserController extends BaseController
             $productReviewImage->setProductReview($productReview);
             $productReview->addProductReviewImage($productReviewImage);
         }
-        $groupUserOrder->addProductReview($productReview);
+
+        if ($groupUserOrder) {
+            $groupUserOrder->addProductReview($productReview);
+        }
+
 
         $this->getEntityManager()->persist($groupUserOrder);
         $this->getEntityManager()->flush();

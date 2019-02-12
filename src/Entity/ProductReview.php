@@ -63,10 +63,12 @@ class ProductReview implements Dao
     private $productReviewImages;
 
     /**
-     * @var CourseStudent|null
-     * @ORM\ManyToOne(targetEntity="CourseStudent", inversedBy="productReviews")
+     * @var User|null $user
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=true)
      */
-    private $courseStudent;
+    private $user;
+
 
     /**
      * ProductReview constructor.
@@ -179,19 +181,19 @@ class ProductReview implements Dao
     }
 
     /**
-     * @return CourseStudent|null
+     * @return User|null
      */
-    public function getCourseStudent(): ?CourseStudent
+    public function getUser(): ?User
     {
-        return $this->courseStudent;
+        return $this->user;
     }
 
     /**
-     * @param CourseStudent|null $courseStudent
+     * @param User|null $user
      */
-    public function setCourseStudent(?CourseStudent $courseStudent): void
+    public function setUser(?User $user): void
     {
-        $this->courseStudent = $courseStudent;
+        $this->user = $user;
     }
 
     /**
@@ -206,7 +208,8 @@ class ProductReview implements Dao
 
         return [
             'id' => $this->getId(),
-            'user' => $this->getGroupUserOrder()->getUser()->getArray(),
+            'groupUserOrderId' => $this->getGroupUserOrder() ? $this->getGroupUserOrder()->getId() : null,
+            'user' => $this->getUser()->getArray(),
             'rate' => $this->getRate(),
             'review' => $this->getReview(),
             'productReviewImages' => $productReviewImageArray,
