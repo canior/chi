@@ -55,6 +55,13 @@ Page({
     })
   },
 
+  // 发现更多课程
+  toHome: function () {
+    wx.switchTab({
+      url: '/pages/course/index',
+    })
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

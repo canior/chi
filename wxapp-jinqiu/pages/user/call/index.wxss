@@ -23,7 +23,7 @@
   font-size: 24rpx;
   color: #888;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 }
 .row .left image {
   width: 145rpx;
@@ -49,9 +49,24 @@
   color: #333;
   line-height: 50rpx;
 }
+.row .line.sub-title {
+  font-size: 26rpx;
+  color: #333;
+}
 .row .line.desc {
   font-size: 24rpx;
   color: #b2b2b2;
+}
+.row .line.desc-box {
+  font-size: 24rpx;
+  color: #b2b2b2;
+  width: 170px;
+  line-height: 30rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
 }
 .row .right .reward {
   font-size: 36rpx;

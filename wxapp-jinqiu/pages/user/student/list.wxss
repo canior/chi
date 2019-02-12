@@ -55,3 +55,6 @@
 .table .tr .td.user text {
   width: 150rpx;
 }
+.chi-item .right .line.desc-box {
+  width: 170px;
+}

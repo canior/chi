@@ -17,10 +17,8 @@
       <image mode="widthFix" src="{{imgUrlPrefix+'/'+item.courseImages[0].fileId}}"/>
       <view>
         <view class="line title">{{item.title}}</view>
-        <view class="line desc">科目: {{item.subjectText}}</view>
-        <view class="line desc">时间: {{item.startDate}} - {{item.endDate}}</view>
-        <view class="line desc">地点: {{item.address}}</view>
-        <view class="line desc">讲师: {{item.teacher.name}} | {{item.teacher.title}}</view>
+        <view class="line desc-box">{{item.shortDescription}}</view>
+        <view class="line sub-title">讲师: {{item.teacher.name}} | {{item.teacher.title}}</view>
       </view>
     </view>
     <view class="right">

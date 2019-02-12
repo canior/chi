@@ -57,4 +57,4 @@
   <!--<view>拼团返现：<text class="highlight">￥{{groupUserOrder.rewards}}</text></view>-->
 </view>
 
-<view class="bottom" bindtap="toProductDetail">继续拼团</view>
+<view class="bottom" bindtap="toCourse">发现更多课程</view>

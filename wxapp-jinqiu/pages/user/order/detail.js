@@ -15,6 +15,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     //app.buriedPoint(options)
     //this.getGroupUserOrder(options.id)
     this.setData({
@@ -90,10 +91,10 @@ Page({
     })
   },
 
-  // 继续拼团
-  toProductDetail: function (e) {
+  // 发现更多课程
+  toCourse: function (e) {
     wx.reLaunch({
-      url: '/pages/product/detail?id=' + this.data.groupUserOrder.product.id,
+      url: '/pages/course/index'
     })
   },
 
