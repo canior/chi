@@ -52,12 +52,15 @@
 /*拼团信息*/
 .group-user {
   display: flex;
+  /*justify-content: flex-start;*/
   justify-content: center;
+  flex-wrap: wrap;
+  padding: 0 25rpx;
 }
 .group-user .user {
   display: flex;
   flex-direction: column;
-  padding: 30rpx;
+  padding: 12rpx;
 }
 .group-user .user image {
   width: 103rpx;

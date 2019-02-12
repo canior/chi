@@ -1,5 +1,7 @@
 // pages/course/video.js
 const app = getApp()
+const courseReview = require('../tmpl/courseReview.js');
+const bottom = require('../tmpl/bottom.js');
 const util = require('../../utils/util.js');
 Page({
 
@@ -7,26 +9,54 @@ Page({
    * 页面的初始数据
    */
   inputValue: '',
-  data: {    
-    src: '',
-    danmuList:
-      [{
-        text: '第 1s 出现的弹幕',
-        color: '#ff0000',
-        time: 1
-      },
-      {
-        text: '第 3s 出现的弹幕',
-        color: '#ff00ff',
-        time: 3
-      }]
+  data: {
+    imgUrlPrefix: app.globalData.imgUrlPrefix,
+    course: null,
+    courseReviewData: {},
+    bottomData: {},
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
+    const productId = 3;//options.id;
+    this.getVideo(productId)
+    const url = app.globalData.baseUrl + '/courses/' + productId + '/reviews'
+    courseReview.init(this, url);
+  },
 
+  getVideo: function (id) {
+    const that = this;
+    wx.request({
+      url: app.globalData.baseUrl + '/user/signInCourse',
+      data: {
+        thirdSession: wx.getStorageSync('thirdSession'),
+        productId: id
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          var course = res.data.data.course
+          that.setData({
+            course: course
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
+    })
+  },
+
+  wxReview: function () {
+    wx.navigateTo({
+      url: '/pages/user/course/review?id=' + this.data.course.productId,
+    })
   },
 
   /**

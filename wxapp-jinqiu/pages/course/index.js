@@ -24,6 +24,10 @@ Page({
     this.getCourses(this.data.page)
     app.userActivityCallback = res => {
       app.buriedPoint(options)
+      this.setData({
+        isLogin: app.globalData.isLogin,
+        user: app.globalData.user
+      })  
     }
   },
 

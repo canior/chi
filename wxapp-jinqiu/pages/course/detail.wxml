@@ -1,5 +1,4 @@
 <!--pages/course/detail.wxml-->
-
 <import src="/pages/tmpl/courseReview.wxml"/>
 <import src="/pages/tmpl/share.wxml"/>
 <import src="/pages/tmpl/bottom.wxml"/>
@@ -16,10 +15,7 @@
   <view class="course">
     <view class="left">
       <view class="line name">{{course.title}}</view>
-      <view class="line desc">时间: {{course.startDate}} - {{course.endDate}}</view>
-    </view>
-    <view class="right">
-      <view class="line price">￥{{course.price}}</view>
+      <view class="line desc-box">{{course.shortDescription}}</view>
     </view>
   </view>
 
@@ -39,7 +35,6 @@
 <view class="container">
   <view class="specs">
     <view class="title">课程详情</view>
-    <view class="desc">{{course.shortDescription}}</view>
     <block wx:for="{{course.courseSpecImages}}" wx:key="id" wx:for-item="courseSpecImage">
       <view class="img">
         <image mode="widthFix" src="{{imgUrlPrefix + '/' + courseSpecImage.fileId}}" bindload="imgLoadDone" data-index="{{index}}"/>

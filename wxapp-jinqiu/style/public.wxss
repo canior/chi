@@ -61,7 +61,7 @@
 }
 .chi-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding: 30rpx 0;
 }
 .chi-item .left {
@@ -76,7 +76,6 @@
 .chi-item .right {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   margin-left: 20rpx;
   width: 100%;
   min-height: 161rpx;
@@ -107,6 +106,17 @@
 .chi-item .right .line.desc {
   font-size: 24rpx;
   color: #b2b2b2;
+}
+.chi-item .right .line.desc-box {
+  font-size: 24rpx;
+  color: #b2b2b2;
+  width: 260px;
+  line-height: 30rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
 }
 .chi-item .right .line .price, .chi-item .right-append .price {
   font-size: 36rpx;

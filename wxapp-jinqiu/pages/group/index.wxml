@@ -7,12 +7,12 @@
 <!--产品信息-->
 <view class="container">
   <view class="chi-item">
-    <view class="left"><image src="{{imgUrlPrefix + '/' + groupOrder.product.productImages[0].fileId}}"/></view>
+    <view class="left"><image src="{{imgUrlPrefix + '/' + groupOrder.product.courseImages[0].fileId}}"/></view>
     <view class="right">
-      <view class="line code">拼团编号：{{groupOrder.id}}</view>
+      <view class="line code">集Call编号：{{groupOrder.id}}</view>
       <view class="line title">{{groupOrder.product.title}}</view>
-      <view class="line desc">2人团 还剩{{groupOrder.product.stock}}份</view>
-      <template is="price" data="{{...groupOrder}}"/>
+      <view class="line desc-box">{{groupOrder.product.shortDescription}}</view>
+      <view class="line sub-title">讲师: {{groupOrder.product.teacher.name}} | {{groupOrder.product.teacher.title}}</view>
     </view>
     <view class="status">
       <image src="/images/group-completed.png" wx:if="{{groupOrder.status == 'completed'}}"/>
@@ -22,8 +22,8 @@
   </view>
 </view>
 <view class="chi-reward-container">
-    <view class="line reward">团长返现￥{{groupOrder.product.rewards}}</view>
-    <view class="line btn" bindtap="toProductReward">查看详情></view>
+    <view class="line reward">解锁全部课程</view>
+    <view class="line btn" bindtap="toUpgrade">查看详情></view>
     <view class="gohome" bindtap="wxHome">
       <view class="go">GO</view><text>返回\n首页</text>
     </view>
@@ -34,19 +34,22 @@
   <view class="group-container">
     <view class="status">{{groupOrder.statusText}}</view>
     <view class="group-user">
+      <!--<view class="user" wx:for="{{groupOrder.groupUserOrders}}">
+        <view class="avatar"><image src="{{item.user.avatarUrl}}"/><text>团长</text></view>
+        <view class="nickname">{{item.user.nickname}}</view>
+      </view>-->
+
       <view class="user"><!--开团人-->
         <view class="avatar"><image src="{{groupOrder.user.avatarUrl}}"/><text>团长</text></view>
         <view class="nickname">{{groupOrder.user.nickname}}</view>
       </view>
-      <view class="user"><!--参团人-->
-        <block wx:if="{{groupOrder.status == 'completed'}}"><!--拼团完成-->
-          <view class="avatar"><image src="{{joinUserOrder.user.avatarUrl}}"/></view>
-          <view class="nickname">{{joinUserOrder.user.nickname}}</view>
-        </block>
-        <block wx:else><!--拼团未完成-->
-          <view class="avatar"><image src="{{'/images/demo/group-who.png'}}"/></view>
-          <view class="nickname"></view>
-        </block>
+      <view class="user" wx:for="{{joinUserOrders}}" wx:key="index"><!--参团人-->
+        <view class="avatar"><image src="{{item.user.avatarUrl}}"/></view>
+        <view class="nickname">{{item.user.nickname}}</view>
+      </view>
+      <view class="user" wx:for="{{restUserOrders}}" wx:key="index"><!--剩余人-->
+        <view class="avatar"><image src="{{'/images/demo/group-who.png'}}"/></view>
+        <view class="nickname"></view>
       </view>
     </view>
     <block wx:if="{{groupOrder.status != 'completed'}}">
@@ -63,30 +66,16 @@
 <!--拼团玩法-->
 <view class="container">
   <view class="rule">
-    <view class="title">拼团玩法</view>
+    <view class="title">集Call玩法</view>
     <view class="flow">
-      <view class="step"><text>分享订单\n或产品</text></view>
+      <view class="step"><text>分享课程</text></view>
       <view class="arrow-right"/>
-      <view class="step">好友下单</view>
+      <view class="step">好友助攻</view>
       <view class="arrow-right"/>
-      <view class="step">双方收益</view>
+      <view class="step">一起解锁\n课程</view>
     </view>
   </view>
 </view><!--拼团玩法-->
-
-
-<!--恭喜您返现已到账:拼团完成后开团人和参团人可看到-->
-<block wx:if="{{groupOrder.status == 'completed'}}">
-  <view class="container">
-    <block wx:if="{{userType == 'open' || userType == 'join'}}">
-      <view class="reward-in">恭喜您！¥{{userType == 'open' ? openUserOrder.rewards : joinUserOrder.rewards}} 返现已到账</view>
-    </block>
-    <block wx:else>
-      <view class="reward-in" bindtap="wxCreateGroup">我要当团长</view>
-    </block>
-  </view>
-</block>
-
 
 <!--更多精彩拼团-->
 <block wx:if="{{groupOrder.status == 'completed'}}">
@@ -144,7 +133,7 @@
 <block wx:elif="{{groupOrder.status == 'pending'}}"><!--拼团进行中-->
   <block wx:if="{{userType == 'open' || userType == 'join'}}"><!--开团人和参团人-->
     <view class="bottom" bindtap="wxShowShareModal" wx:if="{{!shareData.showModal}}">
-      <text>邀请好友参团</text>
+      <text>邀请好友集Call</text>
     </view>
   </block>
   <block wx:else><!--其他人准备参团-->
@@ -161,7 +150,7 @@
         <image src="/images/service.png"/>
         <text>客服</text>
       </button>-->
-      <button class="btn" bindtap="joinGroup" disabled="{{btnDisabled}}">￥{{groupOrder.product.price}} 我要参团</button>
+      <button class="btn" bindtap="joinGroup" disabled="{{btnDisabled}}">￥{{groupOrder.product.price}} 我要集Call</button>
     </view>
   </block>
 </block><!--拼团进行中-->
@@ -170,8 +159,7 @@
 <block wx:if="{{groupOrder.status == 'completed'}}">
   <block wx:if="{{userType == 'open' || userType == 'join'}}">
     <view class="bottom-done"><!--开团人和参团人-->
-      <view class="left" bindtap="toProductDetail">继续拼团</view>
-      <view class="right" bindtap="wxShowShareModal">邀请好友</view>
+      <view class="left" bindtap="toVideo">观看课程</view>
     </view>
   </block>
   <block wx:else><!--其他用户-->

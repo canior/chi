@@ -9,17 +9,20 @@
         <text>分享</text>
       </view>
       <block wx:if="{{type == 'course' && user.userLevel == 'VISITOR'}}">
-        <button class="item btn group" bindtap="wxCreateGroup" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrder}}"><text>集Call</text></button>
-        <button class="item btn group" bindtap="wxViewGroup" disabled="{{btnDisabled}}" wx:if="{{groupUserOrder && groupUserOrder.groupOrderStatus != 'completed'}}"><text>集Call中</text></button>
-        <button class="item btn group" bindtap="wxViewCourse" disabled="{{btnDisabled}}" wx:if="{{groupUserOrder && groupUserOrder.groupOrderStatus == 'completed'}}"><text>观看课程</text></button>
-        <button class="item btn group" bindtap="wxUpgrade" disabled="{{btnDisabled}}"><text>学员升级</text></button>
+        <button class="item btn other" bindtap="wxCreateGroup" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrder || groupUserOrder.groupOrderStatus == 'expired'}}"><text>集Call免费解锁</text></button>
+        <button class="item btn other" bindtap="wxViewGroup" disabled="{{btnDisabled}}" wx:if="{{groupUserOrder && (groupUserOrder.groupOrderStatus == 'pending' || groupUserOrder.groupOrderStatus == 'created')}}"><text>集Call中</text></button>
+        <button class="item btn other" bindtap="wxViewCourse" disabled="{{btnDisabled}}" wx:if="{{groupUserOrder && groupUserOrder.groupOrderStatus == 'completed'}}"><text>观看课程</text></button>
+        <button class="item btn group" bindtap="wxUpgrade" disabled="{{btnDisabled}}"><text>解锁全部课程</text></button>
       </block>
       <block wx:if="{{type == 'course' && user.userLevel == 'ADVANCED'}}">
-        <button class="item btn group" bindtap="wxViewCourse" disabled="{{btnDisabled}}"><text>观看课程</text></button>
+        <button class="item btn other" bindtap="wxViewCourse" disabled="{{btnDisabled}}"><text>观看课程</text></button>
       </block>
       <block wx:if="{{type == 'product'}}">
         <button class="item btn group" bindtap="wxCreateOrder" disabled="{{btnDisabled}}"><text>购买￥{{product.price}}</text></button>
       </block>
+      <block wx:if="{{type == 'video'}}">
+        <button class="item btn group" bindtap="wxReview" disabled="{{btnDisabled}}"><text>发布评价</text></button>
+      </block>      
   </view>
 
 </template>

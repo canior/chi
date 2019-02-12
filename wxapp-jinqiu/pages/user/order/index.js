@@ -8,7 +8,6 @@ Page({
   data: {
     menu: [
       { name: '全部', status: null },
-      { name: '待成团', status: 'created' },
       { name: '待发货', status: 'pending' },
       { name: '已发货', status: 'shipping' },
       { name: '已收货', status: 'delivered' }

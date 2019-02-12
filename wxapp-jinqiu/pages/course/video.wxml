@@ -1,22 +1,31 @@
 <!--pages/course/video.wxml-->
-<view class="page-body">
-  <view class="page-section tc">
-    <video id="myVideo" src="http://wxsnsdy.tc.qq.com/105/20210/snsdyvideodownload?filekey=30280201010421301f0201690402534804102ca905ce620b1241b726bc41dcff44e00204012882540400&bizid=1023&hy=SH&fileparam=302c020101042530230204136ffd93020457e3c4ff02024ef202031e8d7f02030f42400204045a320a0201000400" binderror="videoErrorCallback" danmu-list="{{danmuList}}" enable-danmu danmu-btn controls></video>
+<import src="/pages/tmpl/courseReview.wxml"/>
+<import src="/pages/tmpl/bottom.wxml"/>
+<view class="container">
+  <video id="myVideo" src="http://wxsnsdy.tc.qq.com/105/20210/snsdyvideodownload?filekey=30280201010421301f0201690402534804102ca905ce620b1241b726bc41dcff44e00204012882540400&bizid=1023&hy=SH&fileparam=302c020101042530230204136ffd93020457e3c4ff02024ef202031e8d7f02030f42400204045a320a0201000400" binderror="videoErrorCallback" danmu-list="{{danmuList}}" enable-danmu danmu-btn controls></video>
 
-    <view class="weui-cells">
-      <view class="weui-cell weui-cell_input">
-        <view class="weui-cell__hd">
-          <view class="weui-label">弹幕内容</view>
-        </view>
-        <view class="weui-cell__bd">
-          <input bindblur="bindInputBlur" class="weui-input" type="text" placeholder="在此处输入弹幕内容" />
-        </view>
-      </view>
+  <view class="course">
+    <view class="left">
+      <view class="line name">{{course.title}}</view>
+      <view class="line desc-box">{{course.shortDescription}}</view>
     </view>
-    <view class="btn-area">
-      <button bindtap="bindSendDanmu" class="page-body-button" type="primary" formType="submit">发送弹幕</button>
-      <button bindtap="bindPlay" class="page-body-button" type="primary">播放</button>
-      <button bindtap="bindPause" class="page-body-button" type="primary">暂停</button>
+  </view>
+
+  <view class="section">
+    <view class="chi-item">
+      <view class="left"><image src="{{imgUrlPrefix + '/' + course.teacher.avatarFileId}}"/></view>
+      <view class="right">
+        <view class="line title">{{course.teacher.name}}</view>
+        <view class="line sub-title">{{course.teacher.title}}</view>
+        <view class="line desc">{{course.teacher.description}}</view>
+      </view>
     </view>
   </view>
 </view>
+<view class="split-line"/>
+
+<view class="container">
+  <template is="courseReview" data="{{...courseReviewData, imgUrlPrefix, course}}"/>
+</view>
+
+<template is="bottom" data="{{course, ...bottomData, type:'video'}}"/>

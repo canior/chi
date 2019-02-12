@@ -46,6 +46,9 @@
   background-color: #434343;
 }.chi-bottom .btn.group {
   background-color: #ffdf00;
+}.chi-bottom .btn.other {
+  color: #fff;
+  background-color: #434343;
 }
 .chi-bottom .btn-clear {
   background-color: transparent;

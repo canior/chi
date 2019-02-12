@@ -16,6 +16,7 @@ Page({
     groupOrder: null,
     openUserOrder: null, //开团人订单
     joinUserOrders: null, //参团人订单
+    restUserOrders: null, //剩余订单
     productReviewData: {},
     moreProducts: [],
     shareData: {},
@@ -148,6 +149,7 @@ Page({
     var userType = null;
     var openUserOrder = null;
     var joinUserOrders = [];
+    var restUserOrders = [];
     // 开团订单,参团订单
     groupOrder.groupUserOrders.forEach((item) => {
         if (item.isMasterOrder) {
@@ -156,6 +158,7 @@ Page({
           joinUserOrders.push(item)
         }
     })
+    for (var i = 0; i < groupOrder.restNumOrderRequired; i++) restUserOrders[i] =1;
     // 用户类型
     const user = this.data.user;
     if (user) {//登录用户
@@ -174,7 +177,8 @@ Page({
       groupOrder: groupOrder,
       userType: userType,
       openUserOrder: openUserOrder,
-      joinUserOrders: joinUserOrders
+      joinUserOrders: joinUserOrders,
+      restUserOrders: restUserOrders
     })
   },
 
@@ -260,15 +264,22 @@ Page({
   // 转首页
   wxHome: function (e) {
     wx.switchTab({
-      url: '/pages/product/index',
+      url: '/pages/course/index',
     })
   },
 
-  // 转产品返现详情
-  toProductReward: function () {
+  // 转学员升级
+  toUpgrade: function () {
     wx.navigateTo({
-      url: "/pages/product/reward"
+      url: "/pages/user/upgrade/index"
     });
+  },
+
+  // 观看课程
+  wxViewCourse: function () {
+    wx.navigateTo({
+      url: '/pages/course/video?id=' + this.data.groupOrder.productId,
+    })
   },
   
   // 单独购买提醒弹窗
