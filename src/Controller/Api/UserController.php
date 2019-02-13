@@ -513,6 +513,8 @@ class UserController extends BaseController
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $shareSourceId = isset($data['shareSourceId']) ? $data['shareSourceId'] : null;
 
+        $this->getLog()->info("add share source: received userId=" . $thirdSession . ", shareSourceId=" . $shareSourceId);
+
         $user = $this->getWxUser($thirdSession);
         $shareSource = $shareSourceRepository->find($shareSourceId);
 
