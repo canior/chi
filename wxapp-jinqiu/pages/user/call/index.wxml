@@ -25,7 +25,7 @@
   <view class="split-brand"/>
 </block>
 <block wx:if="{{myCourses.length == 0}}">
-  <view class="none">暂时没有注册课程</view>
+  <view class="none">暂时没有参加集Call</view>
 </block>
 
 <view class="bottom" bindtap="toHome">发现更多课程</view>

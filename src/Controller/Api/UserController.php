@@ -243,7 +243,9 @@ class UserController extends BaseController
 
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
-            $groupUserOrdersArray[] = $groupUserOrder->getArray();
+            if (!$groupUserOrder->getProduct()->isCourseProduct()) {
+                $groupUserOrdersArray[] = $groupUserOrder->getArray();
+            }
         }
 
         return $this->responseJson('success', 200, [
