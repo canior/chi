@@ -216,7 +216,6 @@ class GroupOrder implements Dao
 
         if ($this->getId()) {
             $this->getUser()->addUserCommand(CommandMessage::createNotifyPendingGroupOrderCommand($this));
-            $this->getUser()->addUserCommand(CommandMessage::createNotifyExpiringGroupOrderCommand($this));
         }
 
         $this->setUpdatedAt();

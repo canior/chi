@@ -9,7 +9,9 @@ use App\Entity\ProductVideo;
 use App\Entity\Subject;
 use App\Form\CourseType;
 use App\Repository\CourseRepository;
+use App\Repository\ProductVideoRepository;
 use App\Repository\TeacherRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -102,12 +104,22 @@ class CourseController extends BackendController
                  * @var File $videoFile
                  */
                 $videoFile = $this->getEntityManager()->getRepository(File::class)->find($videoFileId);
-                $productVideo = new ProductVideo();
-                $productVideo->setProduct($course->getProduct());
-                $productVideo->setFile($videoFile);
-                $course->getProduct()->addProductVideo($productVideo);
+                $productVideo = ProductVideo::factory($course->getProduct(), $videoFile);
+                $productVideos = new ArrayCollection();
+                $productVideos->add($productVideo);
+                $course->getProduct()->setProductVideos($productVideos);
                 $this->getEntityManager()->persist($course->getProduct());
-                $this->getEntityManager()->persist($course);
+            }
+
+            //add share image
+            $shareImageFileId = isset($request->request->get('course')['shareImage']) ? $request->request->get('course')['shareImageFile'] : null;
+            if ($shareImageFileId) {
+                /**
+                 * @var File $shareImageFile
+                 */
+                $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
+                $course->getProduct()->setShareImageFile($shareImageFile);
+                $this->getEntityManager()->persist($course->getProduct());
                 $this->getEntityManager()->flush();
             }
 
@@ -179,6 +191,18 @@ class CourseController extends BackendController
             $form->get('courseVideo')->setData($videos);
         }
 
+        $shareImageFile = $course->getShareImageFile();
+        if ($shareImageFile) {
+            $fileArray[$shareImageFile->getId()] = [
+                'id' => $shareImageFile->getId(),
+                'fileId' => $shareImageFile->getId(),
+                'priority' => 0,
+                'name' => $shareImageFile->getName(),
+                'size' => $shareImageFile->getSize()
+            ];
+            $form->get('shareImageFile')->setData($fileArray);
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -215,8 +239,36 @@ class CourseController extends BackendController
             }
 
             //update videos
-            //TODO
+            $courseVideoFileId = isset($request->request->get('course')['courseVideo']) ? $request->request->get('course')['courseVideo'] : [];
+            if ($courseVideoFileId) {
+                /**
+                 * @var File $courseVideoFile
+                 */
+                $courseVideoFile = $this->getEntityManager()->getRepository(File::class)->find($courseVideoFileId);
+                $courseVideo = ProductVideo::factory($course->getProduct(), $courseVideoFile);
+                $courseVideos = new ArrayCollection();
+                $courseVideos->add($courseVideo);
+                $course->getProduct()->setProductVideos($courseVideos);
+                $this->getEntityManager()->persist($course->getProduct());
+            } else {
+                $course->getProduct()->setProductVideos(null);
+                $this->getEntityManager()->persist($course->getProduct());
+            }
 
+            //update share image
+            $shareImageFileId = isset($request->request->get('course')['shareImageFile']) ? $request->request->get('course')['shareImageFile'] : [];
+            if ($shareImageFileId) {
+                /**
+                 * @var File $shareImageFile
+                 */
+                $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
+                $course->setShareImageFile($shareImageFile);
+
+            } else {
+                $course->setShareImageFile(null);
+            }
+
+            $this->getEntityManager()->persist($course);
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');
             return $this->redirectToRoute('course_edit', ['id' => $course->getId()]);

@@ -36,8 +36,22 @@ class ProductVideo implements Dao
      */
     public function __construct()
     {
-        $this->setPriority(0);
         $this->setCreatedAt();
+    }
+
+    /**
+     * @param Product $product
+     * @param File $courseVideoFile
+     * @param int $priority
+     * @return ProductVideo
+     */
+    public static function factory(Product $product, File $courseVideoFile, $priority = 0)
+    {
+        $productVideo = new ProductVideo();
+        $productVideo->setProduct($product);
+        $productVideo->setFile($courseVideoFile);
+        $productVideo->setPriority($priority);
+        return $productVideo;
     }
 
     public function getProduct(): ?Product

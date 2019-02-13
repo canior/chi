@@ -61,6 +61,13 @@ class ProductType extends AbstractType
                 'data_class' => null,
                 'mapped' => false,
             ])
+            ->add('shareImageFile', DropzoneType::class, [
+                'label' => '产品分享图片（1张：注意留空保留二维码位置）',
+                'maxFiles' => 1,
+                'priority' => true,
+                'data_class' => null,
+                'mapped' => false,
+            ])
             ->add('status', ChoiceType::class, [
                 'label' => '状态',
                 'mapped' => false,

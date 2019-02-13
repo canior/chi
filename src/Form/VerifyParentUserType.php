@@ -19,11 +19,6 @@ class VerifyParentUserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('recommanderName', TextType::class, [
-                'label' => '用户输入推荐人',
-                'required' => false,
-                'disabled' => true,
-            ])
             ->add('parentUser', EntityType::class, [
                 'label' => '认证推荐人',
                 'empty_data' => null,
@@ -32,15 +27,6 @@ class VerifyParentUserType extends AbstractType
                 'class' => User::class,
                 'required' => false,
             ])
-            ->add('parentUserExpiresAt', DateType::class, [
-                'label' => '推荐人锁定至日期',
-                'input' => 'timestamp',
-                'widget' => 'single_text',
-                'placeholder' => '请输入推荐人锁定至日期',
-                'required' => false,
-            ])
-
-
         ;
     }
 

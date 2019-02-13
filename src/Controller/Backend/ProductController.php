@@ -17,7 +17,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use App\Entity\File;
 use Intervention\Image\AbstractFont;
 use Intervention\Image\ImageManagerStatic as Image;
 
@@ -108,6 +108,18 @@ class ProductController extends BackendController
                 return new Response('页面错误', 500);
             }
 
+            //add share image
+            $shareImageFileId = isset($request->request->get('product')['shareImage']) ? $request->request->get('product')['shareImageFile'] : null;
+            if ($shareImageFileId) {
+                /**
+                 * @var File $shareImageFile
+                 */
+                $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
+                $product->setShareImageFile($shareImageFile);
+                $this->getEntityManager()->persist($product);
+            }
+
+            $this->getEntityManager()->flush();
             $this->addFlash('notice', '添加成功');
             return $this->redirectToRoute('product_index');
         }
@@ -155,6 +167,18 @@ class ProductController extends BackendController
                 ];
             }
             $form->get('specImages')->setData($specImages);
+        }
+
+        $shareImageFile = $product->getShareImageFile();
+        if ($shareImageFile) {
+            $fileArray[$shareImageFile->getId()] = [
+                'id' => $shareImageFile->getId(),
+                'fileId' => $shareImageFile->getId(),
+                'priority' => 0,
+                'name' => $shareImageFile->getName(),
+                'size' => $shareImageFile->getSize()
+            ];
+            $form->get('shareImageFile')->setData($fileArray);
         }
 
         $form->handleRequest($request);
@@ -206,6 +230,19 @@ class ProductController extends BackendController
                     die;
                 }
                 return new Response('页面错误', 500);
+            }
+
+            //update share image
+            $shareImageFileId = isset($request->request->get('product')['shareImageFile']) ? $request->request->get('product')['shareImageFile'] : [];
+            if ($shareImageFileId) {
+                /**
+                 * @var File $shareImageFile
+                 */
+                $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
+                $product->setShareImageFile($shareImageFile);
+
+            } else {
+                $product->setShareImageFile(null);
             }
 
             $product->setUpdatedAt(time());

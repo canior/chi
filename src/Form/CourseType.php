@@ -55,14 +55,14 @@ class CourseType extends AbstractType
                 'required' => true
             ])
             ->add('images', DropzoneType::class, [
-                'label' => '课程简介图片（最多5张）',
+                'label' => '课程简介图片（<=5张）',
                 'maxFiles' => 5,
                 'priority' => true,
                 'data_class' => null,
                 'mapped' => false,
             ])
             ->add('specImages', DropzoneType::class, [
-                'label' => '课程详细介绍图片（最多5张）',
+                'label' => '课程详细介绍图片（<=5张）',
                 'maxFiles' => 5,
                 'priority' => true,
                 'data_class' => null,
@@ -70,6 +70,13 @@ class CourseType extends AbstractType
             ])
             ->add('courseVideo', DropzoneType::class, [
                 'label' => '课程视频（1个）',
+                'maxFiles' => 1,
+                'priority' => true,
+                'data_class' => null,
+                'mapped' => false,
+            ])
+            ->add('shareImageFile', DropzoneType::class, [
+                'label' => '课程分享图片（1张：注意留空保留二维码位置）',
                 'maxFiles' => 1,
                 'priority' => true,
                 'data_class' => null,
