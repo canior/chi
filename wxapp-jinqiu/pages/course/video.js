@@ -21,7 +21,7 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
-    const productId = 3;//options.id;
+    const productId = options.id;
     this.getVideo(productId)
     const url = app.globalData.baseUrl + '/courses/' + productId + '/reviews'
     courseReview.init(this, url);
