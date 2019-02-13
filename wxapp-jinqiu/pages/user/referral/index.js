@@ -19,7 +19,7 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
-    //app.buriedPoint(options)
+    app.buriedPoint(options)
     this.setData({
       userLevel: options.level ? options.level : null
     })

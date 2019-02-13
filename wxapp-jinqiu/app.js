@@ -141,7 +141,7 @@ App({
     var that = this;
     const thirdSession = wx.getStorageSync('thirdSession')
     if (!thirdSession) return;
-    console.log('buriedPoint: url=' + currentPageUrl + ', thirdSession=' + thirdSession)
+    //console.log('buriedPoint: url=' + currentPageUrl + ', thirdSession=' + thirdSession)
     wx.request({
       url: that.globalData.baseUrl + '/user/activity/add',
       method: 'POST',
@@ -152,6 +152,7 @@ App({
       },
       success: function (res) {
         if (res.statusCode == 200 && res.data.code == 200) {
+          console.log('buriedPoint => addShareSource: ', options)
           if (options && options.shareSourceId) {
             that.addShareSource(options.shareSourceId)
           }

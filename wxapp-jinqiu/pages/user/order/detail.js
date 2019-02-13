@@ -16,8 +16,7 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
-    //app.buriedPoint(options)
-    //this.getGroupUserOrder(options.id)
+    app.buriedPoint(options)
     this.setData({
       options: options
     })

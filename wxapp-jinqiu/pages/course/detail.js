@@ -28,14 +28,7 @@ Page({
     this.getCourse(productId);
     const url = app.globalData.baseUrl + '/courses/' + productId + '/reviews'
     courseReview.init(this, url);
-    //app.buriedPoint(options)
-    /*app.userActivityCallback = res => {
-      app.buriedPoint(options)
-      this.setData({
-        isLogin: app.globalData.isLogin,
-        user: app.globalData.user
-      })
-    }*/
+    app.buriedPoint(options)
   },
 
   getCourse: function (id) {
