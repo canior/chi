@@ -73,6 +73,13 @@ Page({
     bottom.createOrder(this, app.globalData.baseUrl + '/groupUserOrder/create', this.data.product.id)
   },
 
+  // 转首页
+  wxHome: function (e) {
+    wx.switchTab({
+      url: '/pages/course/index',
+    })
+  },
+  
   // 分享:邀请好友
   wxShowShareModal: function (e) {
     share.showModal(this)

@@ -15,7 +15,7 @@
         <button class="item btn group" bindtap="wxUpgrade" disabled="{{btnDisabled}}"><text>解锁全部课程</text></button>
       </block>
       <block wx:if="{{type == 'course' && user.userLevel == 'ADVANCED'}}">
-        <button class="item btn other" bindtap="wxViewCourse" disabled="{{btnDisabled}}"><text>观看课程</text></button>
+        <button class="item btn group" bindtap="wxViewCourse" disabled="{{btnDisabled}}"><text>观看课程</text></button>
       </block>
       <block wx:if="{{type == 'product'}}">
         <button class="item btn group" bindtap="wxCreateOrder" disabled="{{btnDisabled}}"><text>购买￥{{product.price}}</text></button>
