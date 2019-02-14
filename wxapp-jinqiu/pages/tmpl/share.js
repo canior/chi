@@ -71,13 +71,10 @@ function shareObject(that, res) {
   //const shareSourceType = res.target.dataset.type;
   const shareSourceType = 'refer';//仅类型refer需发送
   const shareSource = __data.shareSources[shareSourceType];
-  var id = null;
-  if (that.data.product) id = that.data.product.id
-  else if (that.data.groupOrder) id = that.data.groupOrder.id
   return {
     title: shareSource.title,
     imageUrl: that.data.imgUrlPrefix + '/' + shareSource.bannerFileId,
-    path: shareSource.page + '&id=' + id
+    path: shareSource.page
   }
 }
 
