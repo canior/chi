@@ -282,6 +282,32 @@ class UserController extends BaseController
     }
 
     /**
+     * @Route("/user/review", name="userReview", methods="POST")
+     * @param Request $request
+     * @param ProductReviewRepository $productReviewRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function viewProductReviewAction(Request $request, ProductReviewRepository $productReviewRepository) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $productId = isset($data['productId']) ? $data['productId'] : null;
+
+        $user = $this->getWxUser($thirdSession);
+
+        /**
+         * @var ProductReview $productReview
+         */
+        $productReview = $productReviewRepository->findOneBy(['user' => $user, 'product' => $productId]);
+        if (!$productReview) {
+            return $this->responseJson('success', 200, []);
+        }
+
+        return $this->responseJson('success', 200, [
+            'productReview' => $productReview->getArray()
+        ]);
+    }
+
+    /**
      * 添加或修改评论
      * @Route("/user/groupUserOrder/review", name="updateProductReview", methods="POST")
      * @param Request $request
