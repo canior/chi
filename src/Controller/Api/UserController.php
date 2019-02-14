@@ -196,7 +196,6 @@ class UserController extends BaseController
         }
 
         $user = $this->getWxUser($thirdSession);
-        $user->info('load group orders for page ' . $page);
 
         $groupOrdersArray = [];
 
@@ -238,8 +237,6 @@ class UserController extends BaseController
         $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
 
         $user = $this->getWxUser($thirdSession);
-
-        $user->info('load group user orders for status ' . $groupUserOrderStatus);
 
         if ($groupUserOrderStatus == null)
             $groupUserOrderStatus =  array_keys(GroupUserOrder::$statuses);
@@ -287,9 +284,10 @@ class UserController extends BaseController
      * @Route("/user/review", name="userReview", methods="POST")
      * @param Request $request
      * @param ProductReviewRepository $productReviewRepository
+     * @param ProductRepository $productRepository
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function viewProductReviewAction(Request $request, ProductReviewRepository $productReviewRepository) {
+    public function viewProductReviewAction(Request $request, ProductReviewRepository $productReviewRepository, ProductRepository $productRepository) {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $productId = isset($data['productId']) ? $data['productId'] : null;
@@ -297,19 +295,25 @@ class UserController extends BaseController
         $user = $this->getWxUser($thirdSession);
 
         /**
+         * @var Product $product
+         */
+        $product = $productRepository->find($productId);
+
+        /**
          * @var ProductReview $productReview
          */
-        $productReview = $productReviewRepository->findOneBy(['user' => $user, 'product' => $productId]);
+        $productReview = $productReviewRepository->findOneBy(['user' => $user, 'product' => $product]);
+
         if (!$productReview) {
-            return $this->responseJson('success', 200, []);
+            return $this->responseJson('success', 200, [
+                'product' => $product->getArray(),
+            ]);
+        } else {
+            return $this->responseJson('success', 200, [
+                'productReview' => $productReview->getArray(),
+                'product' => $product->getArray(),
+            ]);
         }
-
-        $product = $productReview->getProduct();
-
-        return $this->responseJson('success', 200, [
-            'productReview' => $productReview->getArray(),
-            'product' => $product->getArray(),
-        ]);
     }
 
     /**
