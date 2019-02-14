@@ -23,6 +23,7 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
+    app.buriedPoint(options)
   },
 
   getProduct: function () {

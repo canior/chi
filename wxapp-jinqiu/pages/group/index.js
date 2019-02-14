@@ -34,13 +34,6 @@ Page({
       this.getGroupOrder(id);      
     }
     app.buriedPoint(options)
-    /*app.userActivityCallback = res => {
-      app.buriedPoint(options)
-      this.setData({
-        isLogin: app.globalData.isLogin,
-        user: app.globalData.user
-      })
-    }*/
   },
 
   getGroupOrder: function(id) {

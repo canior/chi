@@ -23,13 +23,9 @@ Page({
     wx.setNavigationBarTitle({ title: app.globalData.appName })
     this.getCourses(this.data.page)
     app.buriedPoint(options)
-    app.userActivityCallback = res => {
+    /*app.userActivityCallback = res => {
       app.buriedPoint(options)
-      this.setData({
-        isLogin: app.globalData.isLogin,
-        user: app.globalData.user
-      })  
-    }
+    }*/
   },
 
   getCourses: function (page) {
