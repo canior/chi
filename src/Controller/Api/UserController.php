@@ -345,10 +345,12 @@ class UserController extends BaseController
         if ($productReview == null) {
             $productReview = new ProductReview();
         }
-        $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
-        if ($groupUserOrder) {
+
+        if ($groupUserOrderId) {
+            $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
             $productReview->setGroupUserOrder($groupUserOrder);
             $productReview->setProduct($groupUserOrder->getProduct());
+            $user = $groupUserOrder->getUser();
         } else {
             /**
              * @var Product $product
