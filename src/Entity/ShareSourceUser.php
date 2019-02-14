@@ -47,7 +47,7 @@ class ShareSourceUser implements Dao
         $shareSourceUser->getUser()->getOrCreateTodayUserStatistics()->increaseShareNum(1);
 
         $shareUser = $shareSource->getUser();
-        $child->info('new parent is ' . $shareUser);
+        $child->info('new share is ' . $shareUser);
 
         $parentUserTopAdvanced = $shareUser->getTopParentAdvancedUser();
         $child->info('parent top advanced is ' . $parentUserTopAdvanced);
@@ -61,12 +61,12 @@ class ShareSourceUser implements Dao
         $parentUser = null;
 
         if ($shareUser == null) {
-            $child->info("new parent is null, do not update parent user");
+            $child->info("new share is null, do not update parent user");
             return $shareSourceUser;
         }
 
         if ($shareUser == $oldParentUser) {
-            $child->info("new parent is the same as old, do not update parent user");
+            $child->info("new share is the same as old, do not update parent user");
             return $shareSourceUser;
         }
 

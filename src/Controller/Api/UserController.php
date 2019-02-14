@@ -108,6 +108,9 @@ class UserController extends BaseController
                 $user->setNickname($nickName);
                 $user->setAvatarUrl($avatarUrl);
                 $user->setLastLoginTimestamp(time());
+
+                $user->info('login in to the app');
+
                 $this->getEntityManager()->persist($user);
                 $this->getEntityManager()->flush();
             }
@@ -136,6 +139,8 @@ class UserController extends BaseController
                 }
                 $user->setNickname($nickName);
                 $user->setAvatarUrl($avatarUrl);
+
+                $user->info('created user ' . $user);
 
                 $this->getEntityManager()->persist($user);
                 $this->getEntityManager()->flush();
