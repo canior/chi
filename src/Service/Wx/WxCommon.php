@@ -253,6 +253,8 @@ class WxCommon
      * @return FileDao|null
      */
     public function createWxQRFile(ObjectManager $entityManager, string $scene, $page, $isHyaline = false) {
+        $page = "pages/index/index"; //TODO 正式时候去掉
+
         $accessToken = $this->getAccessToken();
         $this->log->info("got access token" . $accessToken);
         $client = new Client(['base_uri' => self::API_URL]);
@@ -272,8 +274,15 @@ class WxCommon
         if($code === 200) {
             $file = $response->getBody();
             $fileName = uniqid() . ".jpeg";
-            $filePath = __DIR__ . "/../../../public/upload/";
-            file_put_contents($filePath . $fileName, $file);
+            $md5 = md5($fileName);
+            $filePath = 'upload/' . FileDao::createPathFromMD5($md5);
+
+            $absoluteFilePath = __DIR__ . "/../../../public/" . $filePath;
+            if (!file_exists($absoluteFilePath)) {
+                mkdir($absoluteFilePath, 0777, true);
+            }
+
+            file_put_contents($absoluteFilePath . $md5 . '.jpeg', $file);
 
             $fileDao = new FileDao();
             $fileDao->setUploadUser(null)
@@ -281,7 +290,7 @@ class WxCommon
                 ->setType('jpeg')
                 ->setSize($file->getSize())
                 ->setPath($filePath)
-                ->setMd5($filePath . $fileName)
+                ->setMd5($md5)
                 ->setUploadAt(time());
             try {
                 $entityManager->persist($fileDao);

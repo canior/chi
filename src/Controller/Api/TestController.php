@@ -39,6 +39,14 @@ class TestController extends BaseController
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
 
+        $wxCommon = new WxCommon($this->getLog());
+        $userQrFile = $wxCommon->createWxQRFile($this->getEntityManager(), 'groupOrderId=' . 1 . '&shareSourceId=' . 2, 'test page', true);
+        $quanBannerFile = $this->getEntityManager()->getRepository(File::class)->find(25);
+        $file = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $quanBannerFile);
+        echo "qr = " . $userQrFile->getId() . "<br>";
+        echo "quan = " . $quanBannerFile->getId() . "<br>";
+        echo "combined=" . $file->getId();
+        exit;
         $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);
         $referShareSource = $shareSourceRepository->find('901885c5a6bdf9e7ea');
 
