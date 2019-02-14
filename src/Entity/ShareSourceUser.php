@@ -47,11 +47,12 @@ class ShareSourceUser implements Dao
         $shareSourceUser->getUser()->getOrCreateTodayUserStatistics()->increaseShareNum(1);
 
         $parentUser = $shareSource->getUser();
+        $child->info('new parent is ' . $parentUser);
+
         $oldParentUser = $child->getParentUser();
+        $child->info('old parent is ' . $oldParentUser);
 
         if ($parentUser != $oldParentUser) {
-            $child->info('new parent is ' . $parentUser . ', old parent is ' . $oldParentUser);
-
             if ($oldParentUser) {
                 $child->info('old parent is not null');
                 $oldParentUser->removeSubUser($child);
