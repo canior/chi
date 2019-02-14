@@ -38,20 +38,33 @@ class ShareSourceUser implements Dao
      */
     public static function factory(ShareSource $shareSource, User $child)
     {
+
+        $child->info('get into share source ' . $shareSource->getId());
+
         $shareSourceUser = new ShareSourceUser();
         $shareSourceUser->setShareSource($shareSource);
         $shareSourceUser->setUser($child);
         $shareSourceUser->getUser()->getOrCreateTodayUserStatistics()->increaseShareNum(1);
 
         $parentUser = $shareSource->getUser();
+        $oldParentUser = $child->getParentUser();
 
-        if ($parentUser != $child->getParentUser()) {
-            $oldParentUser = $child->getParentUser();
+        if ($parentUser != $oldParentUser) {
+            $child->info('new parent is ' . $parentUser->getId() . ', old parent is ' . $oldParentUser->getId());
+
             if ($oldParentUser) {
+                $child->info('old parent is not null');
                 $oldParentUser->removeSubUser($child);
+                $oldParentUser->info('remove child ' . $child->getId());
             }
+
             $memo = "推荐人变更：" . $oldParentUser . "->" . $parentUser;
+
+            $child->info('old parent ' . $oldParentUser->getId() . ' changed to new parent ' . $parentUser->getId());
             $child->setParentUser($parentUser, $shareSource, $memo);
+
+            $parentUser->info('remove child ' . $child->getId());
+
             $parentUser->addSubUser($child, time() + User::PARENT_EXPIRES_SECONDS);
         }
 

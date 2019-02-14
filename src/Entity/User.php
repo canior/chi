@@ -284,6 +284,13 @@ class User extends BaseUser implements Dao
      */
     private $userParentLogs;
 
+    /**
+     * @var ArrayCollection|UserParentLog[] $userLogs
+     * @ORM\OneToMany(targetEntity="App\Entity\UserLog", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $userLogs;
+
 
     public function __construct()
     {
@@ -317,6 +324,7 @@ class User extends BaseUser implements Dao
         $this->userRecommandStockOrders = new ArrayCollection();
         $this->recommandStudentUsers = new ArrayCollection();
         $this->userParentLogs = new ArrayCollection();
+        $this->userLogs = new ArrayCollection();
     }
 
     public function setId($id)
@@ -514,12 +522,14 @@ class User extends BaseUser implements Dao
     public function setParentUser(?User $parentUser, ShareSource $shareSource = null,  $memo = null): self
     {
         if ($parentUser == $this) {
+            $this->info('same parent, ignore');
             return $this;
         }
 
         $this->parentUser = $parentUser;
 
         if ($memo != null) {
+            $this->info('found a reason to change parent user');
             $userParentLog = UserParentLog::factory($this, $parentUser, $shareSource, $memo);
             $this->addUserParentLog($userParentLog);
         }
@@ -1609,6 +1619,38 @@ class User extends BaseUser implements Dao
      */
     public function addUserParentLog(UserParentLog $userParentLog) {
         $this->userParentLogs->add($userParentLog);
+    }
+
+    /**
+     * @return UserParentLog[]|ArrayCollection
+     */
+    public function getUserLogs()
+    {
+        return $this->userLogs;
+    }
+
+    /**
+     * @param UserParentLog[]|ArrayCollection $userLogs
+     */
+    public function setUserLogs($userLogs): void
+    {
+        $this->userLogs = $userLogs;
+    }
+
+    /**
+     * @param $log
+     */
+    public function info($log) {
+        $userLog = UserLog::factory($this, UserLog::INFO, $log, json_encode(debug_backtrace()));
+        $this->getUserLogs()->add($userLog);
+    }
+
+    /**
+     * @param $log
+     */
+    public function error($log) {
+        $userLog = UserLog::factory($this, UserLog::ERROR, $log, json_encode(debug_backtrace()));
+        $this->getUserLogs()->add($userLog);
     }
 
     /**

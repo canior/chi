@@ -38,6 +38,16 @@ class TestController extends BaseController
      */
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
+        /**
+         * @var User $user1
+         */
+        $user1 = $this->getEntityManager()->getRepository(User::class)->find(1);
+        $user1->info('test log info with backtrace');
+
+        $this->getEntityManager()->persist($user1);
+        $this->getEntityManager()->flush();
+        exit;
+
         $shareSourceRepository = $this->getEntityManager()->getRepository(ShareSource::class);
         $referShareSource = $shareSourceRepository->find('901885c5a6bdf9e7ea');
         $user1 = $this->getEntityManager()->getRepository(User::class)->find(1);
