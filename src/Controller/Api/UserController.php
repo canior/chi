@@ -1002,6 +1002,8 @@ class UserController extends BaseController
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $productId = isset($data['productId']) ? $data['productId'] : null;
+        $url = isset($data['url']) ? $data['url'] : null;
+
         $user = $this->getWxUser($thirdSession);
 
         /**
@@ -1019,7 +1021,8 @@ class UserController extends BaseController
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
-            'course' => $course->getArray()
+            'course' => $course->getArray(),
+            'shareSources' => $this->createProductShareSource($user, $product, $url)
         ]);
     }
 }
