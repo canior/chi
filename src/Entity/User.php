@@ -1578,10 +1578,31 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * 返回最上线的一个高级用户
+     * @return User|null
+     */
+    public function getTopParentAdvancedUser() {
+
+        //如果自己就是partner则就是自己
+        if ($this->isAdvancedUser()) {
+            return $this;
+        }
+
+        $user = $this;
+        while ($parent = $user->getParentUser()) {
+            if ($parent->isAdvancedUser()) {
+                return $parent;
+            }
+            $user = $parent;
+        }
+        return null;
+    }
+
+    /**
      * 返回最上线的一个合伙人
      * @return User|null
      */
-    public function getParentPartnerUser() {
+    public function getTopParentPartnerUser() {
 
         //如果自己就是partner则就是自己
         if ($this->isPartnerUser()) {

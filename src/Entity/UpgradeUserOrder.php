@@ -413,7 +413,7 @@ class UpgradeUserOrder implements Dao
         }
 
         /* 分钱给合伙人 */
-        $partner = $user->getParentPartnerUser();
+        $partner = $user->getTopParentPartnerUser();
         if ($partner) {
             $partnerRewards = UserLevel::$advanceUserUpgradeRewardsArray[UserLevel::PARTNER];
             if ($this->isApproved()) {

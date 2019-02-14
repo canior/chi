@@ -136,9 +136,9 @@ class BusinessLogic extends JinqiuBaseTestCase
         $user->setParentUser($recommander);
 
         $this->assertEquals($recommander, $user->getParentUser());
-        $this->assertEquals($partner, $recommander->getParentPartnerUser());
+        $this->assertEquals($partner, $recommander->getTopParentPartnerUser());
         $this->assertEquals($partnerTeacher, $partner->getTeacherRecommanderUser());
-        $this->assertEquals($partner, $user->getParentPartnerUser());
+        $this->assertEquals($partner, $user->getTopParentPartnerUser());
 
         $this->assertEquals(0, $user->getUserAccountTotal());
         $this->assertEquals(0, $supplier->getUserAccountTotal());
@@ -248,7 +248,7 @@ class BusinessLogic extends JinqiuBaseTestCase
         $this->assertEquals($recommander, $user->getParentUser());
         $this->assertEquals($partner, $recommander->getParentUser());
         $this->assertEquals($partnerTeacher, $partner->getTeacherRecommanderUser());
-        $this->assertEquals($partner, $user->getParentPartnerUser());
+        $this->assertEquals($partner, $user->getTopParentPartnerUser());
 
         $this->assertEquals(0, $user->getUserAccountTotal());
         $this->assertEquals(0, $supplier->getUserAccountTotal());
@@ -326,29 +326,104 @@ class BusinessLogic extends JinqiuBaseTestCase
         $this->assertEquals(-1, $userStockOrder->getQty());
     }
 
-    public function testSetRecommander() {
-        $user = $this->createUser();
-        $recommander1 = $this->createUser();
-        $recommander2 = $this->createUser();
+    public function testTwoAdvancedRecommander() {
 
-        $shareSource1 = $this->createShareSource($recommander1);
-        $shareSource2 = $this->createShareSource($recommander2);
+
+        // advanced1 & advanced2 => vistor
+        $user = $this->createUser();
+        $recommanderAdvanced1 = $this->createUser();
+        $recommanderAdvanced1->setUserLevel(UserLevel::ADVANCED);
+
+        $recommanderAdvanced2 = $this->createUser();
+        $recommanderAdvanced2->setUserLevel(UserLevel::ADVANCED);
+
+        $shareSource1 = $this->createShareSource($recommanderAdvanced1);
+        $shareSource2 = $this->createShareSource($recommanderAdvanced2);
 
         $shareSourceUser1 = ShareSourceUser::factory($shareSource1, $user);
-        $this->assertEquals($recommander1, $user->getParentUser());
+        $this->assertEquals($recommanderAdvanced1, $user->getParentUser());
         $this->assertEquals(1, $user->getUserParentLogs()->count());
+
         $parentUserLog1 = $user->getUserParentLogs()[0];
         $this->assertEquals($user, $parentUserLog1->getUser());
-        $this->assertEquals($recommander1, $parentUserLog1->getParentUser());
+        $this->assertEquals($recommanderAdvanced1, $parentUserLog1->getParentUser());
         $this->assertEquals($shareSource1, $parentUserLog1->getShareSource());
 
 
         $shareSourceUser2 = ShareSourceUser::factory($shareSource2, $user);
-        $this->assertEquals($recommander2, $user->getParentUser());
+        $this->assertEquals($recommanderAdvanced2, $user->getParentUser());
         $this->assertEquals(2, $user->getUserParentLogs()->count());
         $parentUserLog2 = $user->getUserParentLogs()[1];
         $this->assertEquals($user, $parentUserLog2->getUser());
-        $this->assertEquals($recommander2, $parentUserLog2->getParentUser());
+        $this->assertEquals($recommanderAdvanced2, $parentUserLog2->getParentUser());
         $this->assertEquals($shareSource2, $parentUserLog2->getShareSource());
+
+        // advanced => visitor
+        $user = $this->createUser();
+        $recommander = $this->createUser();
+        $recommander->setUserLevel(UserLevel::ADVANCED);
+        $shareSource = $this->createShareSource($recommander);
+
+        $shareSourceUser = ShareSourceUser::factory($shareSource, $user);
+        $this->assertEquals($recommander, $user->getParentUser());
+        $this->assertEquals(1, $user->getUserParentLogs()->count());
+
+        $parentUserLog = $user->getUserParentLogs()[0];
+        $this->assertEquals($user, $parentUserLog->getUser());
+        $this->assertEquals($recommander, $parentUserLog->getParentUser());
+        $this->assertEquals($shareSource, $parentUserLog->getShareSource());
+
+        // partner => visitor
+        $user = $this->createUser();
+        $partner = $this->createUser();
+        $partner->setUserLevel(UserLevel::PARTNER);
+        $shareSource = $this->createShareSource($partner);
+
+        $shareSourceUser = ShareSourceUser::factory($shareSource, $user);
+        $this->assertEquals($partner, $user->getParentUser());
+        $this->assertEquals(1, $user->getUserParentLogs()->count());
+
+        $parentUserLog = $user->getUserParentLogs()[0];
+        $this->assertEquals($user, $parentUserLog->getUser());
+        $this->assertEquals($partner, $parentUserLog->getParentUser());
+        $this->assertEquals($shareSource, $parentUserLog->getShareSource());
+
+        // visitor => visitor
+        $user = $this->createUser();
+        $visitor = $this->createUser();
+
+        $shareSource = $this->createShareSource($visitor);
+
+        $shareSourceUser = ShareSourceUser::factory($shareSource, $user);
+        $this->assertEquals(null, $user->getParentUser());
+        $this->assertEquals(0, $user->getUserParentLogs()->count());
+
+        // visitor(advanced) => visitor
+        $user = $this->createUser();
+        $visitor = $this->createUser();
+        $advanced = $this->createUser();
+        $advanced->setUserLevel(UserLevel::ADVANCED);
+        $visitor->setParentUser($advanced);
+
+        $shareSource = $this->createShareSource($visitor);
+
+        $shareSourceUser = ShareSourceUser::factory($shareSource, $user);
+        $this->assertEquals($advanced, $user->getParentUser());
+        $this->assertEquals(1, $user->getUserParentLogs()->count());
+
+        // visitor (partner) => visitor
+        $user = $this->createUser();
+        $visitor = $this->createUser();
+        $partner = $this->createUser();
+        $partner->setUserLevel(UserLevel::PARTNER);
+        $visitor->setParentUser($partner);
+
+        $shareSource = $this->createShareSource($visitor);
+
+        $shareSourceUser = ShareSourceUser::factory($shareSource, $user);
+        $this->assertEquals($partner, $user->getParentUser());
+        $this->assertEquals(1, $user->getUserParentLogs()->count());
+
     }
+
 }
