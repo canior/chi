@@ -372,12 +372,13 @@ class UserController extends BaseController
             $productReview->addProductReviewImage($productReviewImage);
         }
 
+        $this->getEntityManager()->persist($productReview);
+
         if ($groupUserOrder) {
             $groupUserOrder->addProductReview($productReview);
+            $this->getEntityManager()->persist($groupUserOrder);
         }
 
-
-        $this->getEntityManager()->persist($groupUserOrder);
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
