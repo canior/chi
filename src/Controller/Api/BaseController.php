@@ -95,7 +95,7 @@ class BaseController extends DefaultController
         $shareSources = [];
 
         //产品信息页面转发分享
-        $referShareSource = $shareSourceRepository->findOneBy(['user'=> $user, 'product' => $product, 'type' => ShareSource::REFER_PRODUCT]);
+        $referShareSource = $shareSourceRepository->findOneBy(['user'=> $user, 'page' => $page, 'product' => $product, 'type' => ShareSource::REFER_PRODUCT]);
         if ($referShareSource == null) {
             $referShareSource = ShareSource::factory(ShareSource::REFER_PRODUCT, $page, $user, null, $referProductShare->getShareTitle(), $product);
             $this->getEntityManager()->persist($referShareSource);
@@ -103,7 +103,7 @@ class BaseController extends DefaultController
         }
 
         //产品信息朋友圈图片
-        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'product' => $product, 'type' => ShareSource::QUAN_PRODUCT]);
+        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'page' => $page, 'product' => $product, 'type' => ShareSource::QUAN_PRODUCT]);
         if ($quanShareSource == null) {
             $quanShareSource = ShareSource::factory(ShareSource::QUAN_PRODUCT, $page, $user, null, null, $product);
             $wx = new WxCommon($this->getLog());
@@ -152,7 +152,7 @@ class BaseController extends DefaultController
         $shareSources = [];
 
         //个人信息页面转发分享
-        $referShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::REFER_USER]);
+        $referShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'page' => $page, 'type' => ShareSource::REFER_USER]);
         if ($referShareSource == null) {
 
             $referBannerFile = null;
@@ -169,7 +169,7 @@ class BaseController extends DefaultController
         }
 
         //个人信息朋友圈图片
-        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::QUAN_USER]);
+        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'page' => $page, 'type' => ShareSource::QUAN_USER]);
         if ($quanShareSource == null) {
 
             $quanShareSource = ShareSource::factory(ShareSource::QUAN_USER, $page, $user);
@@ -225,7 +225,7 @@ class BaseController extends DefaultController
         $shareSources = [];
 
         //拼团页面转发分享
-        $referShareSource = $shareSourceRepository->findOneBy(['groupOrder' => $groupOrder, 'type' => ShareSource::REFER_GROUP_ORDER]);
+        $referShareSource = $shareSourceRepository->findOneBy(['groupOrder' => $groupOrder, 'page' => $page, 'type' => ShareSource::REFER_GROUP_ORDER]);
         if ($referShareSource == null) {
 
             $referBannerFile = null;
@@ -242,7 +242,7 @@ class BaseController extends DefaultController
         }
 
         //拼团页面朋友圈图片
-        $quanShareSource = $shareSourceRepository->findOneBy(['groupOrder' => $groupOrder, 'type' => ShareSource::QUAN_GROUP_ORDER]);
+        $quanShareSource = $shareSourceRepository->findOneBy(['groupOrder' => $groupOrder, 'page' => $page, 'type' => ShareSource::QUAN_GROUP_ORDER]);
         if ($quanShareSource == null) {
 
             $quanShareSource = ShareSource::factory(ShareSource::QUAN_GROUP_ORDER, $page, $user);
