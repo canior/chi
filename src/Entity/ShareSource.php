@@ -26,7 +26,7 @@ class ShareSource implements Dao
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="shareSources")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", cascade={"persist"}, inversedBy="shareSources")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

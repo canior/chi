@@ -518,17 +518,16 @@ class UserController extends BaseController
         $user = $this->getWxUser($thirdSession);
         $shareSource = $shareSourceRepository->find($shareSourceId);
 
-        $sharedUser = $shareSourceUserRepository->findOneBy(['user' => $user, 'shareSource' => $shareSource]);
-        if ($sharedUser == null) {
-            $user->getOrCreateTodayUserStatistics()->increaseChildrenNum(1);
-            $this->getEntityManager()->persist($user);
+        if (!$shareSource) {
+            return $this->responseJson('success', 200, []);
         }
+
+        $user->info('received share source ' . $shareSourceId);
 
         $shareSourceUser = ShareSourceUser::factory($shareSource, $user);
         $shareSource->addShareSourceUser($shareSourceUser);
-        $this->getEntityManager()->persist($shareSourceUser);
-        $this->getEntityManager()->persist($shareSource);
 
+        $this->getEntityManager()->persist($shareSource);
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
