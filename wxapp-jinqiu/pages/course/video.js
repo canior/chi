@@ -1,6 +1,7 @@
 // pages/course/video.js
 const app = getApp()
 const courseReview = require('../tmpl/courseReview.js');
+const share = require('../tmpl/share.js');
 const bottom = require('../tmpl/bottom.js');
 const util = require('../../utils/util.js');
 Page({
@@ -33,7 +34,8 @@ Page({
       url: app.globalData.baseUrl + '/user/signInCourse',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
-        productId: id
+        productId: id,
+        url: '/pages/course/video?id=' + id
       },
       method: 'POST',
       success: (res) => {
@@ -43,6 +45,7 @@ Page({
           that.setData({
             course: course
           })
+          share.setShareSources(that, res.data.data.shareSources)
         } else {
           console.log('wx.request return error', res.statusCode);
         }
@@ -57,6 +60,23 @@ Page({
     wx.navigateTo({
       url: '/pages/user/course/review?id=' + this.data.course.productId,
     })
+  },
+
+  wxHome: function (e) {
+    wx.switchTab({
+      url: '/pages/course/index',
+    })
+  },
+
+  // 分享:邀请好友
+  wxShowShareModal: function (e) {
+    share.showModal(this)
+  },
+  wxHideShareModal: function (e) {
+    share.hideModal(this)
+  },
+  wxSaveShareSource: function (e) {
+    share.saveShareSource(this, e, app.globalData.baseUrl + '/user/shareSource/create')
   },
 
   /**
@@ -82,15 +102,15 @@ Page({
     this.videoContext.pause()
   },
   videoErrorCallback: function (e) {
-    console.log('视频错误信息:')
-    console.log(e.detail.errMsg)
+    console.log('视频错误信息:', e.detail.errMsg)
   },  
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    bottom.init(this)
+    share.init(this)
   },
 
   /**
@@ -124,7 +144,7 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-
+  onShareAppMessage: function (res) {
+    return share.shareObject(this, res)
   }
 })

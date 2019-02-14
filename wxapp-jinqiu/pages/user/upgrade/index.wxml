@@ -8,14 +8,13 @@
   <view class="banner">
     <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
       <swiper-item wx:for="{{product.productImages}}" wx:key="id" wx:for-item="productImage">
-        <image src="{{imgUrlPrefix + '/' + productImage.fileId}}" />
+        <image mode="widthFix" src="{{imgUrlPrefix + '/' + productImage.fileId}}" />
       </swiper-item>
     </swiper>
   </view>
 
   <view class="line">
     <template is="price" data="{{product}}"/>
-    <view class="sold">已售{{product.soldNum}}份</view>
   </view>
 
   <view class="name">{{product.title}}</view>
@@ -39,7 +38,7 @@
 <view class="split-line"/>
 
 <view class="container">
-  <template is="productReview" data="{{...productReviewData, imgUrlPrefix, product}}"/>
+  <template is="productReview" data="{{...productReviewData, imgUrlPrefix, product, type:'商品8评价'}}"/>
 </view>
 
 <template is="bottom" data="{{product, ...bottomData, type:'product'}}"/>

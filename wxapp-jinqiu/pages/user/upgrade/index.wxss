@@ -6,26 +6,10 @@
   position: relative;
 }
 .banner swiper {
-  height: 555rpx;
+  height: 720rpx;
 }
 .banner swiper image {
   width: 100%;
-  height: 555rpx;
-}
-.banner .tip {
-  font-size: 24rpx;
-  color: #353535;
-  background-color: #ffdd00;
-  width: 80rpx;
-  height: 106rpx;
-  border-radius: 0 0 40rpx 40rpx;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  line-height: 30rpx;
-  position: absolute;
-  top: 0rpx;
-  left: 30rpx;
 }
 .line {
   display: flex;

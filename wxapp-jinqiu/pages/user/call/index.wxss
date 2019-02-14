@@ -60,7 +60,7 @@
 .row .line.desc-box {
   font-size: 24rpx;
   color: #b2b2b2;
-  width: 170px;
+  width: 260px;
   line-height: 30rpx;
   overflow: hidden;
   text-overflow: ellipsis;

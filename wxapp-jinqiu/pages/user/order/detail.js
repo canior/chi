@@ -8,7 +8,7 @@ Page({
   data: {
     options: null,
     groupUserOrder: null,
-    imgUrlPrefix: app.globalData.imgUrlPrefix,    
+    imgUrlPrefix: app.globalData.imgUrlPrefix,
   },
 
   /**

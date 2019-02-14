@@ -218,8 +218,8 @@ App({
 
   globalData: {
     appName: '金秋课堂',
-    baseUrl: 'https://laowantong.yunlishuju.com/wxapi',
-    imgUrlPrefix: 'https://laowantong.yunlishuju.com/image/preview',
+    baseUrl: 'https://jinqiu.yunlishuju.com/wxapi',
+    imgUrlPrefix: 'https://jinqiu.yunlishuju.com/image/preview',
     //baseUrl: 'http://127.0.0.1:8000/wxapi',
     //imgUrlPrefix: 'http://127.0.0.1:8000/image/preview',
     isLogin: false,   //是否授权并登录

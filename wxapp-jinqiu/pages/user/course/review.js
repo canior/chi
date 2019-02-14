@@ -25,23 +25,22 @@ Page({
   onLoad: function (options) {
     wx.hideShareMenu()
     app.buriedPoint(options)
-    this.getGroupUserOrder(options.id);
+    this.getReview(options.id);
   },
 
-  getGroupUserOrder: function (id) {
+  getReview: function (id) {
     const that = this;
     wx.request({
-      url: app.globalData.baseUrl + '/groupUserOrder/view',
+      url: app.globalData.baseUrl + '/user/review',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
-        groupUserOrderId: id,
-        url: '/pages/course/detail?id=' + id        
+        productId: id
       },
       method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          const groupUserOrder = res.data.data.groupUserOrder;
+          const productReview = res.data.data.productReview;
           var rate = 0, 
             review = '',
             uploadStack = [
@@ -50,8 +49,7 @@ Page({
               { tmpImageFilePath: '', fileId: null },
             ],
             stackIndex = 0, editable = true;
-          if (groupUserOrder.productReviews.length > 0) {
-            const productReview = groupUserOrder.productReviews[0];
+          if (productReview) {
             rate = productReview.rate;
             review = productReview.review;
             productReview.productReviewImages.forEach((item, index) => {
@@ -66,7 +64,7 @@ Page({
             editable = false
           }
           that.setData({
-            course: groupUserOrder,
+            course: res.data.data.product,
             rate: rate,
             review: review,
             uploadStack: uploadStack,
@@ -95,7 +93,7 @@ Page({
       url: app.globalData.baseUrl + '/user/groupUserOrder/review',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
-        groupUserOrderId: that.data.course.id,
+        productId: that.data.course.productId,
         rate: that.data.rate,
         review: that.data.review,
         imageIds: imageIds

@@ -54,7 +54,6 @@
   <view>物流运费：<text>￥{{groupUserOrder.product.freight}}</text></view>
   <view class="split-line"/>
   <view>总计付费：<text class="highlight">￥{{groupUserOrder.paymentTotal}}</text></view>
-  <!--<view>拼团返现：<text class="highlight">￥{{groupUserOrder.rewards}}</text></view>-->
 </view>
 
 <view class="bottom" bindtap="toCourse">发现更多课程</view>

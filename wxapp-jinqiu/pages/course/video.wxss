@@ -1,5 +1,6 @@
 /* pages/course/video.wxss */
 @import "/pages/tmpl/bottom.wxss";
+@import "/pages/tmpl/share.wxss";
 .container video {
   width: 100%;
 }

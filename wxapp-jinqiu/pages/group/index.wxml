@@ -77,36 +77,6 @@
   </view>
 </view><!--拼团玩法-->
 
-<!--更多精彩拼团-->
-<block wx:if="{{groupOrder.status == 'completed'}}">
-<view class="container">
-  <view class="more-group">
-    <navigator class="title" url="/pages/product/index" open-type="switchTab" hover-class="none">
-      <view>更多精彩拼团</view><view class="arrow-right"/>
-    </navigator>
-    <view class="product-container">
-      <view class="product" wx:for="{{moreProducts}}" wx:for-item="product" wx:key="id" bindtap="toProductDetail" data-id="{{product.id}}">
-        <view class="img">
-          <image src="{{imgUrlPrefix + '/' + product.productImages[0].fileId}}" />
-          <view class="tip"><text>两人</text><text>拼团</text></view>
-        </view>
-        <view class="name">{{product.title}}</view>
-        <view class="price-container">
-          <view class="price">￥<text>{{product.groupPrice}}</text></view>
-          <view class="freight">包邮</view>
-          <view class="ori-price">￥{{product.originalPrice}}</view>
-        </view>
-        <view class="btn-container">
-          <view class="btn" catchtap="toProductDetail" data-id="{{product.id}}">我要拼团</view>
-          <view class="reward">返现￥{{product.rewards}}</view>
-        </view>
-      </view>
-    </view>
-  </view>
-</view><!--更多精彩拼团-->
-</block>
-
-
 <!--商品详情copy-->
 <block wx:if="{{userType != 'open' && groupOrder.status != 'completed'}}">
 <view class="container">
@@ -128,7 +98,9 @@
 
 <!--拼团未完成-->
 <block wx:if="{{groupOrder.status == 'expired'}}"><!--拼团已过期-->
-  <template is="bottom" data="{{product:groupOrder.product, ...bottomData}}"/>
+  <view class="bottom" bindtap="wxHome" wx:if="{{!shareData.showModal}}">
+    <text>更多集Call课程</text>
+  </view>
 </block>
 <block wx:elif="{{groupOrder.status == 'pending'}}"><!--拼团进行中-->
   <block wx:if="{{userType == 'open' || userType == 'join'}}"><!--开团人和参团人-->
@@ -150,7 +122,7 @@
         <image src="/images/service.png"/>
         <text>客服</text>
       </button>-->
-      <button class="btn" bindtap="joinGroup" disabled="{{btnDisabled}}">￥{{groupOrder.product.price}} 我要集Call</button>
+      <button class="btn" bindtap="joinGroup" disabled="{{btnDisabled}}">我要集Call</button>
     </view>
   </block>
 </block><!--拼团进行中-->

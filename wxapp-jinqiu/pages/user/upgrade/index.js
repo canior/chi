@@ -50,6 +50,8 @@ Page({
           that.setData({
             product: product
           })
+          const url = app.globalData.baseUrl + '/products/' + product.id + '/reviews'
+          productReview.init(that, url);          
           share.setShareSources(that, res.data.data.shareSources)
         } else {
           console.log('wx.request return error', res.statusCode);

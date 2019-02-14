@@ -21,7 +21,7 @@
         <button class="item btn group" bindtap="wxCreateOrder" disabled="{{btnDisabled}}"><text>购买￥{{product.price}}</text></button>
       </block>
       <block wx:if="{{type == 'video'}}">
-        <button class="item btn group" bindtap="wxReview" disabled="{{btnDisabled}}"><text>发布评价</text></button>
+        <button class="item btn group" bindtap="wxReview" disabled="{{btnDisabled}}"><text>课程评价</text></button>
       </block>      
   </view>
 

@@ -13,9 +13,9 @@
           <view class="line sub-title">讲师: {{item.teacher.name}} | {{item.teacher.title}}</view>
         </view>
       </view>
-      <view class="right">
+      <!--<view class="right">
         <view class="btn" catchtap="wxReview" data-id="{{item.productId}}">课程评价</view>
-      </view>
+      </view>-->
     </view>
   </view>
   <view class="split-brand"/>
