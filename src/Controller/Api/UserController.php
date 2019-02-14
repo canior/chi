@@ -320,16 +320,18 @@ class UserController extends BaseController
      * 添加或修改评论
      * @Route("/user/groupUserOrder/review", name="updateProductReview", methods="POST")
      * @param Request $request
+     * @param ProductRepository $productRepository
      * @param ProductReviewRepository $productReviewRepository
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @param FileRepository $fileRepository
      * @return Response
      */
-    public function updateProductReviewAction(Request $request, ProductReviewRepository $productReviewRepository, GroupUserOrderRepository $groupUserOrderRepository, FileRepository $fileRepository) : Response {
+    public function updateProductReviewAction(Request $request, ProductRepository $productRepository, ProductReviewRepository $productReviewRepository, GroupUserOrderRepository $groupUserOrderRepository, FileRepository $fileRepository) : Response {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $productReviewId = isset($data['productReviewId']) ? $data['productReviewId'] : null;
         $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
+        $productId = isset($data['productId']) ? $data['productId'] : null;
         $rate = isset($data['rate']) ? $data['rate'] : null;
         $review = isset($data['review']) ? $data['review'] : null;
         $reviewImageFileIds = isset($data['imageIds']) ? $data['imageIds'] : [];
@@ -344,9 +346,17 @@ class UserController extends BaseController
             $productReview = new ProductReview();
         }
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
-        $productReview->setGroupUserOrder($groupUserOrder);
+        if ($groupUserOrder) {
+            $productReview->setGroupUserOrder($groupUserOrder);
+            $productReview->setProduct($groupUserOrder->getProduct());
+        } else {
+            /**
+             * @var Product $product
+             */
+            $product = $productReviewRepository->find($productId);
+            $productReview->setProduct($product);
+        }
 
-        $productReview->setProduct($groupUserOrder->getProduct());
         $productReview->setRate($rate);
         $productReview->setReview($review);
         $productReview->setUser($user);
