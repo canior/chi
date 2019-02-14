@@ -355,7 +355,7 @@ class UserController extends BaseController
             /**
              * @var Product $product
              */
-            $product = $productReviewRepository->find($productId);
+            $product = $productRepository->find($productId);
             $productReview->setProduct($product);
         }
 
