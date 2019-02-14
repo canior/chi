@@ -526,6 +526,7 @@ class UserController extends BaseController
 
         $shareSourceUser = ShareSourceUser::factory($shareSource, $user);
         $shareSource->addShareSourceUser($shareSourceUser);
+        $this->getEntityManager()->persist($shareSourceUser);
         $this->getEntityManager()->persist($shareSource);
 
         $this->getEntityManager()->flush();
