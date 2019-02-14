@@ -346,6 +346,7 @@ class UserController extends BaseController
             $productReview = new ProductReview();
         }
 
+        $groupUserOrder = null;
         if ($groupUserOrderId) {
             $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
             $productReview->setGroupUserOrder($groupUserOrder);
