@@ -6,7 +6,7 @@
   <view class="section">
     <view class="row">
       <view class="left">集Call编号：{{item.id}}</view>
-      <view class="right pending">{{item.statusText}}</view>
+      <view class="right">{{item.createdAt}}</view>
     </view>
     <view class="row" bindtap="toMyCallDetail" data-id="{{item.id}}">
       <view class="left">
@@ -16,6 +16,13 @@
           <view class="line desc-box">{{item.product.shortDescription}}</view>
           <view class="line sub-title">讲师: {{item.product.teacher.name}} | {{item.product.teacher.title}}</view>
         </view>
+      </view>
+    </view>
+    <view class="row">
+      <view class="left status">{{item.statusText}}</view>
+      <view class="right">
+        <button open-type="contact">客服咨询</button>
+        <button catchtap="toMyCallDetail" data-id="{{item.id}}">集Call 详情</button>
       </view>
     </view>
   </view>

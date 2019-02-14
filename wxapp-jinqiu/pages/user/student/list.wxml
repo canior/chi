@@ -28,7 +28,7 @@
             <image src="{{item.avatarUrl}}"/>
             <text>{{item.nickname}}</text>
           </view>
-          <view class="td">{{item.phone}}</view>
+          <view class="td">{{item.phone ? item.phone : ''}}</view>
           <view class="td">{{item.userLevelText}}</view>
         </view>      
       </view>

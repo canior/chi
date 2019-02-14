@@ -23,7 +23,9 @@
   font-size: 24rpx;
   color: #888;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+}.row .left.status {
+  color: #ffc018;
 }
 .row .left image {
   width: 145rpx;
@@ -32,16 +34,12 @@
   border: 1px solid #e5e5e5;
 }
 .row .right {
-  font-size: 26rpx;
-  width: 80px;
-  text-align: center;
-}.row .right.pending {
-  color: #888;
+  font-size: 24rpx;
+  color: #888;  
+  display: flex;
 }
 .row .line {
-  font-size: 24rpx;
-  color: #888;
-  line-height: 30rpx;
+  display: flex;
 }
 .row .line.title {
   font-size: 30rpx;
@@ -68,18 +66,13 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;  
 }
-.row .right .reward {
-  font-size: 36rpx;
-  color: #ff4d42;
-}
-.row .right .btn {
+.row .right button {
   font-size: 24rpx;
-  color: #ff4d42;
-  text-align: center;
-  border: 1px solid #ff4d42;
-  border-radius: 20rpx;
-  margin: 0 10rpx;
-  padding: 0 10rpx;
+  background-color: #fff;
+}.row .right button::after {
+  border-color: #000;
+}.row .right button:first-child {
+  margin-right: 20rpx;
 }
 .none {
   display: flex;

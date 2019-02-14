@@ -82,8 +82,8 @@
 <view class="container">
   <view class="specs">
     <view class="title">商品详情</view>
-    <view class="img" wx:for="{{groupOrder.product.productSpecImages}}" wx:key="id" wx:for-item="productSpecImage">
-      <image src="{{imgUrlPrefix + '/' + productSpecImage.fileId}}"/>
+    <view class="img" wx:for="{{groupOrder.product.courseSpecImages}}" wx:key="id" wx:for-item="courseSpecImage">
+      <image mode="widthFix" src="{{imgUrlPrefix + '/' + productSpecImage.fileId}}"/>
     </view>
   </view>
 </view>
