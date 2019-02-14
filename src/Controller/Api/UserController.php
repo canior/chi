@@ -196,6 +196,7 @@ class UserController extends BaseController
         }
 
         $user = $this->getWxUser($thirdSession);
+        $user->info('load group orders for page ' . $page);
 
         $groupOrdersArray = [];
 
@@ -236,8 +237,9 @@ class UserController extends BaseController
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
 
-
         $user = $this->getWxUser($thirdSession);
+
+        $user->info('load group user orders for status ' . $groupUserOrderStatus);
 
         if ($groupUserOrderStatus == null)
             $groupUserOrderStatus =  array_keys(GroupUserOrder::$statuses);
@@ -302,8 +304,11 @@ class UserController extends BaseController
             return $this->responseJson('success', 200, []);
         }
 
+        $product = $productReview->getProduct();
+
         return $this->responseJson('success', 200, [
-            'productReview' => $productReview->getArray()
+            'productReview' => $productReview->getArray(),
+            'product' => $product->getArray(),
         ]);
     }
 
