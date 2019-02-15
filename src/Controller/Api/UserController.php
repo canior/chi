@@ -157,10 +157,13 @@ class UserController extends BaseController
             }
         }
 
-        $totalShares = $userRepository->findTotalShareUsers($user->getId());
+        $totalShares = 0;
+        if ($user) {
+            $totalShares = $userRepository->findTotalShareUsers($user->getId());
+        }
 
         $totalStudents = 0;
-        if ($user->isTeacher()) {
+        if ($user and $user->isTeacher()) {
             $totalStudents = $teacherRepository->findTotalStudents($user->getId());
         }
 
