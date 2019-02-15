@@ -165,7 +165,7 @@ class ProductController extends BaseController
         /**
          * @var ProductReview[] $productReviews
          */
-        $productReviews = $this->getPaginator()->paginate($product->getProductReviews(), $page, self::PAGE_LIMIT);
+        $productReviews = $this->getPaginator()->paginate($product->getActiveReviews(), $page, self::PAGE_LIMIT);
 
         $data = [];
         foreach($productReviews as $productReview) {
