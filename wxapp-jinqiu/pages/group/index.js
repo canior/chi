@@ -271,7 +271,7 @@ Page({
   // 观看课程
   wxViewCourse: function () {
     wx.navigateTo({
-      url: '/pages/course/video?id=' + this.data.groupOrder.productId,
+      url: '/pages/course/video?id=' + this.data.groupOrder.product.id,
     })
   },
   
