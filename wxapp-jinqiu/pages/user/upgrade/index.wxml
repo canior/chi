@@ -29,7 +29,7 @@
     <view class="title">商品详情</view>
     <block wx:for="{{product.productSpecImages}}" wx:key="id" wx:for-item="productSpecImage">
       <view class="img">
-        <image src="{{imgUrlPrefix + '/' + productSpecImage.fileId}}" bindload="imgLoadDone" data-index="{{index}}"/>
+        <image mode="widthFix" src="{{imgUrlPrefix + '/' + productSpecImage.fileId}}" bindload="imgLoadDone" data-index="{{index}}"/>
         <image class="loading" src="/images/loading.gif" wx:if="{{productSpecImage.loading}}"/>
       </view>
     </block>
