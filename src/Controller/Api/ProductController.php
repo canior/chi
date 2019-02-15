@@ -86,7 +86,6 @@ class ProductController extends BaseController
             'banners' => $bannersArray,
             'products' => $productsArray,
             'baseUrl' => $request->getUri(),
-            'shareSources' => $this->createUserShareSource($user, $url)
         ];
         
         return $this->responseJson('success', 200, $data);
