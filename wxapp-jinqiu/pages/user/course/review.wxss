@@ -2,7 +2,7 @@
 .row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 20rpx 20rpx;
   border-bottom: 1px solid #ececec;
 }.row:last-child {
@@ -12,7 +12,6 @@
   font-size: 24rpx;
   color: #888;
   display: flex;
-  align-items: center;
 }
 .row .left image {
   width: 150rpx;

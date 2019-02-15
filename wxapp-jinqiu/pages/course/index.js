@@ -22,9 +22,10 @@ Page({
   onLoad: function (options) {
     wx.setNavigationBarTitle({ title: app.globalData.appName })
     app.buriedPoint(options)
-    app.userActivityCallback = res => {
+    this.getCourses(this.data.page)
+    /*app.userActivityCallback = res => {
       this.getCourses(this.data.page)
-    }
+    }*/
   },
 
   getCourses: function (page) {
