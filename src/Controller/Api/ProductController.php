@@ -151,18 +151,21 @@ class ProductController extends BaseController
      * @Route("/products/{productId}/reviews", name="productReviews", methods="GET")
      * @param Request $request
      * @param int $productId
-     * @param ProductReviewRepository $productReviewRepository
+     * @param ProductRepository $productRepository
      * @return Response
      */
-    public function productReviewIndexAction(Request $request, int $productId, ProductReviewRepository $productReviewRepository): Response {
+    public function productReviewIndexAction(Request $request, int $productId, ProductRepository $productRepository): Response {
+
+        $this->getLog()->info("show product reviews for product " . $productId);
 
         $page = $request->query->get('page', 1);
 
-        $productReviewsQuery = $productReviewRepository->findActiveProductReviewsQuery($productId);
+        $product = $productRepository->find($productId);
+
         /**
          * @var ProductReview[] $productReviews
          */
-        $productReviews = $this->getPaginator()->paginate($productReviewsQuery, $page, self::PAGE_LIMIT);
+        $productReviews = $this->getPaginator()->paginate($product->getProductReviews(), $page, self::PAGE_LIMIT);
 
         $data = [];
         foreach($productReviews as $productReview) {

@@ -31,7 +31,7 @@ class ProductReviewRepository extends ServiceEntityRepository
         $query = $this->getEntityManager()->createQueryBuilder();
         $query->select('pr')
             ->from(ProductReview::class, 'pr')
-            ->join(Product::class, 'p')
+            ->leftJoin(Product::class, 'p')
             ->where('pr.status = :status')
             ->setParameter('status', ProductReview::ACTIVE)
             ->andWhere('p.id = :productId')

@@ -77,11 +77,11 @@ class CourseController extends ProductController
      * @Route("/courses/{productId}/reviews", name="courseReviews", methods="GET")
      * @param Request $request
      * @param int $productId
-     * @param ProductReviewRepository $productReviewRepository
+     * @param ProductRepository $productRepository
      * @return Response
      */
-    public function productReviewIndexAction(Request $request, int $productId, ProductReviewRepository $productReviewRepository): Response {
-        return parent::productReviewIndexAction($request, $productId, $productReviewRepository);
+    public function productReviewIndexAction(Request $request, int $productId, ProductRepository $productRepository): Response {
+        return parent::productReviewIndexAction($request, $productId, $productRepository);
     }
 
 }
