@@ -503,10 +503,20 @@ class Product implements Dao
         return $this->getProductReviews()->count();
     }
 
+    /**
+     * @return int
+     */
     public function getTotalActiveReviews() {
+        return $this->getActiveReviews()->count();
+    }
+
+    /**
+     * @return ProductReview[]| ArrayCollection | Collection
+     */
+    public function getActiveReviews() {
         $criteria = Criteria::create();
         $criteria->where($criteria::expr()->eq('status', ProductReview::ACTIVE));
-        return $this->productReviews->matching($criteria)->count();
+        return $this->productReviews->matching($criteria);
     }
 
     public function addProductReview(ProductReview $productReview): self

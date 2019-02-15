@@ -105,8 +105,10 @@ class UserController extends BaseController
             $this->getLog()->info("input nickName=" . $nickName . ' and avatarUrl =' . $avatarUrl);
             if ($defaultNickname == $user->getNickname() and $defaultAvatarUrl == $user->getAvatarUrl()) {
                 $this->getLog()->info("update user nickname and avatar url");
-                $user->setNickname($nickName);
-                $user->setAvatarUrl($avatarUrl);
+                if ($user->getAvatarUrl() == null) {
+                    $user->setNickname($nickName);
+                    $user->setAvatarUrl($avatarUrl);
+                }
                 $user->setLastLoginTimestamp(time());
 
                 $user->info('login in to the app');
