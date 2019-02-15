@@ -147,6 +147,6 @@
   font-size: 30rpx;
   color: #000;
   background-color: #ffdf00;
-  padding: 30rpx;
+  padding: 20rpx;
 }
 

@@ -41,10 +41,20 @@
       </view>
     </view>
 
-    <view class="review">  
+    <!--<view class="review">  
       <textarea placeholder="亲，商品质量如何？" value="{{review}}" maxlength="200" placeholder-style="font-size:24rpx;color:#888" bindblur="review" disabled="{{groupUserOrder.productReviews.length > 0}}"></textarea>
+    </view>-->
+  </view>
+</view>
+<!--<view class="bottom" bindtap="submit" wx:if="{{editable}}">提交</view>-->
+
+<view class="container">
+  <view class="comment">
+    <view class="review">
+    <form bindsubmit="formSubmit">
+      <textarea placeholder="亲，请提出您的意见和建议" value="{{review}}" maxlength="200" placeholder-style="font-size:24rpx;color:#888" bindblur="review" disabled="{{groupUserOrder.productReviews.length > 0}}"></textarea>
+      <button class="bottom" formType="submit" wx:if="{{editable}}">提交</button>
+    </form>
     </view>
   </view>
 </view>
-
-<view class="bottom" bindtap="submit" wx:if="{{editable}}">提交</view>

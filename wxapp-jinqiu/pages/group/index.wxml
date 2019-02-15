@@ -131,7 +131,7 @@
 <block wx:if="{{groupOrder.status == 'completed'}}">
   <block wx:if="{{userType == 'open' || userType == 'join'}}">
     <view class="bottom-done"><!--开团人和参团人-->
-      <view class="left" bindtap="toVideo">观看课程</view>
+      <view class="bottom" bindtap="toVideo">观看课程</view>
     </view>
   </block>
   <block wx:else><!--其他用户-->

@@ -20,6 +20,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     wx.setNavigationBarTitle({ title: app.globalData.appName })
     app.buriedPoint(options)
     this.getCourses(this.data.page)
@@ -53,7 +54,7 @@ Page({
             page: nextPage,
             hasMore: hasMore
           })
-          share.setShareSources(that, res.data.data.shareSources)
+          //share.setShareSources(that, res.data.data.shareSources)
         } else {
           console.log('wx.request return error', res.statusCode);
         }

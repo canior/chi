@@ -23,10 +23,10 @@
         <view class="th">数量</view>
       </view>
       <view class="tr" wx:for="{{quota.children}}" wx:key="index">
-        <view class="td user">
+        <view class="td">
           <text>{{item.createdAtDateFormatted}}</text>
         </view>
-        <view class="td user">
+        <view class="td">
           <text>{{item.memo}}</text>
         </view>
         <view class="td">

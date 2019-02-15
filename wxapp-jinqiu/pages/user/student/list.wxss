@@ -53,6 +53,7 @@
   border-radius: 50%;
 }
 .table .tr .td.user text {
+  font-size: 26rpx;
   width: 150rpx;
 }
 .chi-item .right .line.desc-box {
