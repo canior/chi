@@ -972,7 +972,10 @@ class UserController extends BaseController
     public function getChildrenAction(Request $request) {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $url = isset($data['url']) ? $data['url'] : null;
+
         $user = $this->getWxUser($thirdSession);
+
 
         $userStockOrders = $user->getUserRecommandStockOrders();
 
@@ -985,7 +988,8 @@ class UserController extends BaseController
             'recommandStock' => $user->getRecommandStock(),
             'usedStock' => $user->getUserAccountOrdersAsRecommander()->count(),
             'totalStock' => $user->getTotalRecommandStock(),
-            'children' => $childrenArray
+            'children' => $childrenArray,
+            'shareSources' => $this->createUserShareSource($user, $url),
         ]);
     }
 
