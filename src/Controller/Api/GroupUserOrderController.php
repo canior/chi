@@ -155,7 +155,7 @@ class GroupUserOrderController extends BaseController
         $user = $this->getWxUser($thirdSession);
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
 
-        $body = "create order"; //TODO 开团信息要怎么写
+        $body = $groupUserOrder->getProduct()->getTitle();
         $wxPaymentApi = new WxPayment($this->getLog());
         $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
         $prePayId = $result['prepay_id'];
