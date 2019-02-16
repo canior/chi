@@ -35,13 +35,14 @@ class WxPayment
      */
     public function __construct(LoggerInterface $log)
     {
-        $this->appId = 'wx94523ddb2226fcbd';
+        $this->appId = 'wx51a92106ac38c489';
         $this->appKey = '22777c0558b563aa6abfa54a12970c26';
-        $this->mchId = '1487253982';
+        $this->mchId = '1525832811';
 
-        $this->certPath = '/home/ubuntu/projects/chi/config/Resources/apiclient_cert.pem';
-        $this->sslKeyPath = '/home/ubuntu/projects/chi/config/Resources/apiclient_key.pem';
-        $this->caInfoPath = '/home/ubuntu/projects/chi/config/Resources/rootca.pem';
+        $absoluteFilePath = __DIR__ . "../../../config/jinqiu/";
+        $this->certPath = $absoluteFilePath . 'apiclient_cert.pem';
+        $this->sslKeyPath = $absoluteFilePath . 'apiclient_key.pem';
+        $this->caInfoPath = $absoluteFilePath . 'rootca.pem';
 
         $this->wxPayApiUrl = 'https://api.mch.weixin.qq.com';
 
