@@ -104,14 +104,15 @@ class UserController extends BaseController
             $msg = 'login_success';
             $this->getLog()->info("input nickName=" . $nickName . ' and avatarUrl =' . $avatarUrl);
             if ($defaultNickname == $user->getNickname() and $defaultAvatarUrl == $user->getAvatarUrl()) {
-                $this->getLog()->info("update user nickname and avatar url");
+
+                $user->info('login in to the app');
+
                 if ($user->getAvatarUrl() == null) {
                     $user->setNickname($nickName);
                     $user->setAvatarUrl($avatarUrl);
+                    $user->info("update user nickname and avatar url");
                 }
                 $user->setLastLoginTimestamp(time());
-
-                $user->info('login in to the app');
 
                 $this->getEntityManager()->persist($user);
                 $this->getEntityManager()->flush();
@@ -138,11 +139,14 @@ class UserController extends BaseController
 
                     $userStatistics = new UserStatistics($user);
                     $user->addUserStatistic($userStatistics);
+                    $user->info('created user ' . $user);
                 }
-                $user->setNickname($nickName);
-                $user->setAvatarUrl($avatarUrl);
 
-                $user->info('created user ' . $user);
+                if ($avatarUrl == null) {
+                    $user->setNickname($nickName);
+                    $user->setAvatarUrl($avatarUrl);
+                    $user->info('updated user nickname and avatar url' . $user);
+                }
 
                 $this->getEntityManager()->persist($user);
                 $this->getEntityManager()->flush();
