@@ -13,7 +13,7 @@
 
 <view class="container">
     <view class="banner" bindtap="redirect" data-url="{{shareUser.bannerMetaArray.banner_my_share.redirectUrl}}">
-        <image mode="widthFix" src="{{imgUrlPrefix + '/' + shareUser.bannerMetaArray.banner_my_share.bannerFileId}}"></image>
+        <image mode="widthFix" src="{{shareUser ? (imgUrlPrefix + '/' + shareUser.bannerMetaArray.banner_my_share.bannerFileId) : ''}}"></image>
     </view>
 </view>
 

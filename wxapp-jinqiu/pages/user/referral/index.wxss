@@ -2,7 +2,7 @@
 @import "/pages/tmpl/share.wxss";
 .banner image {
     width: 100%;
-    background-color: #000;
+    background-color: #fff;
 }
 .top-container {
   padding: 20rpx;
