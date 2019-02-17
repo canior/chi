@@ -38,7 +38,7 @@
 <view class="split-line"/>
 
 <view class="container">
-  <template is="productReview" data="{{...productReviewData, imgUrlPrefix, product, type:'商品8评价'}}"/>
+  <template is="productReview" data="{{...productReviewData, imgUrlPrefix, product}}"/>
 </view>
 
 <template is="bottom" data="{{product, ...bottomData, type:'product'}}"/>

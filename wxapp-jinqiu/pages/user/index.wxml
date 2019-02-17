@@ -32,7 +32,7 @@
 <view class="split-brand"/>
 <view class="container">
   <view class="row" bindtap="toUpgrade" wx:if="{{user.userLevel == 'VISITOR' || user.userLevel == 'ADVANCED'}}">
-    <view class="left"><image src="/images/upgrade.png"/>学员升级</view>
+    <view class="left"><image src="/images/upgrade.png"/>{{textMeta ? textMeta.text_upgrade_meta.textMeta : ''}}</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>
   <block wx:if="{{isLogin}}">
@@ -65,6 +65,4 @@
     <view class="right"><view class="arrow-right"/></view>
   </button>
   <view class="split-line"/>
-
-
 </view>

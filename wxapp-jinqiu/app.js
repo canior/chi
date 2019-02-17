@@ -64,6 +64,7 @@ App({
               wx.setStorageSync('thirdSession', thirdSession);
               that.globalData.isLogin = that.isLogin();
               that.globalData.user = res.data.data.user;
+              that.globalData.textMeta = res.data.data.textMetaArray;
               if (thirdSession && callback) {
                 callback()
               }
@@ -226,5 +227,6 @@ App({
     userInfo: null,   //授权后获取的用户信息, 如昵称头像
     user: null,       //用户信息:userId,nickName,...
     addressInfo: null,//微信通讯地址
+    textMeta: null
   }
 })

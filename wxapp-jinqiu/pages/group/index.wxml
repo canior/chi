@@ -22,7 +22,7 @@
   </view>
 </view>
 <view class="chi-reward-container">
-    <view class="line reward">解锁全部课程</view>
+    <view class="line reward">{{textMetaArray ? textMetaArray.text_unlock_all_meta.textMeta : ''}}</view>
     <view class="line btn" bindtap="toUpgrade">查看详情></view>
     <view class="gohome" bindtap="wxHome">
       <view class="go">GO</view><text>返回\n首页</text>
@@ -72,7 +72,7 @@
       <view class="arrow-right"/>
       <view class="step">好友助攻</view>
       <view class="arrow-right"/>
-      <view class="step">一起解锁\n课程</view>
+      <view class="step">{{textMetaArray ? textMetaArray.text_unlock_together_meta.textMeta : ''}}</view>
     </view>
   </view>
 </view><!--拼团玩法-->
@@ -131,7 +131,7 @@
 <block wx:if="{{groupOrder.status == 'completed'}}">
   <block wx:if="{{userType == 'open' || userType == 'join'}}">
     <view class="bottom-done"><!--开团人和参团人-->
-      <view class="bottom" bindtap="wxViewCourse">观看课程</view>
+      <view class="bottom" bindtap="wxViewCourse">{{textMetaArray ? textMetaArray.text_watch_meta.textMeta : ''}}</view>
     </view>
   </block>
   <block wx:else><!--其他用户-->

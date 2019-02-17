@@ -47,7 +47,6 @@ Page({
     })
   },
 
-  // 转课程详情=>观看课程
   toCourseDetail: function (e) {
     const productId = e.currentTarget.dataset.id;
     wx.navigateTo({

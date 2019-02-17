@@ -9,6 +9,7 @@ Page({
   data: {
     isLogin: null,
     user: null,
+    textMeta: null
   },
 
   /**
@@ -91,7 +92,6 @@ Page({
     }
   },
 
-  // 转学员升级
   toUpgrade: function () {
     if (this.data.isLogin) {
       wx.navigateTo({
@@ -184,7 +184,8 @@ Page({
     app.userActivityCallback = res => {
       this.setData({
         isLogin: app.globalData.isLogin,
-        user: app.globalData.user
+        user: app.globalData.user,
+        textMeta: app.globalData.textMeta
       })
     }
     app.getUserInfo();

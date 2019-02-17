@@ -87,7 +87,6 @@ Page({
     })
   },
 
-  // 转学员升级
   wxUpgrade: function(e) {
     if (this.data.isLogin) {
       wx.navigateTo({
@@ -100,10 +99,9 @@ Page({
     }
   },
 
-  // 观看课程
   wxViewCourse: function () {
     wx.navigateTo({
-      url: '/pages/course/video?id=' + this.data.course.productId,
+      url: '/pages/course/video?id=' + this.data.course.productId + '&title=' + (textMetaArray ? textMetaArray.text_watch_meta.textMeta : null),
     })
   },
 

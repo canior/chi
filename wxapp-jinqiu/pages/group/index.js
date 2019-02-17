@@ -23,6 +23,7 @@ Page({
     bottomData: {},
     btnDisabled: false, //防止连击button
     countdown: {hr: '00', min: '00', sec: '00'}, //倒计时数据
+    textMetaArray: null
   },
 
   /**
@@ -50,7 +51,8 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           var groupOrder = res.data.data.groupOrder;
-          that.setGroupData(groupOrder);
+          var textMetaArray = res.data.data.textMetaArray;
+          that.setGroupData(groupOrder, textMetaArray);
           share.setShareSources(that, res.data.data.shareSources)          
           if (groupOrder.status == 'completed') {//拼团完成
             // 更多精彩拼团
@@ -138,7 +140,7 @@ Page({
   },
 
   // 设置拼团数据，包括用户类型,开团订单,参团订单
-  setGroupData: function (groupOrder) {
+  setGroupData: function (groupOrder, textMetaArray) {
     var userType = null;
     var openUserOrder = null;
     var joinUserOrders = [];
@@ -171,7 +173,8 @@ Page({
       userType: userType,
       openUserOrder: openUserOrder,
       joinUserOrders: joinUserOrders,
-      restUserOrders: restUserOrders
+      restUserOrders: restUserOrders,
+      textMetaArray: textMetaArray
     })
   },
 
@@ -261,14 +264,12 @@ Page({
     })
   },
 
-  // 转学员升级
   toUpgrade: function () {
     wx.navigateTo({
       url: "/pages/user/upgrade/index"
     });
   },
 
-  // 观看课程
   wxViewCourse: function () {
     wx.navigateTo({
       url: '/pages/course/video?id=' + this.data.groupOrder.product.productId,

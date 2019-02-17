@@ -22,6 +22,7 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
+    if (options.title) wx.setNavigationBarTitle({ title: options.title })
     const productId = options.id;
     this.getVideo(productId)
     const url = app.globalData.baseUrl + '/courses/' + productId + '/reviews'
