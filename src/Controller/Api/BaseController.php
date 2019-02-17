@@ -87,6 +87,7 @@ class BaseController extends DefaultController
             'text_unlock_all_meta' => $projectTextMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::TEXT_UNLOCK_ALL])->getArray(),
             'text_watch_meta' => $projectTextMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::TEXT_WATCH])->getArray(),
             'text_upgrade_meta' => $projectTextMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::TEXT_UPGRADE])->getArray(),
+            'text_unlock_together_meta' => $projectTextMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::TEXT_UNLOCK_TOGETHER])->getArray(),
         ];
     }
 

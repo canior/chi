@@ -1116,7 +1116,7 @@ class UserController extends BaseController
 
         return $this->responseJson('success', 200, [
             'course' => $course->getArray(),
-            'shareSources' => $this->createProductShareSource($user, $product, $url)
+            'shareSources' => $this->createProductShareSource($user, $product, $url),
         ]);
     }
 }
