@@ -67,6 +67,8 @@ App({
               if (thirdSession && callback) {
                 callback()
               }
+            } else {
+              console.log('Login Failed:', res.data)
             }
           },
           fail(e) {
@@ -217,8 +219,8 @@ App({
 
   globalData: {
     appName: '变现商学院',
-    baseUrl: 'https://laowantong.yunlishuju.com/wxapi',
-    imgUrlPrefix: 'https://laowantong.yunlishuju.com/image/preview',
+    baseUrl: 'https://bianxian.yunlishuju.com/wxapi',
+    imgUrlPrefix: 'https://bianxian.yunlishuju.com/image/preview',
     //baseUrl: 'http://127.0.0.1:8000/wxapi',
     //imgUrlPrefix: 'http://127.0.0.1:8000/image/preview',
     isLogin: false,   //是否授权并登录
