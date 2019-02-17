@@ -93,6 +93,7 @@ class UserController extends BaseController
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $nickName = isset($data['nickName']) ? $data['nickName'] : $defaultNickname; //TODO 这里要添加文案
         $avatarUrl = isset($data['avatarUrl']) ? $data['avatarUrl'] : null; //需要一张默认的用户头像
+        $url = isset($data['url']) ? $data['url'] : null;
 
         $user = null;
         $msg = "";
@@ -181,7 +182,8 @@ class UserController extends BaseController
             'user' => $user ? $user->getArray() : null,
             'totalShares' => $totalShares,
             'totalStudents' => $totalStudents,
-            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository),
+            'shareSources' => $this->createUserShareSource($user, $url)
         ]);
 
     }

@@ -18,6 +18,7 @@ class ProjectTextMeta extends ProjectMeta
     const TEXT_UNLOCK_ALL = 'text_unlock_all';
     const TEXT_WATCH = 'text_watch';
     const TEXT_UPGRADE = 'text_upgrade';
+    const TEXT_UNLOCK_TOGETHER = 'text_unlock_together';
 
     /**
      * 小程序的按钮及文案说明
@@ -31,7 +32,9 @@ class ProjectTextMeta extends ProjectMeta
         self::TEXT_WATCH => ['memo' => '正式用 "观看课程" ， 审核用  "课程简介" ',
             'value' => '课程简介'],
         self::TEXT_UPGRADE => ['memo' => '正式用 "学员升级" ， 审核用  "我要注册" ',
-            'value' => '我要注册']
+            'value' => '我要注册'],
+        self::TEXT_UNLOCK_TOGETHER => ['memo' => '正式用 "一起解锁课程" ， 审核用  "一起注册成功" ',
+            'value' => '一起注册成功']
     ];
 
 
