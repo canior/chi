@@ -842,6 +842,8 @@ class UserController extends BaseController
 
         $user = $this->getWxUser($thirdSession);
         $totalShareSourceUsers = $userRepository->findTotalShareUsers($user->getId(), null);
+        $totalValidShareSourceUsers = $user->getSubUsers()->count();
+
         $shareSourceUsers = $userRepository->findShareUsers($user->getId(), null, $page, self::PAGE_LIMIT);
 
         $shareSourceUserArray = [];
@@ -849,10 +851,17 @@ class UserController extends BaseController
             $shareSourceUserArray[] = $shareSourceUser->getArray();
         }
 
+        /**
+         * @var ProjectBannerMetaRepository $projectBannerMetaRepository
+         */
+        $projectBannerMetaRepository = $this->getEntityManager()->getRepository(ProjectBannerMeta::class);
+
         return $this->responseJson('success', 200, [
+            'validShareSourceUsersTotal' => $totalValidShareSourceUsers,
             'shareSourceUsersTotal' => $totalShareSourceUsers,
             'shareSourceUsers' => $shareSourceUserArray,
-            'shareSources' => $this->createUserShareSource($user, $url)
+            'shareSources' => $this->createUserShareSource($user, $url),
+            'bannerMetaArray' => $this->createProjectBannerMetas($projectBannerMetaRepository)
         ]);
     }
 

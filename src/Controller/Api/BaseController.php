@@ -9,10 +9,12 @@
 namespace App\Controller\Api;
 
 use App\Controller\DefaultController;
+use App\Entity\ProjectBannerMeta;
 use App\Entity\ProjectTextMeta;
 use App\Entity\ShareSource;
 use App\Entity\ShareSourceUser;
 use App\Entity\User;
+use App\Repository\ProjectBannerMetaRepository;
 use App\Repository\ProjectTextMetaRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -85,6 +87,20 @@ class BaseController extends DefaultController
             'text_unlock_all_meta' => $projectTextMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::TEXT_UNLOCK_ALL]),
             'text_watch_meta' => $projectTextMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::TEXT_WATCH]),
             'text_upgrade_meta' => $projectTextMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::TEXT_UPGRADE]),
+        ];
+    }
+
+    /**
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @return array
+     */
+    protected function createProjectBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
+        return [
+            'banner_home_1' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_1]),
+            'banner_home_2' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_2]),
+            'banner_home_3' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_3]),
+            'banner_login' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_LOGIN]),
+            'banner_my_share' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_MY_SHARE]),
         ];
     }
 

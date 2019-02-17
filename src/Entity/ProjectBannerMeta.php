@@ -19,7 +19,7 @@ class ProjectBannerMeta extends ProjectMeta
     const BANNER_HOME_2 = "banner_home_2";
     const BANNER_HOME_3 = "banner_home_3";
     const BANNER_LOGIN = 'banner_login';
-    const BANNER_MY_SHARE = 'my_share';
+    const BANNER_MY_SHARE = 'banner_my_share';
 
     /**
      * key => memo
