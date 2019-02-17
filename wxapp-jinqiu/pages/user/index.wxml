@@ -14,7 +14,7 @@
       <view class="arrow-right"/>
     </view>
     <view class="right" wx:if="{{!isLogin}}">
-      <navigator url="/pages/user/login">请登录</navigator>
+      <view class="login" catchtap="toLogin">请登录</view>
     </view>    
   </view>
   <view class="row" wx:if="{{isLogin}}">
