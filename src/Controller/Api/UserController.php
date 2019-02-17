@@ -110,7 +110,7 @@ class UserController extends BaseController
                 if ($user->getAvatarUrl() == null) {
                     $user->setNickname($nickName);
                     $user->setAvatarUrl($avatarUrl);
-                    $user->info("update user nickname and avatar url");
+                    $user->info("update user nickname to " . $nickName . " and avatar url");
                 }
                 $user->setLastLoginTimestamp(time());
 
@@ -145,7 +145,7 @@ class UserController extends BaseController
                 if ($avatarUrl == null) {
                     $user->setNickname($nickName);
                     $user->setAvatarUrl($avatarUrl);
-                    $user->info('updated user nickname and avatar url' . $user);
+                    $user->info("update user nickname to " . $nickName . " and avatar url");
                 }
 
                 $this->getEntityManager()->persist($user);
