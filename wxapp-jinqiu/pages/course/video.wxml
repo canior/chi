@@ -3,7 +3,7 @@
 <import src="/pages/tmpl/share.wxml"/>
 <import src="/pages/tmpl/bottom.wxml"/>
 <view class="container">
-  <video id="myVideo" src="{{imgUrlPrefix + '/' + course.courseVideos[0].fileId + '.' + course.courseVideos[0].type}}" binderror="videoErrorCallback"></video>
+  <video id="myVideo" src="{{imgUrlPrefix + '/' + course.courseVideos[0].fileId + '.' + course.courseVideos[0].type}}" binderror="videoErrorCallback" autoplay="true"></video>
 
   <view class="course">
     <view class="left">
