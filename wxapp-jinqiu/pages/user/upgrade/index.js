@@ -16,6 +16,7 @@ Page({
     bottomData: {},
     shareData: {},
     loading: true,
+    textMetaArray: null
   },
 
   /**
@@ -43,12 +44,19 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          var product = res.data.data.product
+          var product = res.data.data.product;
+          var textMetaArray = res.data.data.textMetaArray;
           product.productSpecImages.forEach((item) => {
             item.loading = true
           })
+          if (textMetaArray && textMetaArray.text_upgrade_meta.textMeta) {
+            wx.setNavigationBarTitle({
+              title: textMetaArray.text_upgrade_meta.textMeta
+            })
+          }
           that.setData({
-            product: product
+            product: product,
+            textMetaArray: textMetaArray
           })
           const url = app.globalData.baseUrl + '/products/' + product.id + '/reviews'
           productReview.init(that, url);          

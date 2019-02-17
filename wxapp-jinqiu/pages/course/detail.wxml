@@ -13,10 +13,8 @@
   </view>
 
   <view class="course">
-    <view class="left">
-      <view class="line name">{{course.title}}</view>
-      <view class="line desc-box">{{course.shortDescription}}</view>
-    </view>
+    <view class="line name">{{course.title}}</view>
+    <view class="line desc">{{course.shortDescription}}</view>
   </view>
 
   <view class="section">
@@ -49,5 +47,5 @@
   <template is="courseReview" data="{{...courseReviewData, imgUrlPrefix, course}}"/>
 </view>
 
-<template is="bottom" data="{{course, user, groupUserOrder, ...bottomData, type:'course'}}"/>
+<template is="bottom" data="{{course, user, groupUserOrder, textMetaArray, ...bottomData, type:'course'}}"/>
 <template is="share" data="{{...shareData}}"/>

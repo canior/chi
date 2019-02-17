@@ -12,9 +12,6 @@
   width: 100%;
 }
 .course {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-top: 20rpx;
 }
 .course .line.name {

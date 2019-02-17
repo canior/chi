@@ -1,5 +1,10 @@
 <!--pages/user/referral/index.wxml-->
 <import src="/pages/tmpl/share.wxml"/>
+<view class="container">
+    <view class="banner" bindtap="redirect" data-url="{{shareUser.bannerMetaArray.banner_my_share.redirectUrl}}">
+        <image mode="widthFix" src="{{imgUrlPrefix + '/' + shareUser.bannerMetaArray.banner_my_share.bannerFileId}}"></image>
+    </view>
+</view>
 <view class="top-container">
   <view class="top">
     <view class="title">我的分享(人)</view>
@@ -8,8 +13,7 @@
   </view>
 </view>
 <view class="navbar">
-  <view class="nav"></view>
-  <view class="nav"></view>
+  <view class="nav">有效分享(人)：{{shareUser.validShareSourceUsersTotal}}</view>
 </view>
 
 <!--列表-->

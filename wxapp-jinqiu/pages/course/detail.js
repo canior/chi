@@ -17,6 +17,7 @@ Page({
     shareData: {},
     loading: true,
     groupUserOrder: null,
+    textMetaArray: null
   },
 
   /**
@@ -48,7 +49,8 @@ Page({
           })
           that.setData({
             course: course,
-            groupUserOrder: res.data.data.groupUserOrder
+            groupUserOrder: res.data.data.groupUserOrder,
+            textMetaArray: res.data.data.textMetaArray
           })
           share.setShareSources(that, res.data.data.shareSources)
         } else {

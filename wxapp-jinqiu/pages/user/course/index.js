@@ -47,11 +47,11 @@ Page({
     })
   },
 
-  // 转课程日志
+  // 转课程详情=>观看课程
   toCourseDetail: function (e) {
     const productId = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: '/pages/course/detail?id=' + productId,
+      url: '/pages/course/video?id=' + productId,
     })
   },
 
