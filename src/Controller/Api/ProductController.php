@@ -59,11 +59,7 @@ class ProductController extends BaseController
      */
     public function indexAction(Request $request, ProductRepository $productRepository, ProjectBannerMetaRepository $projectBannerMetaRepository) : Response {
 
-        $thirdSession = $request->query->get('thirdSession');
         $page = $request->query->get('page', 1);
-        $url = $request->query->get('url');
-
-        $user = $this->getWxUser($thirdSession);
 
         $bannersArray = [];
         $productsArray = [];
