@@ -33,8 +33,8 @@ class ProjectTextMeta extends ProjectMeta
             'value' => '课程简介'],
         self::TEXT_UPGRADE => ['memo' => '正式用 "学员升级" ， 审核用  "我要注册" ',
             'value' => '我要注册'],
-        self::TEXT_UNLOCK_TOGETHER => ['memo' => '正式用 "一起解锁课程" ， 审核用  "一起注册成功" ',
-            'value' => '一起注册成功']
+        self::TEXT_UNLOCK_TOGETHER => ['memo' => '正式用 "一起解锁 课程" ， 审核用  "一起注册 成功" ',
+            'value' => '一起注册 成功']
     ];
 
 

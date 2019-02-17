@@ -530,6 +530,7 @@ class User extends BaseUser implements Dao
 
         if ($memo != null) {
             $this->info('found a reason to change parent user');
+            $this->setRecommanderName($parentUser->getNickname());
             $userParentLog = UserParentLog::factory($this, $parentUser, $shareSource, $memo);
             $this->addUserParentLog($userParentLog);
         }
