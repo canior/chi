@@ -22,11 +22,11 @@ Page({
   onLoad: function (options) {
     wx.hideShareMenu()
     wx.setNavigationBarTitle({ title: app.globalData.appName })
-    app.buriedPoint(options)
     this.getCourses(this.data.page)
-    /*app.userActivityCallback = res => {
-      this.getCourses(this.data.page)
-    }*/
+    app.buriedPoint(options)
+    app.userActivityCallback = res => {
+      app.buriedPoint(options)
+    }
   },
 
   getCourses: function (page) {
