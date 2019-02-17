@@ -142,7 +142,7 @@ class UserController extends BaseController
                     $user->info('created user ' . $user);
                 }
 
-                if ($avatarUrl == null) {
+                if ($user->getAvatarUrl() == null) {
                     $user->setNickname($nickName);
                     $user->setAvatarUrl($avatarUrl);
                     $user->info("update user nickname to " . $nickName . " and avatar url");
