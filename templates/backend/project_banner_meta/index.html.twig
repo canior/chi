@@ -33,8 +33,9 @@
                             <tr>
                                 <th class="col-md-2">Id</th>
                                 <th class="col-md-2">Key</th>
+                                <th class="col-md-2">描述</th>
                                 <th class="col-md-2">图片</th>
-                                <th class="col-md-4">跳转页面</th>
+                                <th class="col-md-2">跳转页面</th>
                                 <th class="col-md-2 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
@@ -44,6 +45,7 @@
                                     <tr>
                                         <td>{{ item.id }}</td>
                                         <td>{{ item.metaKey }}</td>
+                                        <td>{{ item.memo }}</td>
                                         <td>
                                             {% if item.bannerFileId %}
                                                 <img src="{{ path('imagePreview', {fileId: item.bannerFileId}) }}" width="40" height="40"/>

@@ -167,12 +167,17 @@ class UserController extends BaseController
             $totalStudents = $teacherRepository->findTotalStudents($user->getId());
         }
 
+        /**
+         * @var ProjectTextMetaRepository $projectTextMetaRepository
+         */
+        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
 
         return $this->responseJson($msg, 200, [
             'thirdSession' => $thirdSession,
             'user' => $user ? $user->getArray() : null,
             'totalShares' => $totalShares,
-            'totalStudents' => $totalStudents
+            'totalStudents' => $totalStudents,
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
         ]);
 
     }
@@ -280,8 +285,14 @@ class UserController extends BaseController
         $this->getEntityManager()->persist($groupUserOrder);
         $this->getEntityManager()->flush();
 
+        /**
+         * @var ProjectTextMetaRepository $projectTextMetaRepository
+         */
+        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
+
         return $this->responseJson('success', 200, [
-            'groupUserOrder' => $groupUserOrder->getArray()
+            'groupUserOrder' => $groupUserOrder->getArray(),
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
         ]);
     }
 
@@ -689,9 +700,15 @@ class UserController extends BaseController
          */
         $product = $productRepository->findOneBy(['status' => Product::ACTIVE, 'course' => null]);
 
+        /**
+         * @var ProjectTextMetaRepository $projectTextMetaRepository
+         */
+        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
+
         return $this->responseJson('success', 200, [
             'product' => $product->getArray(),
-            'shareSources' => $this->createProductShareSource($user, $product, $url)
+            'shareSources' => $this->createProductShareSource($user, $product, $url),
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
         ]);
     }
 
@@ -713,8 +730,14 @@ class UserController extends BaseController
         $this->getEntityManager()->persist($upgradeUserOrder);
         $this->getEntityManager()->flush();
 
+        /**
+         * @var ProjectTextMetaRepository $projectTextMetaRepository
+         */
+        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
+
         return $this->responseJson('success', 200, [
-            'upgradeUserOrder' => $upgradeUserOrder->getArray()
+            'upgradeUserOrder' => $upgradeUserOrder->getArray(),
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
         ]);
     }
 

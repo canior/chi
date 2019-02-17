@@ -28,6 +28,7 @@ use App\Service\Wx\WxPayment;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\ProjectTextMetaRepository;
 
 /**
  *
@@ -64,9 +65,15 @@ class GroupOrderController extends BaseController
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
+        /**
+         * @var ProjectTextMetaRepository $projectTextMetaRepository
+         */
+        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
+
         $data = [
             'product' => $groupOrder->getProduct()->getArray(),
             'groupOrder' => $groupOrder->getArray(),
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
         ];
 
         return $this->responseJson('success', 200, $data);
@@ -105,16 +112,21 @@ class GroupOrderController extends BaseController
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
+        /**
+         * @var ProjectTextMetaRepository $projectTextMetaRepository
+         */
+        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
 
         $data = [
-            'groupUserOrder' => $groupUserOrder->getArray()
+            'groupUserOrder' => $groupUserOrder->getArray(),
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
         ];
+
         return $this->responseJson('success', 200, $data);
     }
 
 
     /**
-     * //TODO 这个接口是多余的???
      * 拼团到期
      *
      * @Route("/groupOrder/expire", name="expireGroupOrder", methods="POST")
@@ -130,7 +142,16 @@ class GroupOrderController extends BaseController
         $groupOrder->setExpired();
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
-        return $this->responseJson('success', 200, ['groupOrder' => $groupOrder->getArray()]);
+
+        /**
+         * @var ProjectTextMetaRepository $projectTextMetaRepository
+         */
+        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
+
+        return $this->responseJson('success', 200, [
+            'groupOrder' => $groupOrder->getArray(),
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
+        ]);
     }
 
 
@@ -153,10 +174,16 @@ class GroupOrderController extends BaseController
          */
         $groupOrder = $groupOrderRepository->find($groupOrderId);
 
+        /**
+         * @var ProjectTextMetaRepository $projectTextMetaRepository
+         */
+        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
+
         $data = [
             'product' => $groupOrder->getProduct()->getArray(),
             'groupOrder' => $groupOrder->getArray(),
-            'shareSources' => $this->createGroupOrderShareSource($groupOrder, $url)
+            'shareSources' => $this->createGroupOrderShareSource($groupOrder, $url),
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
         ];
 
         return $this->responseJson('success', 200, $data);

@@ -9,9 +9,11 @@
 namespace App\Controller\Api;
 
 use App\Controller\DefaultController;
+use App\Entity\ProjectTextMeta;
 use App\Entity\ShareSource;
 use App\Entity\ShareSourceUser;
 use App\Entity\User;
+use App\Repository\ProjectTextMetaRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -71,6 +73,19 @@ class BaseController extends DefaultController
     protected function getImgUrlPrefix()
     {
         return $this->generateUrl('imagePreview', ['fileId' => null], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param ProjectTextMetaRepository $projectTextMetaRepository
+     * @return array
+     */
+    protected function createProjectTextMetas(ProjectTextMetaRepository $projectTextMetaRepository) {
+        return [
+            'text_group_unlock_meta' => $projectTextMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::TEXT_GROUP_UNLOCK]),
+            'text_unlock_all_meta' => $projectTextMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::TEXT_UNLOCK_ALL]),
+            'text_watch_meta' => $projectTextMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::TEXT_WATCH]),
+            'text_upgrade_meta' => $projectTextMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::TEXT_UPGRADE]),
+        ];
     }
 
     /**

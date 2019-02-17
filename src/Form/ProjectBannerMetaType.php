@@ -13,6 +13,11 @@ class ProjectBannerMetaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('memo', null, [
+                'label' => '描述',
+                'attr' => ['rows' => 5],
+                'required' => false,
+            ])
             ->add('redirectUrl', null, [
                 'label' => '跳转页面',
                 'required' => false,
@@ -24,6 +29,7 @@ class ProjectBannerMetaType extends AbstractType
                 'data_class' => null,
                 'mapped' => false,
             ])
+
         ;
     }
 

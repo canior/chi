@@ -30,7 +30,7 @@ class UserPersonalType extends AbstractType
             ])
             ->add('name', TextType::class, [
                 'label' => '姓名',
-                'required' => true
+                'required' => false,
             ])
             ->add('phone', TextType::class, [
                 'label' => '电话',

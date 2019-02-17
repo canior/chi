@@ -14,6 +14,26 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ProjectTextMeta extends ProjectMeta
 {
+    const TEXT_GROUP_UNLOCK = 'text_group_unlock';
+    const TEXT_UNLOCK_ALL = 'text_unlock_all';
+    const TEXT_WATCH = 'text_watch';
+    const TEXT_UPGRADE = 'text_upgrade';
+
+    /**
+     * 小程序的按钮及文案说明
+     * key => memo
+     */
+    const TEXT_ARRAY = [
+        self::TEXT_GROUP_UNLOCK => [ 'memo' => '正式用 "集Call免费解锁" ， 审核用  "集Call免费注册" ',
+            'value' => '集Call免费注册'],
+        self::TEXT_UNLOCK_ALL => ['memo' => '正式用 "解锁全部课程" ， 审核用  "直接注册" ',
+            'value' => '直接注册'],
+        self::TEXT_WATCH => ['memo' => '正式用 "观看课程" ， 审核用  "课程简介" ',
+            'value' => '课程简介'],
+        self::TEXT_UPGRADE => ['memo' => '正式用 "学员升级" ， 审核用  "我要注册" ',
+            'value' => '我要注册']
+    ];
+
 
     public function isTextMeta()
     {

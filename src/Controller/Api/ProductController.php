@@ -12,11 +12,13 @@ use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Entity\ProjectBannerMeta;
 use App\Entity\ProjectMeta;
+use App\Entity\ProjectTextMeta;
 use App\Entity\ShareSource;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
 use App\Repository\ProjectBannerMetaRepository;
 use App\Repository\ProjectMetaRepository;
+use App\Repository\ProjectTextMetaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -123,10 +125,16 @@ class ProductController extends BaseController
             $groupUserOrderArray = $groupUserOrder->getArray();
         }
 
+        /**
+         * @var ProjectTextMetaRepository $projectTextMetaRepository
+         */
+        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
+
         return $this->responseJson('success', 200, [
             'product' => $product->getArray(),
             'groupUserOrder' => $groupUserOrderArray,
-            'shareSources' => $this->createProductShareSource($user, $product, $url)
+            'shareSources' => $this->createProductShareSource($user, $product, $url),
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
         ]);
     }
 
