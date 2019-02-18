@@ -109,7 +109,7 @@ class BaseController extends DefaultController
      */
     protected function createProductPageProjectBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
         return [
-            'banner_product' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_1])->getArray(),
+            'banner_product' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_PRODUCT])->getArray(),
         ];
     }
 
