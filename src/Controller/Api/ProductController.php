@@ -61,7 +61,7 @@ class ProductController extends BaseController
 
         $page = $request->query->get('page', 1);
 
-        $bannersArray = $this->createProjectBannerMetas($projectBannerMetaRepository);
+        $bannersArray = $this->createProductBanners($projectBannerMetaRepository);
         $productsArray = [];
 
         $productsQuery = $this->findActiveProducts($productRepository);
