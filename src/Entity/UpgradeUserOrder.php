@@ -402,7 +402,7 @@ class UpgradeUserOrder implements Dao
             $recommanderRewards = UserLevel::$advanceUserUpgradeRewardsArray[UserLevel::ADVANCED];
             if ($this->isApproved()) {
                 $this->setRecommanderUser($recommander);
-                $memo = '推荐' . $user->getName() . '成为' . UserLevel::$userLevelTextArray[$userLevel] . $this->getUser()->getName();
+                $memo = '推荐' . $user->getNickname() . '成为' . UserLevel::$userLevelTextArray[$userLevel];
                 $recommander->createUserAccountOrder(UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this, null, $memo);
             } else {
                 $userAccountOrder = UserAccountOrder::factory($recommander, UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this, null, $memo);
@@ -418,7 +418,7 @@ class UpgradeUserOrder implements Dao
             $partnerRewards = UserLevel::$advanceUserUpgradeRewardsArray[UserLevel::PARTNER];
             if ($this->isApproved()) {
                 $this->setPartnerUser($partner);
-                $memo = $user->getName() . '成为' . UserLevel::$userLevelTextArray[$userLevel] . $this->getUser()->getName();
+                $memo = $user->getNickname() . '成为' . UserLevel::$userLevelTextArray[$userLevel] ;
                 $partner->createUserAccountOrder(UserAccountOrder::PARTNER_REWARDS, $partnerRewards, $this, null, $memo);
                 //推荐名额减1
                 $partner->createUserRecommandStockOrder(-1, $this, $memo);
@@ -435,7 +435,7 @@ class UpgradeUserOrder implements Dao
                 $partnerTeacherRewards = UserLevel::$advanceUserUpgradeRewardsArray[UserLevel::PARTNER_TEACHER];
                 if ($this->isApproved()) {
                     $this->setPartnerTeacherUser($partnerTeacher);
-                    $memo = $user->getName() . '成为' . UserLevel::$userLevelTextArray[$userLevel] . $this->getUser()->getName();
+                    $memo = $user->getNickname() . '成为' . UserLevel::$userLevelTextArray[$userLevel];
                     $partnerTeacher->createUserAccountOrder(UserAccountOrder::PARTNER_TEACHER_REWARDS, $partnerTeacherRewards, $this, null, $memo);
                 } else {
                     $userAccountOrder = UserAccountOrder::factory($partnerTeacher, UserAccountOrder::PARTNER_TEACHER_REWARDS, $partnerTeacherRewards, $this, null, $memo);

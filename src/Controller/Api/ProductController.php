@@ -61,16 +61,10 @@ class ProductController extends BaseController
 
         $page = $request->query->get('page', 1);
 
-        $bannersArray = [];
+        $bannersArray = $this->createProjectBannerMetas($projectBannerMetaRepository);
         $productsArray = [];
 
-        $projectBannerMetas = $projectBannerMetaRepository->findBy(['metaKey' => [ProjectBannerMeta::BANNER_HOME_1, ProjectBannerMeta::BANNER_HOME_2, ProjectBannerMeta::BANNER_HOME_3]]);
-        foreach ($projectBannerMetas as $projectBannerMeta) {
-            $bannersArray[] = $projectBannerMeta->getArray();
-        }
-
         $productsQuery = $this->findActiveProducts($productRepository);
-
         /**
          * @var Product[] $products
          */
@@ -87,6 +81,14 @@ class ProductController extends BaseController
         ];
         
         return $this->responseJson('success', 200, $data);
+    }
+
+    /**
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @return array
+     */
+    protected function createProductBanners(ProjectBannerMetaRepository $projectBannerMetaRepository) {
+        return [];
     }
 
     /**

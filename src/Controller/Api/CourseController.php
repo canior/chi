@@ -38,6 +38,15 @@ class CourseController extends ProductController
     }
 
     /**
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @return array
+     */
+    protected function createProductBanners(ProjectBannerMetaRepository $projectBannerMetaRepository) {
+        $bannersArray = $this->createProjectBannerMetas($projectBannerMetaRepository);
+        return $bannersArray;
+    }
+
+    /**
      * @param ProductRepository $productRepository
      * @return \Doctrine\ORM\Query
      */
