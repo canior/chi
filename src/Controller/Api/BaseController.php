@@ -127,7 +127,7 @@ class BaseController extends DefaultController
         $shareSources = [];
 
         //产品信息页面转发分享
-        $referShareSource = $shareSourceRepository->findOneBy(['user'=> $user, 'page' => $page, 'product' => $product, 'type' => ShareSource::REFER_PRODUCT]);
+        $referShareSource = $shareSourceRepository->findOneBy(['user'=> $user, 'product' => $product, 'type' => ShareSource::REFER_PRODUCT]);
         if ($referShareSource == null) {
             $referShareSource = ShareSource::factory(ShareSource::REFER_PRODUCT, $page, $user, null, $referProductShare->getShareTitle(), $product);
             $this->getEntityManager()->persist($referShareSource);
@@ -184,7 +184,7 @@ class BaseController extends DefaultController
         $shareSources = [];
 
         //个人信息页面转发分享
-        $referShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'page' => $page, 'type' => ShareSource::REFER_USER]);
+        $referShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::REFER_USER]);
         if ($referShareSource == null) {
 
             $referBannerFile = null;
@@ -257,7 +257,7 @@ class BaseController extends DefaultController
         $shareSources = [];
 
         //拼团页面转发分享
-        $referShareSource = $shareSourceRepository->findOneBy(['groupOrder' => $groupOrder, 'page' => $page, 'type' => ShareSource::REFER_GROUP_ORDER]);
+        $referShareSource = $shareSourceRepository->findOneBy(['groupOrder' => $groupOrder, 'type' => ShareSource::REFER_GROUP_ORDER]);
         if ($referShareSource == null) {
 
             $referBannerFile = null;
