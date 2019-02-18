@@ -148,8 +148,14 @@ Page({
       isLogin: app.globalData.isLogin,
       user: app.globalData.user
     })
-    bottom.init(this)
-    share.init(this)
+    if (this.data.isLogin) {
+      bottom.init(this)
+      share.init(this)
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
   },
 
   /**

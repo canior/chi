@@ -31,6 +31,7 @@ Page({
    */
   onLoad: function (options) {
     //options.scene = encodeURIComponent('ss=123&p=456&go=789');
+    console.log(options);
     var id = options.id ? options.id : app.parseScene(options, 'go')
     if (id) {
       this.getGroupOrder(id);      

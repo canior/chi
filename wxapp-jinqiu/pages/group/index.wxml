@@ -135,7 +135,7 @@
     </view>
   </block>
   <block wx:else><!--其他用户-->
-    <template is="bottom" data="{{product:groupOrder.product, ...bottomData}}"/>
+    <template is="bottom" data="{{product:groupOrder.product, ...bottomData, type:'course'}}"/>
   </block>
 </block><!--拼团已完成-->
 

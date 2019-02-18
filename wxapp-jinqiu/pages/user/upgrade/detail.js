@@ -118,7 +118,7 @@ Page({
       bottom.init(this)
       share.init(this)
       //options.scene = encodeURIComponent('ss=123&p=456&go=789');
-      var productId = this.data.options.id ? this.data.options.id : app.parseScene(options, 'p')
+      var productId = this.data.options.id ? this.data.options.id : app.parseScene(this.data.options, 'p')
       this.getProduct(productId);
       this.setData({ ['product.productSpecImages']: [] })
     } else {
