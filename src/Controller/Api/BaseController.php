@@ -139,7 +139,7 @@ class BaseController extends DefaultController
         if ($quanShareSource == null) {
             $quanShareSource = ShareSource::factory(ShareSource::QUAN_PRODUCT, $page, $user, null, null, $product);
             $wx = new WxCommon($this->getLog());
-            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
+            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'ss=' . $quanShareSource->getId() . '&p=' . $product->getId(), $page, true);
 
             $bannerFile = null;
             if ($product->getMainProductImage() and $product->getMainProductImage()->getFile()) {
@@ -206,7 +206,7 @@ class BaseController extends DefaultController
 
             $quanShareSource = ShareSource::factory(ShareSource::QUAN_USER, $page, $user);
             $wx = new WxCommon($this->getLog());
-            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
+            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'ss=' . $quanShareSource->getId(), $page, true);
 
             $quanBannerFile = null;
             if ($quanMeta->getShareBannerFileId()) {
@@ -279,7 +279,7 @@ class BaseController extends DefaultController
 
             $quanShareSource = ShareSource::factory(ShareSource::QUAN_GROUP_ORDER, $page, $user);
             $wx = new WxCommon($this->getLog());
-            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'groupOrderId=' . $groupOrder->getId() . '&shareSourceId=' . $quanShareSource->getId(), $page, true);
+            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'go=' . $groupOrder->getId() . '&ss=' . $quanShareSource->getId(), $page, true);
 
             $quanBannerFile = null;
             if ($quanMeta->getShareBannerFileId()) {

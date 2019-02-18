@@ -246,6 +246,8 @@ class WxCommon
     }
 
     /**
+     * https://developers.weixin.qq.com/miniprogram/dev/api/getWXACodeUnlimit.html
+     *
      * @param ObjectManager $entityManager
      * @param string $scene
      * @param $page
