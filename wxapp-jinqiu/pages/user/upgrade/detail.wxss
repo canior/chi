@@ -1,0 +1,56 @@
+/* pages/user/upgrade/index.wxss */
+@import "/pages/tmpl/bottom.wxss";
+@import "/pages/tmpl/share.wxss";
+.banner {
+  text-align: center;
+  position: relative;
+}
+.banner swiper {
+  height: 720rpx;
+}
+.banner swiper image {
+  width: 100%;
+}
+.line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.line .sold {
+  font-size: 20rpx;
+  color: #353535;
+}
+.name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+.desc {
+  font-size: 24rpx;
+  color: #b2b2b2;
+}
+.chi-reward-container {
+  margin-bottom: 20rpx;
+}
+/*商品详情*/
+.specs .title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #353535;
+  margin: 20rpx 0;
+}
+.specs .img {
+  text-align: center;
+  position: relative;
+}
+.specs .img image {
+  width: 690rpx;
+  height: 450rpx;
+}
+.specs .img image.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

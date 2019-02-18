@@ -14,6 +14,7 @@ Page({
     limit: 20,
     hasMore: false,
     shareData: {},
+    textMetaArray: null
   },
 
   /**
@@ -35,12 +36,13 @@ Page({
       title: '玩命加载中',
     })
     wx.request({
-      url: app.globalData.baseUrl + '/user/upgradeUserOrder/view/',
+      url: app.globalData.baseUrl + '/user/upgradeUserOrder/view',
       data: {
         page: page,
         thirdSession: wx.getStorageSync('thirdSession'),
         url: '/pages/user/upgrade/index' 
       },
+      method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
@@ -48,11 +50,18 @@ Page({
           products.push(...res.data.data.products);
           var hasMore = res.data.data.products.length < that.data.limit ? false : true;
           var nextPage = hasMore ? page + 1 : page;
+          var textMetaArray = res.data.data.textMetaArray;
+          if (textMetaArray && textMetaArray.text_upgrade_meta.textMeta) {
+            wx.setNavigationBarTitle({
+              title: textMetaArray.text_upgrade_meta.textMeta
+            })
+          }
           that.setData({
             banners: res.data.data.banners,
             products: products,
             page: nextPage,
-            hasMore: hasMore
+            hasMore: hasMore,
+            textMetaArray: textMetaArray
           })
           //share.setShareSources(that, res.data.data.shareSources)
         } else {
