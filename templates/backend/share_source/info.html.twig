@@ -42,11 +42,7 @@
                                                         <div class="clearfix">
                                                             <h5>
                                                                 用户ID:
-                                                                <a class="btn btn-info btn-xs"
-                                                                   href="{{ path('user_info', {'id': shareSource.user.id}) }}"
-                                                                   target="_blank" title="查看详情">
-                                                                    {{ shareSource.user.id }}
-                                                                </a>
+                                                                {{ shareSource.user.id }}
                                                             </h5>
                                                             <h5>用户昵称: {{ shareSource.user.nickname }}</h5>
                                                             <h5>姓名: {{ shareSource.user.name }}</h5>
@@ -109,11 +105,7 @@
                                                 {% for item in shareSource.shareSourceUsers %}
                                                     <tr>
                                                         <td>
-                                                            <a class="btn btn-info btn-xs"
-                                                               href="{{ path('user_info', {'id': item.user.id}) }}"
-                                                               target="_blank" title="查看详情">
-                                                                {{ item.user.id }}
-                                                            </a>
+                                                            {{ item.user.id }}
                                                         </td>
                                                         <td>
                                                             {{ item.user.nickname }}
