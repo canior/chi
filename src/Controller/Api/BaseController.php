@@ -281,16 +281,14 @@ class BaseController extends DefaultController
             $wx = new WxCommon($this->getLog());
             $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'go=' . $groupOrder->getId() . '&ss=' . $quanShareSource->getId(), $page, true);
 
-            $quanBannerFile = null;
-            if ($quanMeta->getShareBannerFileId()) {
-                /**
-                 * @var File $quanBannerFile
-                 */
-                $quanBannerFile = $fileRepository->find($quanMeta->getShareBannerFileId());
+            $product = $groupOrder->getProduct();
+            $bannerFile = null;
+            if ($product->getMainProductImage() and $product->getMainProductImage()->getFile()) {
+                $bannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $product->getMainProductImage()->getFile());
             }
 
-            $bannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $quanBannerFile);
-            $quanShareSource->setBannerFile($bannerFile);
+            $quanBannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $bannerFile);
+            $quanShareSource->setBannerFile($quanBannerFile);
 
             $this->getEntityManager()->persist($quanShareSource);
             $this->getEntityManager()->flush();
