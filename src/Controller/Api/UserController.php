@@ -706,7 +706,7 @@ class UserController extends BaseController
          */
         $projectBannerMetaRepository = $this->getEntityManager()->getRepository(ProjectBannerMeta::class);
 
-        $bannersArray = $this->createProjectBannerMetas($projectBannerMetaRepository);
+        $bannersArray = $this->createProductPageProjectBannerMetas($projectBannerMetaRepository);
         $productsArray = [];
 
         $productsQuery = $productRepository->findActiveProductsQuery(false);
@@ -912,7 +912,7 @@ class UserController extends BaseController
             'shareSourceUsersTotal' => $totalShareSourceUsers,
             'shareSourceUsers' => $shareSourceUserArray,
             'shareSources' => $this->createUserShareSource($user, $url),
-            'bannerMetaArray' => $this->createProjectBannerMetas($projectBannerMetaRepository)
+            'bannerMetaArray' => $this->createMySharePageProjectBannerMetas($projectBannerMetaRepository)
         ]);
     }
 
