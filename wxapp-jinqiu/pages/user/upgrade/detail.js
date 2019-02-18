@@ -15,7 +15,8 @@ Page({
     productReviewData: {},
     bottomData: {},
     shareData: {},
-    loading: true
+    loading: true,
+    options: null,
   },
 
   /**
@@ -23,9 +24,10 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
-    const productId = options.id ? options.id : 1;
-    this.getProduct(productId);
     app.buriedPoint(options)
+    this.setData({
+      options: options
+    })    
   },
 
   getProduct: function (productId) {
@@ -115,8 +117,8 @@ Page({
     if (this.data.isLogin) {
       bottom.init(this)
       share.init(this)
+      this.getProduct(this.data.options.id);
       this.setData({ ['product.productSpecImages']: [] })
-      this.getProduct()
     } else {
       wx.navigateTo({
         url: '/pages/user/login',
