@@ -274,7 +274,7 @@ Page({
 
   wxViewCourse: function () {
     wx.navigateTo({
-      url: '/pages/course/video?id=' + this.data.groupOrder.product.productId,
+      url: '/pages/course/webview?id=' + this.data.groupOrder.product.productId,
     })
   },
   

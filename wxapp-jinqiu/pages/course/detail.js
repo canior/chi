@@ -103,7 +103,7 @@ Page({
   wxViewCourse: function () {
     const textMetaArray = this.data.textMetaArray;
     wx.navigateTo({
-      url: '/pages/course/video?id=' + this.data.course.productId + '&title=' + (textMetaArray ? textMetaArray.text_watch_meta.textMeta : null),
+      url: '/pages/course/webview?id=' + this.data.course.productId + '&title=' + (textMetaArray ? textMetaArray.text_watch_meta.textMeta : null),
     })
   },
 

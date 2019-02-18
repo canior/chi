@@ -50,7 +50,7 @@ Page({
   toCourseDetail: function (e) {
     const productId = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: '/pages/course/video?id=' + productId,
+      url: '/pages/course/webview?id=' + productId,
     })
   },
 

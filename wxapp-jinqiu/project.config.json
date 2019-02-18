@@ -36,65 +36,8 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 3,
-			"list": [
-				{
-					"id": 0,
-					"name": "课程详情",
-					"pathName": "pages/course/detail",
-					"query": "scene=ss%3D938735c6a4ab36db89%26p%3D1",
-					"scene": null
-				},
-				{
-					"id": -1,
-					"name": "首页",
-					"pathName": "pages/course/index",
-					"query": "scene=ss%3D938735c6a4ab36db89",
-					"scene": null
-				},
-				{
-					"id": -1,
-					"name": "观看课程",
-					"pathName": "pages/course/video",
-					"query": "scene=ss%3D938735c6a4ab36db89%26p%3D1",
-					"scene": null
-				},
-				{
-					"id": 3,
-					"name": "产品详情",
-					"pathName": "pages/user/upgrade/detail",
-					"query": "shareSourceId=938735c6a4ab36db89&id=7",
-					"scene": null
-				},
-				{
-					"id": 4,
-					"name": "拼团详情",
-					"pathName": "pages/group/index",
-					"query": "scene=ss%3D938735c6a4ab36db89%26go%3D73",
-					"scene": null
-				},
-				{
-					"id": 5,
-					"name": "test",
-					"pathName": "pages/user/upgrade/detail",
-					"query": "scene=ss%3D938735c6a4ab36db89%26p%3D7",
-					"scene": null
-				},
-				{
-					"id": 6,
-					"name": "test",
-					"pathName": "pages/group/index",
-					"query": "scene=ss%3D938735c6a4ab36db89%26go%3D73",
-					"scene": null
-				},
-				{
-					"id": -1,
-					"name": "test",
-					"pathName": "pages/course/detail",
-					"query": "scene=ss%3D938735c6a4ab36db89%26p%3D1",
-					"scene": null
-				}
-			]
+			"current": -1,
+			"list": []
 		}
 	}
 }
