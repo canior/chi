@@ -39,7 +39,7 @@
   border-radius: 20rpx;
   padding: 0 20rpx;
 }
-.top .right navigator {
+.top .right .login {
   font-size: 24rpx;
   color: #ff4d42;
   border: 1px solid #ff4d42;

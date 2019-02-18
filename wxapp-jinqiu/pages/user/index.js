@@ -92,6 +92,12 @@ Page({
     }
   },
 
+  toLogin: function () {
+    wx.navigateTo({
+      url: '/pages/user/login',
+    })
+  },
+
   toUpgrade: function () {
     if (this.data.isLogin) {
       wx.navigateTo({
