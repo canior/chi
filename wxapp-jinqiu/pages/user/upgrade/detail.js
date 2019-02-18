@@ -117,7 +117,9 @@ Page({
     if (this.data.isLogin) {
       bottom.init(this)
       share.init(this)
-      this.getProduct(this.data.options.id);
+      //options.scene = encodeURIComponent('ss=123&p=456&go=789');
+      var productId = this.data.options.id ? this.data.options.id : app.parseScene(options, 'p')
+      this.getProduct(productId);
       this.setData({ ['product.productSpecImages']: [] })
     } else {
       wx.navigateTo({

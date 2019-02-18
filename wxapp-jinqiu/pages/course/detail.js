@@ -25,7 +25,8 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
-    const productId = options.id ? options.id : 2;
+    //options.scene = encodeURIComponent('ss=123&p=456&go=789');
+    const productId = options.id ? options.id : app.parseScene(options, 'p')
     this.getCourse(productId);
     const url = app.globalData.baseUrl + '/courses/' + productId + '/reviews'
     courseReview.init(this, url);

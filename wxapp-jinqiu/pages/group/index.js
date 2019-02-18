@@ -30,7 +30,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const id = options.id;
+    //options.scene = encodeURIComponent('ss=123&p=456&go=789');
+    var id = options.id ? options.id : app.parseScene(options, 'go')
     if (id) {
       this.getGroupOrder(id);      
     }

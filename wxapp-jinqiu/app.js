@@ -153,15 +153,38 @@ App({
       },
       success: function (res) {
         if (res.statusCode == 200 && res.data.code == 200) {
-          console.log('buriedPoint => addShareSource: ', options)
+          //options.scene = encodeURIComponent('ss=123&p=456');
+          //console.log('buriedPoint => addShareSource: ', options)
           if (options && options.shareSourceId) {
             that.addShareSource(options.shareSourceId)
+          } else {
+            let shareSourceId = that.parseScene(options, 'ss')
+            if (shareSourceId) that.addShareSource(shareSourceId)
           }
         }
       },
       fail(e) {},
       complete(e) {}
     });
+  },
+
+  // 解析scene
+  parseScene(options, search) {
+    let result = null;
+    if (options && options.scene) {
+      var scene = decodeURIComponent(options.scene);
+      if (scene) {
+        let params = [];
+        params = scene.split('&');
+        //console.log('params=', params)
+        params.find(item => {
+          let param = item.split('=');
+          if (param[0] == search) { result = param[1]; return }
+        })
+        console.log(search, result)
+      }
+    }
+    return result
   },
 
   // 记录用户来源
