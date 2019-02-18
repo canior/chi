@@ -169,10 +169,7 @@ class BaseController extends DefaultController
             $wx = new WxCommon($this->getLog());
             $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'ss=' . $quanShareSource->getId() . '&p=' . $product->getId(), $page, true);
 
-            $bannerFile = null;
-            if ($product->getMainProductImage() and $product->getMainProductImage()->getFile()) {
-                $bannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $product->getMainProductImage()->getFile());
-            }
+            $bannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $product->getShareImageFile());
             $quanShareSource->setBannerFile($bannerFile);
 
             $this->getEntityManager()->persist($quanShareSource);
@@ -310,10 +307,7 @@ class BaseController extends DefaultController
             $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'go=' . $groupOrder->getId() . '&ss=' . $quanShareSource->getId(), $page, true);
 
             $product = $groupOrder->getProduct();
-            $bannerFile = null;
-            if ($product->getMainProductImage() and $product->getMainProductImage()->getFile()) {
-                $bannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $product->getMainProductImage()->getFile());
-            }
+            $bannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $product->getShareImageFile());
 
             $quanBannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $bannerFile);
             $quanShareSource->setBannerFile($quanBannerFile);

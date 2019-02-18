@@ -104,8 +104,8 @@ class ShareSource implements Dao
 
         if ($shareSourceType == self::REFER_PRODUCT) {
             $shareSource->setTitle($user->getNickname() . $shareMetaTitle . $product->getTitle());
-            if ($product and $product->getMainProductImage()) {
-                $shareSource->setBannerFile($product->getMainProductImage()->getFile());
+            if ($product->getShareImageFile()) {
+                $shareSource->setBannerFile($product->getShareImageFile());
             }
         }
         else if ($shareSourceType == self::REFER_USER) {
@@ -114,8 +114,8 @@ class ShareSource implements Dao
         } else if ($shareSourceType == self::REFER_GROUP_ORDER) {
             $product = $groupOrder->getProduct();
             $shareSource->setTitle($user->getNickname() . $shareMetaTitle . $product->getTitle());
-            if ($product and $product->getMainProductImage()) {
-                $shareSource->setBannerFile($product->getMainProductImage()->getFile());
+            if ($product->getShareImageFile()) {
+                $shareSource->setBannerFile($product->getShareImageFile());
             }
         } else {
             $shareSource->setBannerFile($bannerFile);
