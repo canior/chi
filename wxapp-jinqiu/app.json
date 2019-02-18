@@ -2,7 +2,7 @@
   "pages":[
     "pages/course/index",
     "pages/course/detail",
-    "pages/course/video",
+    "pages/course/webview",
     "pages/course/pay",
     "pages/course/reward",
     "pages/group/index",
