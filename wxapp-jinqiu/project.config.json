@@ -36,7 +36,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 7,
+			"current": 3,
 			"list": [
 				{
 					"id": 0,
@@ -60,17 +60,17 @@
 					"scene": null
 				},
 				{
-					"id": -1,
+					"id": 3,
 					"name": "产品详情",
 					"pathName": "pages/user/upgrade/detail",
-					"query": "scene=ss%3D938735c6a4ab36db89%26p%3D7",
+					"query": "shareSourceId=938735c6a4ab36db89&id=7",
 					"scene": null
 				},
 				{
-					"id": -1,
+					"id": 4,
 					"name": "拼团详情",
 					"pathName": "pages/group/index",
-					"query": "scene=ss%3D938735c6a4ab36db89%26p%3D73",
+					"query": "scene=ss%3D938735c6a4ab36db89%26go%3D73",
 					"scene": null
 				},
 				{

@@ -685,7 +685,7 @@ class UserController extends BaseController
     }
 
     /**
-     * 查看最近一张提交学员升级订单，如果没有则显示表单
+     * 查看用户升级需要购买产品列表
      *
      * @Route("/user/upgradeUserOrder/view", name="viewUpgradeUserOrder", methods="POST")
      * @param Request $request
