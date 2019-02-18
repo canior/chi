@@ -693,6 +693,59 @@ class UserController extends BaseController
      */
     public function viewUpgradeUserOrderAction(Request $request) : Response {
         $data = json_decode($request->getContent(), true);
+        $page = isset($data['page']) ? $data['page'] : 1;
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+
+        /**
+         * @var ProductRepository $productRepository
+         */
+        $productRepository = $this->getEntityManager()->getRepository(Product::class);
+
+        /**
+         * @var ProjectBannerMetaRepository $projectBannerMetaRepository
+         */
+        $projectBannerMetaRepository = $this->getEntityManager()->getRepository(ProjectBannerMeta::class);
+
+        $bannersArray = $this->createProjectBannerMetas($projectBannerMetaRepository);
+        $productsArray = [];
+
+        $productsQuery = $productRepository->findActiveProductsQuery(false);
+
+        /**
+         * @var Product[] $products
+         */
+        $products = $this->getPaginator()->paginate($productsQuery, $page, self::PAGE_LIMIT);
+
+        foreach($products as $product) {
+            $productsArray[] = $product->getArray();
+        }
+
+        /**
+         * @var ProjectTextMetaRepository $projectTextMetaRepository
+         */
+        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
+
+
+        $data = [
+            'banners' => $bannersArray,
+            'products' => $productsArray,
+            'baseUrl' => $request->getUri(),
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
+        ];
+
+        return $this->responseJson('success', 200, $data);
+    }
+
+    /**
+     * 查看最近一张提交学员升级订单，如果没有则显示表单
+     *
+     * @Route("/user/upgradeUserOrder/{productId}/view", name="viewUpgradeUserProductOrder", methods="POST")
+     * @param Request $request
+     * @param $productId
+     * @return Response
+     */
+    public function viewUpgradeUserOrderProductAction(Request $request, $productId) : Response {
+        $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $url = isset($data['url']) ? $data['url'] : null;
 
@@ -702,17 +755,11 @@ class UserController extends BaseController
         /**
          * @var Product $product
          */
-        $product = $productRepository->findOneBy(['status' => Product::ACTIVE, 'course' => null]);
-
-        /**
-         * @var ProjectTextMetaRepository $projectTextMetaRepository
-         */
-        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
+        $product = $productRepository->find($productId);
 
         return $this->responseJson('success', 200, [
             'product' => $product->getArray(),
             'shareSources' => $this->createProductShareSource($user, $product, $url),
-            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
         ]);
     }
 

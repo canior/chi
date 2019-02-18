@@ -1,22 +1,19 @@
 // pages/user/upgrade/index.js
 const app = getApp()
-const productReview = require('../../tmpl/productReview.js');
 const share = require('../../tmpl/share.js');
-const bottom = require('../../tmpl/bottom.js');
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    isLogin: false,
     imgUrlPrefix: app.globalData.imgUrlPrefix,
-    product: null,
-    productReviewData: {},
-    bottomData: {},
+    banners: [],
+    products: [],
+    page: 1,
+    limit: 20,
+    hasMore: false,
     shareData: {},
-    loading: true,
-    textMetaArray: null
   },
 
   /**
@@ -24,82 +21,64 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
+    wx.setNavigationBarTitle({ title: app.globalData.appName })
+    this.getProducts(this.data.page)
     app.buriedPoint(options)
+    app.userActivityCallback = res => {
+      app.buriedPoint(options)
+    }
   },
 
-  getProduct: function () {
+  getProducts: function (page) {
     const that = this;
-    const pages = getCurrentPages();
-    const currentPageUrl = '/' + pages[pages.length - 1].route;
     wx.showLoading({
-      title: '载入中',
+      title: '玩命加载中',
     })
     wx.request({
-      url: app.globalData.baseUrl + '/user/upgradeUserOrder/view',
+      url: app.globalData.baseUrl + '/user/upgradeUserOrder/view/',
       data: {
+        page: page,
         thirdSession: wx.getStorageSync('thirdSession'),
-        url: currentPageUrl
+        url: '/pages/user/upgrade/index' 
       },
-      method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          var product = res.data.data.product;
-          var textMetaArray = res.data.data.textMetaArray;
-          product.productSpecImages.forEach((item) => {
-            item.loading = true
-          })
-          if (textMetaArray && textMetaArray.text_upgrade_meta.textMeta) {
-            wx.setNavigationBarTitle({
-              title: textMetaArray.text_upgrade_meta.textMeta
-            })
-          }
+          var products = that.data.products;
+          products.push(...res.data.data.products);
+          var hasMore = res.data.data.products.length < that.data.limit ? false : true;
+          var nextPage = hasMore ? page + 1 : page;
           that.setData({
-            product: product,
-            textMetaArray: textMetaArray
+            banners: res.data.data.banners,
+            products: products,
+            page: nextPage,
+            hasMore: hasMore
           })
-          const url = app.globalData.baseUrl + '/products/' + product.id + '/reviews'
-          productReview.init(that, url);          
-          share.setShareSources(that, res.data.data.shareSources)
+          //share.setShareSources(that, res.data.data.shareSources)
         } else {
           console.log('wx.request return error', res.statusCode);
         }
       },
-      fail(e) {
-      },
-      complete(e) { wx.hideLoading() }
+      fail(e) {},
+      complete(e) {
+        wx.hideLoading()
+      }
     })
   },
 
-  imgLoadDone: function (e) {
-    //console.log('bindload:imgLoadDone', e)
-    const index = e.currentTarget.dataset.index
-    this.setData({
-      ['product.productSpecImages[' + index + '].loading']: false
+  toProdcutDetail: function(e) {
+    const id = e.currentTarget.dataset.id
+    wx.navigateTo({
+      url: '/pages/user/upgrade/detail?id=' + id,
     })
   },
 
-  // 购买
-  wxCreateOrder: function (e) {
-    bottom.createOrder(this, app.globalData.baseUrl + '/groupUserOrder/create', this.data.product.id)
-  },
-
-  // 转首页
-  wxHome: function (e) {
-    wx.switchTab({
-      url: '/pages/course/index',
-    })
-  },
-  
-  // 分享:邀请好友
-  wxShowShareModal: function (e) {
-    share.showModal(this)
-  },
-  wxHideShareModal: function (e) {
-    share.hideModal(this)
-  },
-  wxSaveShareSource: function (e) {
-    share.saveShareSource(this, e, app.globalData.baseUrl + '/user/shareSource/create')
+  redirect: function(e) {
+    if (e.currentTarget.dataset.url) {
+      wx.reLaunch({
+        url: e.currentTarget.dataset.url,
+      })
+    }
   },
 
   /**
@@ -113,19 +92,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.setData({
-      isLogin: app.globalData.isLogin
-    })
-    if (this.data.isLogin) {
-      bottom.init(this)
-      share.init(this)
-      this.setData({ ['product.productSpecImages']: [] })
-      this.getProduct()
-    } else {
-      wx.navigateTo({
-        url: '/pages/user/login',
-      })
-    }
+    share.init(this)
   },
 
   /**
@@ -153,7 +120,9 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    if (this.data.hasMore) {
+      this.getProducts(this.data.page)
+    }
   },
 
   /**

@@ -1,45 +1,26 @@
-<!--pages/user/upgrade/index.wxml-->
-<import src="/pages/tmpl/price.wxml"/>
-<import src="/pages/tmpl/productReview.wxml"/>
-<import src="/pages/tmpl/share.wxml"/>
-<import src="/pages/tmpl/bottom.wxml"/>
+<!--pages/course/index.wxml-->
 <view class="container">
-
+  
   <view class="banner">
     <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
-      <swiper-item wx:for="{{product.productImages}}" wx:key="id" wx:for-item="productImage">
-        <image mode="widthFix" src="{{imgUrlPrefix + '/' + productImage.fileId}}" />
+      <swiper-item wx:for="{{banners}}" wx:key="index" wx:for-item="banner" bindtap="redirect" data-url="{{banner.redirectUrl}}">
+        <image mode="widthFix" src="{{imgUrlPrefix + '/' + banner.bannerFileId}}" />
       </swiper-item>
     </swiper>
   </view>
-
-  <view class="line">
-    <template is="price" data="{{product}}"/>
-  </view>
-
-  <view class="name">{{product.title}}</view>
-
-  <view class="desc">{{product.shortDescription}}</view>
-
-</view>
-<view class="split-line"/>
-
-<view class="container">
-  <view class="specs">
-    <view class="title">商品详情</view>
-    <block wx:for="{{product.productSpecImages}}" wx:key="id" wx:for-item="productSpecImage">
-      <view class="img">
-        <image mode="widthFix" src="{{imgUrlPrefix + '/' + productSpecImage.fileId}}" bindload="imgLoadDone" data-index="{{index}}"/>
-        <image class="loading" src="/images/loading.gif" wx:if="{{productSpecImage.loading}}"/>
+  
+  <block wx:for="{{products}}" wx:for-item="product" wx:key="index">
+    <view class="chi-item" bindtap="toProdcutDetail" data-id="{{product.id}}">
+      <view class="left"><image mode="widthFix" src="{{imgUrlPrefix + '/' + product.productImages[0].fileId}}"/></view>
+      <view class="right">
+        <view class="line title">{{product.title}}</view>
+        <view class="line desc">{{product.shortDescription}}</view>
+        <view class="right-append">
+          <view class="price">￥{{product.price}}</view>
+        </view> 
       </view>
-    </block>
-  </view>
-</view>
-<view class="split-line"/>
+    </view>
+    <view class="split-line"/>
+  </block>
 
-<view class="container">
-  <template is="productReview" data="{{...productReviewData, imgUrlPrefix, product}}"/>
 </view>
-
-<template is="bottom" data="{{product, ...bottomData, type:'product'}}"/>
-<template is="share" data="{{...shareData}}"/>
