@@ -32,8 +32,6 @@ Page({
 
   getProduct: function (productId) {
     const that = this;
-    const pages = getCurrentPages();
-    const currentPageUrl = '/' + pages[pages.length - 1].route;
     wx.showLoading({
       title: '载入中',
     })
@@ -41,7 +39,7 @@ Page({
       url: app.globalData.baseUrl + '/user/upgradeUserOrder/' + productId + '/view',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
-        url: currentPageUrl
+        url: '/pages/user/upgrade/detail?id=' + productId
       },
       method: 'POST',
       success: (res) => {
