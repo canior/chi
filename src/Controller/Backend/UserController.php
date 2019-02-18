@@ -7,6 +7,7 @@ use App\Entity\UserLevel;
 use App\Form\UserRoleType;
 use App\Form\UserType;
 use App\Form\VerifyParentUserType;
+use App\Form\VerifyPartnerTeacherType;
 use App\Repository\ProductReviewRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatisticsRepository;
@@ -93,6 +94,9 @@ class UserController extends BackendController
         $verifyParentForm = $this->createForm(VerifyParentUserType::class, $user);
         $verifyParentForm->handleRequest($request);
 
+        $verifyPartnerTeacherForm = $this->createForm(VerifyPartnerTeacherType::class, $user);
+        $verifyPartnerTeacherForm->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user->setUserLevel($form->get('userLevel')->getData());
@@ -109,12 +113,19 @@ class UserController extends BackendController
             return $this->redirectToRoute('user_personal_edit', ['id' => $user->getId()]);
         }
 
+        if ($verifyPartnerTeacherForm->isSubmitted() && $verifyPartnerTeacherForm->isValid()) {
+            $this->getEntityManager()->persist($user);
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('notice', '修改成功');
+            return $this->redirectToRoute('user_personal_edit', ['id' => $user->getId()]);
+        }
 
         return $this->render('backend/user/personal.edit.html.twig', [
             'user' => $user,
             'title' => '用户详情',
             'form' => $form->createView(),
-            'verifyParentForm' => $verifyParentForm->createView()
+            'verifyParentForm' => $verifyParentForm->createView(),
+            'verifyPartnerTeacherForm' => $verifyPartnerTeacherForm->createView()
         ]);
     }
 
@@ -138,6 +149,32 @@ class UserController extends BackendController
         }
 
         return $this->render('backend/user/_form.verifyParent.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ]);
+    }
+
+
+    /**
+     * @Route("/user/partnerTeacher/{id}/edit", name="user_partner_teacher_edit", methods="GET|POST")
+     *
+     * @param Request $request
+     * @param User $user
+     * @return Response
+     */
+    public function editPartnerTeacherUser(Request $request, User $user) {
+        $form = $this->createForm(VerifyPartnerTeacherType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('notice', '修改成功');
+            return $this->redirectToRoute('user_personal_edit', ['id' => $user->getId()]);
+        }
+
+        return $this->render('backend/user/_form.verifyPartnerTeacher.html.twig', [
             'user' => $user,
             'form' => $form->createView(),
         ]);

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: tandy
+ * Date: 2019-02-17
+ * Time: 8:36 PM
+ */
 
 namespace App\Form;
 
@@ -8,13 +14,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\User;
 
-class VerifyParentUserType extends AbstractType
+class VerifyPartnerTeacherType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('parentUser', EntityType::class, [
-                'label' => '认证推荐人',
+            ->add('teacherRecommanderUser', EntityType::class, [
+                'label' => '成为合伙人时的讲师',
                 'empty_data' => null,
                 'placeholder' => '无',
                 'attr' => ['class' => 'form-control chosen'],

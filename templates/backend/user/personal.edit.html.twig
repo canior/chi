@@ -118,6 +118,22 @@
             </div>
             <!-- /.box -->
 
+            <!-- general form elements disabled -->
+            {% if user.isPartnerUser %}
+            <div class="box">
+                <div class="box-header with-border">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <b>认证合伙人讲师</b>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    {{ include('backend/user/_form.verifyPartnerTeacher.html.twig', {'button_label': '提交'}) }}
+                </div>
+                <!-- /.box-body -->
+            </div>
+            {% endif %}
+            <!-- /.box -->
+
 
             <!-- general form elements disabled -->
             <div class="box">
