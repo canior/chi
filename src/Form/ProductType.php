@@ -30,10 +30,10 @@ class ProductType extends AbstractType
                 'label' => '零售价',
                 'currency' => 'CNY'
             ])
-            ->add('freight', MoneyType::class, [
-                'label' => '运费',
-                'currency' => 'CNY'
-            ])
+//            ->add('freight', MoneyType::class, [
+//                'label' => '运费',
+//                'currency' => 'CNY'
+//            ])
             ->add('supplierUser', EntityType::class, [
                 'label' => '供货商',
                 'empty_data' => null,

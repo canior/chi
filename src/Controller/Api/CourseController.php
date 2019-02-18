@@ -42,7 +42,7 @@ class CourseController extends ProductController
      * @return array
      */
     protected function createProductBanners(ProjectBannerMetaRepository $projectBannerMetaRepository) {
-        $bannersArray = $this->createProjectBannerMetas($projectBannerMetaRepository);
+        $bannersArray = $this->createHomePageProjectBannerMetas($projectBannerMetaRepository);
         return $bannersArray;
     }
 

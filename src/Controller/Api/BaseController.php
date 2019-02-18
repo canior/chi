@@ -95,12 +95,40 @@ class BaseController extends DefaultController
      * @param ProjectBannerMetaRepository $projectBannerMetaRepository
      * @return array
      */
-    protected function createProjectBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
+    protected function createHomePageProjectBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
         return [
             'banner_home_1' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_1])->getArray(),
             'banner_home_2' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_2])->getArray(),
             'banner_home_3' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_3])->getArray(),
+        ];
+    }
+
+    /**
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @return array
+     */
+    protected function createProductPageProjectBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
+        return [
+            'banner_product' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_1])->getArray(),
+        ];
+    }
+
+    /**
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @return array
+     */
+    protected function createPreLoginPageProjectBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
+        return [
             'banner_login' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_LOGIN])->getArray(),
+        ];
+    }
+
+    /**
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @return array
+     */
+    protected function createMySharePageProjectBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
+        return [
             'banner_my_share' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_MY_SHARE])->getArray(),
         ];
     }
