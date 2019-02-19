@@ -520,6 +520,37 @@ class User extends BaseUser implements Dao
         return $this;
     }
 
+    /**
+     * @return UserParentLog[] | ArrayCollection
+     */
+    public function getUserParentLogs()
+    {
+        return $this->userParentLogs;
+    }
+
+    /**
+     * @param UserParentLog[]|ArrayCollection $userParentLogs
+     */
+    public function setUserParentLogs($userParentLogs): void
+    {
+        $this->userParentLogs = $userParentLogs;
+    }
+
+    /**
+     * @return UserParentLog[]|ArrayCollection
+     */
+    public function getUserLogs()
+    {
+        return $this->userLogs;
+    }
+
+    /**
+     * @param UserParentLog[]|ArrayCollection $userLogs
+     */
+    public function setUserLogs($userLogs): void
+    {
+        $this->userLogs = $userLogs;
+    }
 
     /**
      * @param $log
