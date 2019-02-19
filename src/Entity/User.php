@@ -255,12 +255,21 @@ class User extends BaseUser implements Dao
      */
     private $userRecommandStockOrders;
 
+
     /**
-     * @var File|null $wxShareQrFile
-     * @ORM\ManyToOne(targetEntity="App\Entity\File")
-     * @ORM\JoinColumn(nullable=true)
+     * @var ArrayCollection|UserParentLog[] $userParentLogs
+     * @ORM\OneToMany(targetEntity="App\Entity\UserParentLog", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
-    private $wxShareQrFile;
+    private $userParentLogs;
+
+    /**
+     * @var ArrayCollection|UserParentLog[] $userLogs
+     * @ORM\OneToMany(targetEntity="App\Entity\UserLog", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $userLogs;
+
 
     public function __construct()
     {
@@ -480,18 +489,44 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * @param UserParentLog $userParentLog
+     */
+    public function addUserParentLog(UserParentLog $userParentLog) {
+        $this->userParentLogs->add($userParentLog);
+    }
+
+    /**
      * @param null|self $parentUser
+     * @param ShareSource|null $shareSource
+     * @param null|string $memo
      * @return User
      */
-    public function setParentUser(?User $parentUser): self
+    public function setParentUser(?User $parentUser, ShareSource $shareSource = null,  $memo = null): self
     {
         if ($parentUser == $this) {
+            $this->info('same parent, ignore');
             return $this;
         }
 
         $this->parentUser = $parentUser;
 
+        if ($memo != null) {
+            $this->info('found a reason to change parent user');
+            $this->setRecommanderName($parentUser->getNickname());
+            $userParentLog = UserParentLog::factory($this, $parentUser, $shareSource, $memo);
+            $this->addUserParentLog($userParentLog);
+        }
+
         return $this;
+    }
+
+
+    /**
+     * @param $log
+     */
+    public function info($log) {
+        $userLog = UserLog::factory($this, UserLog::INFO, $log, json_encode(debug_backtrace()));
+        $this->getUserLogs()->add($userLog);
     }
 
     /**
@@ -1465,22 +1500,6 @@ class User extends BaseUser implements Dao
     public function setUserRecommandStockOrders($userRecommandStockOrders): void
     {
         $this->userRecommandStockOrders = $userRecommandStockOrders;
-    }
-
-    /**
-     * @return File|null
-     */
-    public function getWxShareQrFile(): ?File
-    {
-        return $this->wxShareQrFile;
-    }
-
-    /**
-     * @param File|null $wxShareQrFile
-     */
-    public function setWxShareQrFile(?File $wxShareQrFile): void
-    {
-        $this->wxShareQrFile = $wxShareQrFile;
     }
 
     public function __toString()

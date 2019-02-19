@@ -49,47 +49,26 @@ class BianxianProjectBootstrapConsoleCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output) {
 
         $projectBannerMetaRepository = $this->entityManager->getRepository(ProjectBannerMeta::class);
-        $homeBanner1 = $projectBannerMetaRepository->findOneBy(['metaKey' => 'banner_home_1']);
-        if ($homeBanner1 == null) {
-            $homeBanner1 = new ProjectBannerMeta("banner_home_1");
-            $this->entityManager->persist($homeBanner1);
-            $this->entityManager->flush();
+        foreach (ProjectBannerMeta::BANNERS_ARRAY as $key => $memo) {
+            $banner = $projectBannerMetaRepository->findOneBy(['metaKey' => $key]);
+            if ($banner == null) {
+                $banner = new ProjectBannerMeta($key);
+                $banner->setMemo($memo);
+                $this->entityManager->persist($banner);
+                $this->entityManager->flush();
+            }
         }
 
-        $homeBanner2 = $projectBannerMetaRepository->findOneBy(['metaKey' => 'banner_home_2']);
-        if ($homeBanner2 == null) {
-            $homeBanner2 = new ProjectBannerMeta("banner_home_2");
-            $this->entityManager->persist($homeBanner2);
-            $this->entityManager->flush();
-        }
-
-        $homeBanner3 = $projectBannerMetaRepository->findOneBy(['metaKey' => 'banner_home_3']);
-        if ($homeBanner3 == null) {
-            $homeBanner3 = new ProjectBannerMeta("banner_home_3");
-            $this->entityManager->persist($homeBanner3);
-            $this->entityManager->flush();
-        }
-
-        $loginBanner = $projectBannerMetaRepository->findOneBy(['metaKey' => 'banner_login']);
-        if ($loginBanner == null) {
-            $loginBanner = new ProjectBannerMeta("banner_login");
-            $this->entityManager->persist($loginBanner);
-            $this->entityManager->flush();
-        }
-
-        $upgradeUserBanner = $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_USER_UPGRADE]);
-        if ($upgradeUserBanner == null) {
-            $upgradeUserBanner = new ProjectBannerMeta(ProjectBannerMeta::BANNER_USER_UPGRADE);
-            $this->entityManager->persist($upgradeUserBanner);
-            $this->entityManager->flush();
-        }
-
-        $upgradeUserText = $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::UPGRADE_USER_TEXT]);
-        if ($upgradeUserText == null) {
-            $upgradeUserText = new ProjectTextMeta(ProjectTextMeta::UPGRADE_USER_TEXT);
-            $upgradeUserText->setTextMeta("请描述不同用户等级的区别");
-            $this->entityManager->persist($upgradeUserText);
-            $this->entityManager->flush();
+        $projectTextMetaRepository = $this->entityManager->getRepository(ProjectTextMeta::class);
+        foreach (ProjectTextMeta::TEXT_ARRAY as $key => $item) {
+            $text = $projectTextMetaRepository->findOneBy(['metaKey' => $key]);
+            if ($text == null) {
+                $text = new ProjectTextMeta($key);
+                $text->setTextMeta($item['value']);
+                $text->setMemo($item['memo']);
+                $this->entityManager->persist($text);
+                $this->entityManager->flush();
+            }
         }
 
 
@@ -124,23 +103,6 @@ class BianxianProjectBootstrapConsoleCommand extends ContainerAwareCommand
             $this->entityManager->persist($quanCourseShareMeta);
             $this->entityManager->flush();
         }
-
-
-        //创建团购分享
-        if ($projectShareRepository->findOneBy(['metaKey' => ShareSource::REFER_GROUP_ORDER]) == null) {
-            $referGroupOrderShareMeta = new ProjectShareMeta(ShareSource::REFER_GROUP_ORDER);
-            $referGroupOrderShareMeta->setShareMeta(ShareSource::$types[ShareSource::REFER_GROUP_ORDER], ShareSource::$types[ShareSource::REFER], '邀请您来集call', null, false);
-            $this->entityManager->persist($referGroupOrderShareMeta);
-            $this->entityManager->flush();
-        }
-
-        if ($projectShareRepository->findOneBy(['metaKey' => ShareSource::QUAN_GROUP_ORDER]) == null) {
-            $quanGroupOrderShareMeta = new ProjectShareMeta(ShareSource::QUAN_GROUP_ORDER);
-            $quanGroupOrderShareMeta->setShareMeta(ShareSource::$types[ShareSource::QUAN_GROUP_ORDER], ShareSource::$types[ShareSource::QUAN], null, null, false);
-            $this->entityManager->persist($quanGroupOrderShareMeta);
-            $this->entityManager->flush();
-        }
-
 
     }
 

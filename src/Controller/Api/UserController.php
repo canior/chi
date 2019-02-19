@@ -104,9 +104,16 @@ class UserController extends BaseController
             $user->setLastLoginTimestamp(time());
             $this->getLog()->info("input nickName=" . $nickName . ' and avatarUrl =' . $avatarUrl);
             if ($defaultNickname == $user->getNickname() and $defaultAvatarUrl == $user->getAvatarUrl()) {
-                $this->getLog()->info("update user nickname and avatar url");
-                $user->setNickname($nickName);
-                $user->setAvatarUrl($avatarUrl);
+
+                $user->info('login in to the app');
+
+                if ($user->getAvatarUrl() == null) {
+                    $user->setNickname($nickName);
+                    $user->setAvatarUrl($avatarUrl);
+                    $user->info("update user nickname to " . $nickName . " and avatar url");
+                }
+                $user->setLastLoginTimestamp(time());
+
                 $this->getEntityManager()->persist($user);
                 $this->getEntityManager()->flush();
             }
@@ -133,8 +140,12 @@ class UserController extends BaseController
                     $userStatistics = new UserStatistics($user);
                     $user->addUserStatistic($userStatistics);
                 }
-                $user->setNickname($nickName);
-                $user->setAvatarUrl($avatarUrl);
+
+                if ($user->getAvatarUrl() == null) {
+                    $user->setNickname($nickName);
+                    $user->setAvatarUrl($avatarUrl);
+                    $user->info("update user nickname to " . $nickName . " and avatar url");
+                }
 
                 $this->getEntityManager()->persist($user);
                 $this->getEntityManager()->flush();
@@ -156,12 +167,17 @@ class UserController extends BaseController
             $totalStudents = $teacherRepository->findTotalStudents($user->getId());
         }
 
+        /**
+         * @var ProjectTextMetaRepository $projectTextMetaRepository
+         */
+        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
 
         return $this->responseJson($msg, 200, [
             'thirdSession' => $thirdSession,
             'user' => $user->getArray(),
             'totalShares' => $totalShares,
-            'totalStudents' => $totalStudents
+            'totalStudents' => $totalStudents,
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository),
         ]);
 
     }
@@ -284,6 +300,7 @@ class UserController extends BaseController
         $rate = isset($data['rate']) ? $data['rate'] : null;
         $review = isset($data['review']) ? $data['review'] : null;
         $reviewImageFileIds = isset($data['imageIds']) ? $data['imageIds'] : [];
+        $user = $this->getWxUser($thirdSession);
 
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
 
@@ -299,6 +316,7 @@ class UserController extends BaseController
         $productReview->setProduct($groupUserOrder->getProduct());
         $productReview->setRate($rate);
         $productReview->setReview($review);
+        $productReview->setUser($user);
 
         foreach ($reviewImageFileIds as $fileId) {
             $file = $fileRepository->find($fileId);

@@ -60,16 +60,9 @@ class ProductController extends BaseController
 
         $thirdSession = $request->query->get('thirdSession');
         $page = $request->query->get('page', 1);
-        $url = $request->query->get('url');
 
-        $user = $this->getWxUser($thirdSession);
-        $bannersArray = [];
+        $bannersArray = $this->createHomePageProjectBannerMetas($projectBannerMetaRepository);
         $productsArray = [];
-
-        $projectBannerMetas = $projectBannerMetaRepository->findBy(['metaKey' => [ProjectBannerMeta::BANNER_HOME_1, ProjectBannerMeta::BANNER_HOME_2, ProjectBannerMeta::BANNER_HOME_3]]);
-        foreach ($projectBannerMetas as $projectBannerMeta) {
-            $bannersArray[] = $projectBannerMeta->getArray();
-        }
 
         $productsQuery = $productRepository->findActiveProductsQuery();
 
@@ -90,7 +83,6 @@ class ProductController extends BaseController
             'banners' => $bannersArray,
             'products' => $productsArray,
             'baseUrl' => $request->getUri(),
-            'shareSources' => $this->createUserShareSource($user, $url)
         ];
 
         return $this->responseJson('success', 200, $data);

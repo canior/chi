@@ -20,6 +20,10 @@ use App\Entity\ProjectShareMeta;
 use App\Service\Wx\WxCommon;
 use App\Entity\Product;
 use App\Service\ImageGenerator;
+use App\Entity\ProjectBannerMeta;
+use App\Repository\ProjectBannerMetaRepository;
+use App\Repository\ProjectTextMetaRepository;
+use App\Entity\ProjectTextMeta;
 
 class BaseController extends DefaultController
 {
@@ -73,6 +77,48 @@ class BaseController extends DefaultController
     }
 
     /**
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @return array
+     */
+    protected function createHomePageProjectBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
+        return [
+            'banner_home_1' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_1])->getArray(),
+            'banner_home_2' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_2])->getArray(),
+            'banner_home_3' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_3])->getArray(),
+        ];
+    }
+
+    /**
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @return array
+     */
+    protected function createProductPageProjectBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
+        return [
+            'banner_product' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_PRODUCT])->getArray(),
+        ];
+    }
+
+    /**
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @return array
+     */
+    protected function createPreLoginPageProjectBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
+        return [
+            'banner_login' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_LOGIN])->getArray(),
+        ];
+    }
+
+    /**
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @return array
+     */
+    protected function createMySharePageProjectBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
+        return [
+            'banner_my_share' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_MY_SHARE])->getArray(),
+        ];
+    }
+
+    /**
      * 返回产品转发和朋友圈的shareSource
      *
      * @param User $user
@@ -102,16 +148,13 @@ class BaseController extends DefaultController
         }
 
         //产品信息朋友圈图片
-        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'product' => $product, 'type' => ShareSource::QUAN_PRODUCT]);
+        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'page' => $page, 'product' => $product, 'type' => ShareSource::QUAN_PRODUCT]);
         if ($quanShareSource == null) {
             $quanShareSource = ShareSource::factory(ShareSource::QUAN_PRODUCT, $page, $user, null, null, $product);
             $wx = new WxCommon($this->getLog());
-            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
+            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'ss=' . $quanShareSource->getId() . '&p=' . $product->getId(), $page, true);
 
-            $bannerFile = null;
-            if ($product->getMainProductImage() and $product->getMainProductImage()->getFile()) {
-                $bannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $product->getMainProductImage()->getFile());
-            }
+            $bannerFile = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $product->getShareImageFile());
             $quanShareSource->setBannerFile($bannerFile);
 
             $this->getEntityManager()->persist($quanShareSource);
@@ -168,12 +211,12 @@ class BaseController extends DefaultController
         }
 
         //个人信息朋友圈图片
-        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'type' => ShareSource::QUAN_USER]);
+        $quanShareSource = $shareSourceRepository->findOneBy(['user' => $user, 'page' => $page, 'type' => ShareSource::QUAN_USER]);
         if ($quanShareSource == null) {
 
             $quanShareSource = ShareSource::factory(ShareSource::QUAN_USER, $page, $user);
             $wx = new WxCommon($this->getLog());
-            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'shareSourceId=' . $quanShareSource->getId(), $page, true);
+            $userQrFile = $wx->createWxQRFile($this->getEntityManager(), 'ss=' . $quanShareSource->getId(), $page, true);
 
             $quanBannerFile = null;
             if ($quanMeta->getShareBannerFileId()) {
@@ -194,5 +237,15 @@ class BaseController extends DefaultController
         $shareSources[ShareSource::QUAN] = $quanShareSource->getArray();
 
         return $shareSources;
+    }
+
+    /**
+     * @param ProjectTextMetaRepository $projectTextMetaRepository
+     * @return array
+     */
+    protected function createProjectTextMetas(ProjectTextMetaRepository $projectTextMetaRepository) {
+        return [
+            'text_upgrade_user_meta' => $projectTextMetaRepository->findOneBy(['metaKey' => ProjectTextMeta::UPGRADE_USER_TEXT])->getArray(),
+        ];
     }
 }

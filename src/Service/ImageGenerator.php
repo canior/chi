@@ -26,27 +26,37 @@ class ImageGenerator
      * @return File
      */
     public static function createShareQuanBannerImage(ObjectManager $entityManager, File $userQrFile, ?File $bannerFile) {
-        return $userQrFile;
+
         if ($bannerFile == null) {
             return $userQrFile;
         }
 
         $banner = Image::make($bannerFile->getAbsolutePath());
         $qr = Image::make(file_get_contents($userQrFile->getAbsolutePath()));
-        $banner->insert($qr, 'bottom', 0, 50);
+        $banner->insert($qr, 'bottom', 0, 80);
 
-        $fileName = uniqid();
-        $filePath = __DIR__ . "/../../public/upload/";
-        $banner->save($filePath . $fileName . ".jpeg");
+        $fileName = uniqid() . "jpeg";
+        $md5 = md5($fileName);
+        $filePath = 'upload/' . File::createPathFromMD5($md5);
+
+        $absoluteFilePath = __DIR__ . "/../../public/" . $filePath;
+        if (!file_exists($absoluteFilePath)) {
+            mkdir($absoluteFilePath, 0777, true);
+        }
+
+        $banner->save($absoluteFilePath . $md5 . '.jpeg');
 
         $fileDao = new FileDao();
         $fileDao->setUploadUser(null)
-            ->setName($fileName . ".jpeg")
+            ->setName($fileName)
             ->setType('jpeg')
             ->setSize($banner->filesize())
             ->setPath($filePath)
-            ->setMd5($fileName)
+            ->setMd5($md5)
             ->setUploadAt(time());
+
+        $entityManager->persist($fileDao);
+        $entityManager->flush();
 
         return $fileDao;
     }

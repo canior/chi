@@ -63,6 +63,13 @@ class ProductReview implements Dao
     private $productReviewImages;
 
     /**
+     * @var User|null $user
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $user;
+
+    /**
      * ProductReview constructor.
      */
     public function __construct()
@@ -71,6 +78,22 @@ class ProductReview implements Dao
         $this->setUpdatedAt(time());
         $this->setInActive();
         $this->productReviewImages = new ArrayCollection();
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User|null $user
+     */
+    public function setUser(?User $user): void
+    {
+        $this->user = $user;
     }
 
     public function getProduct(): ?Product
@@ -184,7 +207,7 @@ class ProductReview implements Dao
 
         return [
             'id' => $this->getId(),
-            'user' => $this->getGroupUserOrder()->getUser()->getArray(),
+            'user' => $this->getUser()->getArray(),
             'rate' => $this->getRate(),
             'review' => $this->getReview(),
             'productReviewImages' => $productReviewImageArray,

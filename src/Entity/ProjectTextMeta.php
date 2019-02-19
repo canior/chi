@@ -16,6 +16,15 @@ class ProjectTextMeta extends ProjectMeta
 {
     const UPGRADE_USER_TEXT = 'upgrade_user_text';
 
+    /**
+     * 小程序的按钮及文案说明
+     * key => memo
+     */
+    const TEXT_ARRAY = [
+        self::UPGRADE_USER_TEXT => [ 'memo' => '正式用 "介绍升级用户的文字" ， 审核用  "空值" ',
+            'value' => '集Call免费注册'],
+    ];
+
     public function isTextMeta()
     {
         return true;

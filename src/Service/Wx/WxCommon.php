@@ -246,6 +246,8 @@ class WxCommon
     }
 
     /**
+     * https://developers.weixin.qq.com/miniprogram/dev/api/getWXACodeUnlimit.html
+     *
      * @param ObjectManager $entityManager
      * @param string $scene
      * @param $page
@@ -253,9 +255,7 @@ class WxCommon
      * @return FileDao|null
      */
     public function createWxQRFile(ObjectManager $entityManager, string $scene, $page, $isHyaline = false) {
-        //TODO FIXME 这里正式要去掉
-        $page = "pages/index/index";
-
+        $page = ""; //TODO 正式时候去掉
 
         $accessToken = $this->getAccessToken();
         $this->log->info("got access token" . $accessToken);
@@ -274,19 +274,25 @@ class WxCommon
         $code = $response->getStatusCode(); // 200
 
         if($code === 200) {
-            //TODO 找到正确的存储地址
             $file = $response->getBody();
-            $fileName = uniqid();
-            $filePath = __DIR__ . "/../../../public/upload/";
-            file_put_contents($filePath . $fileName . ".jpeg", $file);
+            $fileName = uniqid() . ".jpeg";
+            $md5 = md5($fileName);
+            $filePath = 'upload/' . FileDao::createPathFromMD5($md5);
+
+            $absoluteFilePath = __DIR__ . "/../../../public/" . $filePath;
+            if (!file_exists($absoluteFilePath)) {
+                mkdir($absoluteFilePath, 0777, true);
+            }
+
+            file_put_contents($absoluteFilePath . $md5 . '.jpeg', $file);
 
             $fileDao = new FileDao();
             $fileDao->setUploadUser(null)
-                ->setName($fileName .".jpeg")
+                ->setName($fileName)
                 ->setType('jpeg')
                 ->setSize($file->getSize())
                 ->setPath($filePath)
-                ->setMd5($fileName)
+                ->setMd5($md5)
                 ->setUploadAt(time());
             try {
                 $entityManager->persist($fileDao);

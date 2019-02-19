@@ -24,6 +24,14 @@ if ($_ENV['DROP_TABLE']) {
     ));
 }
 
+if ($_ENV['DB_MIGRATION']) {
+    passthru(sprintf(
+        'php "%s/../bin/console" doctrine:migrations:migrate',
+        __DIR__,
+        1
+    ));
+}
+
 passthru(sprintf(
     'php "%s/../bin/console" doctrine:migrations:migrate',
     __DIR__,

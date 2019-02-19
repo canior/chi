@@ -65,11 +65,9 @@ class ShareSource implements Dao
     const REFER = 'refer';
     const QUAN = 'quan';
 
-    const REFER_GROUP_ORDER = 'referGroupOrder';
     const REFER_PRODUCT = 'referProduct';
     const REFER_USER = 'referUser';
 
-    const QUAN_GROUP_ORDER = 'quanGroupOrder';
     const QUAN_PRODUCT = 'quanProduct';
     const QUAN_USER = 'quanUser';
 
@@ -77,11 +75,9 @@ class ShareSource implements Dao
         self::REFER => '小程序',
         self::QUAN => '朋友圈',
 
-        self::REFER_GROUP_ORDER => '小程序拼团分享',
         self::REFER_PRODUCT => '小程序产品分享',
         self::REFER_USER => '小程序用户分享',
 
-        self::QUAN_GROUP_ORDER => '朋友圈拼团分享',
         self::QUAN_PRODUCT => '朋友圈产品分享',
         self::QUAN_USER => '朋友圈用户分享',
     ];
@@ -104,15 +100,13 @@ class ShareSource implements Dao
 
         if ($shareSourceType == self::REFER_PRODUCT) {
             $shareSource->setTitle($user->getNickname() . $shareMetaTitle . $product->getTitle());
-            if ($product and $product->getMainProductImage()) {
-                $shareSource->setBannerFile($product->getMainProductImage()->getFile());
+            if ($product->getShareImageFile()) {
+                $shareSource->setBannerFile($product->getShareImageFile());
             }
         }
         else if ($shareSourceType == self::REFER_USER) {
             $shareSource->setTitle($user->getNickname() . ' ' . $shareMetaTitle);
             $shareSource->setBannerFile($bannerFile);
-        } else if ($shareSourceType == self::REFER_GROUP_ORDER) {
-            //TODO
         } else {
             $shareSource->setBannerFile($bannerFile);
         }

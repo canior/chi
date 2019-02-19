@@ -19,8 +19,20 @@ class ProjectBannerMeta extends ProjectMeta
     const BANNER_HOME_2 = "banner_home_2";
     const BANNER_HOME_3 = "banner_home_3";
     const BANNER_LOGIN = 'banner_login';
-    const BANNER_USER_UPGRADE = 'banner_user_upgrade';
-    const BANNER_GROUP_ORDER_INFO = "banner_group_order_info";
+    const BANNER_MY_SHARE = 'banner_my_share';
+    const BANNER_PRODUCT = 'banner_product';
+
+    /**
+     * key => memo
+     */
+    const BANNERS_ARRAY = [
+        self::BANNER_HOME_1 => '主页的横幅1',
+        self::BANNER_HOME_2 => '主页的横幅2',
+        self::BANNER_HOME_3 => '主页的横幅3',
+        self::BANNER_LOGIN => '登录页面的横幅',
+        self::BANNER_MY_SHARE => '我的分享横幅，介绍成功分享10个高级学员能得免费成为变现商学院的高级会员',
+        self::BANNER_PRODUCT => '介绍购买产品升级到高级会员免费听课的banner'
+    ];
 
     public function isTextMeta()
     {

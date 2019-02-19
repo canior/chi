@@ -146,4 +146,17 @@ class File implements Dao
 
         return $this;
     }
+
+    /**
+     * @param $md5
+     * @return string
+     */
+    public static function createPathFromMD5($md5) {
+        $folder1 = substr($md5, 0, 8);
+        $folder2 = substr($md5, 8, 8);
+        $folder3 = substr($md5, 16, 8);
+        $folder4 = substr($md5, 24, 8);
+        return $folder1 .DIRECTORY_SEPARATOR . $folder2 . DIRECTORY_SEPARATOR
+            . $folder3 . DIRECTORY_SEPARATOR .$folder4 . DIRECTORY_SEPARATOR;
+    }
 }

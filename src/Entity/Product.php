@@ -141,6 +141,12 @@ class Product implements Dao
      */
     private $course;
 
+    /**
+     * @var File | null
+     * @ORM\ManyToOne(targetEntity="App\Entity\File", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $shareImageFile;
 
     /**
      * Product constructor.
@@ -176,6 +182,22 @@ class Product implements Dao
         $this->sku = $sku;
 
         return $this;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getShareImageFile(): ?File
+    {
+        return $this->shareImageFile;
+    }
+
+    /**
+     * @param File|null $shareImageFile
+     */
+    public function setShareImageFile(?File $shareImageFile): void
+    {
+        $this->shareImageFile = $shareImageFile;
     }
 
     public function setGroupPrice($amount) {
@@ -490,46 +512,21 @@ class Product implements Dao
     }
 
     /**
-     * @return array
+     * @return ProductReview[]| ArrayCollection | Collection
      */
-    public function getArray() : array {
-
-        if ($this->isCourseProduct()) {
-            return $this->getCourse()->getArray();
-        }
-
-        $productImageArray = [];
-        foreach ($this->getProductImages() as $productImage) {
-            $productImageArray[] = $productImage->getArray();
-        }
-
-        $productSpecImagesArray = [];
-        foreach ($this->getProductSpecImages() as $productSpecImage) {
-            $productSpecImagesArray[] = $productSpecImage->getArray();
-        }
-
-        $similarProductsArray = [];
-        foreach ($this->getProductSimilars() as $similarProduct) {
-            $similarProductsArray[] = $similarProduct->getArray();
-        }
-
-        return [
-            'id' => $this->getId(),
-            'title' => $this->getTitle(),
-            'price' => $this->getPrice(),
-            'groupPrice' => $this->getGroupPrice(),
-            'originalPrice' => $this->getOriginalPrice(),
-            'freight' => $this->getFreight(),
-            'shortDescription' => $this->getShortDescription(),
-            'rewards' => $this->getRewards(),
-            'productImages' => $productImageArray,
-            'productSpecImages' => $productSpecImagesArray,
-            'stock' => $this->getStock(),
-            'similarProducts' => $similarProductsArray,
-            'soldNum' => 1000, //TODO 需要从product statistics里拿
-            'reviewsNum' => $this->getTotalReviews(),
-        ];
+    public function getActiveReviews() {
+        $criteria = Criteria::create();
+        $criteria->where($criteria::expr()->eq('status', ProductReview::ACTIVE));
+        return $this->productReviews->matching($criteria);
     }
+
+    /**
+     * @return int
+     */
+    public function getTotalActiveReviews() {
+        return $this->getActiveReviews()->count();
+    }
+
 
     /**
      * 减少库存
@@ -706,6 +703,61 @@ class Product implements Dao
      */
     public function isCourseProduct() {
         return $this->getCourse() != null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArray() : array {
+
+        if ($this->isCourseProduct()) {
+            return $this->getCourse()->getArray();
+        }
+
+        $productImageArray = [];
+        foreach ($this->getProductImages() as $productImage) {
+            $productImageArray[] = $productImage->getArray();
+        }
+
+        $productSpecImagesArray = [];
+        foreach ($this->getProductSpecImages() as $productSpecImage) {
+            $productSpecImagesArray[] = $productSpecImage->getArray();
+        }
+
+        $similarProductsArray = [];
+        foreach ($this->getProductSimilars() as $similarProduct) {
+            $similarProductsArray[] = $similarProduct->getArray();
+        }
+
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'price' => $this->getPrice(),
+            'groupPrice' => $this->getGroupPrice(),
+            'originalPrice' => $this->getOriginalPrice(),
+            'freight' => $this->getFreight(),
+            'shortDescription' => $this->getShortDescription(),
+            'rewards' => $this->getRewards(),
+            'productImages' => $productImageArray,
+            'productSpecImages' => $productSpecImagesArray,
+            'stock' => $this->getStock(),
+            'similarProducts' => $similarProductsArray,
+            'soldNum' => 1000, //TODO 需要从product statistics里拿
+            'reviewsNum' => $this->getTotalActiveReviews(),
+            'shareImageFileId' => $this->getShareImageFile() ? $this->getShareImageFile()->getId() : null,
+        ];
+    }
+
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return ' 名称: ' . $this->getTitle()
+            . ' , 讲师: ' . $this->getCourse()->getTeacher()->getUser()
+            . ' , 价格: ￥' . $this->getPrice();
+
     }
 
 }
