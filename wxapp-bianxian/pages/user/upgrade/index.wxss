@@ -62,8 +62,8 @@
   color: #ff4d42;  
 }
 .bottom .btn {
-  color: #000;
-  background-color: #ffdf00;
+  color: #fff;
+  background-color: #e02e24;
   text-align: center;
   width: 100%;
   height: 110rpx;
@@ -91,9 +91,9 @@
     position: relative;
 }
 .filter .item.active {
-    color: #f23560;
-    background-color: #fcedf4;
-    border: 1px solid #f23560;
+    color: #fff;
+    background-color: #f2aba7;
+    border: 1px solid #e02e24;
 }
 .filter .item .tip {
   position: absolute;

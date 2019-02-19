@@ -20,8 +20,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     wx.setNavigationBarTitle({ title: app.globalData.appName })
     this.getCourses(this.data.page)
+    app.buriedPoint(options)
     app.userActivityCallback = res => {
       app.buriedPoint(options)
     }

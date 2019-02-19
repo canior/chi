@@ -25,7 +25,6 @@
     </view>
     <view class="right">
       <view class="reward">{{item.totalStudents}}人</view>
-      <view class="btn">学员列表</view>
     </view>
   </view>
 </view>

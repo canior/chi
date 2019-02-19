@@ -1,11 +1,16 @@
 /* pages/user/referral/index.wxss */
 @import "/pages/tmpl/share.wxss";
+.banner image {
+    width: 100%;
+    background-color: #fff;
+}
 .top-container {
   padding: 20rpx;
   background-color: #f5f5f5;
 }
 .top {
-  background-color: #ffdf00;
+  color: #fff;
+  background-color: #e02e24;
   text-align: center;
   border-radius: 30rpx;
 }
@@ -14,12 +19,11 @@
   height: 0;
   border-left: 100px solid transparent;
   border-right: 100px solid transparent;
-  border-bottom: 20px solid #ffee94;
+  border-bottom: 20px solid #f2aba7;
   margin-left: 155rpx;
 }
 .top .title {
   font-size: 24rpx;
-  color: #7e5924;
   padding-top: 60rpx;
 }
 .top .total {
@@ -101,7 +105,8 @@
 .bottom {
   font-size: 30rpx;
   text-align: center;
-  background-color: #ffdf00;
+  color: #fff;
+  background-color: #e02e24;
   margin: 40rpx 70rpx;
   padding: 20rpx 0;
   border-radius: 40rpx;
@@ -203,4 +208,8 @@
   height: 86rpx;
   margin-right: 5rpx;
   border-radius: 50%;
+}
+.table .tr .td.user text {
+  width: 100px;
+  word-wrap: break-word;
 }

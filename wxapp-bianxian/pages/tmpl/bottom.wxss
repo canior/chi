@@ -41,11 +41,11 @@
   text-align: center;
   height: 110rpx;
   border-radius: 0;
-}.chi-bottom .btn.order {
   color: #fff;
-  background-color: #434343;
+}.chi-bottom .btn.order {
+  background-color: #f2aba7;
 }.chi-bottom .btn.group {
-  background-color: #ffdf00;
+  background-color: #e02e24;
 }
 .chi-bottom .btn-clear {
   background-color: transparent;

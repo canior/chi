@@ -3,7 +3,7 @@
 <view class="container">
   <view class="row">
     <view class="left">订单号：{{course.id}}</view>
-    <view class="right status">{{course.statusText}}</view>
+    <view class="right status">{{course.createdAt}}</view>
   </view>
   <view class="row">
     <view class="left">
@@ -21,11 +21,14 @@
     </view>
   </view>
   <view class="row">
-    <block wx:if="{{course.status == 'delivered'}}">
-      <button bindtap="toUserComment" wx:if="{{course.productReviews.length == 0}}">课程评价</button>
-      <button bindtap="toUserComment" wx:if="{{course.productReviews.length > 0}}">查看评价</button>
-    </block>
-    <button open-type="contact">客服咨询</button>
+    <view class="left">{{course.statusText}}</view>
+    <view class="right">
+      <block wx:if="{{course.status == 'delivered'}}">
+        <button bindtap="toUserComment" wx:if="{{course.productReviews.length == 0}}">课程评价</button>
+        <button bindtap="toUserComment" wx:if="{{course.productReviews.length > 0}}">查看评价</button>
+      </block>
+      <button open-type="contact">客服咨询</button>
+    </view>
   </view>
 </view>
 <view class="split-brand"/>

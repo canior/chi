@@ -33,7 +33,6 @@
 }
 .row .right {
   font-size: 26rpx;
-  width: 72px;
   text-align: center;
 }.row .right.pending {
   color: #888;
@@ -57,7 +56,7 @@
   font-size: 36rpx;
   color: #ff4d42;
 }
-.row .right .btn {
+.row .right.btn {
   font-size: 24rpx;
   color: #ff4d42;
   text-align: center;
@@ -75,7 +74,8 @@
 .bottom {
   font-size: 30rpx;
   text-align: center;
-  background-color: #ffdf00;
+  color: #fff;
+  background-color: #e02e24;
   margin: 50rpx 70rpx;
   padding: 20rpx 0;
   border-radius: 40rpx;

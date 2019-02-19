@@ -25,18 +25,11 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
-    const courseId = options.id ? options.id : 2;
+    const courseId = options.id ? options.id : app.parseScene(options, 'p')
     this.getCourse(courseId);
     const url = app.globalData.baseUrl + '/products/' + courseId + '/reviews'
     courseReview.init(this, url);
-    //app.buriedPoint(options)
-    /*app.userActivityCallback = res => {
-      app.buriedPoint(options)
-      this.setData({
-        isLogin: app.globalData.isLogin,
-        user: app.globalData.user
-      })
-    }*/
+    app.buriedPoint(options)
   },
 
   getCourse: function (id) {
@@ -181,8 +174,14 @@ Page({
       isLogin: app.globalData.isLogin,
       user: app.globalData.user
     })
-    bottom.init(this)
-    share.init(this)
+    if (this.data.isLogin) {
+      bottom.init(this)
+      share.init(this)
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
   },
 
   /**

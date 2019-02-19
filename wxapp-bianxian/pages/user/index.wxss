@@ -4,9 +4,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid #ededed;
+  border: 1px solid #f2aba7;
   padding: 20rpx;
-  background-color: #ffee94;
+  color: #fff;
+  background-color: #f2aba7;
 }
 .top .left {
   display: flex;
@@ -41,8 +42,8 @@
 }
 .top .right navigator {
   font-size: 24rpx;
-  color: #ff4d42;
-  border: 1px solid #ff4d42;
+  color: #fff;
+  border: 1px solid #fff;
   border-radius: 40rpx;
   padding: 10rpx 30rpx;
 }
@@ -70,8 +71,8 @@
   padding: 0 20rpx;
 }
 .arrow-right {
-  border-top: 2px solid #888;
-  border-right: 2px solid #888;
+  border-top: 2px solid #fff;
+  border-right: 2px solid #fff;
   width: 18rpx;
   height: 18rpx;
   transform: rotate(45deg);

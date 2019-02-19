@@ -12,6 +12,12 @@
   <view class="nav"></view>
 </view>
 
+<view class="container">
+    <view class="banner" bindtap="redirect" data-url="{{shareUser ? shareUser.bannerMetaArray.banner_my_share.redirectUrl : ''}}">
+        <image mode="widthFix" src="{{shareUser ? (imgUrlPrefix + '/' + shareUser.bannerMetaArray.banner_my_share.bannerFileId) : ''}}"></image>
+    </view>
+</view>
+
 <!--列表-->
 <view class="container">
   <view class="rank">

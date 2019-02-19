@@ -54,6 +54,8 @@
   background-color: #fff;
 }.row button::after {
   border-color: #000;
+}.row button:first-child {
+  margin-right: 40rpx;
 }
 .address {
   display: flex;
@@ -94,7 +96,8 @@
 .bottom {
   font-size: 30rpx;
   text-align: center;
-  background-color: #ffdf00;
+  color: #fff;
+  background-color: #e02e24;
   margin: 40rpx 70rpx;
   padding: 20rpx 0;
   border-radius: 40rpx;

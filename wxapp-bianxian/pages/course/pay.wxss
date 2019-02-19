@@ -29,8 +29,8 @@ page {
   color: #ff4d42;  
 }
 .bottom .btn {
-  color: #000;
-  background-color: #ffdf00;
+  color: #fff;
+  background-color: #e02e24;
   text-align: center;
   width: 40%;
   height: 110rpx;
