@@ -1086,18 +1086,18 @@ class UserController extends BaseController
         $this->getEntityManager()->persist($course);
         $this->getEntityManager()->flush();
 
-        $coursArray = [];
+        $courseArray = [];
         if ($course) {
-            $coursArray = $course->getArray();
+            $courseArray = $course->getArray();
         }
 
-        $groupUserOrder = [];
+        $groupUserOrderArray = [];
         if ($groupUserOrder) {
             $groupUserOrderArray = $groupUserOrder->getArray();
         }
 
         return $this->responseJson('success', 200, [
-            'course' => $coursArray,
+            'course' => $courseArray,
             'groupUserOrder' => $groupUserOrderArray,
         ]);
     }
