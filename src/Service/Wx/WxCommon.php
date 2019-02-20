@@ -41,8 +41,8 @@ class WxCommon
      */
     public function __construct(LoggerInterface $log)
     {
-        $this->appId = 'wx94523ddb2226fcbd';
-        $this->appSecret = 'fa45dfe32929a60ff3a59c8534d69bca';
+        $this->appId = 'wxc82998253644847f';
+        $this->appSecret = '612b36a5ea12a330d8fbb687885534cb';
         $this->log = $log;
     }
 

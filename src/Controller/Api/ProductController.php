@@ -58,7 +58,6 @@ class ProductController extends BaseController
      */
     public function indexAction(Request $request, ProductRepository $productRepository, ProjectBannerMetaRepository $projectBannerMetaRepository) : Response {
 
-        $thirdSession = $request->query->get('thirdSession');
         $page = $request->query->get('page', 1);
 
         $bannersArray = $this->createHomePageProjectBannerMetas($projectBannerMetaRepository);
