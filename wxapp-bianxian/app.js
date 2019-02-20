@@ -9,34 +9,34 @@ App({
   getUserInfo: function () {
     const that = this
     wx.getSetting({
-          success: res => {
-          if (res.authSetting['scope.userInfo']) {
-      // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-      wx.getUserInfo({
+      success: res => {
+        if (res.authSetting['scope.userInfo']) {
+          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+          wx.getUserInfo({
             success: res => {
-            // 可以将 res 发送给后台解码出 unionId
-            console.log('app:getUserInfo', res.userInfo);
-      that.globalData.userInfo = res.userInfo
-      that.login(res.userInfo, function () {
-        // 首页Page.onLoad的buriedPoint
-        if (that.userActivityCallback) {
-          that.userActivityCallback(res)
+              // 可以将 res 发送给后台解码出 unionId
+              console.log('app:getUserInfo', res.userInfo);
+              that.globalData.userInfo = res.userInfo
+              that.login(res.userInfo, function () {
+                // 首页Page.onLoad的buriedPoint
+                if (that.userActivityCallback) {
+                  that.userActivityCallback(res)
+                }
+              });
+            }
+          })
+        } else {
+          // 未授权或已取消授权
+          console.log("app:authSetting['scope.userInfo']=false");
+          that.login(null, function () {
+            // 首页Page.onLoad的buriedPoint
+            if (that.userActivityCallback) {
+              that.userActivityCallback(res)
+            }
+          });
         }
-      });
-    }
+      }
     })
-    } else {
-      // 未授权或已取消授权
-      console.log("app:authSetting['scope.userInfo']=false");
-      that.login(null, function () {
-        // 首页Page.onLoad的buriedPoint
-        if (that.userActivityCallback) {
-          that.userActivityCallback(res)
-        }
-      });
-    }
-  }
-  })
   },
 
   // 登录: 创建新用户或记录老用户登录信息, 返回thirdSession
@@ -44,39 +44,39 @@ App({
     const that = this;
     let thirdSession = wx.getStorageSync('thirdSession');
     wx.login({
-          success: res => {
-          // 发送 res.code 到后台换取 openId, sessionKey, unionId
-          //console.log('app:wx.login', res)
-          wx.request({
-              url: that.globalData.baseUrl + '/user/login',
-              data: {
-                code: res.code,
-                thirdSession: thirdSession ? thirdSession : null,
-                nickName: userInfo ? userInfo.nickName : null,
-                avatarUrl: userInfo ? userInfo.avatarUrl : null,
-                userInfo: userInfo
-              },
-              method: 'POST',
-              success: (res) => {
-              console.log('app:wx.request /user/login', res);
-    if (res.data.code == 200 && res.data.msg == 'login_success') {
-      const thirdSession = res.data.data.thirdSession
-      wx.setStorageSync('thirdSession', thirdSession);
-      that.globalData.isLogin = that.isLogin();
-      that.globalData.user = res.data.data.user;
-      that.globalData.textMeta = res.data.data.textMetaArray;
-      if (thirdSession && callback) {
-        callback()
+      success: res => {
+      // 发送 res.code 到后台换取 openId, sessionKey, unionId
+      //console.log('app:wx.login', res)
+      wx.request({
+          url: that.globalData.baseUrl + '/user/login',
+          data: {
+            code: res.code,
+            thirdSession: thirdSession ? thirdSession : null,
+            nickName: userInfo ? userInfo.nickName : null,
+            avatarUrl: userInfo ? userInfo.avatarUrl : null,
+            userInfo: userInfo
+          },
+          method: 'POST',
+          success: (res) => {
+            console.log('app:wx.request /user/login', res);
+            if (res.data.code == 200 && res.data.msg == 'login_success') {
+              const thirdSession = res.data.data.thirdSession
+              wx.setStorageSync('thirdSession', thirdSession);
+              that.globalData.isLogin = that.isLogin();
+              that.globalData.user = res.data.data.user;
+              that.globalData.textMeta = res.data.data.textMetaArray;
+              if (thirdSession && callback) {
+                callback()
+              }
+            }
+          },
+          fail(e) {
+            console.log('app:wx.request /user/login fail', e);
+          },
+          complete(e) { }
+        })
       }
-    }
-  },
-    fail(e) {
-      console.log('app:wx.request /user/login fail', e);
-    },
-    complete(e) { }
-  })
-  }
-  })
+    })
   },
 
   // 判断是否授权并登录
