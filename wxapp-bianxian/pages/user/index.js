@@ -117,10 +117,18 @@ Page({
     wx.scanCode({
       onlyFromCamera: true,
       success: (res) => {
-        console.log(res);
-        var courseId = util.getQueryVariable(res.result, 'courseId');
-        var status = util.getQueryVariable(res.result, 'status');
-        this.createCourseStudent(courseId, status);
+        console.log(res)
+        //var courseId = util.getQueryVariable(res.result, 'courseId');
+        //var status = util.getQueryVariable(res.result, 'status');
+        if (res.result) {
+          //https://bianxian.yunlishuju.com/backend/course/student/1
+          let index = res.result.lastIndexOf("\/");
+          let id = res.result.substring(index + 1, res.result.length);
+          console.log('wx.scanCode:id=', id);
+          this.createCourseStudent(id, null);
+        } else {
+          console.log('wx.scanCode:fail')
+        }
       }
     });
   },
@@ -140,7 +148,7 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           wx.navigateTo({
-            url: '/pages/user/course/log?id=' + courseId
+            url: '/pages/user/course/log?id=' + res.data.data.groupUserOrder.id
           });
         } else {
           console.log('wx.request return error', res.statusCode);
