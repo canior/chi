@@ -840,10 +840,16 @@ class UserController extends BaseController
             $shareSourceUserArray[] = $shareSourceUser->getArray();
         }
 
+        /**
+         * @var ProjectBannerMetaRepository $projectBannerMetaRepository
+         */
+        $projectBannerMetaRepository = $this->getEntityManager()->getRepository(ProjectBannerMeta::class);
+
         return $this->responseJson('success', 200, [
             'shareSourceUsersTotal' => $totalShareSourceUsers,
             'shareSourceUsers' => $shareSourceUserArray,
-            'shareSources' => $this->createUserShareSource($user, $url)
+            'shareSources' => $this->createUserShareSource($user, $url),
+            'bannerMetaArray' => $this->createMySharePageProjectBannerMetas($projectBannerMetaRepository)
         ]);
     }
 
@@ -1051,7 +1057,16 @@ class UserController extends BaseController
          */
         $course = $this->getEntityManager()->getRepository(Course::class)->find($courseId);
 
-        if (!$course->hasStudent($user)) {
+        /**
+         * @var GroupUserOrderRepository $groupUserOrderRepository
+         */
+        $groupUserOrderRepository = $this->getEntityManager()->getRepository(GroupUserOrder::class);
+        $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $course->getProduct(), 'user' => $user]);
+
+        if (!$groupUserOrder) {
+            $memo = '未找到订单记录';
+            $course->refuseStudent($user, $memo);
+        } else if (!$course->hasStudent($user)) {
             $memo = '未找到注册记录';
             $course->refuseStudent($user, $memo);
         } else if ($course->isExpired()) {
@@ -1072,7 +1087,8 @@ class UserController extends BaseController
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
-            'course' => $course->getArray()
+            'course' => $course->getArray(),
+            'groupUserOrder' => $groupUserOrder
         ]);
     }
 }
