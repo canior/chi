@@ -24,17 +24,15 @@ Page({
 
   getQuota: function () {
     const that = this;
-    const pages = getCurrentPages();
-    const currentPageUrl = '/' + pages[pages.length - 1].route;    
     wx.showLoading({
       title: '载入中',
     })
     wx.request({
       url: app.globalData.baseUrl + '/user/children',
       data: {
-        url: currentPageUrl,
-        //page
         thirdSession: wx.getStorageSync('thirdSession'),
+        //page
+        url: '/pages/course/index',
       },
       method: 'POST',
       success: (res) => {

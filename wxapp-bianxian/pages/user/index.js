@@ -16,7 +16,7 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
-    //app.buriedPoint(options)
+    app.buriedPoint(options)
   },
 
   // 转个人资料

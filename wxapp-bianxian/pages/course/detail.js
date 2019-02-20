@@ -34,13 +34,11 @@ Page({
 
   getCourse: function (id) {
     const that = this;
-    const pages = getCurrentPages();
-    const currentPageUrl = '/' + pages[pages.length - 1].route;
     wx.request({
       url: app.globalData.baseUrl + '/products/' + id,
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
-        url: currentPageUrl
+        url: '/pages/course/detail?id=' + id
       },
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {

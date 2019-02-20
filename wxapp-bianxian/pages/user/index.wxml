@@ -32,7 +32,7 @@
 <view class="split-brand"/>
 <view class="container">
   <view class="row" bindtap="toUpgrade" wx:if="{{user.userLevel == 'VISITOR' || user.userLevel == 'ADVANCED'}}">
-    <view class="left"><image src="/images/receive.png"/>学员升级</view>
+    <view class="left"><image src="/images/upgrade.png"/>学员升级</view>
     <view class="right"><view class="arrow-right"/></view>
   </view>
   <!--<view class="split-line"/>
@@ -43,7 +43,7 @@
   <block wx:if="{{isLogin && user.totalStudents > 0}}">
     <view class="split-line"/>
     <view class="row" bindtap="toMyStudent">
-      <view class="left"><image src="/images/wx.png"/>我的学员</view>
+      <view class="left"><image src="/images/student.png"/>我的学员</view>
       <view class="right">{{user.totalStudents}}人<view class="arrow-right"/></view>
     </view>
   </block>
@@ -54,7 +54,7 @@
   </view>
   <view class="split-line"/>
   <button class="row btn-clear" open-type='contact'>
-    <view class="left"><image src="/images/service.png"/>客服咨询</view>
+    <view class="left"><image src="/images/server.png"/>客服咨询</view>
     <view class="right"><view class="arrow-right"/></view>
   </button>
   <view class="split-line"/>
