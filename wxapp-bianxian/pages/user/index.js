@@ -139,9 +139,17 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          wx.navigateTo({
-            url: '/pages/user/course/log?id=' + res.data.data.groupUserOrder.id
-          });
+          let groupUserOrder = res.data.data.groupUserOrder
+          if (util.isEmpty(groupUserOrder)) {
+            wx.showModal({
+              content: '未找到课程注册订单记录',
+              showCancel: false,
+            });
+          } else {
+            wx.navigateTo({
+              url: '/pages/user/course/log?id=' + res.data.data.groupUserOrder.id
+            });
+          }
         } else {
           console.log('wx.request return error', res.statusCode);
         }
