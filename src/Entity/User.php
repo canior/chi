@@ -300,6 +300,8 @@ class User extends BaseUser implements Dao
         $this->userAccountOrders = new ArrayCollection();
         $this->courseStudents = new ArrayCollection();
         $this->userRecommandStockOrders = new ArrayCollection();
+        $this->userParentLogs = new ArrayCollection();
+        $this->userLogs = new ArrayCollection();
     }
 
     public function setId($id)
