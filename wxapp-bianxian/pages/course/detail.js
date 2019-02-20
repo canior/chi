@@ -81,13 +81,6 @@ Page({
     })
   },
 
-  // 转课程返现详情
-  /*toCourseReward: function() {
-    wx.navigateTo({
-      url: "/pages/course/reward"
-    });
-  },*/
-
   // 单独购买提醒弹窗
   wxShowModal: function (e) {
     bottom.showModal(this)
