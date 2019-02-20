@@ -27,13 +27,39 @@
 			"current": -1,
 			"list": []
 		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
 		"game": {
 			"currentL": -1,
 			"list": []
 		},
 		"miniprogram": {
-			"current": -1,
-			"list": []
+			"current": 2,
+			"list": [
+				{
+					"id": -1,
+					"name": "我的分享页朋友圈",
+					"pathName": "pages/course/index",
+					"query": "scene=ss%3D293755c6d04f3a4af3",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "课程详情",
+					"pathName": "pages/course/detail",
+					"query": "scene=ss%3D450325c6d06c9bc5c6%26p%3D1",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "课程详情转发",
+					"pathName": "pages/course/detail",
+					"query": "id=1&shareSourceId=973505c6d07808b656",
+					"scene": null
+				}
+			]
 		}
 	}
 }
