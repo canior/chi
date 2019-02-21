@@ -120,45 +120,12 @@ Page({
         console.log(res)
         var courseId = util.getQueryVariable(res.result, 'courseId');
         var status = util.getQueryVariable(res.result, 'status');
-        this.createCourseStudent(courseId, status);
+        wx.navigateTo({
+          url: '/pages/user/course/log?courseId=' + courseId + '&status=' + status,
+        })
       }
     });
   },
-
-  // 报到或签到
-  createCourseStudent: function (courseId, status) {
-    const that = this;
-    wx.request({
-      url: app.globalData.baseUrl + '/user/signInCourse',
-      data: {
-        thirdSession: wx.getStorageSync('thirdSession'),
-        courseId: courseId,
-        courseStudentStatus: status
-      },
-      method: 'POST',
-      success: (res) => {
-        if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
-          let groupUserOrder = res.data.data.groupUserOrder
-          if (util.isEmpty(groupUserOrder)) {
-            wx.showModal({
-              content: '未找到课程注册订单记录',
-              showCancel: false,
-            });
-          } else {
-            wx.navigateTo({
-              url: '/pages/user/course/log?id=' + res.data.data.groupUserOrder.id
-            });
-          }
-        } else {
-          console.log('wx.request return error', res.statusCode);
-        }
-      },
-      fail(e) {
-      },
-      complete(e) { }
-    })
-  },  
 
   toLogin: function () {
     wx.navigateTo({
