@@ -45,9 +45,9 @@ App({
     let thirdSession = wx.getStorageSync('thirdSession');
     wx.login({
       success: res => {
-      // 发送 res.code 到后台换取 openId, sessionKey, unionId
-      //console.log('app:wx.login', res)
-      wx.request({
+        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+        //console.log('app:wx.login', res)
+        wx.request({
           url: that.globalData.baseUrl + '/user/login',
           data: {
             code: res.code,

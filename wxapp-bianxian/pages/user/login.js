@@ -23,6 +23,9 @@ Page({
   // 获取banner
   getBanner: function () {
     const that = this;
+    wx.showLoading({
+      title: '玩命加载中',
+    })
     wx.request({
       url: app.globalData.baseUrl + '/user/preLogin',
       success: (res) => {
@@ -37,7 +40,7 @@ Page({
       },
       fail(e) {
       },
-      complete(e) { }
+      complete(e) { wx.hideLoading() }
     })
   },
 
@@ -59,7 +62,11 @@ Page({
       if (app.globalData.isLogin) {// 有thirdSession,登录成功
         wx.navigateBack()
       } else {// 无thirdSession,继续登录
+        wx.showLoading({
+          title: '玩命加载中',
+        })        
         app.login(userInfo, function () {
+          wx.hideLoading()
           wx.navigateBack()
         });
       }

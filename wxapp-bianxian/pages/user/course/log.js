@@ -105,6 +105,7 @@ Page({
         if (this.data.options.q) {
           // 二维码进入
           const url = decodeURIComponent(this.data.options.q)
+          console.log('/pages/user/course/log: url', url)
           courseId = util.getQueryVariable(url, 'courseId');
           status = util.getQueryVariable(url, 'status');
         } else if (this.data.options.courseId && this.data.options.status) {
