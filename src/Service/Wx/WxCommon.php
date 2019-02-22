@@ -258,6 +258,7 @@ class WxCommon
 
         //$page = ""; //TODO 正式时候去掉
         $page = str_replace("/pages", "pages", $page);
+        $page = strtok($page, '?');
         $this->log->info("creating wx qr file for page " . $page);
 
         $accessToken = $this->getAccessToken();
