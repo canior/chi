@@ -109,10 +109,11 @@ class CourseStudentController extends BackendController
      */
     public function createQRAction(QrCodeFactory $qrCodeFactory, $id, $status) {
         // 加上微信扫一扫的图标
+        $url = "https://bianxian.yunlishuju.com/wx?";
         /**
          * @var QrCode $qrCode
          */
-        $qrCode = $qrCodeFactory->create("courseId=" . $id . "&status=" . $status);
+        $qrCode = $qrCodeFactory->create($url . "courseId=" . $id . "&status=" . $status);
         return new Response($qrCode->writeString(), Response::HTTP_OK, ['Content-Type' => $qrCode->getContentType()]);
     }
 

@@ -1064,7 +1064,7 @@ class UserController extends BaseController
         $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $course->getProduct(), 'user' => $user]);
 
         if (!$groupUserOrder) {
-            $memo = '未找到订单记录';
+            $memo = '未找到课程注册订单记录';
             $course->refuseStudent($user, $memo);
         } else if (!$course->hasStudent($user)) {
             $memo = '未找到注册记录';
