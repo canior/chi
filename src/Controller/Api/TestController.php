@@ -39,6 +39,11 @@ class TestController extends BaseController
      */
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
+        //test code login
+
+
+
+        exit;
         /**
          * @var User $user
          */

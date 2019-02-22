@@ -42,6 +42,7 @@ use App\Repository\RegionRepository;
 use App\Repository\ShareSourceRepository;
 use App\Repository\ShareSourceUserRepository;
 use App\Repository\TeacherRepository;
+use App\Repository\UpgradeUserOrderRepository;
 use App\Repository\UserActivityRepository;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
@@ -1001,6 +1002,30 @@ class UserController extends BaseController
         return $this->responseJson('success', 200, [
             'user' => $user->getArray(),
         ]);
+    }
+
+
+    /**
+     * 合伙人和分院能处理推荐的高级会员订单，线下收钱
+     * @Route("/user/advancedUpgradeOrders", name="viewUserAdvancedUpgradeOrders", methods="GET")
+     * @param Request $request
+     * @param UpgradeUserOrderRepository $upgradeUserOrderRepository
+     * @return Response
+     */
+    public function viewAdvancedUpgradeOrders(Request $request, UpgradeUserOrderRepository $upgradeUserOrderRepository) {
+        $thirdSession = $request->query->get('thirdSession', null);
+        if ($thirdSession == null) {
+            exit;
+        }
+
+        $userId = $thirdSession;
+        $oldUserLevel = UserLevel::VISITOR;
+        $userLevel = null;
+        $status = null;
+
+        $data['data'] = $upgradeUserOrderRepository->search(null, $userId, null, $oldUserLevel, $userLevel, $status);
+        $data['pagination'] = $this->getPaginator()->paginate($data['data'], 1, self::PAGE_LIMIT);
+        return $this->render('api/upgradeUserOrders.html.twig', $data);
     }
 
     /**

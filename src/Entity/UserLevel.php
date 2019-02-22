@@ -43,7 +43,7 @@ class UserLevel
     /* 推荐人的佣金 */
     public static $userLevelRecommanderRewardsArray = [
         self::VISITOR => 0,
-        self::ADVANCED => 9000,
+        self::ADVANCED => -1000,
         self::PARTNER => 30000,
         self::DISTRIBUTOR => 30000
     ];
