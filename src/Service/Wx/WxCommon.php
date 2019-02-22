@@ -255,7 +255,7 @@ class WxCommon
      * @return FileDao|null
      */
     public function createWxQRFile(ObjectManager $entityManager, string $scene, $page, $isHyaline = false) {
-        $page = ""; //TODO 正式时候去掉
+        //$page = ""; //TODO 正式时候去掉
 
         $accessToken = $this->getAccessToken();
         $this->log->info("got access token" . $accessToken);
