@@ -3,6 +3,7 @@
 namespace App\Controller\Backend;
 
 use App\Entity\Course;
+use App\Entity\File;
 use App\Entity\ProductImage;
 use App\Entity\Subject;
 use App\Form\CourseType;
@@ -139,6 +140,18 @@ class CourseController extends BackendController
             $form->get('specImages')->setData($images);
         }
 
+        $shareImageFile = $course->getShareImageFile();
+        if ($shareImageFile) {
+            $fileArray[$shareImageFile->getId()] = [
+                'id' => $shareImageFile->getId(),
+                'fileId' => $shareImageFile->getId(),
+                'priority' => 0,
+                'name' => $shareImageFile->getName(),
+                'size' => $shareImageFile->getSize()
+            ];
+            $form->get('shareImageFile')->setData($fileArray);
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -174,6 +187,19 @@ class CourseController extends BackendController
                     die;
                 }
                 return new Response('页面错误', 500);
+            }
+
+            //update share image
+            $shareImageFileId = isset($request->request->get('course')['shareImageFile']) ? $request->request->get('course')['shareImageFile'] : [];
+            if ($shareImageFileId) {
+                /**
+                 * @var File $shareImageFile
+                 */
+                $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
+                $course->setShareImageFile($shareImageFile);
+
+            } else {
+                $course->setShareImageFile(null);
             }
 
             $this->getDoctrine()->getManager()->flush();

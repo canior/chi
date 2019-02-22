@@ -36,6 +36,10 @@
       <view class="left"><image src="/images/upgrade.png"/>学员升级</view>
       <view class="right"><view class="arrow-right"/></view>
     </view>
+    <view class="row" bindtap="toUpgradeOrder" wx:if="{{user.userLevel == 'PARTNER' || user.userLevel == 'DISTRIBUTOR'}}">
+      <view class="left"><image src="/images/upgrade-order.png"/>推荐订单</view>
+      <view class="right"><view class="arrow-right"/></view>
+    </view>    
   </block>
   <block wx:if="{{isLogin && user.totalStudents > 0}}">
     <view class="split-line"/>

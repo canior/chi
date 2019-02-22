@@ -1,4 +1,4 @@
-// pages/course/reward.js
+// pages/user/upgrade/order.js
 const app = getApp()
 Page({
 
@@ -6,7 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    url: app.globalData.baseUrl + '/products/introduction',
+    url: app.globalData.baseUrl + '/user/advancedUpgradeOrders',
   },
 
   /**

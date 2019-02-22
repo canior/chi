@@ -110,7 +110,13 @@ Page({
         url: '/pages/user/login',
       })
     }
-  },  
+  },
+
+  toUpgradeOrder: function () {
+    wx.navigateTo({
+      url: '/pages/user/upgrade/order',
+    })
+  },
 
   // 扫一扫
   toScan: function () {
