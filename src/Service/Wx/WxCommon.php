@@ -257,7 +257,7 @@ class WxCommon
     public function createWxQRFile(ObjectManager $entityManager, string $scene, $page, $isHyaline = false) {
         $page = str_replace("/pages", "pages", $page);
         $page = strtok($page, '?');
-        //$page = ""; //TODO 正式时候去掉
+        $page = ""; //TODO 正式时候去掉
 
         $this->log->info("creating wx qr file for page " . $page);
 
