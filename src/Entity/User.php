@@ -829,7 +829,7 @@ class User extends BaseUser implements Dao
             'phone' => $this->getPhone(),
             'idNum' => $this->getIdNum(),
             'wechat' => $this->getWechat(),
-            'recommanderName' => $this->getRecommanderName(),
+            'recommanderName' => $this->getParentUser() ? $this->getParentUser()->getName() : $this->getRecommanderName(),
             'totalStudents' => $this->getTeacher() ? $this->getTeacher()->getTotalStudentUsers() : 0,
             'totalShares' => $this->getTotalSharedUsers(),
         ];
