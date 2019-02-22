@@ -86,7 +86,13 @@ class CourseType extends AbstractType
                 'data_class' => null,
                 'mapped' => false,
             ])
-
+            ->add('shareImageFile', DropzoneType::class, [
+                'label' => '课程分享图片（1张：注意留空保留二维码位置）',
+                'maxFiles' => 1,
+                'priority' => true,
+                'data_class' => null,
+                'mapped' => false,
+            ])
         ;
     }
 
