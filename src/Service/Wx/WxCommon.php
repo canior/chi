@@ -280,6 +280,9 @@ class WxCommon
             $filePath = 'upload/' . FileDao::createPathFromMD5($md5);
 
             $absoluteFilePath = __DIR__ . "/../../../public/" . $filePath;
+
+            $this->log->info("create file " . $absoluteFilePath);
+
             if (!file_exists($absoluteFilePath)) {
                 mkdir($absoluteFilePath, 0777, true);
             }
