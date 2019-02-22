@@ -40,7 +40,7 @@ class TestController extends BaseController
         if ($this->getEnvironment() != 'dev') exit;
 
         $wxCommon = new WxCommon($this->getLog());
-        $userQrFile = $wxCommon->createWxQRFile($this->getEntityManager(), 'groupOrderId=' . 1 . '&shareSourceId=' . 2, 'test page', true);
+        $userQrFile = $wxCommon->createWxQRFile($this->getEntityManager(), 'groupOrderId=' . 1 . '&shareSourceId=' . 2, 'pages/course/index', true);
         $quanBannerFile = $this->getEntityManager()->getRepository(File::class)->find(25);
         $file = ImageGenerator::createShareQuanBannerImage($this->getEntityManager(), $userQrFile, $quanBannerFile);
         echo "qr = " . $userQrFile->getId() . "<br>";
