@@ -33,7 +33,7 @@ class ImageGenerator
 
         $banner = Image::make($bannerFile->getAbsolutePath());
         $qr = Image::make(file_get_contents($userQrFile->getAbsolutePath()));
-        $banner->insert($qr, 'bottom', 0, 80);
+        $banner->insert($qr, 'bottom', 0, 65);
 
         $fileName = uniqid() . "jpeg";
         $md5 = md5($fileName);
