@@ -17,6 +17,7 @@ use App\Entity\ShareSourceUser;
 use App\Entity\UpgradeUserOrderPayment;
 use App\Entity\UserLevel;
 use App\Entity\UserParentLog;
+use App\Entity\User;
 
 class BusinessLogic extends JinqiuBaseTestCase
 {

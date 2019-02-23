@@ -7,6 +7,7 @@ use App\Entity\Traits\UpdatedAtTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Model\User as BaseUser;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -399,7 +400,9 @@ class User extends BaseUser implements Dao
      */
     public function isPartnerUser()
     {
-        return $this->getUserLevel() == UserLevel::PARTNER;
+        return $this->getUserLevel() == UserLevel::PARTNER
+        //临时修正合伙人显示bug
+            or ($this->getUserLevel() == UserLevel::ADVANCED and $this->getRecommandStock() > 0);
     }
 
     public function getRoleText()
@@ -1062,8 +1065,13 @@ class User extends BaseUser implements Dao
      */
     public function getUserLevelText(): string
     {
+        //临时修改合伙人bug的修正
+        if ($this->isPartnerUser()) {
+            return UserLevel::$userLevelTextArray[UserLevel::ADVANCED];
+        }
+
         if ($this->getUserLevel()) {
-            return UserLevel::$userLevelTextArray[$this->userLevel];
+            return UserLevel::$userLevelTextArray[$this->getUserLevel()];
         }
 
         return "";

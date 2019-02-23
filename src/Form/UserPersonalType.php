@@ -21,6 +21,9 @@ class UserPersonalType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $userLevelTexts = UserLevel::$userLevelTextArray;
+        unset($userLevelTexts[UserLevel::PARTNER]);
+
         $builder
             ->add('userLevel', ChoiceType::class, [
                 'label' => '会员等级',
