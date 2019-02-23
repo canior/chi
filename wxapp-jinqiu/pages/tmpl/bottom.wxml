@@ -14,7 +14,7 @@
         <button class="item btn other" bindtap="wxViewCourse" disabled="{{btnDisabled}}" wx:if="{{groupUserOrder && groupUserOrder.groupOrderStatus == 'completed'}}"><text>{{textMetaArray ? textMetaArray.text_watch_meta.textMeta : ''}}</text></button>
         <button class="item btn group" bindtap="wxUpgrade" disabled="{{btnDisabled}}"><text>{{textMetaArray ? textMetaArray.text_unlock_all_meta.textMeta : ''}}</text></button>
       </block>
-      <block wx:if="{{type == 'course' && user.userLevel == 'ADVANCED'}}">
+      <block wx:if="{{type == 'course' && (user.userLevel == 'ADVANCED' || user.userLevel == 'PARTNER')}}">
         <button class="item btn group" bindtap="wxViewCourse" disabled="{{btnDisabled}}"><text>{{textMetaArray ? textMetaArray.text_watch_meta.textMeta : ''}}</text></button>
       </block>
       <block wx:if="{{type == 'product'}}">
