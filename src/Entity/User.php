@@ -400,9 +400,7 @@ class User extends BaseUser implements Dao
      */
     public function isPartnerUser()
     {
-        return $this->getUserLevel() == UserLevel::PARTNER
-        //临时修正合伙人显示bug
-            or ($this->getUserLevel() == UserLevel::ADVANCED and $this->getRecommandStock() > 0);
+        return $this->getUserLevel() == UserLevel::PARTNER;
     }
 
     public function getRoleText()
@@ -798,7 +796,7 @@ class User extends BaseUser implements Dao
         return [
             'id' => $this->getId(),
             'nickname' => $this->getNickname(),
-            'userLevel' => $this->getUserLevel() ? $this->getUserLevel() : null,
+            'userLevel' => $this->userLevel ? $this->userLevel : null,
             'userLevelText' => $this->getUserLevel() ? UserLevel::$userLevelTextArray[$this->getUserLevel()] : null,
             'userAccountTotal' => $this->getUserAccountTotal(),
             'userRecommandStock' => $this->getRecommandStock(),
@@ -1057,6 +1055,11 @@ class User extends BaseUser implements Dao
      */
     public function getUserLevel(): ?string
     {
+        //临时修改合伙人bug的修正
+        if ($this->userLevel == UserLevel::ADVANCED and $this->getRecommandStock() > 0) {
+            return UserLevel::PARTNER;
+        }
+
         return $this->userLevel;
     }
 
@@ -1065,11 +1068,6 @@ class User extends BaseUser implements Dao
      */
     public function getUserLevelText(): string
     {
-        //临时修改合伙人bug的修正
-        if ($this->isPartnerUser()) {
-            return UserLevel::$userLevelTextArray[UserLevel::ADVANCED];
-        }
-
         if ($this->getUserLevel()) {
             return UserLevel::$userLevelTextArray[$this->getUserLevel()];
         }
