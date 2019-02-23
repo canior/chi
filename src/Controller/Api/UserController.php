@@ -112,6 +112,11 @@ class UserController extends BaseController
                     $user->setAvatarUrl($avatarUrl);
                     $user->info("update user nickname to " . $nickName . " and avatar url");
                 }
+
+                if ($user->getIdNum() == null) {
+                    $user->setIdNum(""); //临时修改身份证号码
+                }
+
                 $user->setLastLoginTimestamp(time());
 
                 $this->getEntityManager()->persist($user);
@@ -147,6 +152,11 @@ class UserController extends BaseController
                     $user->setAvatarUrl($avatarUrl);
                     $user->info("update user nickname to " . $nickName . " and avatar url");
                 }
+
+                if ($user->getIdNum() == null) {
+                    $user->setIdNum(""); //临时修改身份证号码
+                }
+
 
                 $this->getEntityManager()->persist($user);
                 $this->getEntityManager()->flush();
