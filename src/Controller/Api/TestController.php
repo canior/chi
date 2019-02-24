@@ -28,6 +28,7 @@ use App\Service\ImageGenerator;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use SplFileObject;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * @Route("/wxapi")
@@ -150,119 +151,39 @@ class TestController extends BaseController
     /**
      * @Route("/testStream", name="testStream", methods="GET")
      * @param Request $request
-     * @return Response|StreamedResponse
+     * @return Response
      */
     public function steamAction(Request $request) {
-
-//        $response = new BinaryFileResponse('/Users/tandy/Downloads/SampleVideo_1280x720_1mb.mp4');
-//        $response->setAutoEtag();
-//        $response->headers->set('Content-Type', 'video/ogg');
-//        // cache video for one week, not work for streaming?
-//        $response->setSharedMaxAge(604800);
-//        return $response;
-
-        $file = new SplFileObject('/Users/tandy/Downloads/xuchuan1.mp4');
-
-        $fileSize = $file->getSize();
-        $response = new StreamedResponse();
-        $mime = 'video';
-        $fileExt = 'mp4';
-        $mime = '/' . $fileExt;
-
-        $response->headers->set('Accept-Ranges', 'bytes');
-        $response->headers->set('Content-Type', $mime);
-
-        // Prepare File Range to read [default to the whole file content]
-        $rangeMin = 0;
-        $rangeMax = $fileSize - 1;
-        $rangeStart = $rangeMin;
-        $rangeEnd = $rangeMax;
-
-        $httpRange = $request->server->get('HTTP_RANGE');
-
-        // If a Range is provided, check its validity
-        if ($httpRange) {
-            $isRangeSatisfiable = true;
-
-            if (preg_match('/bytes=\h*(\d+)-(\d*)[\D.*]?/i', $httpRange, $matches)) {
-                $rangeStart  = intval($matches[1]);
-
-                if (!empty($matches[2])) {
-                    $rangeEnd  = intval($matches[2]);
-                }
-            } else {
-                // Requested HTTP-Range seems invalid.
-                $isRangeSatisfiable = false;
+        $file = "/Users/tandy/Downloads/xuchuan1.mp4";
+        $size = filesize($file);
+        header("Content-type: video/mp4");
+        header("Accept-Ranges: bytes");
+        if(isset($_SERVER['HTTP_RANGE'])){
+            header("HTTP/1.1 206 Partial Content");
+            list($name, $range) = explode("=", $_SERVER['HTTP_RANGE']);
+            list($begin, $end) =explode("-", $range);
+            if($end == 0){
+                $end = $size - 1;
             }
-
-            if ($rangeStart <= $rangeEnd) {
-                $length = $rangeEnd - $rangeStart + 1;
-            } else {
-                // Requested HTTP-Range seems invalid.
-                $isRangeSatisfiable = false;
-            }
-
-            if ($file->fseek($rangeStart) !== 0) {
-                // Could not seek the file to the requested range: it might be out-of-bound, or the file is corrupted?
-                // Assume the range is not satisfiable.
-                $isRangeSatisfiable = false;
-
-                // NB : You might also wish to throw an Exception here...
-                // Depending the server behaviour you want to set-up.
-                // throw new AnyCustomFileErrorException();
-            }
-
-            if ($isRangeSatisfiable) {
-                // Now the file is ready to be read...
-                // Set additional headers and status code.
-                // Symfony < 2.4
-                // $response->setStatusCode(206);
-                // Or using Symfony >= 2.4 constants
-                $response->setStatusCode(StreamedResponse::HTTP_PARTIAL_CONTENT);
-
-                $response->headers->set('Content-Range', sprintf('bytes %d/%d', $rangeStart - $rangeEnd, $fileSize));
-                $response->headers->set('Content-Length', $length);
-                $response->headers->set('Connection', 'Close');
-            } else {
-                $response = new Response();
-
-                // Symfony < 2.4
-                // $response->setStatusCode(416);
-                // Or using Symfony >= 2.4 constants
-                $response->setStatusCode(StreamedResponse::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE);
-                $response->headers->set('Content-Range', sprintf('bytes */%d', $fileSize));
-
-                return $response;
-            }
-        } else {
-            // No range has been provided: the whole file content can be sent
-            $response->headers->set('Content-Length', $fileSize);
+        }else {
+            $begin = 0; $end = $size - 1;
         }
+        header("Content-Length: " . ($end - $begin + 1));
+        header("Content-Disposition: filename=".basename($file));
+        header("Content-Range: bytes ".$begin."-".$end."/".$size);
+        $fp = fopen($file, 'rb');
+        fseek($fp, $begin);
+        while(!feof($fp)) {
+            $p = min(1024, $end - $begin + 1);
+            $begin += $p;
+            echo fread($fp, $p);
+        }
+        fclose($fp);
 
-        // At this step, the request headers are ready to be sent.
-        $response->prepare($request);
-        $response->sendHeaders();
 
-        // Prepare the StreamCallback
-        $response->setCallback(function () use ($file, $rangeEnd) {
-            $buffer = 1024 * 8;
-
-            while (!($file->eof()) && (($offset = $file->ftell()) < $rangeEnd)) {
-                set_time_limit(0);
-
-                if ($offset + $buffer > $rangeEnd) {
-                    $buffer = $rangeEnd + 1 - $offset;
-                }
-
-                echo $file->fread($buffer);
-            }
-
-            // Close the file handler
-            $file = null;
-        });
-
-        // Then everything should be ready, we can send the Response content.
-        $response->sendContent();
+//        header("Content-Type: video/mp4");
+//        echo file_get_contents("https://outin-a7944acc383b11e9a86700163e1a625e.oss-cn-shanghai.aliyuncs.com/sv/bcff41c-169202774dc/bcff41c-169202774dc.mp4?Expires=1551027219&OSSAccessKeyId=LTAI8bKSZ6dKjf44&Signature=FwJCcCUhggulPxYoAjXtwdjvbEI%3D");
+//        exit;
     }
 
 }
