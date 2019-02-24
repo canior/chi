@@ -100,6 +100,7 @@ class BaseController extends DefaultController
             'banner_home_1' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_1])->getArray(),
             'banner_home_2' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_2])->getArray(),
             'banner_home_3' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_3])->getArray(),
+            'banner_home_4' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_4])->getArray(),
         ];
     }
 
