@@ -73,6 +73,8 @@ class UploadFileController extends DefaultController
      */
     public function previewImageAction($fileId = null)
     {
+        if (!$fileId) exit;
+
         /**
          * @var File $file
          */

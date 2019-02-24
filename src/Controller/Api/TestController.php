@@ -182,7 +182,7 @@ class TestController extends BaseController
 
 
 
-        $url = "https://outin-a7944acc383b11e9a86700163e1a625e.oss-cn-shanghai.aliyuncs.com/1eb988a32edb433ebfc49fdec49cf984/7de1b77d1de64334af0bc0de92a15e4f-36f439e53c29dae4a99a5b4a441cab15-ld.mp4?Expires=1551031951&OSSAccessKeyId=LTAI8bKSZ6dKjf44&Signature=AB4X%2FdCreC9pt99ihQR634UWSQE%3D";
+        $url = "https://outin-a7944acc383b11e9a86700163e1a625e.oss-cn-shanghai.aliyuncs.com/1eb988a32edb433ebfc49fdec49cf984/7de1b77d1de64334af0bc0de92a15e4f-1aa2d4ce70716759229a940427edbc78-ld.m3u8?Expires=1551035506&OSSAccessKeyId=LTAI8bKSZ6dKjf44&Signature=r7s6O4X8QeLXAwh9XYBDFzel1OY%3D";
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE); // 对认证证书来源的检查
@@ -196,7 +196,7 @@ class TestController extends BaseController
         header('Pragma: public');
         header("Content-Description: File Transfer");
         header("Content-Transfer-Encoding: binary");
-        Header("Content-type: ". 'video/mp4');
+        Header("Content-type: ". 'video/m3u8');
         //Header("Content-Length: ".$fileSize);
         flush();
 
