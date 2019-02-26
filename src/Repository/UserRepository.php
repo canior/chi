@@ -6,6 +6,7 @@ use App\Entity\ShareSource;
 use App\Entity\ShareSourceUser;
 use App\Entity\User;
 use App\Entity\UserLevel;
+use App\Form\UserAddressType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -13,6 +14,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use App\Entity\CourseStudent;
+use App\Entity\UserAddress;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)

@@ -2,6 +2,8 @@
 
 namespace App\Controller\Backend;
 
+use App\Entity\UserAddress;
+use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,10 +19,10 @@ class UserStockController extends BackendController
     /**
      * @Route("/user/stock/statistic", name="user_stock_statistic", methods="GET")
      * @param UserRepository $userRepository
-     * @param Request $request
+     * @param UserAddressRepository $userAddressRepository
      * @return Response
      */
-    public function statistic(UserRepository $userRepository, Request $request): Response
+    public function statistic(UserRepository $userRepository, UserAddressRepository $userAddressRepository, Request $request): Response
     {
         $data = [
             'title' => '名额管理',
@@ -29,12 +31,18 @@ class UserStockController extends BackendController
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
+        $data['data'] = array();
+
         if ($data['form']['name']) {
-            $data['data'] = $userRepository->findBy(['name' => $data['form']['name']]);
+            $userAddressArray = $userAddressRepository->findBy(['name' => $data['form']['name']]);
+            foreach($userAddressArray as $userAddress) {
+                $data['data'][] = $userAddress->getUser();
+            }
         }
         else {
             $data['data'] = $userRepository->findUserWithRecommandStocks();
         }
+
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/user_stock/statistic.html.twig', $data);
     }
