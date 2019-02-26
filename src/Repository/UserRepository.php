@@ -198,17 +198,15 @@ class UserRepository extends ServiceEntityRepository
 
     /**
      * 初始化数据使用
-     * 返回高级会员并且名额>0的用户
+     * 返回有名额>0的用户
      * @return QueryBuilder
      */
-    public function findAdvancedUserWithRecommandStocks()
+    public function findUserWithRecommandStocks()
     {
         $query = $this->getEntityManager()->createQueryBuilder()
             ->select('u')
             ->from(User::class, 'u')
-            ->where('u.userLevel = :userLevel')
-            ->andWhere('u.recommandStock > 0')
-            ->setParameter('userLevel', UserLevel::ADVANCED);
+            ->where('u.recommandStock > 0');
 
         return $query;
     }
