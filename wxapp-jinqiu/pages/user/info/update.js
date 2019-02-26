@@ -162,14 +162,14 @@ Page({
       });
       return false;
     }
-    if(!(/^1[34578]\d{9}$/.test(user.phone))) {
+    if(!(/^\d{11}$/.test(user.phone))) {
       wx.showModal({
         content: '手机号码有误',
         showCancel: false,
       });
       return false;
     }
-    if (!user.idNum) {
+    /*if (!user.idNum) {
       wx.showModal({
         content: '请输入身份证号码',
         showCancel: false,
@@ -182,7 +182,7 @@ Page({
         showCancel: false,
       });
       return false;
-    }    
+    }*/
     return true;
   },
 

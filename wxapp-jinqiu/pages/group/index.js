@@ -273,8 +273,9 @@ Page({
   },
 
   wxViewCourse: function () {
+    const textMetaArray = this.data.textMetaArray;
     wx.navigateTo({
-      url: '/pages/course/video?id=' + this.data.groupOrder.product.productId,
+      url: '/pages/course/video?id=' + this.data.groupOrder.product.productId + '&title=' + (textMetaArray ? textMetaArray.text_watch_meta.textMeta : null),
     })
   },
   

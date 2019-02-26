@@ -10,6 +10,7 @@ Page({
     imgUrlPrefix: app.globalData.imgUrlPrefix,
     isLogin: null,
     user: null,
+    textMetaArray: null
   },
 
   /**
@@ -49,8 +50,9 @@ Page({
 
   toCourseDetail: function (e) {
     const productId = e.currentTarget.dataset.id;
+    const textMetaArray = this.data.textMetaArray;
     wx.navigateTo({
-      url: '/pages/course/video?id=' + productId,
+      url: '/pages/course/video?id=' + productId + '&title=' + (textMetaArray ? textMetaArray.text_watch_meta.textMeta : null),
     })
   },
 
@@ -81,7 +83,8 @@ Page({
   onShow: function () {
     this.setData({
       isLogin: app.globalData.isLogin,
-      user: app.globalData.user
+      user: app.globalData.user,
+      textMetaArray: app.globalData.textMeta
     })
     if (this.data.isLogin) {
       this.getMyCourses()
