@@ -162,7 +162,7 @@ Page({
       });
       return false;
     }
-    if(!(/^1[34578]\d{9}$/.test(user.phone))) {
+    if(!(/^\d{11}$/.test(user.phone))) {
       wx.showModal({
         content: '手机号码有误',
         showCancel: false,
