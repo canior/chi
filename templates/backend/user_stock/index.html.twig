@@ -20,12 +20,14 @@
                     <tr>
                         <th>姓名</th>
                         <td>
-                            {{ user.name }}
+                            {{ user.defaultUserAddress ? user.defaultUserAddress.name : '' }}
                         </td>
                     </tr>
                     <tr>
                         <th>电话</th>
-                        <td>{{ user.phone }}</td>
+                        <td>
+                            {{ user.defaultUserAddress ? user.defaultUserAddress.phone : '' }}
+                        </td>
                     </tr>
                     <tr class="text-bold">
                         <th>剩余名额</th>

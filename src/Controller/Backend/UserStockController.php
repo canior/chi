@@ -33,7 +33,7 @@ class UserStockController extends BackendController
             $data['data'] = $userRepository->findBy(['name' => $data['form']['name']]);
         }
         else {
-            $data['data'] = $userRepository->findAll();
+            $data['data'] = $userRepository->findAdvancedUserWithRecommandStocks();
         }
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/user_stock/statistic.html.twig', $data);

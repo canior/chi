@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\ShareSource;
 use App\Entity\ShareSourceUser;
 use App\Entity\User;
+use App\Entity\UserLevel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -192,5 +193,23 @@ class UserRepository extends ServiceEntityRepository
         }
 
         return $query->getQuery()->getSingleScalarResult();
+    }
+
+
+    /**
+     * 初始化数据使用
+     * 返回高级会员并且名额>0的用户
+     * @return QueryBuilder
+     */
+    public function findAdvancedUserWithRecommandStocks()
+    {
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('u')
+            ->from(User::class, 'u')
+            ->where('u.userLevel = :userLevel')
+            ->andWhere('u.recommandStock > 0')
+            ->setParameter('userLevel', UserLevel::ADVANCED);
+
+        return $query;
     }
 }

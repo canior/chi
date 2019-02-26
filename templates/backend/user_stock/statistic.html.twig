@@ -32,11 +32,12 @@
                             <thead>
                             <tr>
                                 <th class="col-md-1">用户ID</th>
-                                <th class="col-md-2">姓名</th>
+                                <th class="col-md-3">姓名 (来自地址）</th>
+                                <th class="col-md-2">电话 (来自地址）</th>
                                 <th class="col-md-2">用户等级</th>
-                                <th class="col-md-2">已用名额</th>
-                                <th class="col-md-2">剩余名额</th>
-                                <th class="col-md-2">总名额</th>
+                                <th class="col-md-1">已用名额</th>
+                                <th class="col-md-1">剩余名额</th>
+                                <th class="col-md-1">总名额</th>
                                 <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
@@ -45,7 +46,8 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>{{ item.id }}</td>
-                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.defaultUserAddress ? item.defaultUserAddress.name : '' }}</td>
+                                        <td>{{ item.defaultUserAddress ? item.defaultUserAddress.phone : '' }}</td>
                                         <td>{{ item.userLevelText }}</td>
                                         <td>{{ item.totalUserAccountOrdersAsRecommander}}</td>
                                         <td>{{ item.recommandStock}}</td>
