@@ -896,7 +896,8 @@ class UserController extends BaseController
         $totalShareSourceUsers = $userRepository->findTotalShareUsers($user->getId(), null);
         $totalValidShareSourceUsers = $user->getSubUsers()->count();
 
-        $shareSourceUsers = $userRepository->findShareUsers($user->getId(), null, $page, self::PAGE_LIMIT);
+        /* 临时更改 我的分享列出来全部用户头像， 需要加入下拉更新  */
+        $shareSourceUsers = $userRepository->findShareUsers($user->getId(), null, $page, null);
 
         $shareSourceUserArray = [];
         foreach($shareSourceUsers as $shareSourceUser) {

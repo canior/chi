@@ -548,6 +548,8 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * 有效的下线用户
+     *
      * @return int
      */
     public function getTotalChildren()
@@ -556,7 +558,8 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * 曾经用掉的总名额
+     * 曾经用掉的总名额 + 剩余名额 = 曾经拥有的总名额
+     *
      * @return int
      */
     public function getTotalRecommandStock()
