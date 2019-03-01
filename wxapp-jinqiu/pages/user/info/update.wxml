@@ -8,10 +8,10 @@
     <view>手机号码</view>
     <input placeholder="请输入手机号码" value="{{user.phone}}" bindblur="inputPhone"/>
   </view>
-  <!--<view class="row">
+  <view class="row">
     <view>身份证号码</view>
     <input placeholder="请输入身份证号码" value="{{user.idNum}}" bindblur="inputIdNum"/>
-  </view>-->
+  </view>
   <view class="row">
     <view>微信号</view>
     <input placeholder="请输入微信号" value="{{user.wechat}}" bindblur="inputWechat"/>

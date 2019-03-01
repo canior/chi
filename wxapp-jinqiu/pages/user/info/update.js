@@ -164,7 +164,7 @@ Page({
     }
     if(!(/^\d{11}$/.test(user.phone))) {
       wx.showModal({
-        content: '手机号码有误',
+        content: '手机号码位数不对',
         showCancel: false,
       });
       return false;
@@ -178,7 +178,7 @@ Page({
     }
     if (!(/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(user.idNum))) {
       wx.showModal({
-        content: '身份证号码有误',
+        content: '身份证号码位数不对',
         showCancel: false,
       });
       return false;
