@@ -97,7 +97,7 @@ class UserController extends BaseController
         $user = null;
         $msg = "";
         if ($thirdSession) {
-            $user = $this->getWxUser($thirdSession);templates/api/upgradeUserOrders.html.twig
+            $user = $this->getWxUser($thirdSession);
             if ($nickName != $user->getNickname()) {
                 $user = null;
             }
