@@ -98,6 +98,9 @@ class UserController extends BaseController
         $msg = "";
         if ($thirdSession) {
             $user = $this->getWxUser($thirdSession);
+            if ($nickName != $user->getNickname()) {
+                $user = null;
+            }
         }
 
         if ($user != null) {
