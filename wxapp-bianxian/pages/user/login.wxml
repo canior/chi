@@ -3,7 +3,7 @@
     <view class="banner" bindtap="redirect" data-url="{{bannerMeta.redirectUrl}}">
         <image mode="widthFix" src="{{imgUrlPrefix + '/' + bannerMeta.bannerFileId}}"></image>
     </view>
-    <view class="btn-container">
+    <view class="">
         <!--未授权出弹窗,已授权不再出-->
         <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo" class="btn">
             <image src="/images/wechat.png"></image>
@@ -20,7 +20,7 @@
             <text>手机号登录</text>
         </button>
     </view>-->
-    <view class="btn-container">
+    <view class="">
         <button bindtap="toHome" class="btn mobile">
             <text>返回首页</text>
         </button>
