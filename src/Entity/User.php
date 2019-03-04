@@ -1452,7 +1452,7 @@ class User extends BaseUser implements Dao
      */
     public function getRecommanderName(): ?string
     {
-        return $this->recommanderName;
+        return $this->recommanderName ? $this->recommanderName : '无';
     }
 
     /**
