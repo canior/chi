@@ -290,6 +290,18 @@ class User extends BaseUser implements Dao
      */
     private $userLogs;
 
+    /**
+     * @var text
+     * @ORM\Column(type="string")
+     */
+    private $bank;
+
+    /**
+     * @var text
+     * @ORM\Column(type="string")
+     */
+    private $bankAccountNumber;
+
 
     public function __construct()
     {

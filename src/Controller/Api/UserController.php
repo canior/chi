@@ -96,9 +96,18 @@ class UserController extends BaseController
 
         $user = null;
         $msg = "";
+
         if ($thirdSession) {
             $user = $this->getWxUser($thirdSession);
+            if ($nickName != $user->getNickname()) {
+                $this->getLog()->info('input nickname ' . $nickName . ', db nickname ' . $user->getNickname());
+                $user = null;
+            }
         }
+
+        /*
+        * 判断前端用户的nickname和thirdSession是否与后端匹配
+        */
 
         if ($user != null) {
             $msg = 'login_success';
