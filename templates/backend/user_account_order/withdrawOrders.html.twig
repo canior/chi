@@ -32,14 +32,14 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>{{ item.user }}</td>
-                                        <td>{{ item.bank }}</td>
-                                        <td>{{ item.bankAccountNumber }}</td>
-                                        <td>{{ item.bankAccountName }}</td>
-                                        <td>￥{{ item.withdrawingTotal }}</td>
-                                        <td>￥{{ item.userAccountTotal }}</td>
+                                        <td>{{ item.user.bank }}</td>
+                                        <td>{{ item.user.bankAccountNumber }}</td>
+                                        <td>{{ item.user.bankAccountName }}</td>
+                                        <td>￥{{ item.amount }}</td>
+                                        <td>￥{{ item.user.userAccountTotal }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{ path('user_account_order_index', {'userId': item.id}) }}"
+                                                <a href="{{ path('user_account_order_index', {'userId': item.user.id}) }}"
                                                    title="详情">
                                                     <span class="fa fa-database"></span>
                                                 </a>

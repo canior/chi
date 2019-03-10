@@ -257,7 +257,7 @@ class User extends BaseUser implements Dao
 
     /**
      * @var Product[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Product", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\Product", mappedBy="supplierUser", cascade={"persist"}, orphanRemoval=false, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $supplierProducts;
