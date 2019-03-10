@@ -105,9 +105,9 @@ function __validation(address, wxAddress) {
   }  
   if (wxAddress) {
     //微信直接导入地址手机号已判断首位为1和位数为11
-  } else if (!(/^1[34578]\d{9}$/.test(address.phone))) {
+  } else if (!(/^\d{11}$/.test(address.phone))) {
     wx.showModal({
-      content: '手机号码有误',
+      content: '手机号码位数不对',
       showCancel: false,
     });
     return false;

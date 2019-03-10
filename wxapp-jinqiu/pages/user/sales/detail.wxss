@@ -1,0 +1,92 @@
+/* pages/user/sales/detail.wxss */
+.top {
+  font-size: 24rpx;
+  color: #888;
+  border-top: 1px solid #ececec;
+  padding: 20rpx 40rpx 10rpx;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 40rpx;
+  border-bottom: 1px solid #ececec;
+}.row:last-child {
+  border: none;
+}
+.row .left {
+  font-size: 24rpx;
+  color: #888;
+  display: flex;
+  align-items: center;
+}
+.row .left image {
+  width: 135rpx;
+  height: 135rpx;
+  margin-right: 20rpx;
+}
+.row .right {
+  font-size: 24rpx;
+  display: flex;
+}.row .right.pending {
+  color: #ffc018;
+}.row .right.shipping {
+  color: #353535;
+}.row .right.delivered {
+  color: #353535;
+}.row .right.completed {
+  color: #ff4d42;
+}
+.row .name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+.row button {
+  font-size: 24rpx;
+  background-color: #fff;
+}.row button::after {
+  border-color: #000;
+}
+.address {
+  display: flex;
+  padding: 20rpx 40rpx;
+  border: 1px solid #ececec;
+  margin: 30rpx;
+}
+.address .left image {
+  width: 31rpx;
+  height: 32rpx;
+  margin-right: 10rpx;
+  vertical-align: text-bottom;
+}
+.address .right .name {
+  font-size: 30rpx;
+}
+.address .right .addr {
+  font-size: 24rpx;
+  color: #353535;
+}
+.payment {
+  font-size: 24rpx;
+  color: #888;
+  padding: 0 30rpx;
+}.payment text {
+  color: #353535;
+}.payment text.highlight {
+  color: #ff4d42;
+}
+.bottom {
+  font-size: 30rpx;
+  text-align: center;
+  background-color: #ffdf00;
+  margin: 50rpx 70rpx;
+  padding: 20rpx 0;
+  border-radius: 40rpx;
+}
+.section {
+  padding: 20rpx 40rpx;
+}
+.section .line {
+  display: flex;  
+}

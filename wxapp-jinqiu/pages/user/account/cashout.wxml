@@ -17,9 +17,14 @@
   <view class="split-line"/>
   <view class="">收款人账户信息</view>
   <view class="bank">
-    <view class="line">开户银行: {{user.bank}}</view>
-    <view class="line">收款人账号: {{user.bankAccountNumber}}</view>
-    <view class="line">收款人名称: {{user.bankAccountName}}</view>
+    <view class="left">
+      <view>开户银行: {{user.bank}}</view>
+      <view>收款人账号: {{user.bankAccountNumber}}</view>
+      <view>收款人名称: {{user.bankAccountName}}</view>
+    </view>
+    <view class="right" bindtap="toBankInfo">
+      <view class="arrow-right"/>
+    </view>
   </view>
   <view class="split-line"/>
 </view>

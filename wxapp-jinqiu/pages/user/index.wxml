@@ -47,6 +47,11 @@
       <view class="right"><view class="arrow-right"/></view>
     </view>
     <view class="split-line"/>
+    <view class="row" bindtap="toMySales">
+      <view class="left"><image src="/images/my-order.png"/>我的销售</view>
+      <view class="right"><view class="arrow-right"/></view>
+    </view>    
+    <view class="split-line"/>
     <view class="row" bindtap="toMyCall">
       <view class="left"><image src="/images/my-call.png"/>我的集Call</view>
       <view class="right"><view class="arrow-right"/></view>

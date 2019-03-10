@@ -41,8 +41,24 @@
   font-size: 36rpx;
 }
 .bank {
+  display: flex;
+  align-items: center;
   font-size: 24rpx;
   color: #888;
+}
+.bank .left {
+  width: 100%;
+  line-height: 32rpx;
+}
+.bank .right {
+  width: 50px;
+}
+.arrow-right {
+  border-top: 2px solid #888;
+  border-right: 2px solid #888;
+  width: 20rpx;
+  height: 20rpx;
+  transform: rotate(45deg);
 }
 .bottom {
   font-size: 30rpx;

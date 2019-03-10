@@ -281,6 +281,37 @@ class UserController extends BaseController
         ]);
     }
 
+    /**
+     * 确认发货
+     * @Route("/user/groupUserOrder/ship", name="shipMyGroupUserOrder", methods="POST")
+     * @param Request $request
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @return Response
+     */
+    public function shipGroupUserOrderAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) : Response {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
+        $carrierName = isset($data['carrierName']) ? $data['carrierName'] : null;
+        $trackingNo = isset($data['trackingNo']) ? $data['trackingNo'] : null;
+
+        $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+        $groupUserOrder->setShipping();
+        $groupUserOrder->setCarrierName($carrierName);
+        $groupUserOrder->setTrackingNo($trackingNo);
+        $this->getEntityManager()->persist($groupUserOrder);
+        $this->getEntityManager()->flush();
+
+        /**
+         * @var ProjectTextMetaRepository $projectTextMetaRepository
+         */
+        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
+
+        return $this->responseJson('success', 200, [
+            'groupUserOrder' => $groupUserOrder->getArray(),
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
+        ]);
+    }
 
     /**
      * 确认收货

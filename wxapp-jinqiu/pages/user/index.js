@@ -149,6 +149,18 @@ Page({
     }
   },
 
+  toMySales: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/sales/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },  
+
   // 报到或签到
   createCourseStudent: function (courseId, status) {
     const that = this;

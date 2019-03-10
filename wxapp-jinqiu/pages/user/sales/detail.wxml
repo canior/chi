@@ -1,0 +1,56 @@
+<!--pages/user/sales/detail.wxml-->
+<import src="/pages/tmpl/price.wxml"/>
+<view class="top">
+  <view>下单时间：{{groupUserOrder.createdAt}}</view>
+  <view wx:if="{{groupUserOrder.groupOrderId}}">拼团编号：{{groupUserOrder.groupOrderId}}</view>
+  <view wx:if="{{groupUserOrder.carrierName}}">快递公司：{{groupUserOrder.carrierName}}</view>
+  <view wx:if="{{groupUserOrder.trackingNo}}">快递单号：{{groupUserOrder.trackingNo}}</view>
+</view>
+<view class="split-brand"/>
+
+<view>
+  <view class="row">
+    <view class="left">订单编号：{{groupUserOrder.id}}</view>
+    <view class="right pending">{{groupUserOrder.statusText}}</view>
+  </view>
+  <view class="row">
+    <view class="left">
+      <image src="{{groupUserOrder ? imgUrlPrefix + '/' + groupUserOrder.product.productImages[0].fileId : ''}}"/>
+      <view>
+        <view class="name">{{groupUserOrder.product.title}}</view>
+        <template is="price" data="{{...groupUserOrder}}"/>
+      </view>
+    </view>
+  </view>
+</view>
+<view class="split-brand"/>
+
+<!--手机号码中间四位显示为*号-->
+<wxs module="phone">
+  var encode = function(array) {
+    return array.substring(0, 3) + '****' + array.substring(7);
+  }
+  module.exports.encode = encode;
+</wxs>
+<view class="address">
+  <view class="left"><image src="/images/addr.png"/></view>
+  <view class="right">
+    <view class="name">{{groupUserOrder.address.name}} {{groupUserOrder.address.phone ? phone.encode(groupUserOrder.address.phone) : ''}}</view>
+    <view class="addr">{{groupUserOrder.address.region.fullname}} {{groupUserOrder.address.address}}</view>
+  </view>
+</view>
+
+<view class="payment">
+  <view>支付方式：<text>微信</text></view>
+  <view>商品合计：<text>￥{{groupUserOrder.groupOrderId ? groupUserOrder.product.groupPrice : groupUserOrder.product.price}}</text></view>
+  <view>物流运费：<text>￥{{groupUserOrder.product.freight}}</text></view>
+  <view class="split-line"/>
+  <view>总计付费：<text class="highlight">￥{{groupUserOrder.paymentTotal}}</text></view>
+</view>
+
+<view class="split-brand"/>
+<view class="section">
+  <view class="line">物流商：<input placeholder="请输入物流商名称" value="{{carrierName}}" bindblur="inputCarrierName"/></view>
+  <view class="line">物流号：<input placeholder="请输入物流单号" value="{{trackingNo}}" bindblur="inputTrackingNo"/></view>
+  <view class="bottom" bindtap="deliver">确认发货</view>
+</view>
