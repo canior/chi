@@ -1,4 +1,4 @@
-/* pages/user/info/update.wxss */
+/* pages/user/account/bank.wxss */
 .row {
   border-top: 1px solid #eee;
   padding: 30rpx 0;

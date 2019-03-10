@@ -11,6 +11,7 @@
     "pages/user/info/update",
     "pages/user/account/index",
     "pages/user/account/cashout",
+    "pages/user/account/bank",
     "pages/user/address/index",
     "pages/user/address/edit",    
     "pages/user/upgrade/index",  

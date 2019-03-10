@@ -1,0 +1,20 @@
+<!--pages/user/account/bank.wxml-->
+<view class="container">
+  <view class="row">
+    <view>开户银行</view>
+    <input placeholder="请输入开户银行" value="{{user.bank}}" bindblur="inputBank"/>
+  </view>
+  <view class="row">
+    <view>收款人账号</view>
+    <input placeholder="请输入收款人账号" value="{{user.bankAccountNumber}}" bindblur="inputBankAccountNumber"/>
+  </view>
+  <view class="row">
+    <view>收款人名称</view>
+    <input placeholder="请输入收款人名称" value="{{user.bankAccountName}}" bindblur="inputBankAccountName"/>
+  </view>
+</view>
+
+<view class="bottom" bindtap="save">
+  <view class="btn">保存</view>
+</view>
+

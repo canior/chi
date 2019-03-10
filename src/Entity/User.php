@@ -302,6 +302,12 @@ class User extends BaseUser implements Dao
      */
     private $bankAccountNumber;
 
+    /**
+     * @var text
+     * @ORM\Column(type="string")
+     */
+    private $bankAccountName;
+
 
     public function __construct()
     {
@@ -830,6 +836,9 @@ class User extends BaseUser implements Dao
             'recommanderName' => $this->getRecommanderName(),
             'totalStudents' => $this->getTeacher() ? $this->getTeacher()->getTotalStudentUsers() : 0,
             'totalShares' => $this->getTotalSharedUsers(),
+            'bank' => $this->getBank(),
+            'bankAccountNumber' => $this->getBankAccountNumber(),
+            'bankAccountName' => $this->getBankAccountName(),
         ];
     }
 
@@ -1709,6 +1718,51 @@ class User extends BaseUser implements Dao
             . ' 等级: ' . $this->getUserLevelText();
     }
 
+    /**
+     * @return null|string
+     */
+    public function getBank(): ?string
+    {
+        return $this->bank;
+    }
 
+    /**
+     * @param null|string $bank
+     */
+    public function setBank(?string $bank): void
+    {
+        $this->bank = $bank;
+    }
 
+    /**
+     * @return null|string
+     */
+    public function getBankAccountNumber(): ?string
+    {
+        return $this->bankAccountNumber;
+    }
+
+    /**
+     * @param null|string $bankAccountNumber
+     */
+    public function setBankAccountNumber(?string $bankAccountNumber): void
+    {
+        $this->bankAccountNumber = $bankAccountNumber;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getBankAccountName(): ?string
+    {
+        return $this->bankAccountName;
+    }
+
+    /**
+     * @param null|string $bankAccountName
+     */
+    public function setBankAccountName(?string $bankAccountName): void
+    {
+        $this->bankAccountName = $bankAccountName;
+    }
 }

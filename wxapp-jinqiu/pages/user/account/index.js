@@ -49,9 +49,16 @@ Page({
 
   //提现
   toCashOut: function() {
-    wx.navigateTo({
-      url: '/pages/user/account/cashout',
-    })
+    const user = this.data.user;
+    if (user && user.bank && user.bankAccountNumber && user.bankAccountName) {
+      wx.navigateTo({
+        url: '/pages/user/account/cashout',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/account/bank',
+      })
+    }
   },
 
   /**

@@ -15,6 +15,13 @@
     <input placeholder="输入提现金额" value="{{amount}}" bindblur="inputAmount" type="digit"/>
   </view>
   <view class="split-line"/>
+  <view class="">收款人账户信息</view>
+  <view class="bank">
+    <view class="line">开户银行: {{user.bank}}</view>
+    <view class="line">收款人账号: {{user.bankAccountNumber}}</view>
+    <view class="line">收款人名称: {{user.bankAccountName}}</view>
+  </view>
+  <view class="split-line"/>
 </view>
 
 <button class="bottom" bindtap="submit" disabled="{{btnDisabled}}">提现</button>

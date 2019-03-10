@@ -1143,6 +1143,33 @@ class UserController extends BaseController
     }
 
 
+    /**
+     * 更新提现的银行账户信息
+     * @Route("/user/bank/update", name="updateUserBank", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function updateUserBankAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $bank = isset($data['bank']) ? $data['bank'] : null;
+        $bankAccountNumber = isset($data['bankAccountNumber']) ? $data['bankAccountNumber'] : null;
+        $bankAccountName = isset($data['bankAccountName']) ? $data['bankAccountName'] : null;
+
+        $user = $this->getWxUser($thirdSession);
+
+        $user->setBank($bank);
+        $user->setBankAccountNumber($bankAccountNumber);
+        $user->setBankAccountName($bankAccountName);
+
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, [
+            'user' => $user->getArray(),
+        ]);
+    }
+
 
     /**
      * 注册课程

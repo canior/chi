@@ -1,4 +1,4 @@
-// pages/user/account/cashout.js
+// pages/user/account/bank.js
 const app = getApp()
 Page({
 
@@ -6,10 +6,11 @@ Page({
    * 页面的初始数据
    */
   data: {
-    user: null,
-    userAccount: null,
-    amount: null,
-    btnDisabled: false //防止连击button
+    user: {
+      bank: '',
+      bankAccountNumber: '',
+      bankAccountName: '',
+    },
   },
 
   /**
@@ -18,16 +19,15 @@ Page({
   onLoad: function (options) {
     wx.hideShareMenu()
     app.buriedPoint(options)
-    this.getMyAccount()
+    this.getUserInfo();
+    wx.setNavigationBarTitle({ title: '收款人账户信息' })
   },
 
-  getMyAccount: function () {
+  // 获取个人资料
+  getUserInfo: function () {
     const that = this;
-    wx.showLoading({
-      title: '载入中',
-    })
     wx.request({
-      url: app.globalData.baseUrl + '/user/account/view',
+      url: app.globalData.baseUrl + '/user/personal/view',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
       },
@@ -35,84 +35,95 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
+          const user = res.data.data.user
           that.setData({
-            userAccount: res.data.data
+            ['user.bank']: user.bank,
+            ['user.bankAccountNumber']: user.bankAccountNumber,
+            ['user.bankAccountName']: user.bankAccountName,
           })
         } else {
           console.log('wx.request return error', res.statusCode);
         }
       },
-      fail(e) { },
-      complete(e) {
-        wx.hideLoading()
-      }
+      fail(e) {
+      },
+      complete(e) { }
     })
   },
 
-  inputAmount: function (e) {
+  inputBank: function (e) {
     this.setData({
-      amount: e.detail.value
+      ['user.bank']: e.detail.value
     })
   },
 
-  submit: function (e) {
+  inputBankAccountNumber: function (e) {
+    this.setData({
+      ['user.bankAccountNumber']: e.detail.value
+    })
+  },
+
+  inputBankAccountName: function (e) {
+    this.setData({
+      ['user.bankAccountName']: e.detail.value
+    })
+  },
+
+  // 保存
+  save: function (e) {
     const that = this;
-    const amount = this.data.amount;
-    if (!this.validation(amount)) return;
-    wx.showLoading({
-      title: '等待提交...',
-      mask: true,
-    });
-    that.setData({ btnDisabled: true });    
+    const user = this.data.user;
+    if (!this.validation(user)) return;
     wx.request({
-      url: app.globalData.baseUrl + '/user/account/withdraw',
+      url: app.globalData.baseUrl + '/user/bank/update',
       data: {
-        amount: this.data.amount,
+        bank: user.bank,
+        bankAccountNumber: user.bankAccountNumber,
+        bankAccountName: user.bankAccountName,
         thirdSession: wx.getStorageSync('thirdSession')
       },
       method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          wx.showModal({
-            content: '您的提现申请已提交',
-            showCancel: false,
-            success: function (res) {
-              if (res.confirm) {
-                wx.navigateBack({
-                })
-              }
-            }
-          });
+          app.globalData.user = res.data.data.user;
+          wx.redirectTo({
+            url: '/pages/user/account/cashout',
+          })
         } else {
           console.log('wx.request return error', res.statusCode);
         }
       },
       fail(e) { },
-      complete(e) {
-        wx.hideLoading();
-        that.setData({ btnDisabled: false });        
-      }
+      complete(e) { }
     })
   },
 
-  validation: function (amount) {
-    if (!(/^\d+(\.\d+)?$/.test(amount))) {
+  // 检查输入是否完整
+  validation: function (user) {
+    if (!user.bank) {
       wx.showModal({
-        content: '提现金额有误',
+        content: '请输入开户银行，如招商银行',
         showCancel: false,
       });
       return false;
     }
-    if (amount > this.data.userAccount.balance) {
+    if (!user.bankAccountNumber) {
       wx.showModal({
-        content: '提现金额不能超出账户余额',
+        content: '请输入收款人账号',
+        showCancel: false,
+      });
+      return false;
+    }
+    if (!user.bankAccountName) {
+      wx.showModal({
+        content: '请输入收款人名称',
         showCancel: false,
       });
       return false;
     }
     return true;
-  },
+  },  
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -125,10 +136,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.setData({
-      btnDisabled: false,
-      user: app.globalData.user
-    })
+
   },
 
   /**

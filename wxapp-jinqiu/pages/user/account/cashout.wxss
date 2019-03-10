@@ -40,6 +40,10 @@
 }.line text {
   font-size: 36rpx;
 }
+.bank {
+  font-size: 24rpx;
+  color: #888;
+}
 .bottom {
   font-size: 30rpx;
   text-align: center;

@@ -1,4 +1,4 @@
-<!--pages/user/address/edit.wxml-->
+<!--pages/user/info/update.wxml-->
 <view class="container">
   <view class="row">
     <view>姓名</view>
