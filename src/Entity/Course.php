@@ -531,7 +531,6 @@ class Course implements Dao
             'eligibleUserLevels' => Subject::$subjectUserLevelConstraintArray[$this->getSubject()],
             'shareImageFileId' => $this->getShareImageFile() ? $this->getShareImageFile()->getId() : null,
             'totalStudents' => $this->getTotalRegisteredStudentUsers(),
-            'ownerUser' => $this->getOwnerUser()
         ];
     }
 }
