@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Course;
 use App\Entity\Teacher;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -17,6 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\Subject;
 use App\Entity\Product;
 use App\Form\Type\DropzoneType;
+use App\Entity\User;
 
 class CourseType extends AbstractType
 {
@@ -66,6 +68,20 @@ class CourseType extends AbstractType
                 'class' => Teacher::class,
                 'choice_label' => function (Teacher $teacher) {
                     return $teacher->getName();
+                }
+            ])
+            ->add('ownerUser', EntityType::class, [
+                'label' => '安检后台用户',
+                'attr' => ['class' => 'form-control chosen'],
+                'class' => User::class,
+                'placeholder' => '选择安检权限的后台用户',
+                'choice_label' => function (User $user) {
+                    return $user->getId() . ' ' . $user->getName();
+                },
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('u')
+                        ->where('u.password != :password')
+                        ->setParameter('password', 'IamCustomer');
                 }
             ])
             ->add('shortDescription', TextareaType::class, [

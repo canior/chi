@@ -30,6 +30,7 @@ class CourseStudentController extends BackendController
         $data = [
             'title' => '报到管理',
             'subjects' => Subject::$subjectTextArray,
+            'user' => $this->getUser(),
             'form' => [
                 'subject' => $request->query->get('subject', null),
                 'page' => $request->query->getInt('page', 1)
@@ -41,6 +42,15 @@ class CourseStudentController extends BackendController
         } else {
             $data['data'] = $courseRepository->findAll();
         }
+
+        if ($this->getUser()->isSecurity()) {
+            if($data['form']['subject']) {
+                $data['data'] = $courseRepository->findBy(['subject' => $data['form']['subject'], 'ownerUser' => $this->getUser()]);
+            } else {
+                $data['data'] = $courseRepository->findBy(['ownerUser' => $this->getUser()]);
+            }
+        }
+
 
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/course_student/statistic.html.twig', $data);
@@ -95,6 +105,7 @@ class CourseStudentController extends BackendController
     public function studentTable(CourseStudentRepository $courseStudentRepository, $courseId) {
         $courseStudents = $courseStudentRepository->findBy(['course' => $courseId], ['id' => 'desc']);
         return $this->render('backend/course_student/table.html.twig', [
+            'user' => $this->getUser(),
             'courseStudents' => $courseStudents,
             'totalCourseStudents' => count($courseStudents)
         ]);

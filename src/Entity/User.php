@@ -18,21 +18,27 @@ class User extends BaseUser implements Dao
     const PARENT_EXPIRES_SECONDS = 8640000; //推荐人锁定100天
 
     const ROLE_CUSTOMER = 'ROLE_CUSTOMER';
+    const ROLE_SECURITY = 'ROLE_SECURITY';
     const ROLE_CUSTOMER_SERVICE = 'ROLE_CUSTOMER_SERVICE';
     const ROLE_ADMIN = 'ROLE_ADMIN';
     const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
+
     public static $roleTexts = [
         self::ROLE_CUSTOMER => '客户',
+        self::ROLE_SECURITY => '课程检票',
         self::ROLE_CUSTOMER_SERVICE => '客服',
         self::ROLE_ADMIN => '管理员',
-        self::ROLE_SUPER_ADMIN => '超级管理员'
+        self::ROLE_SUPER_ADMIN => '超级管理员',
+
     ];
 
     public static $adminRoleTexts = [
+        self::ROLE_CUSTOMER => '客户',
+        self::ROLE_SECURITY => '课程检票',
         self::ROLE_CUSTOMER_SERVICE => '客服',
         self::ROLE_ADMIN => '管理员',
-        self::ROLE_SUPER_ADMIN => '超级管理员'
+        self::ROLE_SUPER_ADMIN => '超级管理员',
     ];
 
     use CreatedAtTrait,
@@ -354,7 +360,12 @@ class User extends BaseUser implements Dao
     {
         return $this->hasRole(static::ROLE_SUPER_ADMIN)
             or $this->hasRole(static::ROLE_ADMIN)
-            or $this->hasRole(static::ROLE_CUSTOMER_SERVICE);
+            or $this->hasRole(static::ROLE_CUSTOMER_SERVICE)
+            or $this->hasRole(static::ROLE_SECURITY);
+    }
+
+    public function isSecurity() {
+        return $this->hasRole(self::ROLE_SECURITY);
     }
 
     /**

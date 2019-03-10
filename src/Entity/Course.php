@@ -73,6 +73,13 @@ class Course implements Dao
     private $courseStudents;
 
 
+    /**
+     * @var User|null $ownerUser
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $ownerUser;
+
     public function __construct() {
         $product = new Product();
         $product->setCourse($this);
@@ -476,6 +483,23 @@ class Course implements Dao
         return $this->getProduct()->getShareImageFile();
     }
 
+
+    /**
+     * @return User|null
+     */
+    public function getOwnerUser(): ?User
+    {
+        return $this->ownerUser;
+    }
+
+    /**
+     * @param User|null $ownerUser
+     */
+    public function setOwnerUser(?User $ownerUser): void
+    {
+        $this->ownerUser = $ownerUser;
+    }
+
     /**
      * @return array
      */
@@ -507,6 +531,7 @@ class Course implements Dao
             'eligibleUserLevels' => Subject::$subjectUserLevelConstraintArray[$this->getSubject()],
             'shareImageFileId' => $this->getShareImageFile() ? $this->getShareImageFile()->getId() : null,
             'totalStudents' => $this->getTotalRegisteredStudentUsers(),
+            'ownerUser' => $this->getOwnerUser()
         ];
     }
 }

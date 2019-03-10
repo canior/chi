@@ -9,6 +9,7 @@
 namespace App\Controller\Backend;
 
 use App\Controller\DefaultController;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -91,7 +92,7 @@ class BackendController extends DefaultController
             'name' => '课程中心',
             'icon' => 'fa fa-product-hunt',
             'active' => false,
-            'role' => 'ROLE_ADMIN',
+            'role' => ['ROLE_ADMIN'],
             'subMenus' => [
                 [
                     'path' => [
@@ -125,7 +126,7 @@ class BackendController extends DefaultController
                     'name' => '报到管理',
                     'icon' => 'fa fa-calendar-check-o',
                     'active' => false,
-                    'role' => 'ROLE_ADMIN',
+                    'role' => ['ROLE_ADMIN', 'ROLE_SECURITY'],
                 ],
                 [
                     'path' => [
@@ -217,9 +218,20 @@ class BackendController extends DefaultController
      */
     public function indexAction()
     {
-        $data = ['title' => '仪表盘', 'intro' => ''];
+        if ($this->getUser()->isSecurity()) {
+            return $this->redirectToRoute('course_student_statistic_index');
+        }
 
+        $data = ['title' => '仪表盘', 'intro' => ''];
         return $this->render('backend/index.html.twig', $data);
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return parent::getUser();
     }
 
     /**
