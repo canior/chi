@@ -50,6 +50,16 @@
                                 <td>{{ user.phone }}</td>
                             </tr>
                             <tr>
+                                <th>银行账户</th>
+                                <td>
+                                    {{ user.bank }}
+                                    <br/>
+                                    {{ user.bankAccountNumber }}
+                                    <br/>
+                                    {{ user.bankAccountName }}
+                                </td>
+                            </tr>
+                            <tr>
                                 <th>账户余额</th>
                                 <td>￥{{ user.userAccountTotal }}</td>
                             </tr>

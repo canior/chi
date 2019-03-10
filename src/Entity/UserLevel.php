@@ -15,6 +15,7 @@ class UserLevel
     const ADVANCED = 'ADVANCED';
     const PARTNER = 'PARTNER';
     const PARTNER_TEACHER = 'PARTNER_TEACHER';
+    const SUPPLIER = 'SUPPLIER';
 
     public static $userLevelTextArray = [
         self::VISITOR =>  '普通用户', //'普通用户',

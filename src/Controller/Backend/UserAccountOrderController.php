@@ -141,4 +141,25 @@ class UserAccountOrderController extends BackendController
 
         return $this->redirectToRoute('user_account_order_index');
     }
+
+
+    /**
+     * @Route("/user/account/withdraw", name="user_account_withdraw_orders", methods="GET")
+     * @param Request $request
+     * @param UserAccountOrderRepository $userAccountOrderRepository
+     * @return Response
+     */
+    public function withdrawOrderList(Request $request, UserAccountOrderRepository $userAccountOrderRepository) {
+        $data = [
+            'title' => '提现订单',
+            'form' => [
+                'page' => $request->query->getInt('page', 1)
+            ],
+            'data' => [],
+        ];
+        $data['data'] = $userAccountOrderRepository->findBy(['userAccountOrderType' => UserAccountOrder::WITHDRAW, 'paymentStatus' => UserAccountOrder::UNPAID]);
+
+        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
+        return $this->render('backend/user_account_order/withdrawOrders.html.twig', $data);
+    }
 }

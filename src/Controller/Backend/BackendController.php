@@ -209,6 +209,15 @@ class BackendController extends DefaultController
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
+                [
+                    'path' => [
+                        'user_account_withdraw_orders',
+                    ],
+                    'name' => '提现订单',
+                    'icon' => 'fa fa-money',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
             ]
         ],
         [

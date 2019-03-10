@@ -25,6 +25,16 @@
                         <td>{{ user.phone }}</td>
                     </tr>
                     <tr>
+                        <th>银行账户</th>
+                        <td>
+                            {{ user.bank }}
+                            <br/>
+                            {{ user.bankAccountNumber }}
+                            <br/>
+                            {{ user.bankAccountName }}
+                        </td>
+                    </tr>
+                    <tr>
                         <th>账户余额</th>
                         <td>￥{{ user.userAccountTotal }}</td>
                     </tr>
@@ -52,6 +62,16 @@
                     <tr>
                         <th>电话</th>
                         <td>{{ user.parentUser ? user.parentUser.phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>银行账户</th>
+                        <td>
+                            {{ user.parentUser ? user.parentUser.bank }}
+                            <br/>
+                            {{ user.parentUser ? user.parentUser.bankAccountNumber }}
+                            <br/>
+                            {{ user.parentUser ? user.parentUser.bankAccountName }}
+                        </td>
                     </tr>
                     <tr>
                         <th>账户余额</th>

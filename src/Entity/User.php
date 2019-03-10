@@ -839,6 +839,7 @@ class User extends BaseUser implements Dao
             'bank' => $this->getBank(),
             'bankAccountNumber' => $this->getBankAccountNumber(),
             'bankAccountName' => $this->getBankAccountName(),
+            'isSupplier' => $this->getSupplierProducts()->isEmpty(),
         ];
     }
 
@@ -1079,11 +1080,6 @@ class User extends BaseUser implements Dao
      */
     public function getUserLevel(): ?string
     {
-        //临时修改合伙人bug的修正
-        if ($this->userLevel == UserLevel::ADVANCED and $this->getRecommandStock() > 0) {
-            return UserLevel::PARTNER;
-        }
-
         return $this->userLevel;
     }
 
@@ -1764,5 +1760,9 @@ class User extends BaseUser implements Dao
     public function setBankAccountName(?string $bankAccountName): void
     {
         $this->bankAccountName = $bankAccountName;
+    }
+
+    public function isSupplier() {
+        return UserLevel::SUPPLIER == $this->getUserLevel();
     }
 }
