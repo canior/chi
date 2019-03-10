@@ -1,0 +1,78 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}提现订单{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th class="col-md-3">用户</th>
+                                <th class="col-md-2">银行</th>
+                                <th class="col-md-2">银行账户号</th>
+                                <th class="col-md-2">银行账户名</th>
+                                <th class="col-md-1">提现中数额</th>
+                                <th class="col-md-1">账户余额</th>
+                                <th class="col-md-1 text-center hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if pagination.getTotalItemCount %}
+                                {% for item in pagination %}
+                                    <tr>
+                                        <td>{{ item.user }}</td>
+                                        <td>{{ item.bank }}</td>
+                                        <td>{{ item.bankAccountNumber }}</td>
+                                        <td>{{ item.bankAccountName }}</td>
+                                        <td>￥{{ item.withdrawingTotal }}</td>
+                                        <td>￥{{ item.userAccountTotal }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('user_account_order_index', {'userId': item.id}) }}"
+                                                   title="详情">
+                                                    <span class="fa fa-database"></span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="alert">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <div class="no-margin pull-right">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: 'UserAccountOrder'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include '/backend/includes/delete.js.html.twig' with {title: 'UserAccountOrder'} %}
+{% endblock %}
