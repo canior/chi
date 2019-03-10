@@ -839,7 +839,7 @@ class User extends BaseUser implements Dao
             'bank' => $this->getBank(),
             'bankAccountNumber' => $this->getBankAccountNumber(),
             'bankAccountName' => $this->getBankAccountName(),
-            'isSupplier' => $this->getSupplierProducts()->isEmpty(),
+            'isSupplier' => !$this->getSupplierProducts()->isEmpty(),
         ];
     }
 
