@@ -76,7 +76,7 @@ class CourseType extends AbstractType
                 'class' => User::class,
                 'placeholder' => '选择安检权限的后台用户',
                 'choice_label' => function (User $user) {
-                    return $user->getId() . ' ' . $user->getName();
+                    return $user->getId() . ' ' . $user->getUsername() . ' ' . $user->getName();
                 },
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('u')
