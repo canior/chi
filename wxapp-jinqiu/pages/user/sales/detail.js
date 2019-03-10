@@ -38,6 +38,8 @@ Page({
           console.log(res.data.data)
           that.setData({
             groupUserOrder: res.data.data.groupUserOrder,
+            carrierName: res.data.data.groupUserOrder.carrierName,
+            trackingNo: res.data.data.groupUserOrder.trackingNo
           })
         } else {
           console.log('wx.request return error', res.statusCode);
@@ -73,12 +75,12 @@ Page({
       success: function (res) {
         if (res.confirm) {
           wx.request({
-            url: app.globalData.baseUrl + '/user/groupUserOrder/post',
+            url: app.globalData.baseUrl + '/user/groupUserOrder/ship',
             data: {
               thirdSession: wx.getStorageSync('thirdSession'),
               groupUserOrderId: that.data.groupUserOrder.id,
-              carrierName: this.data.carrierName,
-              trackingNo: this.data.trackingNo
+              carrierName: that.data.carrierName,
+              trackingNo: that.data.trackingNo
             },
             method: 'POST',
             success: (res) => {

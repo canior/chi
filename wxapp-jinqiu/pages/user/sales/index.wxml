@@ -8,7 +8,7 @@
 <view class="split-brand"/>
 
 <block wx:for="{{groupUserOrders}}" wx:key="index">
-  <view class="section" bindtap="toProductDetail" data-id="{{item.product.id}}" wx:if="{{item.isSupplier}}">
+  <view class="section" bindtap="toProductDetail" data-id="{{item.product.id}}" wx:if="{{item.user.isSupplier}}">
     <view class="row">
       <view class="left">订单编号：{{item.id}}</view>
       <view class="right">{{item.createdAt}}</view>
