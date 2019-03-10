@@ -18,7 +18,8 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th class="col-md-3">用户</th>
+                                <th class="col-md-1">提现订单号</th>
+                                <th class="col-md-2">用户</th>
                                 <th class="col-md-2">银行</th>
                                 <th class="col-md-2">银行账户号</th>
                                 <th class="col-md-2">银行账户名</th>
@@ -30,8 +31,17 @@
                             <tbody>
                             {% if pagination.getTotalItemCount %}
                                 {% for item in pagination %}
-                                    <tr>
-                                        <td>{{ item.user }}</td>
+                                    <tr id="order_{{ item.id }}">
+                                        <td>
+                                            <a href="{{ path('user_account_order_edit', {'id': item.id}) }}">
+                                                {{ item.id }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('user_account_order_index', {'userId': item.user.id}) }}">
+                                                {{ item.user }}
+                                            </a>
+                                        </td>
                                         <td>{{ item.user.bank }}</td>
                                         <td>{{ item.user.bankAccountNumber }}</td>
                                         <td>{{ item.user.bankAccountName }}</td>
@@ -39,8 +49,9 @@
                                         <td>￥{{ item.user.userAccountTotal }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{ path('user_account_order_index', {'userId': item.user.id}) }}"
-                                                   title="详情">
+                                                <a class="payBtn" href="javascript:void(0)"
+                                                   data-id="{{ item.id }}"
+                                                   title="确认付钱">
                                                     <span class="fa fa-database"></span>
                                                 </a>
                                             </div>
@@ -69,10 +80,58 @@
     </div>
     <!-- /.row -->
 
-    {% include 'backend/includes/delete.modal.html.twig' with {title: 'UserAccountOrder'} %}
+    <div class="modal fade" id="modal-payment" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="payWithdrawOrder" action="#" method="post">
+                    <input type="hidden" name="_method" value="POST">
+                    <input type="hidden" name="_token" value="">
+                    <input type="hidden" name="userAccountOrderId" value="">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">请输入银行流水单号已确认付钱</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>付款信息</div>
+                        <div class="paymentInfo alert alert-info"></div>
+                        <div class="well">
+                            <label>流水单号</label>
+                            <input class="form-control" type="text" name="memo" value="" required="true">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-danger" data-dismiss="modal">取消</a>
+                        <input class="submit btn btn-primary" type="submit" value="确定"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            $('.payBtn').on('click', function (e) {
+                e.preventDefault();
+                var userAccountOrderId = ($(this).data('id'));
+
+
+                var row = $('#order_' + userAccountOrderId);
+                var bankInfo = row.find("td:nth-child(3)").html()
+                    + ' ' + row.find("td:nth-child(4)").html()
+                    + ' ' + row.find("td:nth-child(5)").html()
+                    + ' 付款 ' + row.find("td:nth-child(6)").html();
+
+                $('#modal-payment').find('.paymentInfo').html(bankInfo);
+
+                $('#modal-payment').find('input[name=userAccountOrderId]').val(userAccountOrderId);
+                $('#modal-payment form').attr("action", $(this).data('url'));
+                $('#modal-payment form input[name="_token"]').val($(this).data('token'));
+                $('#modal-payment').modal('show');
+            });
+        });
+    </script>
+
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-    {% include '/backend/includes/delete.js.html.twig' with {title: 'UserAccountOrder'} %}
-{% endblock %}

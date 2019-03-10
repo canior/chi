@@ -31,7 +31,7 @@ Page({
   getGroupUserOrders: function (status) {
     const that = this;
     wx.request({
-      url: app.globalData.baseUrl + '/user/groupUserOrders/',
+      url: app.globalData.baseUrl + '/user/saleGroupUserOrders/',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
         groupUserOrderStatus: status

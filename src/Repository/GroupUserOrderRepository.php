@@ -97,4 +97,26 @@ class GroupUserOrderRepository extends ServiceEntityRepository
             ->setParameter('productId', $productId)
             ->orderBy('guo.id', 'DESC');
     }
+
+    /**
+     * @param $supplierUserId
+     * @param $groupUserOrderStatuses
+     * @return \Doctrine\ORM\Query
+     */
+    public function findSupplierGroupUserOrdersQuery($supplierUserId, $groupUserOrderStatuses) {
+        $query = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('guo')
+            ->from(GroupUserOrder::class, 'guo')
+            ->innerJoin('guo.product', 'p')
+            ->where('p.supplierUser = :supplierUser')
+            ->setParameter('supplierUser', $supplierUserId);
+
+        if ($groupUserOrderStatuses != null) {
+            $query->andWhere('guo.status in (:groupUserOrderStatuses)')
+                ->setParameter('groupUserOrderStatuses', $groupUserOrderStatuses);
+        }
+
+        return $query->orderBy('guo.id', 'DESC')->getQuery();
+    }
 }

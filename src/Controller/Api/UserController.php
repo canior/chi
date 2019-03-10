@@ -281,6 +281,50 @@ class UserController extends BaseController
         ]);
     }
 
+
+    /**
+     * 我的销售列表
+     *
+     * 全部，待成团， 待发货， 已发货， 待收货
+     *
+     * 全部: status = null, paymentStatus in ['paid', 'refunding', 'refunded']
+     * 待成团: status = 'created', paymentStatus = 'paid'
+     * 待发货: status = 'pending', paymentStatus = 'paid'
+     * 已发货：status = 'shipping' paymentStatus = 'paid'
+     * 已收货: status = 'delivered' paymentStatus = 'paid'
+     *
+     * @Route("/user/saleGroupUserOrders/", name="mySaleGroupUserOrders", methods="POST")
+     * @param Request $request
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @return Response
+     */
+    public function getSaleGroupUserOrdersAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
+
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
+
+        if ($groupUserOrderStatus == null)
+            $groupUserOrderStatus =  array_keys([GroupUserOrder::PENDING, GroupUserOrder::SHIPPING, GroupUserOrder::DELIVERED]);
+
+        /**
+         * @var GroupUserOrder[] $groupUserOrderStatus
+         */
+        $groupUserOrders = $groupUserOrderRepository->findSupplierGroupUserOrdersQuery($thirdSession, $groupUserOrderStatus)->getResult();
+
+        $groupUserOrdersArray = [];
+        foreach ($groupUserOrders as $groupUserOrder) {
+            if (!$groupUserOrder->getProduct()->isCourseProduct()) {
+                $groupUserOrdersArray[] = $groupUserOrder->getArray();
+            }
+        }
+
+        return $this->responseJson('success', 200, [
+            'groupUserOrders' => $groupUserOrdersArray
+        ]);
+    }
+
+
     /**
      * 确认发货
      * @Route("/user/groupUserOrder/ship", name="shipMyGroupUserOrder", methods="POST")

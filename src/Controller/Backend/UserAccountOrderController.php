@@ -144,12 +144,23 @@ class UserAccountOrderController extends BackendController
 
 
     /**
-     * @Route("/user/account/withdraw", name="user_account_withdraw_orders", methods="GET")
+     * @Route("/user/account/withdraw", name="user_account_withdraw_orders", methods="GET|POST")
      * @param Request $request
      * @param UserAccountOrderRepository $userAccountOrderRepository
      * @return Response
      */
     public function withdrawOrderList(Request $request, UserAccountOrderRepository $userAccountOrderRepository) {
+        if ($request->isMethod('POST')) {
+            $userAccountOrderId = $request->get('userAccountOrderId');
+            $memo = $request->get('memo');
+            $userAccountOrder = $userAccountOrderRepository->find($userAccountOrderId);
+            $userAccountOrder->setPaid();
+            $userAccountOrder->setMemo($memo);
+            $this->getEntityManager()->persist($userAccountOrder);
+            $this->getEntityManager()->flush();
+            $this->addFlash('notice', '处理提现成功');
+        }
+
         $data = [
             'title' => '提现订单',
             'form' => [
