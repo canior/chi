@@ -38,8 +38,6 @@ Page({
           console.log(res.data.data)
           that.setData({
             groupUserOrder: res.data.data.groupUserOrder,
-            carrierName: res.data.data.groupUserOrder.carrierName,
-            trackingNo: res.data.data.groupUserOrder.trackingNo
           })
         } else {
           console.log('wx.request return error', res.statusCode);

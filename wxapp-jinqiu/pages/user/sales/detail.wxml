@@ -48,7 +48,7 @@
   <view>总计付费：<text class="highlight">￥{{groupUserOrder.paymentTotal}}</text></view>
 </view>
 
-<block wx:if="{{!carrierName || !trackingNo}}">
+<block wx:if="{{groupUserOrder && (!groupUserOrder.carrierName || !groupUserOrder.trackingNo)}}">
   <view class="split-brand"/>
   <view class="section">
     <view class="line">物流商：<input placeholder="请输入物流商名称" value="{{carrierName}}" bindblur="inputCarrierName"/></view>
