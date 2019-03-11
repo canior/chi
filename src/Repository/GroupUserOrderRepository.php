@@ -43,7 +43,7 @@ class GroupUserOrderRepository extends ServiceEntityRepository
 
             if ($productName) {
                 $literal = $query->expr()->literal("%$productName%");
-                $query->leftJoin('go.product', 'p')
+                $query->leftJoin('guo.product', 'p')
                     ->andWhere($query->expr()->like('p.title', $literal));
             }
         }
