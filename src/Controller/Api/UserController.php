@@ -306,7 +306,7 @@ class UserController extends BaseController
 
         $groupUserOrderStatuses = [];
         if ($groupUserOrderStatus == null) {
-            $groupUserOrderStatuses =  array_keys([GroupUserOrder::PENDING, GroupUserOrder::SHIPPING, GroupUserOrder::DELIVERED]);
+            $groupUserOrderStatuses =  [GroupUserOrder::PENDING, GroupUserOrder::SHIPPING, GroupUserOrder::DELIVERED];
         } else {
             $groupUserOrderStatuses = [$groupUserOrderStatus];
         }
