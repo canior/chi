@@ -302,15 +302,19 @@ class UserController extends BaseController
 
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
-        $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : [];
+        $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
 
-        if (empty($groupUserOrderStatus))
-            $groupUserOrderStatus =  array_keys([GroupUserOrder::PENDING, GroupUserOrder::SHIPPING, GroupUserOrder::DELIVERED]);
+        $groupUserOrderStatuses = [];
+        if ($groupUserOrderStatus == null) {
+            $groupUserOrderStatuses =  array_keys([GroupUserOrder::PENDING, GroupUserOrder::SHIPPING, GroupUserOrder::DELIVERED]);
+        } else {
+            $groupUserOrderStatuses = [$groupUserOrderStatus];
+        }
 
         /**
          * @var GroupUserOrder[] $groupUserOrders
          */
-        $groupUserOrders = $groupUserOrderRepository->findSupplierGroupUserOrdersQuery($thirdSession, $groupUserOrderStatus)->getResult();
+        $groupUserOrders = $groupUserOrderRepository->findSupplierGroupUserOrdersQuery($thirdSession, $groupUserOrderStatuses)->getResult();
 
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
