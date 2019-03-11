@@ -1016,6 +1016,7 @@ class UserController extends BaseController
      * @return Response
      */
     public function viewAdvancedUpgradeOrders(Request $request, UpgradeUserOrderRepository $upgradeUserOrderRepository) {
+        exit;
         $thirdSession = $request->query->get('thirdSession', null);
         if ($thirdSession == null) {
             exit;
