@@ -38,7 +38,7 @@ class GroupUserOrder implements Dao
         self::CREATED => '已创建',
         self::CANCELLED => '已取消',
         self::PENDING => '待发货',
-        self::SHIPPING => '发货中',
+        self::SHIPPING => '已发货',
         self::DELIVERED => '已收货',
         self::RETURNING => '退货中',
         self::RMA_RECEIVED => '收到退货'
