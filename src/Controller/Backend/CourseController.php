@@ -109,10 +109,11 @@ class CourseController extends BackendController
                 $productVideos->add($productVideo);
                 $course->getProduct()->setProductVideos($productVideos);
                 $this->getEntityManager()->persist($course->getProduct());
+                $this->getEntityManager()->flush();
             }
 
             //add share image
-            $shareImageFileId = isset($request->request->get('course')['shareImage']) ? $request->request->get('course')['shareImageFile'] : null;
+            $shareImageFileId = isset($request->request->get('course')['shareImageFile']) ? $request->request->get('course')['shareImageFile'] : null;
             if ($shareImageFileId) {
                 /**
                  * @var File $shareImageFile
