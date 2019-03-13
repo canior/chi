@@ -20,6 +20,7 @@ class GroupUserOrderRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param bool $isCourse
      * @param null $groupOrderId
      * @param null $groupUserOrderId
      * @param null $userId
@@ -34,17 +35,11 @@ class GroupUserOrderRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('guo')
             ->orderBy('guo.id', 'DESC');
 
-        if ($groupOrderId || $productName) {
+        if ($groupOrderId) {
             $query->leftJoin('guo.groupOrder', 'go');
             if ($groupOrderId) {
                 $query->where('go.id = :groupOrderId')
                     ->setParameter('groupOrderId', $groupOrderId);
-            }
-
-            if ($productName) {
-                $literal = $query->expr()->literal("%$productName%");
-                $query->leftJoin('go.product', 'p')
-                    ->andWhere($query->expr()->like('p.title', $literal));
             }
         }
 
@@ -80,6 +75,11 @@ class GroupUserOrderRepository extends ServiceEntityRepository
         } else {
             $query->leftJoin('guo.product', 'p')
                 ->andWhere('p.course is null');
+        }
+
+        if ($productName) {
+            $literal = $query->expr()->literal("%$productName%");
+            $query->andWhere($query->expr()->like('p.title', $literal));
         }
 
         return $query;
