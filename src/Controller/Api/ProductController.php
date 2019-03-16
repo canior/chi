@@ -68,7 +68,7 @@ class ProductController extends BaseController
         /**
          * @var Product[] $products
          */
-        $products = $this->getPaginator()->paginate($productsQuery, $page, self::PAGE_LIMIT);
+        $products = $this->getPaginator()->paginate($productsQuery, $page, 100);
 
         foreach($products as $product) {
             if ($product->getCourse()) {
