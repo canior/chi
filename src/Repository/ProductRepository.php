@@ -21,17 +21,23 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param bool $isCourse
      * @return \Doctrine\ORM\Query
      */
-    public function findActiveProductsQuery()
+    public function findActiveProductsQuery($isCourse = true)
     {
         $query = $this->createQueryBuilder('p')
             ->where('p.status = :status')
             ->setParameter('status', Product::ACTIVE);
 
+        if ($isCourse) {
+            $query->leftJoin('p.course', 'c')
+                ->orderBy('c.endDate', 'DESC');
+        } else {
+            $query->orderBy('p.id', 'DESC');
+        }
 
-        return $query->orderBy('p.id', 'DESC')
-            ->getQuery();
+        return $query->getQuery();
     }
 
     /**
