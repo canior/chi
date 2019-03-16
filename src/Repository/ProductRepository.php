@@ -32,7 +32,7 @@ class ProductRepository extends ServiceEntityRepository
 
         if ($isCourse) {
             $query->leftJoin('p.course', 'c')
-                ->orderBy('c.endDate', 'DESC');
+                ->orderBy('c.startDate', 'ASC');
         } else {
             $query->orderBy('p.id', 'DESC');
         }
