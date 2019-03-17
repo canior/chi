@@ -909,7 +909,9 @@ class Product implements Dao
      */
     public function isHasCoupon(): bool
     {
-        return $this->hasCoupon;
+        if ($this->hasCoupon)
+            return $this->hasCoupon;
+        return false;
     }
 
     /**
