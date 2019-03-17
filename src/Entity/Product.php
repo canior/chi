@@ -184,7 +184,7 @@ class Product implements Dao
 
     /**
      * @var bool
-     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\Column(type="boolean", nullable=false)
      */
     private $hasCoupon;
 

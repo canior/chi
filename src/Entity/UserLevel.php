@@ -19,7 +19,7 @@ class UserLevel
 
     public static $userLevelTextArray = [
         self::VISITOR =>  '普通用户', //'普通用户',
-        self::ADVANCED => '高级用户', //'高级用户',
+        self::ADVANCED => '高级VIP', //'高级用户',
         self::PARTNER => '合伙人',
     ];
 
