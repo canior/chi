@@ -182,6 +182,12 @@ class Product implements Dao
      */
     private $shareImageFile;
 
+    /**
+     * @var bool
+     * @ORM\Column(type="integer", nullable=false)
+     */
+    private $hasCoupon;
+
 
     /**
      * Product constructor.
@@ -208,6 +214,7 @@ class Product implements Dao
         $this->setRegularOrderRewards(0);
         $this->setRegularOrderUserRewards(0);
         $this->setTotalGroupUserOrdersRequired(2);
+        $this->setHasCoupon(false);
     }
 
     public function getSku(): ?string
@@ -895,6 +902,22 @@ class Product implements Dao
             'soldNum' => 1000, //TODO 需要从product statistics里拿
             'reviewsNum' => $this->getTotalActiveReviews(),
         ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHasCoupon(): bool
+    {
+        return $this->hasCoupon;
+    }
+
+    /**
+     * @param bool $hasCoupon
+     */
+    public function setHasCoupon(bool $hasCoupon): void
+    {
+        $this->hasCoupon = $hasCoupon;
     }
 
     /**

@@ -199,6 +199,7 @@ class GroupUserOrderController extends BaseController
 
         $groupUserOrder->setPending();
         $groupUserOrder->setPaid();
+
         $this->getEntityManager()->persist($groupUserOrder);
         $this->getEntityManager()->flush();
 

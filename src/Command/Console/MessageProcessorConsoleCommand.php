@@ -9,6 +9,7 @@
 namespace App\Command\Console;
 
 use App\Entity\CommandMessage;
+use App\Repository\CommandMessageRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use League\Tactician\CommandBus;
 use Psr\Log\LoggerInterface;
@@ -69,6 +70,9 @@ class MessageProcessorConsoleCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        /**
+         * @var CommandMessageRepository $commandMessageRepository
+         */
         $commandMessageRepository = $this->em->getRepository(CommandMessage::class);
 
         $output->writeln("starting message processor ...");

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Command\Notification\NotifyCompletedCouponProductCommand;
 use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\PaymentStatusTrait;
@@ -10,6 +11,7 @@ use App\Entity\Traits\UpdatedAtTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use PHPUnit\TextUI\Command;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\GroupUserOrderRepository")
@@ -389,8 +391,15 @@ class GroupUserOrder implements Dao
 
         //如果是会员升级订单
         if ($this->getUpgradeUserOrder()) {
+            $memo = "购买高级VIP";
+
+            if ($this->getProduct()->isHasCoupon()) { //特级vip
+                $memo = "购买特级VIP";
+                //推送用户coupon
+                $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
+            }
+
             $this->getUpgradeUserOrder()->setApproved();
-            $memo = "购买产品自动升级";
             $this->getUpgradeUserOrder()->addPayment($this->getTotal(), $memo);
         }
 

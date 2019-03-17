@@ -13,6 +13,7 @@ use App\Command\Payment\SendGroupUserOrderRewardCommand;
 use App\Command\Payment\SendOrderRewardCommand;
 use App\Command\Payment\SendOrderRewardsCommand;
 use App\Command\Payment\SendUserRewardsCommand;
+use App\Command\Notification\NotifyCompletedCouponProductCommand;
 use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\StatusTrait;
@@ -286,6 +287,20 @@ class CommandMessage implements Dao
         $qCommand = new NotifyUserRewardsSentCommand($groupUserOrder->getId());
         $commandMessage = new CommandMessage();
         $commandMessage->setMultithread(true);
+        $commandMessage->setCommandClass(get_class($qCommand));
+        $commandMessage->setCommandData($qCommand->serialize());
+        return $commandMessage;
+    }
+
+    /**
+     * 生成用户升级码通知CommandMessage
+     * @param $groupUserOrderId
+     * @return CommandMessage
+     */
+    public static function createNotifyCompletedCouponProductCommand($groupUserOrderId) {
+        $qCommand = new NotifyCompletedCouponProductCommand($groupUserOrderId);
+        $commandMessage = new CommandMessage();
+        $commandMessage->setMultithread(false);
         $commandMessage->setCommandClass(get_class($qCommand));
         $commandMessage->setCommandData($qCommand->serialize());
         return $commandMessage;
