@@ -1,0 +1,5 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+<a class="btn btn-danger" href="{{ path('upgrade_order_coupon_index') }}">{{ '返回升级码管理'|trans }}</a>
+<button class="btn btn-primary">{{ button_label|default('提交') }}</button>
+{{ form_end(form) }}

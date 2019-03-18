@@ -1,0 +1,85 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}升级码管理{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <form class="cmxform" id="myForm">
+                            <div class="col-md-3 form-group">
+                                <label>升级码</label>
+                                <input type="text" name="keyword" class="form-control" value="{{ form.keyword }}"
+                                       placeholder="升级码查询">
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label>&nbsp;</label>
+                                <input class="form-control btn btn-primary" type="submit" value="搜索"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th class="col-md-2">升级码</th>
+                                <th class="col-md-2">购买用户</th>
+                                <th class="col-md-1">购买订单</th>
+                                <th class="col-md-2">使用用户</th>
+                                <th class="col-md-1">升级订单</th>
+                                <th class="col-md-2">创建时间</th>
+                                <th class="col-md-2 text-center hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if pagination.getTotalItemCount %}
+                                {% for item in pagination %}
+                                    <tr>
+
+                                        <td>{{ item.coupon }}</td>
+                                        <td>{{ item.groupUserOrder.user }}</td>
+                                        <td>{{ item.groupUserOrder.id }}</td>
+                                        <td>{{ item.upgradeUser ? item.upgradeUser }}</td>
+                                        <td>{{ item.upgradeUserOrder ? item.upgradeUserOrder.id }}</td>
+                                        <td>{{ item.createdAtFormatted }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('upgrade_order_coupon_edit', {'id': item.id}) }}" title="修改">
+                                                    <span class="fa fa-edit"></span>
+                                                </a>&nbsp;
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="alert">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <div class="no-margin pull-right">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+{% endblock %}
