@@ -11,12 +11,14 @@ namespace App\Controller\Api;
 use App\Entity\Course;
 use App\Entity\CourseOrder;
 use App\Entity\Teacher;
+use App\Entity\UpgradeOrderCoupon;
 use App\Entity\User;
 use App\Entity\UpgradeUserOrder;
 use App\Entity\ShareSource;
 
 use App\Repository\FileRepository;
 use App\Repository\TeacherRepository;
+use App\Repository\UpgradeOrderCouponRepository;
 use App\Repository\UserRepository;
 use App\Service\Wx\WxCommon;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,6 +45,14 @@ class TestController extends BaseController
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
 
+        /**
+         * @var UpgradeOrderCouponRepository $upgradeOrderCouponRepository
+         */
+        $upgradeOrderCouponRepository = $this->getEntityManager()->getRepository(UpgradeOrderCoupon::class);
+        $coupons = $upgradeOrderCouponRepository->createCoupons(5);
+        var_dump($coupons);
+
+        exit;
         $user1 = $this->getEntityManager()->getRepository(User::class)->find(1);
         var_dump($user1->getArray());
         exit;

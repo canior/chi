@@ -29,12 +29,16 @@ class UpgradeOrderCouponRepository extends ServiceEntityRepository
 
         for($i = 0; $i < $num; $i++) {
             $coupon = null;
-            do {
-                $coupon = $this->createRandomLetters(6);
-            } while ($this->findBy(['coupon' => $coupon]) == null);
-        }
 
-        $coupons[] = $coupon;
+            while (true) {
+                $coupon = $this->createRandomLetters(6);
+                if ($this->findBy(['coupon' => $coupon]) == null
+                and !in_array($coupon, $coupons))
+                    break;
+            }
+
+            $coupons[] = $coupon;
+        }
 
         return $coupons;
     }
