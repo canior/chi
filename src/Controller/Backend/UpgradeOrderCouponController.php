@@ -49,8 +49,11 @@ class UpgradeOrderCouponController extends BackendController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($upgradeOrderCoupon->getUpgradeUser()) {
+                $upgradeOrderCoupon->getUpgradeUser()->setUserLevel(UserLevel::ADVANCED);
+                $upgradeOrderCoupon->getUpgradeUser()->setParentUser($upgradeOrderCoupon->getGroupUserOrder()->getUser());
+            }
 
-            $upgradeOrderCoupon->getUpgradeUser()->setUserLevel(UserLevel::ADVANCED);
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');
             return $this->redirectToRoute('upgrade_order_coupon_edit', ['id' => $upgradeOrderCoupon->getId()]);
