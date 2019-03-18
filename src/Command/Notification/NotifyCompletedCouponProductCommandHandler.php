@@ -72,7 +72,7 @@ class NotifyCompletedCouponProductCommandHandler
                 $upgradeOrderCoupon = UpgradeOrderCoupon::factory($groupUserOrder, $coupon, $groupUserOrder->getUpgradeUserOrder());
             } else {
                 $upgradeOrderCoupon = UpgradeOrderCoupon::factory($groupUserOrder, $coupon);
-                $couponsString .= $coupon;
+                $couponsString .=  $coupon . "\n";
             }
             $this->entityManager->persist($upgradeOrderCoupon);
         }
@@ -85,7 +85,7 @@ class NotifyCompletedCouponProductCommandHandler
 
         $data = [
             'keyword1' => ['value' => $groupUserOrderId],
-            'keyword2' => ['value' => '特级VIP'],
+            'keyword2' => ['value' => $groupUserOrder->getProduct()->getTitle()],
             'keyword3' => ['value' => $groupUserOrder->getCreatedAt(true)],
             'keyword4' => ['value' => '高级VIP升级码: ' . $couponsString],
         ];
