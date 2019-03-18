@@ -16,6 +16,7 @@ use App\Repository\UpgradeOrderCouponRepository;
 use App\Service\Wx\WxCommon;
 use Doctrine\Common\Persistence\ObjectManager;
 use Psr\Log\LoggerInterface;
+use App\Entity\GroupUserOrder;
 
 class NotifyCompletedCouponProductCommandHandler
 {
