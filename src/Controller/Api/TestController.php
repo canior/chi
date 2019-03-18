@@ -50,7 +50,10 @@ class TestController extends BaseController
          */
         $upgradeOrderCouponRepository = $this->getEntityManager()->getRepository(UpgradeOrderCoupon::class);
         $coupons = $upgradeOrderCouponRepository->createCoupons(5);
-        var_dump($coupons);
+        for ($i = 0; $i < sizeof($coupons); $i++) {
+            $coupon = $coupons[$i];
+            echo $coupon . '<br/>';
+        }
 
         exit;
         $user1 = $this->getEntityManager()->getRepository(User::class)->find(1);

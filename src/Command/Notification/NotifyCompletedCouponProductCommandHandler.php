@@ -66,7 +66,7 @@ class NotifyCompletedCouponProductCommandHandler
         $upgradeOrderCouponRepository = $this->entityManager->getRepository(UpgradeOrderCoupon::class);
         $coupons = $upgradeOrderCouponRepository->createCoupons(5);
         $couponsString = "";
-        for ($i = 0; $i <= sizeof($coupons); $i++) {
+        for ($i = 0; $i < sizeof($coupons); $i++) {
             $coupon = $coupons[$i];
             if ($i === 0) {
                 $upgradeOrderCoupon = UpgradeOrderCoupon::factory($groupUserOrder, $coupon, $groupUserOrder->getUpgradeUserOrder());
