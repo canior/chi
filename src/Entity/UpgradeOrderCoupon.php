@@ -56,6 +56,11 @@ class UpgradeOrderCoupon
         return $upgradeOrderCoupon;
     }
 
+    public function __construct()
+    {
+        $this->setCreatedAt();
+    }
+
     /**
      * @return string
      */
