@@ -68,8 +68,9 @@ class NotifyCompletedCouponProductCommandHandler
         $couponsString = "";
         for ($i = 0; $i < sizeof($coupons); $i++) {
             $coupon = $coupons[$i];
-            if ($i === 0) {
+            if ($i === 0 and $groupUserOrder->getUpgradeUserOrder()->getOldUserLevel() != $groupUserOrder->getUpgradeUserOrder()->getUserLevel()) {
                 $upgradeOrderCoupon = UpgradeOrderCoupon::factory($groupUserOrder, $coupon, $groupUserOrder->getUpgradeUserOrder());
+                $couponsString .=  $coupon . "(已用)\n";
             } else {
                 $upgradeOrderCoupon = UpgradeOrderCoupon::factory($groupUserOrder, $coupon);
                 $couponsString .=  $coupon . "\n";
@@ -87,7 +88,7 @@ class NotifyCompletedCouponProductCommandHandler
             'keyword1' => ['value' => $groupUserOrderId],
             'keyword2' => ['value' => $groupUserOrder->getProduct()->getTitle()],
             'keyword3' => ['value' => $groupUserOrder->getCreatedAt(true)],
-            'keyword4' => ['value' => '高级VIP升级码: ' . $couponsString],
+            'keyword4' => ['value' => "高级VIP升级码: \n" . $couponsString],
         ];
         $emphasisKeyword = "";
 
