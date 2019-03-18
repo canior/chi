@@ -68,6 +68,11 @@ class ProductType extends AbstractType
                 'data_class' => null,
                 'mapped' => false,
             ])
+            ->add('hasCoupon', ChoiceType::class, [
+                'label' => '是否特级VIP升级码产品',
+                'mapped' => false,
+                'choices' => array_flip(Product::$hasCouponValues)
+            ])
             ->add('status', ChoiceType::class, [
                 'label' => '状态',
                 'mapped' => false,

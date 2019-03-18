@@ -17,7 +17,7 @@ use App\Entity\Traits\CreatedAtTrait;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UpgradeOrderCouponRepository")
  */
-class UpgradeOrderCoupon
+class UpgradeOrderCoupon implements Dao
 {
     use IdTrait;
     use CreatedAtTrait;
@@ -30,14 +30,22 @@ class UpgradeOrderCoupon
 
     /**
      * @var GroupUserOrder $groupUserOrder
-     * @ORM\ManyToOne(targetEntity="App\Entity\GroupUserOrder", inversedBy="upgradeOrderCoupons")
+     * @ORM\ManyToOne(targetEntity="App\Entity\GroupUserOrder")
      * @ORM\JoinColumn(nullable=false)
      */
     private $groupUserOrder;
 
     /**
+     * @var User|null $upgradeUser
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $upgradeUser;
+
+
+    /**
      * @var UpgradeUserOrder|null $upgradeUserOrder
-     * @ORM\ManyToOne(targetEntity="App\Entity\UpgradeUserOrder", inversedBy="upgradeOrderCoupons")
+     * @ORM\ManyToOne(targetEntity="App\Entity\UpgradeUserOrder")
      * @ORM\JoinColumn(nullable=true)
      */
     private $upgradeUserOrder;
@@ -46,13 +54,16 @@ class UpgradeOrderCoupon
      * @param GroupUserOrder $groupUserOrder
      * @param $coupon
      * @param UpgradeUserOrder|null $upgradeUserOrder
+     * @param User $upgradeUser
      * @return UpgradeOrderCoupon
      */
-    public static function factory(GroupUserOrder $groupUserOrder, $coupon, UpgradeUserOrder $upgradeUserOrder = null) {
+    public static function factory(GroupUserOrder $groupUserOrder, $coupon, UpgradeUserOrder $upgradeUserOrder = null, User $upgradeUser = null) {
         $upgradeOrderCoupon = new UpgradeOrderCoupon();
         $upgradeOrderCoupon->setGroupUserOrder($groupUserOrder);
         $upgradeOrderCoupon->setCoupon($coupon);
         $upgradeOrderCoupon->setUpgradeUserOrder($upgradeUserOrder);
+        $upgradeOrderCoupon->setUpgradeUser($upgradeUser);
+
         return $upgradeOrderCoupon;
     }
 
@@ -107,6 +118,22 @@ class UpgradeOrderCoupon
     public function setUpgradeUserOrder(?UpgradeUserOrder $upgradeUserOrder): void
     {
         $this->upgradeUserOrder = $upgradeUserOrder;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getUpgradeUser(): ?User
+    {
+        return $this->upgradeUser;
+    }
+
+    /**
+     * @param User|null $upgradeUser
+     */
+    public function setUpgradeUser(?User $upgradeUser): void
+    {
+        $this->upgradeUser = $upgradeUser;
     }
 
 

@@ -53,15 +53,18 @@ class ProductController extends BackendController
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
         $form->get('status')->setData(array_search($product->getStatusText(), Product::$statuses));
+        $form->get('hasCoupon')->setData(array_search($product->isHasCoupon(), Product::$hasCouponValues));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $status = $request->request->get('product')['status'];
+            $hasCoupon = $request->request->get('product')['hasCoupon'];
             $isMethod = 'is' . ucwords($status);
             if (in_array($status, array_keys(Product::$statuses)) && !$product->$isMethod()) {
                 $setMethod = 'set' . ucwords($status);
                 $product->$setMethod();
             }
+            $product->setHasCoupon($hasCoupon);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($product);
@@ -138,7 +141,7 @@ class ProductController extends BackendController
     {
         $form = $this->createForm(ProductType::class, $product);
         $form->get('status')->setData(array_search($product->getStatusText(), Product::$statuses));
-
+        $form->get('hasCoupon')->setData(array_search($product->isHasCoupon(), Product::$hasCouponValues));
         // init images
         if (!$product->getProductImages()->isEmpty()) {
             $images = [];
@@ -190,6 +193,9 @@ class ProductController extends BackendController
                 $setMethod = 'set' . ucwords($status);
                 $product->$setMethod();
             }
+
+            $hasCoupon = $request->request->get('product')['hasCoupon'];
+            $product->setHasCoupon($hasCoupon);
 
             try {
                 $images = isset($request->request->get('product')['images']) ? $request->request->get('product')['images'] : [];

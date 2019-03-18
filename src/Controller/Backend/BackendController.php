@@ -84,6 +84,15 @@ class BackendController extends DefaultController
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
+                [
+                    'path' => [
+                        'upgrade_order_coupon_index',
+                    ],
+                    'name' => '升级码管理',
+                    'icon' => 'fa fa-barcode',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
             ]
         ],
         [

@@ -24,6 +24,11 @@ class Product implements Dao
         self::INACTIVE => '未发布'
     ];
 
+    public static $hasCouponValues = [
+        true => '是',
+        false => '否'
+    ];
+
     use IdTrait,
         StatusTrait,
         CreatedAtTrait,
