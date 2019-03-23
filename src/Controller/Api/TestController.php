@@ -45,18 +45,18 @@ class TestController extends BaseController
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
 
-        /**
-         * @var UpgradeOrderCouponRepository $upgradeOrderCouponRepository
-         */
-        $upgradeOrderCouponRepository = $this->getEntityManager()->getRepository(UpgradeOrderCoupon::class);
-        $coupons = $upgradeOrderCouponRepository->createCoupons(5);
-        for ($i = 0; $i < sizeof($coupons); $i++) {
-            $coupon = $coupons[$i];
-            echo $coupon . '<br/>';
-        }
-
-        exit;
-        $user1 = $this->getEntityManager()->getRepository(User::class)->find(1);
+//        /**
+//         * @var UpgradeOrderCouponRepository $upgradeOrderCouponRepository
+//         */
+//        $upgradeOrderCouponRepository = $this->getEntityManager()->getRepository(UpgradeOrderCoupon::class);
+//        $coupons = $upgradeOrderCouponRepository->createCoupons(5);
+//        for ($i = 0; $i < sizeof($coupons); $i++) {
+//            $coupon = $coupons[$i];
+//            echo $coupon . '<br/>';
+//        }
+//
+//        exit;
+        $user1 = $this->getEntityManager()->getRepository(User::class)->find(7);
         var_dump($user1->getArray());
         exit;
         $wxCommon = new WxCommon($this->getLog());
