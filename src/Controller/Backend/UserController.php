@@ -98,7 +98,6 @@ class UserController extends BackendController
         $verifyPartnerTeacherForm->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $user->setUserLevel($form->get('userLevel')->getData());
             $this->getEntityManager()->persist($user);
             $this->getDoctrine()->getManager()->flush();
@@ -111,6 +110,17 @@ class UserController extends BackendController
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');
             return $this->redirectToRoute('user_personal_edit', ['id' => $user->getId()]);
+        }
+        if ($request->isMethod('POST')) {
+            $post = $request->request->all();
+            if (isset($post['recommanderId'])) {
+                $parentUser = $post['recommanderId'] ? $this->getEntityManager()->getRepository(User::class)->find($post['recommanderId']) : null;
+                $user->setParentUser($parentUser);
+                $this->getEntityManager()->persist($user);
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash('notice', '修改成功');
+                return $this->redirectToRoute('user_personal_edit', ['id' => $user->getId()]);
+            }
         }
 
         if ($verifyPartnerTeacherForm->isSubmitted() && $verifyPartnerTeacherForm->isValid()) {
@@ -259,5 +269,31 @@ class UserController extends BackendController
         }
 
         return $this->redirectToRoute('user_index');
+    }
+
+    /**
+     * @Route("/user/select", name="user_select")
+     * @param UserRepository $userRepository
+     * @param Request $request
+     * @return Response
+     */
+    public function selectAction(UserRepository $userRepository, Request $request): Response
+    {
+        $data = [
+            'form' => [
+                'userId' => $request->query->getInt('userId', null),
+                'username' => $request->query->get('username', null),
+                'userLevel' => $request->query->get('userLevel', null),
+                'role' => $request->query->get('role', null),
+                'createdAtStart' => $request->query->get('createdAtStart', null),
+                'createdAtEnd' => $request->query->get('createdAtEnd', null),
+                'page' => $request->query->getInt('page', 1)
+            ],
+            'roles' => User::$roleTexts,
+            'userLevels' => UserLevel::$userLevelTextArray,
+        ];
+        $data['data'] = $userRepository->findUsersQueryBuilder($data['form']['userId'], $data['form']['username'], $data['form']['role'], $data['form']['userLevel'], $data['form']['createdAtStart'], $data['form']['createdAtEnd']);
+        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
+        return $this->render('backend/user/select.html.twig', $data);
     }
 }

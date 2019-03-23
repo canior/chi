@@ -152,4 +152,27 @@
         <!--/.col (right) -->
     </div>
     <!-- /.row -->
+    {% include "backend/user/_form.selectParent.html.twig" %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(function () {
+            var $userModal = $('#userModal');
+            $userModal.on('show.bs.modal', function () {
+                $userModal.find('iframe').attr('src', '{{ path('user_select') }}');
+            });
+            $userModal.find('#btnSelect').on('click', function (e) {
+                e.preventDefault();
+                $userModal.find('iframe').contents().find('input:radio:checked').each(function (i, item) {
+                    var $item = $(item);
+                    $('input[name="recommanderName"]').val($item.data('name'));
+                    $('input[name="recommanderId"]').val($item.val());
+                });
+                $userModal.modal('hide');
+            });
+        });
+    </script>
 {% endblock %}

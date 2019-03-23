@@ -1,4 +1,4 @@
-{{ form_start(verifyParentForm) }}
+{#{ form_start(verifyParentForm) }#}
     <h3 class="box-title">
         推荐人
         {% if user.isRecommanderVerified %}
@@ -11,6 +11,20 @@
              </span>
          {% endif %}
     </h3>
-    {{ form_widget(verifyParentForm) }}
-    <button class="btn btn-primary">{{ button_label|default('提交') }}</button>
-{{ form_end(verifyParentForm) }}
+    {#{ form_widget(verifyParentForm) }#}
+    <form name="verify_parent_user" method="post">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="recommanderName" value="{{ user.parentUser ? user.parentUser : '无' }}" readonly="readonly"/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#userModal">请选择</button>
+                    </span>
+                </div><!-- /input-group -->
+                <input type="text" class="form-control hide" name="recommanderId" value=""/>
+                <hr/>
+            </div>
+        </div>
+        <button class="btn btn-primary">{{ button_label|default('提交') }}</button>
+    </form>
+{#{ form_end(verifyParentForm) }#}

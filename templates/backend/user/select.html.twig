@@ -1,0 +1,91 @@
+{% extends 'backend/frame.base.html.twig' %}
+
+{% block title %}用户管理{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                {#<div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
+                    <a href="{{ path('user_new') }}" type="button" class="btn btn-info pull-right">添加后台用户</a>
+                </div>#}
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <form class="cmxform" id="myForm">
+                            <div class="col-sm-4 form-group">
+                                <label>用户ID</label>
+                                <input type="number" name="userId" class="form-control"
+                                       value="{{ form.userId > 0 ? form.userId : '' }}"
+                                       placeholder="按 用户ID 查询">
+                            </div>
+                            <div class="col-sm-4 form-group">
+                                <label>姓名或昵称</label>
+                                <input type="text" name="username" class="form-control" value="{{ form.username }}"
+                                       placeholder="按姓名或昵称查询">
+                            </div>
+                            <div class="col-sm-4">
+                                <label>&nbsp;</label>
+                                <input class="form-control btn btn-primary" type="submit" value="搜索"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th width="10%"></th>
+                                <th width="10%">用户ID</th>
+                                <th width="10%">昵称</th>
+                                <th width="10%">姓名</th>
+                                <th width="10%">电话</th>
+                                <th width="10%">会员等级</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if pagination.getTotalItemCount %}
+                                <tr>
+                                    <td>
+                                        <label><input type="radio" name="recommander" value="" data-name="无"/></label>
+                                    </td>
+                                    <td colspan="5">无</td>
+                                </tr>
+                                {% for item in pagination %}
+                                    <tr>
+                                        <td>
+                                            <label><input type="radio" name="recommander" value="{{ item.user.id }}" data-name="{{ item.user }}"/></label>
+                                        </td>
+                                        <td>{{ item.user.id }}</td>
+                                        <td>{{ item.user.nickname }}</td>
+                                        <td>{{ item.user.name }}</td>
+                                        <td>{{ item.user.phone }}</td>
+                                        <td>{{ item.user.userLevelText }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="alert">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <div class="no-margin pull-right">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+{% endblock %}
