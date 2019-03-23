@@ -161,6 +161,13 @@ class CourseStudent implements Dao
     }
 
     /**
+     * @return bool
+     */
+    public function isWelcomed() {
+        return self::WELCOME == $this->getStatus();
+    }
+
+    /**
      * @return array
      */
     public function getArray() {

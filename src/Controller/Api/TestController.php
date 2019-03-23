@@ -41,7 +41,10 @@ class TestController extends BaseController
         if ($this->getEnvironment() != 'dev') exit;
         //test code login
 
-
+        $courseRepository = $this->getEntityManager()->getRepository(Course::class);
+        $course = $courseRepository->find(1);
+        $user = null;//$this->getEntityManager()->getRepository(User::class)->find(1);
+        echo $course->isWelcomed($user) ? 'true' : 'false';
 
         exit;
         /**

@@ -19,7 +19,7 @@
                     <td>{{ item.createdAtFormatted }}</td>
                     <td>{{ item.studentUser }}</td>
                     <td>{{ item.studentUser.parentUser ?  item.studentUser.parentUser }}</td>
-                    <td {% if item.refused %} class="text-red" {% else %} class="text-green"{% endif %}>{{ item.statusText }} </td>
+                    <td {% if item.refused %} class="text-red" {% elseif item.welcomed %} class="text-green" {% endif %}>{{ item.statusText }} </td>
                     <td>{{ item.memo }}</td>
                     <td class="text-center">
                         <div class="btn-group">

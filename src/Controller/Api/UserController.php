@@ -1106,7 +1106,11 @@ class UserController extends BaseController
             $course->refuseStudent($user, $memo);
         } else {
             if ($courseStudentStatus == CourseStudent::WELCOME) {
-                $course->welcomeStudent($user);
+                if (!$course->isWelcomed($user)) {
+                    $course->welcomeStudent($user);
+                } else {
+                    $course->signInStudent($user);
+                }
             } else if ($courseStudentStatus == CourseStudent::SIGNIN) {
                 $course->signInStudent($user);
             }

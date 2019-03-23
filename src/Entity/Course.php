@@ -470,6 +470,19 @@ class Course implements Dao
     }
 
     /**
+     * @param User $studentUser
+     * @return bool true if student has already been welcomed
+     */
+    public function isWelcomed(User $studentUser) {
+        $criteria = Criteria::create();
+        $criteria->where(Criteria::expr()->eq('status', CourseStudent::WELCOME));
+        $criteria->andWhere(Criteria::expr()->eq('studentUser', $studentUser));
+
+        $courseStudents =  $this->courseStudents->matching($criteria);
+        return !$courseStudents->isEmpty();
+    }
+
+    /**
      * @param File|null $shareImageFile
      */
     public function setShareImageFile(?File $shareImageFile) {
