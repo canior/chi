@@ -259,6 +259,10 @@ class UserController extends BaseController
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
         $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
+        /**
+         * product, onlineCourse, offlineCourse
+         */
+        $productType = isset($data['productType']) ? $data['productType'] : false;
 
         $user = $this->getWxUser($thirdSession);
 
@@ -271,9 +275,16 @@ class UserController extends BaseController
 
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
-            if (!$groupUserOrder->getProduct()->isCourseProduct()) {
+            $product = $groupUserOrder->getProduct();
+
+            if ($productType == 'product' and !$product->isCourseProduct()) {
+                $groupUserOrdersArray[] = $groupUserOrder->getArray();
+            } else if ($productType == 'onlineCourse' and $product->isCourseProduct() and $product->getCourse()->isOnline()) {
+                $groupUserOrdersArray[] = $groupUserOrder->getArray();
+            } else if ($productType == 'offlineCourse' and $product->isCourseProduct() and !$product->getCourse()->isOnline()) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
             }
+
         }
 
         return $this->responseJson('success', 200, [
@@ -1316,36 +1327,7 @@ class UserController extends BaseController
     }
 
     /**
-     * 注册过的活动列表
-     * @Route("/user/offlineCourses", name="listUserOfflineCourses", methods="POST")
-     * @param Request $request
-     * @param UserRepository $userRepository
-     * @param GroupOrderRepository $groupOrderRepository
-     * @return Response
-     */
-    public function listOfflineCoursesAction(Request $request, UserRepository $userRepository, GroupOrderRepository $groupOrderRepository) {
-        $data = json_decode($request->getContent(), true);
-        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
-        $page = isset($data['page']) ? $data['page'] : 1;
-
-
-        $courseArray = [];
-        $courseStudentsQuery = $userRepository->findCourseStudentQuery($thirdSession, null, false);
-        /**
-         * @var CourseStudent[] $courseStudents
-         */
-        $courseStudents = $this->getPaginator()->paginate($courseStudentsQuery, $page, self::PAGE_LIMIT);
-        foreach ($courseStudents as $courseStudent) {
-            $courseArray[] = $courseStudent->getCourse()->getArray();
-        }
-
-        return $this->responseJson('success', 200, [
-            'courses' => $courseArray
-        ]);
-    }
-
-    /**
-     * 讲师交过的活动学生列表
+     * 讲师脚过的活动学生列表
      * @Route("/user/teacher/offlineCourse/student", name="listOfflineTeacherStudents", methods="POST")
      * @param Request $request
      * @return Response
