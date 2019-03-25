@@ -93,6 +93,17 @@ class BackendController extends DefaultController
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
+                [
+                    'path' => [
+                        'teacher_index',
+                        'teacher_new',
+                        'teacher_edit',
+                    ],
+                    'name' => '讲师管理',
+                    'icon' => 'fa fa-user',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
             ]
         ],
         [
@@ -110,17 +121,6 @@ class BackendController extends DefaultController
                     ],
                     'name' => '课程管理',
                     'icon' => 'fa fa-calendar',
-                    'active' => false,
-                    'role' => 'ROLE_ADMIN',
-                ],
-                [
-                    'path' => [
-                        'teacher_index',
-                        'teacher_new',
-                        'teacher_edit',
-                    ],
-                    'name' => '讲师管理',
-                    'icon' => 'fa fa-user',
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
@@ -146,6 +146,48 @@ class BackendController extends DefaultController
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
+            ]
+        ],
+        [
+            'path' => 'course_index',
+            'name' => '活动中心',
+            'icon' => 'fa fa-book',
+            'active' => false,
+            'role' => 'ROLE_ADMIN',
+            'subMenus' => [
+                [
+                    'path' => [
+                        'offline_course_index',
+                        'offline_course_new',
+                        'offline_course_edit',
+                    ],
+                    'name' => '活动管理',
+                    'icon' => 'fa fa-calendar',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+//                [
+//                    'path' => [
+//                        'offline_course_student_statistic_index',
+//                        'offline_course_student_index',
+//                        'offline_course_student_new',
+//                        'offline_course_student_edit',
+//                    ],
+//                    'name' => '报到管理',
+//                    'icon' => 'fa fa-calendar-check-o',
+//                    'active' => false,
+//                    'role' => 'ROLE_ADMIN',
+//                ],
+//                [
+//                    'path' => [
+//                        'offline_course_review_index',
+//                        'offline_course_review_edit',
+//                    ],
+//                    'name' => '活动评价',
+//                    'icon' => 'fa fa-comments',
+//                    'active' => false,
+//                    'role' => 'ROLE_ADMIN',
+//                ],
             ]
         ],
         [

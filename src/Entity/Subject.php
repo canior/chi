@@ -28,31 +28,31 @@ class Subject
      * @var array
      */
     public static $subjectUserLevelConstraintArray = [
-        self::THINKING => [UserLevel::VISITOR, UserLevel::ADVANCED, UserLevel::PARTNER, UserLevel::DISTRIBUTOR],
-        self::TRADING => [UserLevel::VISITOR, UserLevel::ADVANCED, UserLevel::PARTNER, UserLevel::DISTRIBUTOR],
-        self::SYSTEM_1 => [UserLevel::ADVANCED, UserLevel::PARTNER, UserLevel::DISTRIBUTOR],
-        self::SYSTEM_2 => [UserLevel::ADVANCED, UserLevel::PARTNER, UserLevel::DISTRIBUTOR],
+        self::THINKING => [BianxianUserLevel::VISITOR, BianxianUserLevel::THINKING, BianxianUserLevel::ADVANCED, BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR],
+        self::TRADING => [BianxianUserLevel::VISITOR, BianxianUserLevel::THINKING, BianxianUserLevel::ADVANCED, BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR],
+        self::SYSTEM_1 => [BianxianUserLevel::ADVANCED, BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR],
+        self::SYSTEM_2 => [BianxianUserLevel::ADVANCED, BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR],
     ];
 
     /* 课上成交老师的佣金 */
     public static $teacherRewards = [
         self::THINKING => [
-            UserLevel::ADVANCED => 500,
-            UserLevel::PARTNER => 5000,
-            UserLevel::DISTRIBUTOR => 5000
+            BianxianUserLevel::ADVANCED => 500,
+            BianxianUserLevel::PARTNER => 5000,
+            BianxianUserLevel::DISTRIBUTOR => 5000
         ],
         self::TRADING => [
-            UserLevel::ADVANCED => 500,
-            UserLevel::PARTNER => 5000,
-            UserLevel::DISTRIBUTOR => 5000
+            BianxianUserLevel::ADVANCED => 500,
+            BianxianUserLevel::PARTNER => 5000,
+            BianxianUserLevel::DISTRIBUTOR => 5000
         ],
         self::SYSTEM_1 => [
-            UserLevel::PARTNER => 4000,
-            UserLevel::DISTRIBUTOR => 4000
+            BianxianUserLevel::PARTNER => 4000,
+            BianxianUserLevel::DISTRIBUTOR => 4000
         ],
         self::SYSTEM_2 => [
-            UserLevel::PARTNER => 4000,
-            UserLevel::DISTRIBUTOR => 4000
+            BianxianUserLevel::PARTNER => 4000,
+            BianxianUserLevel::DISTRIBUTOR => 4000
         ],
     ];
 
@@ -60,29 +60,29 @@ class Subject
     public static $oldTeacherRewards = [
         self::TRADING => [ //current subject
             self::THINKING => [ //old subject
-                UserLevel::ADVANCED => 500,
-                UserLevel::PARTNER => 3000,
-                UserLevel::DISTRIBUTOR => 3000
+                BianxianUserLevel::ADVANCED => 500,
+                BianxianUserLevel::PARTNER => 3000,
+                BianxianUserLevel::DISTRIBUTOR => 3000
             ]
         ],
         self::SYSTEM_1 => [
             self::THINKING => [
-                UserLevel::PARTNER => 3000,
-                UserLevel::DISTRIBUTOR => 3000
+                BianxianUserLevel::PARTNER => 3000,
+                BianxianUserLevel::DISTRIBUTOR => 3000
             ],
             self::TRADING => [
-                UserLevel::PARTNER => 3000,
-                UserLevel::DISTRIBUTOR => 3000
+                BianxianUserLevel::PARTNER => 3000,
+                BianxianUserLevel::DISTRIBUTOR => 3000
             ],
         ],
         self::SYSTEM_2 => [
             self::THINKING => [
-                UserLevel::PARTNER => 3000,
-                UserLevel::DISTRIBUTOR => 3000
+                BianxianUserLevel::PARTNER => 3000,
+                BianxianUserLevel::DISTRIBUTOR => 3000
             ],
             self::TRADING => [
-                UserLevel::PARTNER => 3000,
-                UserLevel::DISTRIBUTOR => 3000
+                BianxianUserLevel::PARTNER => 3000,
+                BianxianUserLevel::DISTRIBUTOR => 3000
             ],
         ],
     ];

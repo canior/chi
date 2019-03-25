@@ -72,11 +72,27 @@ class Course implements Dao
     private $courseStudents;
 
 
+    /**
+     * @var User|null $ownerUser
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $ownerUser;
+
+    /**
+     * @var boolean
+     * @ORM\Column(type="integer")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $isOnline;
+
+
     public function __construct() {
         $product = new Product();
         $product->setCourse($this);
         $this->setProduct($product);
         $this->courseStudents = new ArrayCollection();
+        $this->setOnline();
     }
 
     /**
@@ -474,6 +490,46 @@ class Course implements Dao
      */
     public function getShareImageFile() {
         return $this->getProduct()->getShareImageFile();
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getOwnerUser(): ?User
+    {
+        return $this->ownerUser;
+    }
+
+    /**
+     * @param User|null $ownerUser
+     */
+    public function setOwnerUser(?User $ownerUser): void
+    {
+        $this->ownerUser = $ownerUser;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOnline(): bool
+    {
+        return $this->isOnline;
+    }
+
+    /**
+     * @param bool $isOnline
+     */
+    public function setIsOnline(bool $isOnline): void
+    {
+        $this->isOnline = $isOnline;
+    }
+
+    public function setOnline() {
+        $this->isOnline = true;
+    }
+
+    public function setOffline() {
+        $this->isOnline = false;
     }
 
     /**

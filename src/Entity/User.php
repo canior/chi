@@ -171,6 +171,12 @@ class User extends BaseUser implements Dao
     private $userLevel;
 
     /**
+     * @var string
+     * @ORM\Column(type="string", length=50, nullable=false)
+     */
+    private $bianxianUserLevel;
+
+    /**
      * @var float
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=false)
      */
@@ -332,6 +338,7 @@ class User extends BaseUser implements Dao
         $this->supplierProducts = new ArrayCollection();
 
         $this->setUserLevel(UserLevel::VISITOR);
+        $this->setBianxianUserLevel(BianxianUserLevel::VISITOR);
         $this->setUserAccountTotal(0);
         $this->setRecommandStock(0);
 
@@ -797,51 +804,6 @@ class User extends BaseUser implements Dao
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getArray(): array
-    {
-        $recommanderArray = [];
-        if ($this->getParentUser() != null) {
-            $recommanderArray = [
-                'id' => $this->getParentUser()->getId(),
-                'avatarUrl' => $this->getParentUser()->getAvatarUrl(),
-                'nickname' => $this->getParentUser()->getNickname(),
-                'name' => $this->getParentUser()->getName(),
-                'phone' => $this->getParentUser()->getPhone(),
-                'company' => $this->getParentUser()->getCompany()
-            ];
-        }
-
-        return [
-            'id' => $this->getId(),
-            'nickname' => $this->getNickname(),
-            'userLevel' => $this->userLevel ? $this->userLevel : null,
-            'userLevelText' => $this->getUserLevel() ? UserLevel::$userLevelTextArray[$this->getUserLevel()] : null,
-            'userAccountTotal' => $this->getUserAccountTotal(),
-            'userRecommandStock' => $this->getRecommandStock(),
-            'avatarUrl' => $this->getAvatarUrl(),
-            'totalRewards' => $this->getTotalRewards(),
-            'defaultAddress' => $this->getDefaultUserAddress() != null ? $this->getDefaultUserAddress()->getArray() : null,
-            'lastLogin' => $this->getLastLogin(),
-            'recommander' => $recommanderArray,
-            'isTeacher' => $this->isTeacher(),
-            'isCompletedPersonalInfo' => $this->isCompletedPersonalInfo(),
-            'name' => $this->getName(),
-            'company' => $this->getCompany(),
-            'phone' => $this->getPhone(),
-            'idNum' => $this->getIdNum(),
-            'wechat' => $this->getWechat(),
-            'recommanderName' => empty($recommanderArray) ? $this->getRecommanderName() : $recommanderArray['name'],
-            'totalStudents' => $this->getTeacher() ? $this->getTeacher()->getTotalStudentUsers() : 0,
-            'totalShares' => $this->getTotalSharedUsers(),
-            'bank' => $this->getBank(),
-            'bankAccountNumber' => $this->getBankAccountNumber(),
-            'bankAccountName' => $this->getBankAccountName(),
-            'isSupplier' => !$this->getSupplierProducts()->isEmpty(),
-        ];
-    }
 
     /**
      * @return null|GroupUserOrder
@@ -1715,6 +1677,22 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * @return string
+     */
+    public function getBianxianUserLevel(): string
+    {
+        return $this->bianxianUserLevel;
+    }
+
+    /**
+     * @param string $bianxianUserLevel
+     */
+    public function setBianxianUserLevel(string $bianxianUserLevel): void
+    {
+        $this->bianxianUserLevel = $bianxianUserLevel;
+    }
+
+    /**
      * @return null|string
      */
     public function getBank(): ?string
@@ -1764,5 +1742,52 @@ class User extends BaseUser implements Dao
 
     public function isSupplier() {
         return UserLevel::SUPPLIER == $this->getUserLevel();
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getArray(): array
+    {
+        $recommanderArray = [];
+        if ($this->getParentUser() != null) {
+            $recommanderArray = [
+                'id' => $this->getParentUser()->getId(),
+                'avatarUrl' => $this->getParentUser()->getAvatarUrl(),
+                'nickname' => $this->getParentUser()->getNickname(),
+                'name' => $this->getParentUser()->getName(),
+                'phone' => $this->getParentUser()->getPhone(),
+                'company' => $this->getParentUser()->getCompany()
+            ];
+        }
+
+        return [
+            'id' => $this->getId(),
+            'nickname' => $this->getNickname(),
+            'userLevel' => $this->userLevel ? $this->userLevel : null,
+            'userLevelText' => $this->getUserLevel() ? UserLevel::$userLevelTextArray[$this->getUserLevel()] : null,
+            'userAccountTotal' => $this->getUserAccountTotal(),
+            'userRecommandStock' => $this->getRecommandStock(),
+            'avatarUrl' => $this->getAvatarUrl(),
+            'totalRewards' => $this->getTotalRewards(),
+            'defaultAddress' => $this->getDefaultUserAddress() != null ? $this->getDefaultUserAddress()->getArray() : null,
+            'lastLogin' => $this->getLastLogin(),
+            'recommander' => $recommanderArray,
+            'isTeacher' => $this->isTeacher(),
+            'isCompletedPersonalInfo' => $this->isCompletedPersonalInfo(),
+            'name' => $this->getName(),
+            'company' => $this->getCompany(),
+            'phone' => $this->getPhone(),
+            'idNum' => $this->getIdNum(),
+            'wechat' => $this->getWechat(),
+            'recommanderName' => empty($recommanderArray) ? $this->getRecommanderName() : $recommanderArray['name'],
+            'totalStudents' => $this->getTeacher() ? $this->getTeacher()->getTotalStudentUsers() : 0,
+            'totalShares' => $this->getTotalSharedUsers(),
+            'bank' => $this->getBank(),
+            'bankAccountNumber' => $this->getBankAccountNumber(),
+            'bankAccountName' => $this->getBankAccountName(),
+            'isSupplier' => !$this->getSupplierProducts()->isEmpty(),
+        ];
     }
 }

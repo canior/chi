@@ -22,15 +22,19 @@ class ProductRepository extends ServiceEntityRepository
 
     /**
      * @param bool $isCourse
+     * @param bool $isOnlineCourse
      * @return \Doctrine\ORM\Query
      */
-    public function findActiveProductsQuery($isCourse = false)
+    public function findActiveProductsQuery($isCourse = false, $isOnlineCourse = true)
     {
         $query = $this->createQueryBuilder('p')
             ->where('p.status = :status')
             ->setParameter('status', Product::ACTIVE);
         if ($isCourse) {
-            $query->andWhere('p.course is not null');
+            $query->join('p.course', 'c')
+                ->andWhere('c.isOnline = :isOnline')
+                ->setParameter('isOnline', $isOnlineCourse);
+
         } else {
             $query->andWhere('p.course is null');
         }
@@ -40,6 +44,7 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param bool $isCourse
      * @param null $keyword
      * @param null $status
      * @return \Doctrine\ORM\QueryBuilder
