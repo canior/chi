@@ -111,9 +111,10 @@ class UserRepository extends ServiceEntityRepository
     /**
      * @param int $userId
      * @param int $courseId
+     * @param bool $isOnline
      * @return QueryBuilder
      */
-    public function findCourseStudentQuery($userId, $courseId = null)
+    public function findCourseStudentQuery($userId, $courseId = null, $isOnline = true)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
             ->select('cs')
@@ -124,9 +125,14 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('userId', $userId);
 
         if ($courseId) {
-                $query->andWhere('c.id = :courseId')
-                ->setParameter('courseId', $courseId);
+            $query->andWhere('c.id = :courseId')
+            ->setParameter('courseId', $courseId);
         }
+        if ($isOnline != null) {
+            $query->andWhere('c.isOnline = :isOnline')
+                ->setParameter('isOnline', $isOnline);
+        }
+
         $query->groupBy('c');
         $query->orderBy('cs.id', 'DESC');
 

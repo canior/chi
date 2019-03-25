@@ -1283,4 +1283,96 @@ class UserController extends BaseController
             'shareSources' => $this->createProductShareSource($user, $product, $url),
         ]);
     }
+
+    ########### 变现 活动 功能 #########
+
+
+    /**
+     * 讲师教过的活动列表
+     * @Route("/user/teacher/offlineCourse", name="listTeacherOfflineCourses", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function listTeacherOfflineCoursesAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        if (!$user->isTeacher()) {
+            return $this->responseJson('invalid', 200, []);
+        }
+
+        $courses = $user->getTeacher()->getCourses();
+        $courseArray = [];
+        foreach ($courses as $course) {
+            if (!$course->isOnline()) {
+                $courseArray[] = $course->getArray();
+            }
+        }
+
+        return $this->responseJson('success', 200, [
+            'courses' => $courseArray
+        ]);
+    }
+
+    /**
+     * 注册过的活动列表
+     * @Route("/user/offlineCourses", name="listUserOfflineCourses", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return Response
+     */
+    public function listOfflineCoursesAction(Request $request, UserRepository $userRepository, GroupOrderRepository $groupOrderRepository) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $page = isset($data['page']) ? $data['page'] : 1;
+
+
+        $courseArray = [];
+        $courseStudentsQuery = $userRepository->findCourseStudentQuery($thirdSession, null, false);
+        /**
+         * @var CourseStudent[] $courseStudents
+         */
+        $courseStudents = $this->getPaginator()->paginate($courseStudentsQuery, $page, self::PAGE_LIMIT);
+        foreach ($courseStudents as $courseStudent) {
+            $courseArray[] = $courseStudent->getCourse()->getArray();
+        }
+
+        return $this->responseJson('success', 200, [
+            'courses' => $courseArray
+        ]);
+    }
+
+    /**
+     * 讲师交过的活动学生列表
+     * @Route("/user/teacher/offlineCourse/student", name="listOfflineTeacherStudents", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function listOfflineTeacherStudentsAction(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $courseId = isset($data['courseId']) ? $data['courseId'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        if (!$user->isTeacher()) {
+            return $this->responseJson('invalid', 200, []);
+        }
+
+        /**
+         * @var Course $course
+         */
+        $course = $this->getEntityManager()->getRepository(Course::class)->find($courseId);
+
+        $studentArray = [];
+        foreach ($course->getStudentUsers() as $studentUser) {
+            $studentArray[] = $studentUser->getArray();
+        }
+
+        return $this->responseJson('success', 200, [
+            'course' => $course->getArray(),
+            'students' => $studentArray
+        ]);
+    }
 }
