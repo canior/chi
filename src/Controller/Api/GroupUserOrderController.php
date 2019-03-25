@@ -139,6 +139,31 @@ class GroupUserOrderController extends BaseController
     }
 
     /**
+     * 普通购买活动订单
+     * @Route("/groupUserOrder/createOfflineCourse", name="createOfflineCourseGroupUserOrder", methods="POST")
+     * @param Request $request
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @param ProductRepository $productRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function createOfflineCourseAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository, ProductRepository $productRepository) {
+        $data = json_decode($request->getContent(), true);
+        $productId =  isset($data['productId']) ? $data['productId'] : null;
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+
+        $user = $this->getWxUser($thirdSession);
+        $product = $productRepository->find($productId);
+
+        $groupUserOrder = GroupUserOrder::factory($user, $product);
+        $this->getEntityManager()->persist($groupUserOrder);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, [
+            'groupUserOrder' => $groupUserOrder->getArray()
+        ]);
+    }
+
+    /**
      * 支付订单
      *
      * @Route("/groupUserOrder/pay", name="payGroupUserOrder", methods="POST")
