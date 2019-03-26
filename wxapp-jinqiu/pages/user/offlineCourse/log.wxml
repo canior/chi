@@ -1,0 +1,58 @@
+<!--pages/user/course/log.wxml-->
+<import src="/pages/tmpl/share.wxml"/>
+<view class="container">
+  <view class="row">
+    <view class="left">订单号：{{course.id}}</view>
+    <view class="right status">{{course.createdAt}}</view>
+  </view>
+  <view class="row">
+    <view class="left">
+      <image mode="widthFix" src="{{imgUrlPrefix+'/'+course.product.courseImages[0].fileId}}"/>
+      <view>
+        <view class="line name">{{course.product.title}}</view>
+        <view class="line desc">科目: {{course.product.subjectText}}</view>
+        <view class="line desc">时间: {{course.product.startDate}} - {{course.product.endDate}}</view>
+        <view class="line desc">地点: {{course.product.address}}</view>
+        <view class="line desc">讲师: {{course.product.teacher.name}} | {{course.product.teacher.title}}</view>
+      </view>
+    </view>
+    <view class="right">
+      <view class="reward">￥{{course.paymentTotal}}</view>
+    </view>
+  </view>
+  <view class="row">
+    <view class="left">{{course.statusText}}</view>
+    <view class="right">
+      <block wx:if="{{course.status == 'delivered'}}">
+        <button bindtap="toUserComment" wx:if="{{course.productReviews.length == 0}}">课程评价</button>
+        <button bindtap="toUserComment" wx:if="{{course.productReviews.length > 0}}">查看评价</button>
+      </block>
+      <button open-type="contact">客服咨询</button>
+    </view>
+  </view>
+</view>
+<view class="split-brand"/>
+
+<block>
+  <!--列表-->
+  <view class="container">
+    <view class="rank">
+      <view class="table">
+      <view class="tr"  wx:key="index">
+          <view class="th">日期</view>
+          <view class="th">状态</view>
+        </view>
+        <view class="tr" wx:for="{{courseStudents}}" wx:key="index">
+          <view class="td">{{item.createdAt}}</view>
+          <view class="td">{{item.statusText}}</view>
+        </view>
+      </view>
+    </view>
+  </view><!--列表-->
+  <view class="split-brand"/>
+</block>
+
+<view class="bottom-container">
+  <view class="bottom" bindtap="wxShowShareModal">分享课程</view>
+</view>
+<template is="share" data="{{...shareData}}"/>

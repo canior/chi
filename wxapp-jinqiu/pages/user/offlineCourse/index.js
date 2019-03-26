@@ -1,4 +1,4 @@
-// pages/user/order/index.js
+// pages/user/offlineCourse/index.js
 const app = getApp()
 Page({
 
@@ -6,15 +6,11 @@ Page({
    * 页面的初始数据
    */
   data: {
-    menu: [
-      { name: '全部', status: null },
-      { name: '待发货', status: 'pending' },
-      { name: '已发货', status: 'shipping' },
-      { name: '已收货', status: 'delivered' }
-    ],
     curStatus: null,
-    groupUserOrders: [],
-    imgUrlPrefix: app.globalData.imgUrlPrefix,    
+    myCourses: [],
+    imgUrlPrefix: app.globalData.imgUrlPrefix,
+    isLogin: null,
+    user: null,
   },
 
   /**
@@ -22,56 +18,53 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
-    app.buriedPoint(options)
+    //app.buriedPoint(options)
     this.setData({
-        curStatus: options.status ? options.status : null
+      curStatus: options.status ? options.status : null
     })
   },
 
-  getGroupUserOrders: function (status) {
+  getMyCourses: function (status) {
     const that = this;
+    wx.showLoading({
+      title: '玩命加载中',
+    })    
     wx.request({
       url: app.globalData.baseUrl + '/user/groupUserOrders/',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
         groupUserOrderStatus: status,
-        prodcutType: 'product'
+        prodcutType: 'offlineCourse'
       },
       method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           that.setData({
-            groupUserOrders: res.data.data.groupUserOrders,
+            myCourses: res.data.data.groupUserOrders,
             curStatus: status
           })
         } else {
           console.log('wx.request return error', res.statusCode);
         }
       },
-      fail(e) {
-      },
-      complete(e) { }
+      fail(e) {},
+      complete(e) { wx.hideLoading() }
     })
   },
 
-  tapMenu: function (e) {
-    this.getGroupUserOrders(e.currentTarget.dataset.status)
-  },
-
-  // 转订单详情
-  toUserOrderDetail: function (e) {
+  // 转课程日志
+  toMyCourseLog: function (e) {
     const orderId = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: '/pages/user/order/detail?id=' + orderId,
+      url: '/pages/user/course/log?id=' + orderId,
     })
   },
 
-  // 转产品详情
-  toProductDetail: function (e) {
-    const productId = e.currentTarget.dataset.id;
-    wx.navigateTo({
-      url: '/pages/product/detail?id=' + productId,
+  // 发现更多课程
+  toHome: function () {
+    wx.switchTab({
+      url: '/pages/course/index',
     })
   },
 
@@ -86,7 +79,17 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.getGroupUserOrders(this.data.curStatus)
+    this.setData({
+      isLogin: app.globalData.isLogin,
+      user: app.globalData.user
+    })
+    if (this.data.isLogin) {
+      this.getMyCourses(this.data.curStatus)
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
   },
 
   /**

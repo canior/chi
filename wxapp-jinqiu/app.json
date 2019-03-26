@@ -30,7 +30,13 @@
     "pages/user/order/detail",
     "pages/user/order/review",
     "pages/user/sales/index",
-    "pages/user/sales/detail"
+    "pages/user/sales/detail",
+    "pages/offlineCourse/index",
+    "pages/offlineCourse/detail",
+    "pages/offlineCourse/pay",
+    "pages/user/offlineCourse/index",
+    "pages/user/offlineCourse/log",
+    "pages/user/offlineCourse/review"
   ],
   "window":{
     "backgroundTextStyle":"light",
@@ -51,6 +57,12 @@
         "iconPath": "images/home.png",
         "selectedIconPath": "images/home-active.png"
       },
+      {
+        "pagePath": "pages/offlineCourse/index",
+        "text": "活动",
+        "iconPath": "images/course.png",
+        "selectedIconPath": "images/course-active.png"
+      },      
       {
         "pagePath": "pages/user/course/index",
         "text": "我的课程",

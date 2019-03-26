@@ -1,0 +1,157 @@
+/* pages/user/course/log.wxss */
+@import "/pages/tmpl/share.wxss";
+.top {
+  font-size: 24rpx;
+  color: #888;
+  border-top: 1px solid #ececec;
+  padding: 20rpx 40rpx 10rpx;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 20rpx;
+  border-bottom: 1px solid #ececec;
+}.row:last-child {
+  border: none;
+}
+.row .left {
+  font-size: 24rpx;
+  color: #888;
+  display: flex;
+  align-items: center;
+}
+.row .left image {
+  width: 150rpx;
+  height: 150rpx;
+  border: 1px solid #e5e5e5;
+  margin-right: 20rpx;
+}
+.row .right {
+  font-size: 24rpx;
+  display: flex;
+}.row .right.status {
+  color: #888;
+}
+.row .right .reward {
+  font-size: 36rpx;
+  color: #ff4d42;
+}
+.row .line {
+  display: flex;
+}
+.row .line.name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+.row .line.desc {
+  font-size: 24rpx;
+  color: #b2b2b2;
+}
+.row button {
+  font-size: 24rpx;
+  background-color: #fff;
+}.row button::after {
+  border-color: #000;
+}.row button:first-child {
+  margin-right: 40rpx;
+}
+.address {
+  display: flex;
+  padding: 20rpx 40rpx;
+  border: 1px solid #ececec;
+  margin: 30rpx;
+}
+.address .left image {
+  width: 31rpx;
+  height: 32rpx;
+  margin-right: 10rpx;
+  vertical-align: text-bottom;
+}
+.address .right .name {
+  font-size: 30rpx;
+}
+.address .right .addr {
+  font-size: 24rpx;
+  color: #353535;
+}
+.payment {
+  font-size: 24rpx;
+  color: #888;
+  padding: 0 30rpx;
+}.payment text {
+  color: #353535;
+}.payment text.highlight {
+  color: #ff4d42;
+}
+.bottom-container {
+  background-color: #fff;
+  height: 80px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;  
+}
+.bottom {
+  font-size: 30rpx;
+  text-align: center;
+  color: #fff;
+  background-color: #e02e24;
+  margin: 40rpx 70rpx;
+  padding: 20rpx 0;
+  border-radius: 40rpx;
+}
+.rank .title {
+  font-size: 30rpx;
+  color: #353535;
+  text-align: center;
+  padding: 20rpx 0;
+}
+.rank .title image {
+  width: 27rpx;
+  height: 31rpx;
+  margin-right: 10rpx;
+  vertical-align: text-top;
+}
+.table {
+  margin-bottom: 80px;
+}
+.table .tr {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid #f5f5f5;  
+}
+.table .th, .table .td {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20rpx 0;
+}.table .th.idx, .table .td.idx {
+  width: 60%;
+}
+.table .th {
+  font-size: 24rpx;
+  color: #888;
+  background-color: #f5f5f5;
+}
+.table .td {
+  font-size: 30rpx;
+  color: #888;
+}
+.table .tr .td.idx image {
+  width: 38rpx;
+  height: 57rpx;
+}
+.table .tr .td.user image {
+  width: 86rpx;
+  height: 86rpx;
+  margin-right: 5rpx;
+  border-radius: 50%;
+}
+.table .tr .td.user text {
+  width: 150rpx;
+}

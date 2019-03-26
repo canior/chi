@@ -1,0 +1,10 @@
+/* pages/offlineCourse/index.wxss */
+.banner {
+  text-align: center;
+}
+.banner swiper {
+  height: 720rpx
+}
+.banner swiper image {
+  width: 100%;
+}
