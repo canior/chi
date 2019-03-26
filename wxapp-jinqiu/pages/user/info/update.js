@@ -127,7 +127,7 @@ Page({
           console.log(res.data.data)
           if (that.data.groupUserOrderId) {
             wx.redirectTo({
-              url: '/pages/course/pay?orderId=' + that.data.groupUserOrderId,
+              url: '/pages/offlineCourse/pay?orderId=' + that.data.groupUserOrderId,
             })
           } else if (that.data.upgrade) {
             wx.redirectTo({
