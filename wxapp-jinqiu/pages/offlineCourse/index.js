@@ -21,7 +21,6 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
-    wx.setNavigationBarTitle({ title: app.globalData.appName })
     this.getCourses(this.data.page)
     app.buriedPoint(options)
   },

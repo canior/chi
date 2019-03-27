@@ -53,18 +53,18 @@ Page({
     })
   },
 
-  // 转课程日志
+  // 转活动日志
   toMyCourseLog: function (e) {
     const orderId = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: '/pages/user/course/log?id=' + orderId,
+      url: '/pages/user/offlineCourse/log?id=' + orderId,
     })
   },
 
-  // 发现更多课程
+  // 发现更多活动
   toHome: function () {
     wx.switchTab({
-      url: '/pages/course/index',
+      url: '/pages/offlineCourse/index',
     })
   },
 

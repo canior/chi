@@ -188,6 +188,21 @@ Page({
     })
   },  
 
+  // 扫一扫
+  toScan: function () {
+    wx.scanCode({
+      onlyFromCamera: true,
+      success: (res) => {
+        console.log(res)
+        var courseId = util.getQueryVariable(res.result, 'courseId');
+        var status = util.getQueryVariable(res.result, 'status');
+        wx.navigateTo({
+          url: '/pages/user/offlineCourse/log?courseId=' + courseId + '&status=' + status,
+        })
+      }
+    });
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

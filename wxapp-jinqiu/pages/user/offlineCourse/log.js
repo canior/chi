@@ -1,4 +1,4 @@
-// pages/user/course/log.js
+// pages/user/offlineCourse/log.js
 const app = getApp()
 const share = require('../../tmpl/share.js');
 const util = require('../../../utils/util.js');
@@ -40,7 +40,7 @@ Page({
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
         groupUserOrderId: id,
-        url: '/pages/course/log?id=' + id
+        url: '/pages/user/offlineCourse/log?id=' + id
       },
       method: 'POST',
       success: (res) => {
@@ -65,7 +65,7 @@ Page({
   // 评价
   toUserComment: function (e) {
     wx.navigateTo({
-      url: '/pages/user/course/review?id=' + this.data.course.id,
+      url: '/pages/user/offlineCourse/review?id=' + this.data.course.id,
     })
   },
 
@@ -105,7 +105,7 @@ Page({
         if (this.data.options.q) {
           // 二维码进入
           const url = decodeURIComponent(this.data.options.q)
-          console.log('/pages/user/course/log: url', url)
+          console.log('/pages/user/offlineCourse/log: url', url)
           courseId = util.getQueryVariable(url, 'courseId');
           status = util.getQueryVariable(url, 'status');
         } else if (this.data.options.courseId && this.data.options.status) {

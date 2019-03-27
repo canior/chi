@@ -11,8 +11,8 @@
   background-color: #ececec;
   padding: 20rpx 0;
 }.nav.active {
-  color:#fff;
-  background-color: #ff5353;
+  color:#000;
+  background-color: #ffdf00;
 }
 .row {
   display: flex;

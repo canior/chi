@@ -29,13 +29,13 @@
     </view>
     <view class="row">
       <view class="left">{{item.statusText}}</view>
-      <view catchtap="toMyCourseLog" data-id="{{item.id}}" class="right btn">课程日志</view>
+      <view catchtap="toMyCourseLog" data-id="{{item.id}}" class="right btn">活动日志</view>
     </view>    
   </view>
   <view class="split-brand"/>
 </block>
 <block wx:if="{{myCourses.length == 0}}">
-  <view class="none">暂时没有注册课程</view>
+  <view class="none">暂时没有参加活动</view>
 </block>
 
-<view class="bottom" bindtap="toHome">发现更多课程</view>
+<view class="bottom" bindtap="toHome">发现更多活动</view>

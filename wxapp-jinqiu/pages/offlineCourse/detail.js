@@ -121,7 +121,7 @@ Page({
   wxToCourseLog: function () {
     if (this.data.isLogin) {
       wx.redirectTo({
-        url: '/pages/user/course/log?id=' + this.data.groupUserOrderId,
+        url: '/pages/user/offlineCourse/log?id=' + this.data.groupUserOrderId,
       })
     } else {
       wx.navigateTo({

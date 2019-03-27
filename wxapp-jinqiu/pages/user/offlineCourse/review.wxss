@@ -1,4 +1,4 @@
-/* pages/user/course/review.wxss */
+/* pages/user/offlineCourse/review.wxss */
 .row {
   display: flex;
   justify-content: space-between;

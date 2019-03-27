@@ -1,4 +1,4 @@
-// pages/user/course/review.js
+// pages/user/offlineCourse/review.js
 const app = getApp()
 Page({
 
@@ -35,7 +35,7 @@ Page({
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
         groupUserOrderId: id,
-        url: '/pages/course/detail?id=' + id        
+        url: '/pages/offlineCourse/detail?id=' + id
       },
       method: 'POST',
       success: (res) => {

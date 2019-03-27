@@ -8,3 +8,31 @@
 .banner swiper image {
   width: 100%;
 }
+.offline-item {
+  padding: 30rpx 0;
+}
+.offline-item .up {
+  display: flex;
+}
+.offline-item .up image {
+  width: 100%;
+  border: 1px solid #e5e5e5;
+}
+.offline-item .down {
+  padding-top: 20rpx;
+}
+.offline-item .down .line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.offline-item .down .line.title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+.offline-item .down .line.desc {
+  font-size: 24rpx;
+  color: #b2b2b2;
+}
