@@ -42,7 +42,7 @@ Page({
       },
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
+          console.log('id='+id, res.data.data)
           var course = res.data.data.product
           course.courseSpecImages.forEach((item) => {
             item.loading = true
@@ -93,7 +93,7 @@ Page({
 
   // 单独购买
   wxCreateOfflineCourse: function (e) {
-    bottom.createOfflineCourse(this, app.globalData.baseUrl + '/groupUserOrder/createOfflineCourse', this.data.course.id)
+    bottom.createOfflineCourse(this, app.globalData.baseUrl + '/groupUserOrder/createOfflineCourse', this.data.course.productId)
   },
   
   // 转学员升级

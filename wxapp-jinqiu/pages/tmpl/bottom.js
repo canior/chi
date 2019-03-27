@@ -146,7 +146,7 @@ function __createOfflineCourse(that, url, productId) {
     success: (res) => {
       wx.hideLoading();
       if (res.statusCode == 200 && res.data.code == 200) {
-        //console.log(res.data.data)
+        console.log(res.data.data)
         const groupUserOrder = res.data.data.groupUserOrder;
         // 判断个人资料是否完整
         if (groupUserOrder.user.isCompletedPersonalInfo) {
