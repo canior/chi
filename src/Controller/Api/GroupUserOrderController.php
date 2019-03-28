@@ -206,7 +206,7 @@ class GroupUserOrderController extends BaseController
             }
         }
 
-        $body = "create order"; //TODO 开团信息要怎么写
+        $body = "变现上商学院报名"; //TODO 开团信息要怎么写
         $wxPaymentApi = new WxPayment($this->getLog());
         $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
         $prePayId = $result['prepay_id'];
