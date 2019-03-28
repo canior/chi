@@ -1,4 +1,4 @@
-// pages/user/account/cashout.js
+// pages/user/upgrade/invite.js
 const app = getApp()
 Page({
 
@@ -7,8 +7,7 @@ Page({
    */
   data: {
     user: null,
-    userAccount: null,
-    amount: null,
+    code: null,
     btnDisabled: false //防止连击button
   },
 
@@ -18,56 +17,27 @@ Page({
   onLoad: function (options) {
     wx.hideShareMenu()
     app.buriedPoint(options)
-    this.getMyAccount()
   },
 
-  getMyAccount: function () {
-    const that = this;
-    wx.showLoading({
-      title: '载入中',
-    })
-    wx.request({
-      url: app.globalData.baseUrl + '/user/account/view',
-      data: {
-        thirdSession: wx.getStorageSync('thirdSession'),
-      },
-      method: 'POST',
-      success: (res) => {
-        if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
-          that.setData({
-            userAccount: res.data.data
-          })
-        } else {
-          console.log('wx.request return error', res.statusCode);
-        }
-      },
-      fail(e) { },
-      complete(e) {
-        wx.hideLoading()
-      }
-    })
-  },
-
-  inputAmount: function (e) {
+  inputCode: function (e) {
     this.setData({
-      amount: e.detail.value
+      code: e.detail.value
     })
   },
 
   submit: function (e) {
     const that = this;
-    const amount = this.data.amount;
-    if (!this.validation(amount)) return;
+    const code = this.data.code;
+    if (!this.validation(code)) return;
     wx.showLoading({
       title: '等待提交...',
       mask: true,
     });
-    that.setData({ btnDisabled: true });    
+    that.setData({ btnDisabled: true });
     wx.request({
-      url: app.globalData.baseUrl + '/user/account/withdraw',
+      url: app.globalData.baseUrl + '/user/...',
       data: {
-        amount: amount,
+        code: code,
         thirdSession: wx.getStorageSync('thirdSession')
       },
       method: 'POST',
@@ -75,7 +45,7 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           wx.showModal({
-            content: '您的提现申请已提交',
+            content: '您输入的邀请码已提交',
             showCancel: false,
             success: function (res) {
               if (res.confirm) {
@@ -91,22 +61,22 @@ Page({
       fail(e) { },
       complete(e) {
         wx.hideLoading();
-        that.setData({ btnDisabled: false });        
+        that.setData({ btnDisabled: false });
       }
     })
   },
 
-  validation: function (amount) {
-    if (!(/^\d+(\.\d+)?$/.test(amount))) {
+  validation: function (code) {
+    if (!code) {
       wx.showModal({
-        content: '提现金额有误',
+        content: '请输入邀请码',
         showCancel: false,
       });
       return false;
     }
-    if (amount > this.data.userAccount.balance) {
+    if (!(/^\d+$/.test(code))) {
       wx.showModal({
-        content: '提现金额不能超出账户余额',
+        content: '邀请码应为数字',
         showCancel: false,
       });
       return false;
@@ -114,10 +84,8 @@ Page({
     return true;
   },
 
-  toBankInfo: function () {
-    wx.navigateTo({
-      url: '/pages/user/account/bank',
-    })
+  formSubmit: function (e) {
+    this.submit();
   },
 
   /**

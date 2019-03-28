@@ -108,6 +108,18 @@ Page({
         url: '/pages/user/login',
       })
     }
+  },
+
+  toInvite: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/upgrade/invite',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
   },  
 
   // 转我的地址

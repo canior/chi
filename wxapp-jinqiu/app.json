@@ -17,6 +17,7 @@
     "pages/user/address/edit",    
     "pages/user/upgrade/index",  
     "pages/user/upgrade/detail", 
+    "pages/user/upgrade/invite",
     "pages/user/referral/index",
     "pages/user/quota/index",
     "pages/user/course/index",
