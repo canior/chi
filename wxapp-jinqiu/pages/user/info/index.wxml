@@ -1,0 +1,14 @@
+<!--pages/user/info/index.wxml-->
+<view class="container">
+  <view class="split-line"/>
+  <view class="row" bindtap="toPersonal">
+    <view class="left"><image src="/images/personal.png"/>个人资料</view>
+    <view class="right"><view class="arrow-right"/></view>
+  </view>
+  <view class="split-line"/>
+  <view class="row" bindtap="toQRCode">
+    <view class="left"><image src="/images/qrcode.png"/>二维码名片</view>
+    <view class="right"><view class="arrow-right"/></view>
+  </view>
+  <view class="split-line"/>
+</view>

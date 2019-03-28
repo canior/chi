@@ -8,6 +8,7 @@
     "pages/group/index",
     "pages/group/pay",
     "pages/user/index",
+    "pages/user/info/index",
     "pages/user/info/update",
     "pages/user/account/index",
     "pages/user/account/cashout",

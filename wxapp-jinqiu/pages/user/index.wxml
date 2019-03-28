@@ -38,6 +38,7 @@
       <view class="right"><view class="arrow-right"/></view>
     </view>
   </block>
+  <view class="split-line"/>
   <view class="row" bindtap="toUpgrade" wx:if="{{user.userLevel == 'VISITOR' || user.userLevel == 'ADVANCED'}}">
     <view class="left"><image src="/images/upgrade.png"/>{{textMeta ? textMeta.text_upgrade_meta.textMeta : ''}}</view>
     <view class="right"><view class="arrow-right"/></view>

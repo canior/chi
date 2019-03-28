@@ -20,11 +20,11 @@ Page({
     app.buriedPoint(options)
   },
 
-  // 转个人资料
+  // 转个人信息
   toUserInfo: function () {
     if (this.data.isLogin) {
       wx.navigateTo({
-        url: '/pages/user/info/update',
+        url: '/pages/user/info/index',
       })
     } else {
       wx.navigateTo({
