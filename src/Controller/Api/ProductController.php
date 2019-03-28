@@ -113,7 +113,7 @@ class ProductController extends BaseController
             // 临时创建一张支付过的订单
             $courseOrder = CourseOrder::factory($user, $product);
             $courseOrder->setRegistered();
-            $this->getEntityManager()->persist($groupUserOrder);
+            $this->getEntityManager()->persist($courseOrder);
             $this->getEntityManager()->flush();
         }
 
