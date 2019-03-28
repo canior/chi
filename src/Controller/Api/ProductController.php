@@ -115,6 +115,7 @@ class ProductController extends BaseController
             $courseOrder->setRegistered();
             $this->getEntityManager()->persist($courseOrder);
             $this->getEntityManager()->flush();
+            $groupUserOrderId = $courseOrder->getId();
         }
 
         return $this->responseJson('success', 200, [
