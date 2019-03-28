@@ -111,9 +111,8 @@ class ProductController extends BaseController
             $groupUserOrderId = $groupUserOrder->getId();
         } else {
             // 临时创建一张支付过的订单
-            $groupUserOrder = GroupUserOrder::factory($user, $product);
-            $groupUserOrder->setDelivered();
-            $groupUserOrder->setPaid();
+            $courseOrder = CourseOrder::factory($user, $product);
+            $courseOrder->setRegistered();
             $this->getEntityManager()->persist($groupUserOrder);
             $this->getEntityManager()->flush();
         }
