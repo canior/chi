@@ -1,0 +1,18 @@
+/* pages/user/upgrade/invite.wxss */
+.line {
+  display: flex;
+  padding: 40rpx 0;
+}.line text {
+  font-size: 36rpx;
+}.line input {
+  border: 1px solid #ddd;
+  padding: 10rpx;
+  width: 100%;
+}
+.bottom {
+  font-size: 30rpx;
+  text-align: center;
+  background-color: #ffdf00;
+  margin: 50rpx 70rpx;
+  border-radius: 40rpx;
+}

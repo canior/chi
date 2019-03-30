@@ -1,0 +1,31 @@
+/* pages/user/info/index.wxss */
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 0;
+}
+.row .left {
+  font-size: 30rpx;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}.row .left image {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 20rpx;
+}
+.row .right {
+  font-size: 24rpx;
+  color: #888;
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx;
+}
+.arrow-right {
+  border-top: 2px solid #888;
+  border-right: 2px solid #888;
+  width: 18rpx;
+  height: 18rpx;
+  transform: rotate(45deg);
+}
