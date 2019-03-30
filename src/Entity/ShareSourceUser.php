@@ -44,71 +44,9 @@ class ShareSourceUser implements Dao
         $shareSourceUser = new ShareSourceUser();
         $shareSourceUser->setShareSource($shareSource);
         $shareSourceUser->setUser($child);
+
+        $shareSourceUser->getUser()->addFromShareSourceUser($shareSourceUser);
         $shareSourceUser->getUser()->getOrCreateTodayUserStatistics()->increaseShareNum(1);
-
-        $shareUser = $shareSource->getUser();
-        $child->info('new share is ' . $shareUser);
-
-        $parentUserTopAdvanced = $shareUser->getTopParentAdvancedUser();
-        $child->info('parent top advanced is ' . $parentUserTopAdvanced);
-
-        $parentUserTopPartner = $shareUser->getTopParentPartnerUser();
-        $child->info('parent top partner is ' . $parentUserTopPartner);
-
-        $oldParentUser = $child->getParentUser();
-        $child->info('old parent is ' . $oldParentUser);
-
-        $parentUser = null;
-
-        if ($shareUser == null) {
-            $child->info("new share is null, do not update parent user");
-            return $shareSourceUser;
-        }
-
-        if ($shareUser == $oldParentUser) {
-            $child->info("new share is the same as old, do not update parent user");
-            return $shareSourceUser;
-        }
-
-        if ($child->isPartnerUser()) {
-            $child->info("already partner user, do not update parent user");
-            return $shareSourceUser;
-        }
-
-        //child 如果是高级用户则分享用户的上层是合伙人
-        else if ($child->isAdvancedUser()) {
-            if (!$parentUserTopPartner) {
-                $child->info("advanced user, share user's top is not partner, do not update parent");
-                return $shareSourceUser;
-            } else {
-                $parentUser = $parentUserTopPartner;
-            }
-        }
-
-        //child 如果是普通用户则分享用户的必须上层是高级或合伙人
-        else if ($child->isVisitorUser()) {
-            if (!$parentUserTopAdvanced and !$parentUserTopPartner) {
-                $child->info("visitor user, share user's top is neither advanced nor partner, do not parent");
-                return $shareSourceUser;
-            } else {
-                $parentUser = $parentUserTopAdvanced ? $parentUserTopAdvanced : $parentUserTopPartner;
-            }
-        }
-
-        if ($oldParentUser) {
-            $child->info('old parent is not null');
-            $oldParentUser->removeSubUser($child);
-            $oldParentUser->info('remove child ' . $child->getId());
-        }
-
-        $memo = "推荐人变更：" . $oldParentUser . "->" . $parentUser;
-
-        $child->info('old parent ' . $oldParentUser . ' changed to new parent ' . $parentUser);
-        $child->setParentUser($parentUser, $shareSource, $memo);
-
-        $parentUser->info('remove child ' . $child);
-
-        $parentUser->addSubUser($child, time() + User::PARENT_EXPIRES_SECONDS);
 
         return $shareSourceUser;
     }

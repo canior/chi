@@ -22,6 +22,7 @@ use App\Entity\ShareSource;
 use App\Entity\ShareSourceUser;
 use App\Entity\Subject;
 use App\Entity\Teacher;
+use App\Entity\UpgradeOrderCoupon;
 use App\Entity\UpgradeUserOrder;
 use App\Entity\User;
 use App\Entity\UserAccountOrder;
@@ -43,6 +44,7 @@ use App\Repository\RegionRepository;
 use App\Repository\ShareSourceRepository;
 use App\Repository\ShareSourceUserRepository;
 use App\Repository\TeacherRepository;
+use App\Repository\UpgradeOrderCouponRepository;
 use App\Repository\UserActivityRepository;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
@@ -1295,66 +1297,45 @@ class UserController extends BaseController
         ]);
     }
 
-    ########### 变现 活动 功能 #########
-
-
     /**
-     * 讲师教过的活动列表
-     * @Route("/user/teacher/offlineCourse", name="listTeacherOfflineCourses", methods="POST")
      * @param Request $request
-     * @return Response
+     * @param UpgradeOrderCouponRepository $upgradeOrderCouponRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function listTeacherOfflineCoursesAction(Request $request) {
+    public function upgradeUserFromCoupon(Request $request, UpgradeOrderCouponRepository $upgradeOrderCouponRepository) {
         $data = json_decode($request->getContent(), true);
         $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $coupon = isset($data['coupon']) ? $data['coupon'] : null;
+
         $user = $this->getWxUser($thirdSession);
-
-        if (!$user->isTeacher()) {
-            return $this->responseJson('invalid', 200, []);
-        }
-
-        $courses = $user->getTeacher()->getCourses();
-        $courseArray = [];
-        foreach ($courses as $course) {
-            if (!$course->isOnline()) {
-                $courseArray[] = $course->getArray();
-            }
-        }
-
-        return $this->responseJson('success', 200, [
-            'courses' => $courseArray
-        ]);
-    }
-
-    /**
-     * 讲师脚过的活动学生列表
-     * @Route("/user/teacher/offlineCourse/student", name="listOfflineTeacherStudents", methods="POST")
-     * @param Request $request
-     * @return Response
-     */
-    public function listOfflineTeacherStudentsAction(Request $request) {
-        $data = json_decode($request->getContent(), true);
-        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
-        $courseId = isset($data['courseId']) ? $data['courseId'] : null;
-        $user = $this->getWxUser($thirdSession);
-
-        if (!$user->isTeacher()) {
-            return $this->responseJson('invalid', 200, []);
-        }
 
         /**
-         * @var Course $course
+         * @var UpgradeOrderCoupon $upgradeOrderCoupon
          */
-        $course = $this->getEntityManager()->getRepository(Course::class)->find($courseId);
+        $upgradeOrderCoupon = $upgradeOrderCouponRepository->findBy(['coupon' => $coupon]);
 
-        $studentArray = [];
-        foreach ($course->getStudentUsers() as $studentUser) {
-            $studentArray[] = $studentUser->getArray();
+        if ($upgradeOrderCoupon->getUpgradeUserOrder() != null) {
+            return $this->responseJson('success', 201, [
+                'coupon' => $coupon,
+                'error' => '升级已经被使用'
+            ]);
         }
 
-        return $this->responseJson('success', 200, [
-            'course' => $course->getArray(),
-            'students' => $studentArray
-        ]);
+        if (UserLevel::$userLevelPriorityArray[$user->getUserLevel()] >= UserLevel::ADVANCED2) {
+            return $this->responseJson('success', 201, [
+                'coupon' => $coupon,
+                'error' => '您已经是更高级别会员，无需使用升级码']);
+        }
+
+        //如果推荐人已被锁定，又输入用了别人的升级码， 给升级码的人认倒霉吧
+        $upgradeUserOrder = $user->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED2, null);
+        $upgradeUserOrder->setApproved();
+        $upgradeOrderCoupon->setUpgradeUser($user);
+        $upgradeOrderCoupon->setUpgradeUserOrder($upgradeUserOrder);
+        $this->getEntityManager()->persist($upgradeOrderCoupon);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, ['coupon' => $coupon]);
     }
+
 }

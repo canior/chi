@@ -23,6 +23,14 @@ class Subject
         self::SYSTEM_2 => '变现系统课II',
     ];
 
+    public static $subjectBianxianUserLevelArray = [
+        self::THINKING => BianxianUserLevel::THINKING,
+        self::TRADING => BianxianUserLevel::THINKING,
+        self::SYSTEM_1 => BianxianUserLevel::ADVANCED,
+        self::SYSTEM_2 => BianxianUserLevel::ADVANCED,
+    ];
+
+
     /**
      * 科目需要特定的会员等级才能上
      * @var array
@@ -34,57 +42,16 @@ class Subject
         self::SYSTEM_2 => [BianxianUserLevel::ADVANCED, BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR],
     ];
 
-    /* 课上成交老师的佣金 */
-    public static $teacherRewards = [
-        self::THINKING => [
-            BianxianUserLevel::ADVANCED => 500,
-            BianxianUserLevel::PARTNER => 5000,
-            BianxianUserLevel::DISTRIBUTOR => 5000
-        ],
-        self::TRADING => [
-            BianxianUserLevel::ADVANCED => 500,
-            BianxianUserLevel::PARTNER => 5000,
-            BianxianUserLevel::DISTRIBUTOR => 5000
-        ],
+    public static $subjectRewards = [
         self::SYSTEM_1 => [
-            BianxianUserLevel::PARTNER => 4000,
-            BianxianUserLevel::DISTRIBUTOR => 4000
+            BianxianUserLevel::PARTNER => 10000,
+            BianxianUserLevel::DISTRIBUTOR => 10000,
+            'THINKING_TEACHER' => 1000,
         ],
         self::SYSTEM_2 => [
-            BianxianUserLevel::PARTNER => 4000,
-            BianxianUserLevel::DISTRIBUTOR => 4000
+            BianxianUserLevel::PARTNER => 10000,
+            BianxianUserLevel::DISTRIBUTOR => 10000,
+            'THINKING_TEACHER' => 1000,
         ],
     ];
-
-    /* 曾经上过课的老师的佣金 */
-    public static $oldTeacherRewards = [
-        self::TRADING => [ //current subject
-            self::THINKING => [ //old subject
-                BianxianUserLevel::ADVANCED => 500,
-                BianxianUserLevel::PARTNER => 3000,
-                BianxianUserLevel::DISTRIBUTOR => 3000
-            ]
-        ],
-        self::SYSTEM_1 => [
-            self::THINKING => [
-                BianxianUserLevel::PARTNER => 3000,
-                BianxianUserLevel::DISTRIBUTOR => 3000
-            ],
-            self::TRADING => [
-                BianxianUserLevel::PARTNER => 3000,
-                BianxianUserLevel::DISTRIBUTOR => 3000
-            ],
-        ],
-        self::SYSTEM_2 => [
-            self::THINKING => [
-                BianxianUserLevel::PARTNER => 3000,
-                BianxianUserLevel::DISTRIBUTOR => 3000
-            ],
-            self::TRADING => [
-                BianxianUserLevel::PARTNER => 3000,
-                BianxianUserLevel::DISTRIBUTOR => 3000
-            ],
-        ],
-    ];
-
 }

@@ -22,23 +22,22 @@ class UserLevel
     const PARTNER_TEACHER = 'PARTNER_TEACHER';
     const SUPPLIER = 'SUPPLIER';
 
-    public static $userLevelTextArray = [
-        self::VISITOR =>  '普通用户', //'普通用户',
-        self::VIP =>  'VIP', //'普通用户',
-        self::ADVANCED => '高级VIP', //'高级用户',
-        self::ADVANCED2 => '荣耀VIP', //'高级用户',
-        self::ADVANCED3 => '特权VIP', //'高级用户',
-        self::PARTNER => '合伙人',
+    public static $userLevelPriorityArray = [
+        self::VISITOR =>  1,
+        self::VIP => 2,
+        self::ADVANCED => 3,
+        self::ADVANCED2 => 4,
+        self::ADVANCED3 => 5,
+        self::PARTNER => 6,
     ];
 
-    /* 学员身份的名额 */
-    public static $userLevelRecommanderStockArray = [
-        self::VISITOR =>  0,
-        self::VIP =>  0,
-        self::ADVANCED => 0,
-        self::ADVANCED2 => 0,
-        self::ADVANCED3 => 0,
-        self::PARTNER => 1000,
+    public static $userLevelTextArray = [
+        self::VISITOR =>  '普通用户', //'普通用户',
+        self::VIP =>  'VIP', //'购买9.9的用户',
+        self::ADVANCED => '高级VIP', //'购买2000的高级用户',
+        self::ADVANCED2 => '荣耀VIP', //'别人送的高级用户',
+        self::ADVANCED3 => '特权VIP', //'购买12000高级用户',
+        self::PARTNER => '合伙人',
     ];
 
     /* 推荐高级用户的佣金 */

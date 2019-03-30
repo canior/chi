@@ -115,15 +115,21 @@ class JinqiuBaseTestCase extends BaseTestCase
 
     /**
      * @param Teacher $teacher
+     * @param null $subject
      * @param bool $isPersist
      * @return Course
      */
-    public function createCourse(Teacher $teacher, $isPersist = false) {
+    public function createCourse(Teacher $teacher, $subject = null, $isPersist = false) {
         $title = $teacher->getName() . ' course';
         $shortDescription = $title;
         $starDate = time();
         $endDate = time() + 3600*24;
         $course = Course::factory($title, $shortDescription, $teacher);
+        $course->setSubject($subject);
+
+        if ($subject != null) {
+            $course->setIsOnline(false);
+        }
 
         if ($isPersist) {
             $this->getEntityManager()->persist($course);
@@ -131,6 +137,7 @@ class JinqiuBaseTestCase extends BaseTestCase
         } else {
             $course->setId(uniqid());
         }
+
 
         return $course;
     }

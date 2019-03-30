@@ -533,6 +533,14 @@ class Course implements Dao
     }
 
     /**
+     * @return bool
+     */
+    public function isSystemSubject() {
+        return Subject::SYSTEM_1 == $this->getSubject()
+            or Subject::SYSTEM_2 == $this->getSubject();
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {
@@ -569,8 +577,9 @@ class Course implements Dao
             'shareImageFileId' => $this->getShareImageFile() ? $this->getShareImageFile()->getId() : null,
             'totalStudents' => $this->getTotalStudentUsers(),
             'isOnline' => $this->isOnline,
-            'eligibleUserLevels' => Subject::$subjectUserLevelConstraintArray[$this->getSubject()],
-
+            'eligibleUserLevels' => Subject::$subjectUserLevelConstraintArray[$this->getSubject()], //for bianxian
+            'subject' => $this->getSubject(),
+            'subjectText' => $this->getSubject() ? Subject::$subjectTextArray[$this->getSubject()] : null,
         ];
     }
 }

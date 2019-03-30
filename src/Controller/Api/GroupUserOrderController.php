@@ -17,6 +17,7 @@ use App\Entity\CourseStudent;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
 use App\Entity\Product;
+use App\Entity\UpgradeUserOrder;
 use App\Entity\User;
 use App\Entity\UserAddress;
 use App\Entity\UserLevel;
@@ -33,6 +34,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\ShareSource;
 use App\Entity\ProjectShareMeta;
+use App\Entity\Subject;
 
 /**
  * @Route("/wxapi")
@@ -113,7 +115,8 @@ class GroupUserOrderController extends BaseController
     }
 
     /**
-     * 普通购买创建用户订单
+     * 金秋的创建订单，需要创建金秋的升级订单
+     * 普通购买产品创建用户订单
      * @Route("/groupUserOrder/create", name="createGroupUserOrder", methods="POST")
      * @param Request $request
      * @param GroupUserOrderRepository $groupUserOrderRepository
@@ -129,7 +132,14 @@ class GroupUserOrderController extends BaseController
         $product = $productRepository->find($productId);
 
         $groupUserOrder = GroupUserOrder::factory($user, $product);
-        $user->createUpgradeUserOrder(UserLevel::ADVANCED, $groupUserOrder);
+
+        $newUserLevel = UserLevel::ADVANCED; //购买2000的产品
+        if ($product->isHasCoupon()) {
+            $newUserLevel = UserLevel::ADVANCED3; //购买12000的产品
+        }
+
+        $user->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, $newUserLevel, $groupUserOrder);
+
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
 
@@ -155,7 +165,12 @@ class GroupUserOrderController extends BaseController
         $product = $productRepository->find($productId);
 
         $groupUserOrder = GroupUserOrder::factory($user, $product);
-        $this->getEntityManager()->persist($groupUserOrder);
+
+        $subject = $product->getCourse()->getSubject();
+        $newUserLevel = Subject::$subjectBianxianUserLevelArray[$subject];
+        $user->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, $newUserLevel, $groupUserOrder);
+
+        $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
@@ -180,7 +195,11 @@ class GroupUserOrderController extends BaseController
         $user = $this->getWxUser($thirdSession);
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
 
-        $body = $groupUserOrder->getProduct()->getTitle() . ': ￥490 + 咨询费: ￥1510';
+        $body = $groupUserOrder->getProduct()->getTitle();
+        if (!$groupUserOrder->getProduct()->isCourseProduct()) {
+            $body .= ': ￥490 + 咨询费: ￥1510';
+        }
+
         $wxPaymentApi = new WxPayment($this->getLog());
         $result = $wxPaymentApi->getPrepayId($user->getWxOpenId(), $groupUserOrder->getId(), $groupUserOrder->getTotal(), $body);
         $prePayId = $result['prepay_id'];

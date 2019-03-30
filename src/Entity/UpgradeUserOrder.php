@@ -32,6 +32,14 @@ class UpgradeUserOrder implements Dao
     const APPROVED = 'approved';
     const REJECTED = 'rejected';
 
+    const JINQIU = 'JINQIU';
+    const BIANXIAN = 'BIANXIAN';
+
+    public static $typeText = [
+        self::JINQIU => '金秋',
+        self::BIANXIAN => '变现'
+    ];
+
 
     public static $statusTexts = [
         self::CREATED => '已创建',
@@ -46,6 +54,12 @@ class UpgradeUserOrder implements Dao
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    private $type;
 
     /**
      * @var User|null $recommanderUser
@@ -129,24 +143,27 @@ class UpgradeUserOrder implements Dao
         $this->upgradeUserOrderPayments = new ArrayCollection();
         $this->userAccountOrders = new ArrayCollection();
         $this->potentialUserAccountOrders = new ArrayCollection();
+        $this->setType(self::JINQIU);
     }
 
     /**
      * UpgradeUserOrder constructor.
+     * @parem string $type
+     * @param $type
      * @param User $user
-     * @param $userLevel
+     * @param $newUserLevel
      * @param GroupUserOrder|null $groupUserOrder
      * @return UpgradeUserOrder
      */
-    public static function factory(User $user, $userLevel, GroupUserOrder $groupUserOrder) {
+    public static function factory($type, User $user, $newUserLevel, ?GroupUserOrder $groupUserOrder) {
         $upgradeUserOrder = new UpgradeUserOrder();
+        $upgradeUserOrder->setType($type);
         $upgradeUserOrder->setUser($user);
         $upgradeUserOrder->setGroupUserOrder($groupUserOrder);
         $upgradeUserOrder->setOldUserLevel($user->getUserLevel());
-        $upgradeUserOrder->setUserLevel($userLevel);
+        $upgradeUserOrder->setUserLevel($newUserLevel);
         $upgradeUserOrder->setTotal($groupUserOrder->getTotal());
         $upgradeUserOrder->setStatus(self::CREATED);
-        $upgradeUserOrder->setUserLevel($userLevel);
 
         $groupUserOrder->setUpgradeUserOrder($upgradeUserOrder);
 
@@ -364,35 +381,92 @@ class UpgradeUserOrder implements Dao
         $user = $this->getUser();
 
         /* 升级会员 */
-        $user->upgradeUserLevel($userLevel);
-        /* 更新名额 */
-        $increasedStock = UserLevel::$userLevelRecommanderStockArray[$userLevel];
-
-        if ($increasedStock > 0) {
-            $memo = '升级至' . UserLevel::$userLevelTextArray[$userLevel];
-            $user->createUserRecommandStockOrder($increasedStock, $this, $memo);
+        if ($this->isJinqiu()) {
+            $user->upgradeUserLevel($userLevel);
+            $this->populateUserAccountOrders();
         }
 
-        $this->populateUserAccountOrders();
+        if ($this->isBianxian()) {
+            $user->upgradeBianxianUserLevel($userLevel);
+            $this->populateBianxianUserAccountOrders();
+        }
+    }
+
+    protected function populateBianxianUserAccountOrders() {
+        if (!$this->isBianxian()) {
+            return;
+        }
+
+        if (!$this->getGroupUserOrder()) {
+            return;
+        }
+
+        if (!$this->getGroupUserOrder()->getProduct()->getCourse()->isSystemSubject()) {
+            return;
+        }
+
+        /* 分钱给合伙人推荐人 */
+        $partnerUser = $this->getUser()->getParentUser();
+        if ($partnerUser) {
+            $rewards = Subject::$subjectRewards[$this->getGroupUserOrder()->getProduct()->getCourse()->getSubject()][$partnerUser->getBianxianUserLevel()];
+            if ($this->isApproved()) {
+                $memo = '推荐' . $this->getUser()->getNickname() . '系统课成功';
+                $this->setRecommanderUser($partnerUser);
+                $this->setPartnerUser($partnerUser);
+                $partnerUser->createUserAccountOrder(UserAccountOrder::RECOMMAND_REWARDS, $rewards, $this, null, $memo);
+            } else {
+                $userAccountOrder = UserAccountOrder::factory($partnerUser, UserAccountOrder::RECOMMAND_REWARDS, $rewards, $this, null, null);
+                //这里是虚拟账单，要把余额还回来
+                $partnerUser->decreaseUserAccountTotal($rewards);
+                $this->getPotentialUserAccountOrders()->add($userAccountOrder);
+            }
+        }
+
+        /* 分钱给最后一个思维课讲师 */
+        $teacher = $this->getUser()->getTeacherRecommanderUser();
+        if ($teacher) {
+            $rewards = Subject::$subjectRewards[$this->getGroupUserOrder()->getProduct()->getCourse()->getSubject()]['THINKING_TEACHER'];
+            if ($this->isApproved()) {
+                $memo = '成交' . $this->getUser()->getNickname() . '系统课成功';
+                $this->setPartnerTeacherUser($teacher);
+                $teacher->createUserAccountOrder(UserAccountOrder::RECOMMAND_REWARDS, $rewards, $this, null, $memo);
+            } else {
+                $userAccountOrder = UserAccountOrder::factory($teacher, UserAccountOrder::RECOMMAND_REWARDS, $rewards, $this, null, null);
+                //这里是虚拟账单，要把余额还回来
+                $teacher->decreaseUserAccountTotal($rewards);
+                $this->getPotentialUserAccountOrders()->add($userAccountOrder);
+            }
+        }
     }
 
     protected function populateUserAccountOrders() {
+        if (!$this->isJinqiu()) {
+            return;
+        }
+
+        if ($this->getGroupUserOrder() == null or $this->getGroupUserOrder()->getProduct()->isCourseProduct()) {
+            return;
+        }
 
         $user = $this->getUser();
         $userLevel = $this->getUserLevel();
 
         /* 分钱给供货商 */
-        $product = $this->getGroupUserOrder()->getProduct();
-        $supplierUser = $product->getSupplierUser();
-        $memo = '货款 ' . $product->getTitle();
-        if ($product->getSupplierUser()) {
-            if ($this->isApproved()) {
-                $supplierUser->createUserAccountOrder(UserAccountOrder::SUPPLIER_REWARDS, $product->getSupplierPrice(), $this, null, $memo);
-            } else {
-                $userAccountOrder = UserAccountOrder::factory($supplierUser, UserAccountOrder::SUPPLIER_REWARDS, $product->getSupplierPrice(), $this, null, $memo);
-                //这里是虚拟账单，要把余额还回来
-                $supplierUser->decreaseUserAccountTotal($product->getSupplierPrice());
-                $this->getPotentialUserAccountOrders()->add($userAccountOrder);
+        if ($this->getGroupUserOrder() != null) {
+            $product = $this->getGroupUserOrder()->getProduct();
+            if (!$product->isCourseProduct()) {
+                $supplierUser = $product->getSupplierUser();
+                $memo = '货款 ' . $product->getTitle();
+                if ($product->getSupplierUser()) {
+                    if ($this->isApproved()) {
+                        $supplierUser->createUserAccountOrder(UserAccountOrder::SUPPLIER_REWARDS, $product->getSupplierPrice(), $this, null, $memo);
+                    } else {
+                        $userAccountOrder = UserAccountOrder::factory($supplierUser, UserAccountOrder::SUPPLIER_REWARDS, $product->getSupplierPrice(), $this, null, $memo);
+                        //这里是虚拟账单，要把余额还回来
+                        $supplierUser->decreaseUserAccountTotal($product->getSupplierPrice());
+                        $this->getPotentialUserAccountOrders()->add($userAccountOrder);
+                    }
+                }
             }
         }
 
@@ -405,7 +479,7 @@ class UpgradeUserOrder implements Dao
                 $memo = '推荐' . $user->getNickname() . '成为' . UserLevel::$userLevelTextArray[$userLevel];
                 $recommander->createUserAccountOrder(UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this, null, $memo);
             } else {
-                $userAccountOrder = UserAccountOrder::factory($recommander, UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this, null, $memo);
+                $userAccountOrder = UserAccountOrder::factory($recommander, UserAccountOrder::RECOMMAND_REWARDS, $recommanderRewards, $this, null, null);
                 //这里是虚拟账单，要把余额还回来
                 $recommander->decreaseUserAccountTotal($recommanderRewards);
                 $this->getPotentialUserAccountOrders()->add($userAccountOrder);
@@ -421,16 +495,16 @@ class UpgradeUserOrder implements Dao
                 $memo = $user->getNickname() . '成为' . UserLevel::$userLevelTextArray[$userLevel] ;
                 $partner->createUserAccountOrder(UserAccountOrder::PARTNER_REWARDS, $partnerRewards, $this, null, $memo);
                 //推荐名额减1
-                $partner->createUserRecommandStockOrder(-1, $this, $memo);
+                //$partner->createUserRecommandStockOrder(-1, $this, $memo);
             } else {
-                $userAccountOrder = UserAccountOrder::factory($partner, UserAccountOrder::PARTNER_REWARDS, $partnerRewards, $this, null, $memo);
+                $userAccountOrder = UserAccountOrder::factory($partner, UserAccountOrder::PARTNER_REWARDS, $partnerRewards, $this, null, null);
                 //这里是虚拟账单，要把余额还回来
                 $partner->decreaseUserAccountTotal($partnerRewards);
                 $this->getPotentialUserAccountOrders()->add($userAccountOrder);
             }
 
             /* 分钱给合伙人的直接讲师 */
-            $partnerTeacher = $partner->getTeacherRecommanderUser();
+            $partnerTeacher = $partner->getPartnerTeacherRecommanderUser();
             if ($partnerTeacher) {
                 $partnerTeacherRewards = UserLevel::$advanceUserUpgradeRewardsArray[UserLevel::PARTNER_TEACHER];
                 if ($this->isApproved()) {
@@ -438,7 +512,7 @@ class UpgradeUserOrder implements Dao
                     $memo = $user->getNickname() . '成为' . UserLevel::$userLevelTextArray[$userLevel];
                     $partnerTeacher->createUserAccountOrder(UserAccountOrder::PARTNER_TEACHER_REWARDS, $partnerTeacherRewards, $this, null, $memo);
                 } else {
-                    $userAccountOrder = UserAccountOrder::factory($partnerTeacher, UserAccountOrder::PARTNER_TEACHER_REWARDS, $partnerTeacherRewards, $this, null, $memo);
+                    $userAccountOrder = UserAccountOrder::factory($partnerTeacher, UserAccountOrder::PARTNER_TEACHER_REWARDS, $partnerTeacherRewards, $this, null, null);
                     //这里是虚拟账单，要把余额还回来
                     $partnerTeacher->decreaseUserAccountTotal($partnerTeacherRewards);
                     $this->getPotentialUserAccountOrders()->add($userAccountOrder);
@@ -565,6 +639,35 @@ class UpgradeUserOrder implements Dao
             'createdAt' => $this->getCreatedAt(true),
             'updatedAt' => $this->getUpdatedAt(true),
         ];
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }/**
+     * @param string $type
+     */
+    public function setType(string $type): void
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isJinqiu() {
+        return self::JINQIU == $this->getType();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBianxian() {
+        return self::BIANXIAN == $this->getType();
     }
 
     /**

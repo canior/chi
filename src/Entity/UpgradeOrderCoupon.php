@@ -136,5 +136,13 @@ class UpgradeOrderCoupon implements Dao
         $this->upgradeUser = $upgradeUser;
     }
 
+    /**
+     * @return array
+     */
+    public function getArray() {
+        return [
+            'coupon' => $this->coupon,
+        ];
+    }
 
 }

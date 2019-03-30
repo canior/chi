@@ -380,34 +380,92 @@ class GroupUserOrder implements Dao
         $log->setToPaymentStatus($newStatus);
         $this->addGroupUserOrderLog($log);
 
-        //如果是最后一张拼团订单则触发整个拼团完成
+        // 拼团订单不需要考虑分钱
         if ($this->getGroupOrder()) {
-            if ($this->getGroupOrder()->getRestGroupUserOrdersRequired() == 0) {
+            if ($this->getGroupOrder()->getRestGroupUserOrdersRequired() == 0) { //如果是最后一张拼团订单则触发整个拼团完成
                 $this->getGroupOrder()->setCompleted();
             }
         } else {
-            $this->setPending();
-        }
+            if ($this->getProduct()->isCourseProduct()) { //在线视频购买或者线下课程购买订单
 
-        //如果是会员升级订单
-        if ($this->getUpgradeUserOrder()) {
-            $memo = "购买高级VIP";
+                // 线下活动注册
+                if (!$this->getProduct()->getCourse()->isOnline()) {
 
-            if ($this->getProduct()->isHasCoupon()) { //特级vip
-                $memo = "购买特级VIP";
-                //推送用户coupon
-                $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
+                    //锁定讲师
+                    if ($this->getProduct()->getCourse()->getSubject() == Subject::THINKING) {
+                        $this->getUser()->setTeacherRecommanderUser($this->getProduct()->getCourse()->getTeacher()->getUser());
+                    }
+
+                    //锁定合伙人为推荐人
+                    $oldParentUser = $this->getUser()->getParentUser();
+                    if ($this->getUser()->getParentUser() == null or $this->getUser()->getParentUserExpiresAt() < time()) {
+                        if ($this->getUser()->getLatestFromShareSource() != null) {
+                            $newParentUser = $this->getUser()->getLatestFromShareSource()->getUser();
+                            if ($oldParentUser !== $newParentUser) {
+                                $newParentUser = $newParentUser->getBianxianTopParentPartnerUser();
+                                $this->getUser()->setParentUser($newParentUser);
+                                if ($this->getProduct()->getCourse()->getSubject() == Subject::THINKING or $this->getProduct()->getCourse()->getSubject() == Subject::TRADING) {
+                                    $this->getUser()->setParentUserExpiresAt(User::PARENT_45_DAYS_EXPIRES_SECONDS);
+                                    $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::VIP, $this);
+                                    $jinqiuUpgradeUserOrder->setApproved();
+
+                                    $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::THINKING, $this);
+                                    $bianxianUpgradeUserOrder->setApproved();
+                                } else {
+                                    $this->getUser()->setParentUserExpiresAt(User::PARENT_365_DAYS_EXPIRES_SECONDS);
+
+                                    $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED2, $this);
+                                    $jinqiuUpgradeUserOrder->setApproved();
+
+                                    $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::ADVANCED, $this);
+                                    $bianxianUpgradeUserOrder->setApproved();
+
+                                    //TODO 如果合伙人没有名额了怎么办
+                                    $newParentUser->createUserRecommandStockOrder(-1);
+                                }
+
+                            }
+                        }
+                    }
+
+                    $this->setDelivered();
+
+                    if ($this->getUpgradeUserOrder()) {
+                        $this->getUpgradeUserOrder()->setApproved();
+                    }
+
+                } else {
+                    // TODO: 在线视频还未实现购买功能
+                }
+
+            } else { //产品购买订单
+                $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED];
+                if ($this->getProduct()->isHasCoupon()) { //特级vip
+                    $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED3];
+                    //推送用户coupon
+                    $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
+                }
+
+                //锁定推荐人
+                $oldParentUser = $this->getUser()->getParentUser();
+                if ($this->getUser()->getParentUser() == null or $this->getUser()->getParentUserExpiresAt() < time()) {
+                    if ($this->getUser()->getLatestFromShareSource() != null) {
+                        $newParentUser = $this->getUser()->getLatestFromShareSource()->getUser();
+                        if ($oldParentUser !== $newParentUser and $newParentUser->hasRecommandRight()) {
+                            $this->getUser()->setParentUser($newParentUser);
+                            $this->getUser()->setParentUserExpiresAt(User::PARENT_365_DAYS_EXPIRES_SECONDS);
+                        }
+                    }
+                }
+
+                $this->setPending();
+
+                if ($this->getUpgradeUserOrder()) {
+                    $this->getUpgradeUserOrder()->addPayment($this->getTotal(), $memo);
+                    $this->getUpgradeUserOrder()->setApproved();
+                }
             }
-
-            $this->getUpgradeUserOrder()->setApproved();
-            $this->getUpgradeUserOrder()->addPayment($this->getTotal(), $memo);
         }
-
-        $this->getUser()->getOrCreateTodayUserStatistics()->increaseSpentTotal($this->getTotal());
-        $this->getUser()->getOrCreateTodayUserStatistics()->increaseGroupUserOrderNum(1);
-
-        $this->getProduct()->getOrCreateTodayProductStatistics()->increaseBuyersNum(1);
-        $this->getProduct()->getOrCreateTodayProductStatistics()->increaseTotalOrderAmount($this->getTotal());
 
         return $this;
     }

@@ -14,7 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User extends BaseUser implements Dao
 {
-    const PARENT_EXPIRES_SECONDS = 0; //推荐人锁定0天
+    const PARENT_45_DAYS_EXPIRES_SECONDS = 3888000; //锁定45天
+    const PARENT_365_DAYS_EXPIRES_SECONDS = 31536000; //锁定365天
 
     const ROLE_CUSTOMER = 'ROLE_CUSTOMER';
     const ROLE_CUSTOMER_SERVICE = 'ROLE_CUSTOMER_SERVICE';
@@ -277,6 +278,14 @@ class User extends BaseUser implements Dao
     private $teacherRecommanderUser;
 
     /**
+     * @var User|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", cascade={"persist"})
+     * @ORM\JoinColumn(name="partner_teacher_recommander_user_id", referencedColumnName="id")
+     */
+    private $partnerTeacherRecommanderUser;
+
+
+    /**
      * @var ArrayCollection|User[]
      */
     private $recommandStudentUsers;
@@ -391,7 +400,7 @@ class User extends BaseUser implements Dao
      */
     public function isVisitorUser()
     {
-        return $this->getUserLevel() == UserLevel::VISITOR;
+        return $this->getUserLevel() == UserLevel::VISITOR and $this->getBianxianUserLevel() == UserLevel::VISITOR;
     }
 
     /**
@@ -409,7 +418,17 @@ class User extends BaseUser implements Dao
      */
     public function isAdvancedUser()
     {
-        return $this->getUserLevel() == UserLevel::ADVANCED;
+        return $this->getUserLevel() == UserLevel::ADVANCED or
+            $this->getUserLevel() == UserLevel::ADVANCED2 or
+            $this->getUserLevel() == UserLevel::ADVANCED3;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBianxianAdvancedUser()
+    {
+        return $this->getBianxianUserLevel() == BianxianUserLevel::ADVANCED;
     }
 
     /**
@@ -427,6 +446,15 @@ class User extends BaseUser implements Dao
     {
         return $this->getUserLevel() == UserLevel::PARTNER;
     }
+
+    /**
+     * @return bool
+     */
+    public function isBianxianPartnerUser()
+    {
+        return $this->getBianxianUserLevel() == BianxianUserLevel::PARTNER;
+    }
+
 
     public function getRoleText()
     {
@@ -955,9 +983,14 @@ class User extends BaseUser implements Dao
         $fromShareSourceUsers = $this->shareSourceUsers;
 
         if (!$fromShareSourceUsers->isEmpty())
-            return $fromShareSourceUsers[0]->getShareSource();
+            return $fromShareSourceUsers->get(0)->getShareSource();
 
         return null;
+    }
+
+    public function addFromShareSourceUser(ShareSourceUser $shareSourceUser)
+    {
+        $this->shareSourceUsers->add($shareSourceUser);
     }
 
     public function getPendingTotalRewards()
@@ -1207,13 +1240,33 @@ class User extends BaseUser implements Dao
 
     /**
      * 创建升级会员订单
-     * @param string $userLevel
-     * @param GroupUserOrder $groupUserOrder
-     * @return UpgradeUserOrder
+     * @param $upgradeUserOrderType
+     * @param $newUserLevel
+     * @param GroupUserOrder|null $groupUserOrder
+     * @return UpgradeUserOrder|null
      */
-    public function createUpgradeUserOrder($userLevel, GroupUserOrder $groupUserOrder)
+    public function createUpgradeUserOrder($upgradeUserOrderType, $newUserLevel, ?GroupUserOrder $groupUserOrder)
     {
-        $upgradeUserOrder = UpgradeUserOrder::factory($this, $userLevel, $groupUserOrder);
+        $isCreateUpgradeUserOrder = false;
+        $oldUserLevel = $this->getUserLevel();
+        $oldBianxianUserLevel = $this->getBianxianUserLevel();
+
+        $this->info('user ' . $this->getId() . ' is trying to upgrade from ' . $oldUserLevel . ' to ' . $newUserLevel);
+
+        if ($upgradeUserOrderType == UpgradeUserOrder::JINQIU and
+            UserLevel::$userLevelPriorityArray[$newUserLevel] > UserLevel::$userLevelPriorityArray[$oldUserLevel]) {
+            $isCreateUpgradeUserOrder = true;
+        } else if ($upgradeUserOrderType == UpgradeUserOrder::BIANXIAN and
+            BianxianUserLevel::$userLevelPriorityArray[$newUserLevel] > BianxianUserLevel::$userLevelPriorityArray[$oldBianxianUserLevel]) {
+            $isCreateUpgradeUserOrder = true;
+        }
+
+        if (!$isCreateUpgradeUserOrder){
+            $this->info('user ' . $this->getId() . ' should not upgrade user level');
+            return null;
+        }
+
+        $upgradeUserOrder = UpgradeUserOrder::factory($upgradeUserOrderType, $this, $newUserLevel, $groupUserOrder);
         $this->upgradeUserOrders->add($upgradeUserOrder);
         return $upgradeUserOrder;
     }
@@ -1272,14 +1325,20 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * 升级到合伙人
-     * 1. 增加推荐名额
-     *
      * @param $userLevel
      */
     public function upgradeUserLevel($userLevel)
     {
         $this->setUserLevel($userLevel);
+        $this->setUpdatedAt();
+    }
+
+    /**
+     * @param $bianxianUserLevel
+     */
+    public function upgradeBianxianUserLevel($bianxianUserLevel)
+    {
+        $this->setBianxianUserLevel($bianxianUserLevel);
         $this->setUpdatedAt();
     }
 
@@ -1549,6 +1608,22 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * @return User|null
+     */
+    public function getPartnerTeacherRecommanderUser(): ?User
+    {
+        return $this->partnerTeacherRecommanderUser;
+    }
+
+    /**
+     * @param User|null $partnerTeacherRecommanderUser
+     */
+    public function setPartnerTeacherRecommanderUser(?User $partnerTeacherRecommanderUser): void
+    {
+        $this->partnerTeacherRecommanderUser = $partnerTeacherRecommanderUser;
+    }
+
+    /**
      * @return User[]|ArrayCollection
      */
     public function getRecommandStudentUsers()
@@ -1599,6 +1674,48 @@ class User extends BaseUser implements Dao
         $user = $this;
         while ($parent = $user->getParentUser()) {
             if ($parent->isPartnerUser()) {
+                return $parent;
+            }
+            $user = $parent;
+        }
+        return null;
+    }
+
+    /**
+     * 返回变现最上线的一个高级用户
+     * @return User|null
+     */
+    public function getBianxianTopParentAdvancedUser() {
+
+        //如果自己就是partner则就是自己
+        if ($this->isBianxianAdvancedUser()) {
+            return $this;
+        }
+
+        $user = $this;
+        while ($parent = $user->getParentUser()) {
+            if ($parent->isBianxianAdvancedUser()) {
+                return $parent;
+            }
+            $user = $parent;
+        }
+        return null;
+    }
+
+    /**
+     * 返回变现最上线的一个合伙人
+     * @return User|null
+     */
+    public function getBianxianTopParentPartnerUser() {
+
+        //如果自己就是partner则就是自己
+        if ($this->isBianxianPartnerUser()) {
+            return $this;
+        }
+
+        $user = $this;
+        while ($parent = $user->getParentUser()) {
+            if ($parent->isBianxianPartnerUser()) {
                 return $parent;
             }
             $user = $parent;
@@ -1746,6 +1863,21 @@ class User extends BaseUser implements Dao
 
 
     /**
+     * 用户是否有推荐资格
+     * @return bool
+     */
+    public function hasRecommandRight() {
+        return
+            $this->getUserLevel() == UserLevel::ADVANCED
+            or $this->getUserLevel() == UserLevel::ADVANCED2
+            or $this->getUserLevel() == UserLevel::ADVANCED3
+            or $this->getUserLevel() == UserLevel::PARTNER
+            or $this->getBianxianUserLevel() == BianxianUserLevel::ADVANCED
+            or $this->getBianxianUserLevel() == BianxianUserLevel::PARTNER
+            or $this->getBianxianUserLevel() == BianxianUserLevel::DISTRIBUTOR;
+    }
+
+    /**
      * @return array
      */
     public function getArray(): array
@@ -1767,6 +1899,8 @@ class User extends BaseUser implements Dao
             'nickname' => $this->getNickname(),
             'userLevel' => $this->userLevel ? $this->userLevel : null,
             'userLevelText' => $this->getUserLevel() ? UserLevel::$userLevelTextArray[$this->getUserLevel()] : null,
+            'bianxianUserLevel' => $this->bianxianUserLevel ? $this->bianxianUserLevel : null,
+            'bianxianUserLevelText' => $this->bianxianUserLevel ? BianxianUserLevel::$userLevelTextArray[$this->getBianxianUserLevel()] : null,
             'userAccountTotal' => $this->getUserAccountTotal(),
             'userRecommandStock' => $this->getRecommandStock(),
             'avatarUrl' => $this->getAvatarUrl(),

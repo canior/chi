@@ -25,6 +25,14 @@ class BianxianUserLevel
         self::DISTRIBUTOR => '分院',
     ];
 
+    public static $userLevelPriorityArray = [
+        self::VISITOR => 1,
+        self::THINKING => 2,
+        self::ADVANCED => 3,
+        self::PARTNER => 4,
+        self::DISTRIBUTOR => 5
+    ];
+
     /* 学员身份的推荐资格 */
     public static $userLevelPriceArray = [
         self::VISITOR => 0,
@@ -44,12 +52,4 @@ class BianxianUserLevel
         self::DISTRIBUTOR => 600,
     ];
 
-    /* 推荐人的佣金 */
-    public static $userLevelRecommanderRewardsArray = [
-        self::VISITOR => 0,
-        self::THINKING => 0,
-        self::ADVANCED => -1000,
-        self::PARTNER => 30000,
-        self::DISTRIBUTOR => 30000
-    ];
 }
