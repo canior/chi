@@ -169,7 +169,7 @@ Page({
       });
       return false;
     }
-    /*if (!user.idNum) {
+    if (!user.idNum) {
       wx.showModal({
         content: '请输入身份证号码',
         showCancel: false,
@@ -182,7 +182,7 @@ Page({
         showCancel: false,
       });
       return false;
-    }*/
+    }
     return true;
   },
 

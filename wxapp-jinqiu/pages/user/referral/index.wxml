@@ -32,7 +32,7 @@
           <image src="{{item.user.avatarUrl}}"/>
           <text>{{item.user.nickname}}</text>
         </view>
-        <view class="td"><text>{{item.user.userLevelText}}|{{item.user.bianxianUserLevelText}}</text></view>
+        <view class="td"><text>{{item.user.userLevelText}} | {{item.user.bianxianUserLevelText}}</text></view>
         
       </view>
     </view>
