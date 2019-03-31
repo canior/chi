@@ -32,7 +32,7 @@ class Subject
 
 
     /**
-     * 科目需要特定的会员等级才能上
+     * 科目需要特定的会员等级才能上或者看
      * @var array
      */
     public static $subjectUserLevelConstraintArray = [

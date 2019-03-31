@@ -1327,6 +1327,12 @@ class UserController extends BaseController
                 'error' => '您已经是更高级别会员，无需使用升级码']);
         }
 
+        if ($user->getParentUser() == null or time() > $user->getParentUserExpiresAt()) {
+            $user->info('update parent user to ' . $upgradeOrderCoupon->getUpgradeUser());
+            $user->setParentUser($upgradeOrderCoupon->getUpgradeUser());
+            $this->getEntityManager()->persist($user);
+        }
+
         //如果推荐人已被锁定，又输入用了别人的升级码， 给升级码的人认倒霉吧
         $upgradeUserOrder = $user->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED2, null);
         $upgradeUserOrder->setApproved();

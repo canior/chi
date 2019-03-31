@@ -133,14 +133,7 @@ class GroupUserOrderController extends BaseController
 
         $groupUserOrder = GroupUserOrder::factory($user, $product);
 
-        $newUserLevel = UserLevel::ADVANCED; //购买2000的产品
-        if ($product->isHasCoupon()) {
-            $newUserLevel = UserLevel::ADVANCED3; //购买12000的产品
-        }
-
-        $user->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, $newUserLevel, $groupUserOrder);
-
-        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->persist($groupUserOrder);
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
@@ -166,11 +159,7 @@ class GroupUserOrderController extends BaseController
 
         $groupUserOrder = GroupUserOrder::factory($user, $product);
 
-        $subject = $product->getCourse()->getSubject();
-        $newUserLevel = Subject::$subjectBianxianUserLevelArray[$subject];
-        $user->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, $newUserLevel, $groupUserOrder);
-
-        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->persist($groupUserOrder);
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [

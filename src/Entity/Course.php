@@ -543,6 +543,17 @@ class Course implements Dao
     /**
      * @return array
      */
+    public function getEligibleViewerUserLevels() {
+        if (Subject::THINKING == $this->getSubject()) {
+            return [UserLevel::VIP, UserLevel::ADVANCED, UserLevel::ADVANCED2, UserLevel::ADVANCED3, UserLevel::PARTNER];
+        } else {
+            return [UserLevel::ADVANCED, UserLevel::ADVANCED2, UserLevel::ADVANCED3, UserLevel::PARTNER];
+        }
+    }
+
+    /**
+     * @return array
+     */
     public function getArray() : array {
         $courseImageArray = [];
         foreach ($this->getProduct()->getProductImages() as $productImage) {
@@ -580,6 +591,7 @@ class Course implements Dao
             'eligibleUserLevels' => Subject::$subjectUserLevelConstraintArray[$this->getSubject()], //for bianxian
             'subject' => $this->getSubject(),
             'subjectText' => $this->getSubject() ? Subject::$subjectTextArray[$this->getSubject()] : null,
+            'eligibleViewer' => $this->getEligibleViewerUserLevels(),
         ];
     }
 }

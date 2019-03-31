@@ -404,17 +404,18 @@ class GroupUserOrder implements Dao
                             if ($oldParentUser !== $newParentUser) {
                                 $newParentUser = $newParentUser->getBianxianTopParentPartnerUser();
                                 $this->getUser()->setParentUser($newParentUser);
-                                if ($this->getProduct()->getCourse()->getSubject() == Subject::THINKING or $this->getProduct()->getCourse()->getSubject() == Subject::TRADING) {
+
+                                if (!$this->getProduct()->getCourse()->isSystemSubject()) { //思维课报名
                                     $this->getUser()->setParentUserExpiresAt(User::PARENT_45_DAYS_EXPIRES_SECONDS);
                                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::VIP, $this);
                                     $jinqiuUpgradeUserOrder->setApproved();
 
                                     $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::THINKING, $this);
                                     $bianxianUpgradeUserOrder->setApproved();
-                                } else {
+                                } else { //系统课报名
                                     $this->getUser()->setParentUserExpiresAt(User::PARENT_365_DAYS_EXPIRES_SECONDS);
 
-                                    $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED2, $this);
+                                    $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED3, $this);
                                     $jinqiuUpgradeUserOrder->setApproved();
 
                                     $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::ADVANCED, $this);
@@ -422,6 +423,13 @@ class GroupUserOrder implements Dao
 
                                     //TODO 如果合伙人没有名额了怎么办
                                     $newParentUser->createUserRecommandStockOrder(-1);
+
+                                    if ($this->getProduct()->isHasCoupon()) {
+                                        $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED3];
+
+                                        //推送用户coupon
+                                        $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
+                                    }
                                 }
 
                             }
@@ -439,12 +447,6 @@ class GroupUserOrder implements Dao
                 }
 
             } else { //产品购买订单
-                $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED];
-                if ($this->getProduct()->isHasCoupon()) { //特级vip
-                    $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED3];
-                    //推送用户coupon
-                    $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
-                }
 
                 //锁定推荐人
                 $oldParentUser = $this->getUser()->getParentUser();
@@ -460,9 +462,25 @@ class GroupUserOrder implements Dao
 
                 $this->setPending();
 
-                if ($this->getUpgradeUserOrder()) {
-                    $this->getUpgradeUserOrder()->addPayment($this->getTotal(), $memo);
-                    $this->getUpgradeUserOrder()->setApproved();
+                $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED];
+                if ($this->getProduct()->isHasCoupon()) { //荣耀vip
+                    $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED3];
+                    $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED3, $this);
+                    $jinqiuUpgradeUserOrder->setApproved();
+
+                    //推送用户coupon
+                    $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
+                } else {
+                    $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED, $this);
+                    $jinqiuUpgradeUserOrder->setApproved();
+                }
+
+                //每成功推荐6人即可升级为变现系统学员
+                $recommander = $this->getUser()->getParentUser();
+                if ($recommander->getTotalUserAccountOrdersAsRecommander() > 5) {
+                    if (BianxianUserLevel::$userLevelPriorityArray[BianxianUserLevel::ADVANCED] > $recommander->getBianxianUserLevel()) {
+                        $recommander->upgradeBianxianUserLevel(BianxianUserLevel::ADVANCED);
+                    }
                 }
             }
         }

@@ -35,8 +35,8 @@ class UserLevel
         self::VISITOR =>  '普通用户', //'普通用户',
         self::VIP =>  'VIP', //'购买9.9的用户',
         self::ADVANCED => '高级VIP', //'购买2000的高级用户',
-        self::ADVANCED2 => '荣耀VIP', //'别人送的高级用户',
-        self::ADVANCED3 => '特权VIP', //'购买12000高级用户',
+        self::ADVANCED2 => '特权VIP', //'别人送的高级用户',
+        self::ADVANCED3 => '荣耀VIP', //'购买12000高级用户',
         self::PARTNER => '合伙人',
     ];
 

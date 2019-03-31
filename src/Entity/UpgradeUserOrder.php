@@ -162,11 +162,11 @@ class UpgradeUserOrder implements Dao
         $upgradeUserOrder->setGroupUserOrder($groupUserOrder);
         $upgradeUserOrder->setOldUserLevel($user->getUserLevel());
         $upgradeUserOrder->setUserLevel($newUserLevel);
-        $upgradeUserOrder->setTotal($groupUserOrder->getTotal());
         $upgradeUserOrder->setStatus(self::CREATED);
-
-        $groupUserOrder->setUpgradeUserOrder($upgradeUserOrder);
-
+        if ($groupUserOrder) {
+            $upgradeUserOrder->setTotal($groupUserOrder->getTotal());
+            $groupUserOrder->setUpgradeUserOrder($upgradeUserOrder);
+        }
         return $upgradeUserOrder;
     }
 

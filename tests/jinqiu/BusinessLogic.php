@@ -152,43 +152,16 @@ class BusinessLogic extends JinqiuBaseTestCase
 
         //用户创建了升级订单
         $groupUserOrder = GroupUserOrder::factory($user, $product);
-        $upgradeUserOrder = $user->createUpgradeUserOrder(UpgradeUserOrder::JINQIU,UserLevel::ADVANCED, $groupUserOrder);
-        $this->assertTrue($groupUserOrder->isCreated());
-        $this->assertTrue($groupUserOrder->isUnPaid());
-        $this->assertTrue($upgradeUserOrder->isCreated());
-
-        $potentialUserAccountOrders = $upgradeUserOrder->getPotentialUserAccountOrders();
-        $this->assertEquals(4, $potentialUserAccountOrders->count());
-        foreach ($potentialUserAccountOrders as $userAccountOrder) {
-            if ($userAccountOrder->isSupplierRewards()) {
-                $this->assertEquals($product->getSupplierPrice(), $userAccountOrder->getAmount());
-            } else if ($userAccountOrder->isRecommandRewards()) {
-                $this->assertEquals(UserLevel::$advanceUserUpgradeRewardsArray[UserLevel::ADVANCED], $userAccountOrder->getAmount());
-            } else if ($userAccountOrder->isPartnerRewards()) {
-                $this->assertEquals(UserLevel::$advanceUserUpgradeRewardsArray[UserLevel::PARTNER], $userAccountOrder->getAmount());
-            } else if ($userAccountOrder->isPartnerTeacherRewards()) {
-                $this->assertEquals(UserLevel::$advanceUserUpgradeRewardsArray[UserLevel::PARTNER_TEACHER], $userAccountOrder->getAmount());
-            }
-        }
-
-        $this->assertEquals(0, $user->getUserAccountTotal());
-        $this->assertEquals(0, $supplier->getUserAccountTotal());
-        $this->assertEquals(0, $recommander->getUserAccountTotal());
-        $this->assertEquals(0, $partner->getUserAccountTotal());
-        $this->assertEquals(0, $partnerTeacher->getUserAccountTotal());
-
-        $this->assertEquals(1000, $partner->getRecommandStock());
 
         //用户支付了订单
         $groupUserOrder->setPaid();
 
         $this->assertTrue($groupUserOrder->isPending());
         $this->assertTrue($groupUserOrder->isPaid());
-        $this->assertTrue($upgradeUserOrder->isApproved());
+        $upgradeUserOrder = $groupUserOrder->getUpgradeUserOrder();
+        $this->assertTrue($groupUserOrder->getUpgradeUserOrder()->isApproved());
 
-        $this->assertEquals(1, $upgradeUserOrder->getUpgradeUserOrderPayments()->count());
-        $payment = $upgradeUserOrder->getUpgradeUserOrderPayments()[0];
-        $this->assertEquals(2000, $payment->getAmount());
+        $this->assertEquals(0, $upgradeUserOrder->getUpgradeUserOrderPayments()->count());
 
         $this->assertEquals(1, $supplier->getTotalUserAccountOrders());
         $supplierUserAccountOrder = $supplier->getUserAccountOrders()[0];
@@ -268,24 +241,6 @@ class BusinessLogic extends JinqiuBaseTestCase
 
             //用户创建了升级订单
             $groupUserOrder = GroupUserOrder::factory($user, $product);
-            $upgradeUserOrder = $user->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED, $groupUserOrder);
-            $this->assertTrue($groupUserOrder->isCreated());
-            $this->assertTrue($groupUserOrder->isUnPaid());
-            $this->assertTrue($upgradeUserOrder->isCreated());
-
-            $potentialUserAccountOrders = $upgradeUserOrder->getPotentialUserAccountOrders();
-            $this->assertEquals(4, $potentialUserAccountOrders->count());
-            foreach ($potentialUserAccountOrders as $userAccountOrder) {
-                if ($userAccountOrder->isSupplierRewards()) {
-                    $this->assertEquals($product->getSupplierPrice(), $userAccountOrder->getAmount());
-                } else if ($userAccountOrder->isRecommandRewards()) {
-                    $this->assertEquals(UserLevel::$advanceUserUpgradeRewardsArray[$testLevel], $userAccountOrder->getAmount());
-                } else if ($userAccountOrder->isPartnerRewards()) {
-                    $this->assertEquals(UserLevel::$advanceUserUpgradeRewardsArray[UserLevel::PARTNER], $userAccountOrder->getAmount());
-                } else if ($userAccountOrder->isPartnerTeacherRewards()) {
-                    $this->assertEquals(UserLevel::$advanceUserUpgradeRewardsArray[UserLevel::PARTNER_TEACHER], $userAccountOrder->getAmount());
-                }
-            }
 
             $this->assertEquals(0, $user->getUserAccountTotal());
             $this->assertEquals(0, $supplier->getUserAccountTotal());
@@ -297,6 +252,7 @@ class BusinessLogic extends JinqiuBaseTestCase
 
             //用户支付了订单
             $groupUserOrder->setPaid();
+            $upgradeUserOrder = $groupUserOrder->getUpgradeUserOrder();
 
             $this->assertTrue($groupUserOrder->isPending());
             $this->assertTrue($groupUserOrder->isPaid());
@@ -391,7 +347,6 @@ class BusinessLogic extends JinqiuBaseTestCase
      */
     public function testRecommandRelations() {
 
-
         /**
          * 有推荐人， 报名思维课390， 锁定推荐人45天，更新锁定讲师
          */
@@ -466,21 +421,55 @@ class BusinessLogic extends JinqiuBaseTestCase
         $this->assertEquals(99, $partner->getRecommandStock());
 
         $this->assertEquals(BianxianUserLevel::ADVANCED, $user->getBianxianUserLevel());
-        $this->assertEquals(UserLevel::ADVANCED2, $user->getUserLevel());
+        $this->assertEquals(UserLevel::ADVANCED3, $user->getUserLevel());
         $this->assertEquals($partner, $user->getParentUser());
 
 
         /**
          * 有推荐人， 购买2000， 锁定推荐人365天
          */
+        $partner = $this->createUser();
+        $partner->setUserLevel(UserLevel::PARTNER);
+
+        $recommander = $this->createUser();
+        $recommander->setUserLevel(UserLevel::ADVANCED);
+        $recommander->setParentUser($partner);
+        $this->assertEquals(BianxianUserLevel::VISITOR, $recommander->getBianxianUserLevel());
+
+        $this->assertEquals($partner, $recommander->getTopParentPartnerUser());
+
+        $product = $this->createProduct();
+        $supplierUser = $this->createUser();
+        $product->setSupplierUser($supplierUser);
+        $product->setSupplierPrice(400);
+        $product->setPrice(2000);
+
+        for($i = 0; $i < 6; $i++) {
+            $user = $this->createUser();
+            $recommanderShareSource = $this->createShareSource($recommander);
+            ShareSourceUser::factory($recommanderShareSource, $user);
+
+            $groupUserOrder = GroupUserOrder::factory($user, $product);
+            $groupUserOrder->setPaid();
+            $this->assertTrue($groupUserOrder->isPending());
+            $this->assertEquals($recommander, $user->getParentUser());
+        }
+        $this->assertEquals(6, $recommander->getTotalUserAccountOrders());
+        $this->assertEquals(6, $recommander->getTotalUserAccountOrdersAsRecommander());
+        $this->assertEquals(3600, $recommander->getUserAccountTotal());
+        $this->assertEquals(2400, $recommander->getParentUser()->getUserAccountTotal());
+        $this->assertEquals(BianxianUserLevel::ADVANCED, $recommander->getBianxianUserLevel());
 
 
         /**
-         * 有推荐人， 购买12000， 锁定推荐人365天
+         * 有推荐人， 升级荣耀vip， 锁定推荐人365天
          */
+        $user = $this->createUser();
+        $upgradeUserOrder = $user->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED2, null);
+        $upgradeUserOrder->setApproved();
+        $this->assertEquals(UserLevel::ADVANCED2, $user->getUserLevel());
 
     }
-
-    // 测试高级报名低级
-
 }
+
+
