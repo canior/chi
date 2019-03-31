@@ -35,7 +35,7 @@ Page({
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
         groupUserOrderStatus: status,
-        prodcutType: 'product'
+        productType: 'product'
       },
       method: 'POST',
       success: (res) => {
