@@ -1794,17 +1794,17 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getBianxianUserLevel(): string
+    public function getBianxianUserLevel(): ?string
     {
         return $this->bianxianUserLevel;
     }
 
     /**
-     * @param string $bianxianUserLevel
+     * @param null|string $bianxianUserLevel
      */
-    public function setBianxianUserLevel(string $bianxianUserLevel): void
+    public function setBianxianUserLevel($bianxianUserLevel): void
     {
         $this->bianxianUserLevel = $bianxianUserLevel;
     }
