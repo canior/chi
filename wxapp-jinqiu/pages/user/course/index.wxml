@@ -1,5 +1,79 @@
 <!--pages/user/course/index.wxml-->
 <import src="/pages/tmpl/price.wxml"/>
+<view class="tab-bar">
+  <view class="{{tab1_selected?'active':'default'}}" bindtap="tab1Click">
+    <text>在线课程</text>
+  </view>
+  <view class="{{tab2_selected?'active':'default'}}" bindtap="tab2Click">
+    <text>线下活动</text>
+  </view>
+</view>
+<view class="tab-content {{tab1_selected?'show':'hidden'}}">
+  <view class="body">
+    <block wx:for="{{myCourses}}" wx:key="index" wx:if="{{myCourses.length > 0}}">
+      <view class="section">
+        <view class="row" bindtap="toCourseDetail" data-id="{{item.productId}}">
+          <view class="left">
+            <image mode="widthFix" src="{{imgUrlPrefix+'/'+item.courseImages[0].fileId}}"/>
+            <view>
+              <view class="line title">{{item.title}}</view>
+              <view class="line desc-box">{{item.shortDescription}}</view>
+              <view class="line sub-title">讲师: {{item.teacher.name}} | {{item.teacher.title}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="split-brand"/>
+    </block>
+    <block wx:if="{{myCourses.length == 0}}">
+      <view class="none">暂时没有注册课程</view>
+    </block>
+
+    <view class="bottom" bindtap="toHome">发现更多课程</view>  
+  </view>
+</view>
+<view class="tab-content {{tab2_selected?'show':'hidden'}}">
+  <view class="body">
+
+    <block wx:for="{{myCourses}}" wx:key="index" wx:if="{{myCourses.length > 0}}">
+      <view class="section">
+        <view class="row">
+          <view class="left">订单号：{{item.id}}</view>
+          <view class="right pending">{{item.createdAt}}</view>
+        </view>
+        <view class="row" bindtap="toMyCourseLog" data-id="{{item.id}}">
+          <view class="left">
+            <image mode="widthFix" src="{{imgUrlPrefix+'/'+item.product.courseImages[0].fileId}}"/>
+            <view>
+              <view class="line title">{{item.product.title}}</view>
+              <view class="line desc">科目: {{item.product.subjectText}}</view>
+              <view class="line desc">时间: {{item.product.startDate}} - {{item.product.endDate}}</view>
+              <view class="line desc">地点: {{item.product.address}}</view>
+              <view class="line desc">讲师: {{item.product.teacher.name}} | {{item.product.teacher.title}}</view>
+            </view>
+          </view>
+          <view class="right">
+            <view class="reward">￥{{item.paymentTotal}}</view>
+          </view>
+        </view>
+        <view class="row">
+          <view class="left">{{item.statusText}}</view>
+          <view catchtap="toMyCourseLog" data-id="{{item.id}}" class="right btn">活动日志</view>
+        </view>    
+      </view>
+      <view class="split-brand"/>
+    </block>
+    <block wx:if="{{myCourses.length == 0}}">
+      <view class="none">暂时没有参加活动</view>
+    </block>
+
+    <view class="bottom" bindtap="toOfflineHome">发现更多活动</view>
+
+  </view>
+</view>
+
+
+<!--
 <view class="navbar">
   <view class="nav active">在线课程</view>
   <navigator open-type="redirect" class="nav" url="/pages/user/offlineCourse/index">线下活动</navigator>
@@ -16,9 +90,6 @@
           <view class="line sub-title">讲师: {{item.teacher.name}} | {{item.teacher.title}}</view>
         </view>
       </view>
-      <!--<view class="right">
-        <view class="btn" catchtap="wxReview" data-id="{{item.productId}}">课程评价</view>
-      </view>-->
     </view>
   </view>
   <view class="split-brand"/>
@@ -28,3 +99,4 @@
 </block>
 
 <view class="bottom" bindtap="toHome">发现更多课程</view>
+-->

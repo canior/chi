@@ -10,7 +10,9 @@ Page({
     imgUrlPrefix: app.globalData.imgUrlPrefix,
     isLogin: null,
     user: null,
-    textMetaArray: null
+    textMetaArray: null,
+    tab1_selected: true,
+    tab2_selected: false    
   },
 
   /**
@@ -21,7 +23,34 @@ Page({
     app.buriedPoint(options)
   },
 
-  getMyCourses: function (status) {
+  tab1Click: function (e) {
+    this.setData({
+      tab1_selected: true,
+      tab2_selected: false
+    });
+    if (this.data.isLogin) {
+      this.getMyCourses1()
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },
+  tab2Click: function (e) {
+    this.setData({
+      tab1_selected: false,
+      tab2_selected: true
+    });
+    if (this.data.isLogin) {
+      this.getMyCourses2()
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }    
+  },
+
+  getMyCourses1: function () {
     const that = this;
     wx.showLoading({
       title: '玩命加载中',
@@ -70,6 +99,49 @@ Page({
     })
   },
 
+  getMyCourses2: function () {
+    const that = this;
+    wx.showLoading({
+      title: '玩命加载中',
+    })
+    wx.request({
+      url: app.globalData.baseUrl + '/user/groupUserOrders/',
+      data: {
+        thirdSession: wx.getStorageSync('thirdSession'),
+        groupUserOrderStatus: null,
+        productType: 'offlineCourse'
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          that.setData({
+            myCourses: res.data.data.groupUserOrders,
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) { },
+      complete(e) { wx.hideLoading() }
+    })
+  },  
+
+  // 转活动日志
+  toMyCourseLog: function (e) {
+    const orderId = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: '/pages/user/offlineCourse/log?id=' + orderId,
+    })
+  },
+
+  // 发现更多活动
+  toOfflineHome: function () {
+    wx.switchTab({
+      url: '/pages/offlineCourse/index',
+    })
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -86,13 +158,7 @@ Page({
       user: app.globalData.user,
       textMetaArray: app.globalData.textMeta
     })
-    if (this.data.isLogin) {
-      this.getMyCourses()
-    } else {
-      wx.navigateTo({
-        url: '/pages/user/login',
-      })
-    }
+    this.tab1Click()
   },
 
   /**
