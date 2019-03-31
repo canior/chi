@@ -34,7 +34,7 @@ Page({
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
         groupUserOrderStatus: status,
-        prodcutType: 'offlineCourse'
+        productType: 'offlineCourse'
       },
       method: 'POST',
       success: (res) => {
