@@ -63,14 +63,14 @@ class OfflineCourseController extends CourseController
         /**
          * @var GroupUserOrder $groupUserOrder
          */
-        $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $product, 'user' => $user]);
+        $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $product, 'user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
         return $groupUserOrder;
     }
 
     /**
      * 获取活动详情
      *
-     * @Route("/offlineCourses/{id}", name="courseDetail", methods="GET")
+     * @Route("/offlineCourses/{id}", name="offlineCourseDetail", methods="GET")
      * @param Request $request
      * @param Product $product
      * @return Response
@@ -82,7 +82,7 @@ class OfflineCourseController extends CourseController
     /**
      * 获取指定课程的评价，评价条数限制limit
      *
-     * @Route("/offlineCourses/{productId}/reviews", name="courseReviews", methods="GET")
+     * @Route("/offlineCourses/{productId}/reviews", name="offlineCourseReviews", methods="GET")
      * @param Request $request
      * @param int $productId
      * @param ProductRepository $productRepository
