@@ -22,7 +22,7 @@ use App\Entity\User;
 /**
  * @Route("/wxapi")
  */
-class OfflineCourseController extends ProductController
+class OfflineCourseController extends CourseController
 {
     /**
      * 获取线下课程列表
@@ -63,7 +63,7 @@ class OfflineCourseController extends ProductController
         /**
          * @var GroupUserOrder $groupUserOrder
          */
-        $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $product, 'user' => $user]);
+        $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $product, 'user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
         return $groupUserOrder;
     }
 
