@@ -22,7 +22,7 @@ use App\Entity\User;
 /**
  * @Route("/wxapi")
  */
-class OfflineCourseController extends CourseController
+class OfflineCourseController extends ProductController
 {
     /**
      * 获取线下课程列表
