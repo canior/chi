@@ -477,7 +477,7 @@ class GroupUserOrder implements Dao
 
                 //每成功推荐6人即可升级为变现系统学员
                 $recommander = $this->getUser()->getParentUser();
-                if ($recommander->getTotalUserAccountOrdersAsRecommander() > 5) {
+                if ($recommander != null and $recommander->getTotalUserAccountOrdersAsRecommander() > 5) {
                     if (BianxianUserLevel::$userLevelPriorityArray[BianxianUserLevel::ADVANCED] > $recommander->getBianxianUserLevel()) {
                         $recommander->upgradeBianxianUserLevel(BianxianUserLevel::ADVANCED);
                     }
