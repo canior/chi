@@ -149,16 +149,10 @@ class GroupUserOrder implements Dao
      */
     private $upgradeUserOrder;
 
-    /**
-     * @var Collection | UpgradeUserOrder[]
-     */
-    private $potentialUpgradeUserOrders;
-
     public function __construct() {
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
         $this->groupUserOrderLogs = new ArrayCollection();
-        $this->potentialUpgradeUserOrders = new ArrayCollection();
         $this->setCreatedAt();
         $this->setUpdatedAt();
     }
@@ -191,22 +185,6 @@ class GroupUserOrder implements Dao
         }
 
         return $groupUserOrder;
-    }
-
-    /**
-     * @return UpgradeUserOrder[]|Collection
-     */
-    public function getPotentialUpgradeUserOrders()
-    {
-        return $this->potentialUpgradeUserOrders;
-    }
-
-    /**
-     * @param UpgradeUserOrder[]|Collection $potentialUpgradeUserOrders
-     */
-    public function setPotentialUpgradeUserOrders($potentialUpgradeUserOrders): void
-    {
-        $this->potentialUpgradeUserOrders = $potentialUpgradeUserOrders;
     }
 
     /**
@@ -434,9 +412,6 @@ class GroupUserOrder implements Dao
                                     $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::THINKING, $this);
                                     $bianxianUpgradeUserOrder->setApproved();
 
-                                    $this->potentialUpgradeUserOrders->add($jinqiuUpgradeUserOrder);
-                                    $this->potentialUpgradeUserOrders->add($bianxianUpgradeUserOrder);
-
                                 } else { //系统课报名
                                     $this->getUser()->setParentUserExpiresAt(User::PARENT_365_DAYS_EXPIRES_SECONDS);
 
@@ -445,9 +420,6 @@ class GroupUserOrder implements Dao
 
                                     $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::ADVANCED, $this);
                                     $bianxianUpgradeUserOrder->setApproved();
-
-                                    $this->potentialUpgradeUserOrders->add($jinqiuUpgradeUserOrder);
-                                    $this->potentialUpgradeUserOrders->add($bianxianUpgradeUserOrder);
 
                                     //TODO 如果合伙人没有名额了怎么办
                                     $newParentUser->createUserRecommandStockOrder(-1);
@@ -495,14 +467,12 @@ class GroupUserOrder implements Dao
                     $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED3];
                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED3, $this);
                     $jinqiuUpgradeUserOrder->setApproved();
-                    $this->potentialUpgradeUserOrders->add($jinqiuUpgradeUserOrder);
 
                     //推送用户coupon
                     $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
                 } else {
                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED, $this);
                     $jinqiuUpgradeUserOrder->setApproved();
-                    $this->potentialUpgradeUserOrders->add($jinqiuUpgradeUserOrder);
                 }
 
                 //每成功推荐6人即可升级为变现系统学员
