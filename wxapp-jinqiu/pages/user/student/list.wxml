@@ -29,7 +29,7 @@
             <text>{{item.nickname}}</text>
           </view>
           <view class="td">{{item.phone ? item.phone : ''}}</view>
-          <view class="td">{{item.userLevelText}}</view>
+          <view class="td">{{item.userLevelText}}|{{item.bianxianUserLevelText}}</view>
         </view>      
       </view>
     </view>

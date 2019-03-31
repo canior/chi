@@ -4,7 +4,6 @@
   <navigator open-type="switchTab" class="nav" url="/pages/user/course/index">在线课程</navigator>
   <view class="nav active">线下活动</view>
 </view>
-<view class="split-brand"/>
 
 <block wx:for="{{myCourses}}" wx:key="index" wx:if="{{myCourses.length > 0}}">
   <view class="section">
