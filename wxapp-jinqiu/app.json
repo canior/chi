@@ -50,7 +50,7 @@
     "borderStyle": "black",
     "position": "bottom",
     "color": "#888",
-    "selectedColor": "#ffdf00",
+    "selectedColor": "#000",
     "backgroundColor": "#fff",
     "list": [
       {
