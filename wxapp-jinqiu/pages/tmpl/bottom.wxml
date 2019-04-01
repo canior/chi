@@ -8,13 +8,13 @@
         <image src="/images/share.png"/>
         <text>分享</text>
       </view>
-      <block wx:if="{{type == 'course' && user.userLevel == 'VISITOR'}}">
+      <block wx:if="{{type == 'course' && !eligibleViewer}}">
         <button class="item btn other" bindtap="wxCreateGroup" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrder || groupUserOrder.groupOrderStatus == 'expired'}}"><text>{{textMetaArray ? textMetaArray.text_group_unlock_meta.textMeta : ''}}</text></button>
         <button class="item btn other" bindtap="wxViewGroup" disabled="{{btnDisabled}}" wx:if="{{groupUserOrder && (groupUserOrder.groupOrderStatus == 'pending' || groupUserOrder.groupOrderStatus == 'created')}}"><text>集Call中</text></button>
         <button class="item btn other" bindtap="wxViewCourse" disabled="{{btnDisabled}}" wx:if="{{groupUserOrder && groupUserOrder.groupOrderStatus == 'completed'}}"><text>{{textMetaArray ? textMetaArray.text_watch_meta.textMeta : ''}}</text></button>
         <button class="item btn group" bindtap="wxUpgrade" disabled="{{btnDisabled}}"><text>{{textMetaArray ? textMetaArray.text_unlock_all_meta.textMeta : ''}}</text></button>
       </block>
-      <block wx:if="{{type == 'course' && (user.userLevel == 'ADVANCED' || user.userLevel == 'PARTNER')}}">
+      <block wx:if="{{type == 'course' && eligibleViewer}}">
         <button class="item btn group" bindtap="wxViewCourse" disabled="{{btnDisabled}}"><text>{{textMetaArray ? textMetaArray.text_watch_meta.textMeta : ''}}</text></button>
       </block>
       <block wx:if="{{type == 'product'}}">
@@ -24,7 +24,8 @@
         <button class="item btn group" bindtap="wxReview" disabled="{{btnDisabled}}"><text>课程评价</text></button>
       </block>
       <block wx:if="{{type == 'bianxian'}}">
-        <button class="item btn group" bindtap="wxCreateOfflineCourse" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrderId}}"><text>我要报名￥{{course.price}}</text></button>
+        <button class="item btn group" bindtap="wxCreateOfflineCourse" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrderId && eligible}}"><text>我要报名￥{{course.price}}</text></button>
+        <button class="item btn gray" bindtap="" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrderId && !eligible}}"><text>请联系{{contact}}</text></button>
         <button class="item btn group" bindtap="wxToCourseLog" disabled="{{btnDisabled}}" wx:if="{{groupUserOrderId}}"><text>活动已注册</text></button>
       </block>
   </view>
