@@ -35,9 +35,9 @@ Page({
     });
     that.setData({ btnDisabled: true });
     wx.request({
-      url: app.globalData.baseUrl + '/user/...',
+      url: app.globalData.baseUrl + '/user/upgradeCoupon',
       data: {
-        code: code,
+        coupon: code,
         thirdSession: wx.getStorageSync('thirdSession')
       },
       method: 'POST',
@@ -69,7 +69,7 @@ Page({
   validation: function (code) {
     if (!code) {
       wx.showModal({
-        content: '请输入邀请码',
+        content: '请输入升级码',
         showCancel: false,
       });
       return false;

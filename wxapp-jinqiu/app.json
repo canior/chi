@@ -61,7 +61,7 @@
       },
       {
         "pagePath": "pages/offlineCourse/index",
-        "text": "活动",
+        "text": "线下活动",
         "iconPath": "images/course.png",
         "selectedIconPath": "images/course-active.png"
       },      
