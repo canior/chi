@@ -50,32 +50,32 @@
     "borderStyle": "black",
     "position": "bottom",
     "color": "#888",
-    "selectedColor": "#000",
+    "selectedColor": "#ffdf00",
     "backgroundColor": "#fff",
     "list": [
       {
         "pagePath": "pages/course/index",
         "text": "首页",
-        "iconPath": "images/home.png",
-        "selectedIconPath": "images/home-active.png"
+        "iconPath": "images/new-home.png",
+        "selectedIconPath": "images/new-home-active.png"
       },
       {
         "pagePath": "pages/offlineCourse/index",
         "text": "线下活动",
-        "iconPath": "images/course.png",
-        "selectedIconPath": "images/course-active.png"
+        "iconPath": "images/new-offline.png",
+        "selectedIconPath": "images/new-offline-active.png"
       },      
       {
         "pagePath": "pages/user/course/index",
         "text": "我的课程",
-        "iconPath": "images/course.png",
-        "selectedIconPath": "images/course-active.png"
+        "iconPath": "images/new-course.png",
+        "selectedIconPath": "images/new-course-active.png"
       },
       {
         "pagePath": "pages/user/index",
         "text": "个人中心",
-        "iconPath": "images/mine.png",
-        "selectedIconPath": "images/mine-active.png"
+        "iconPath": "images/new-mine.png",
+        "selectedIconPath": "images/new-mine-active.png"
       }
     ]
   }  
