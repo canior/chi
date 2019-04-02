@@ -232,7 +232,13 @@ class GroupUserOrderController extends BaseController
         }
 
         $groupUserOrder->setPending();
-        $groupUserOrder->setPaid();
+
+        if ($groupUserOrder instanceof  CourseOrder) {
+            $groupUserOrder->setRegistered();
+        } else {
+            $groupUserOrder->setPaid();
+        }
+
         $this->getEntityManager()->persist($groupUserOrder);
         $this->getEntityManager()->flush();
 
