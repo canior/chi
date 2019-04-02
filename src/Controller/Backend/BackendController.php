@@ -166,18 +166,18 @@ class BackendController extends DefaultController
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
-//                [
-//                    'path' => [
-//                        'offline_course_student_statistic_index',
-//                        'offline_course_student_index',
-//                        'offline_course_student_new',
-//                        'offline_course_student_edit',
-//                    ],
-//                    'name' => '报到管理',
-//                    'icon' => 'fa fa-calendar-check-o',
-//                    'active' => false,
-//                    'role' => 'ROLE_ADMIN',
-//                ],
+                [
+                    'path' => [
+                        'offline_course_student_statistic_index',
+                        'offline_course_student_index',
+                        'offline_course_student_new',
+                        'offline_course_student_edit',
+                    ],
+                    'name' => '报到管理',
+                    'icon' => 'fa fa-calendar-check-o',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
 //                [
 //                    'path' => [
 //                        'offline_course_review_index',

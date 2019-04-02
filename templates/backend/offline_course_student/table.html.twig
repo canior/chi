@@ -1,0 +1,42 @@
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th class="col-md-1">报到签到ID</th>
+            <th class="col-md-2">时间</th>
+            <th class="col-md-2">学生姓名</th>
+            <th class="col-md-2">推荐人</th>
+            <th class="col-md-2">状态</th>
+            <th class="col-md-2">备注</th>
+            <th class="col-md-1 text-center hidden-xs">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if totalCourseStudents %}
+            {% for item in courseStudents %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.createdAtFormatted }}</td>
+                    <td>{{ item.studentUser }}</td>
+                    <td>{{ item.studentUser.parentUser ?  item.studentUser.parentUser }}</td>
+                    <td {% if item.refused %} class="text-red" {% elseif item.welcomed %} class="text-green" {% endif %}>{{ item.statusText }} </td>
+                    <td>{{ item.memo }}</td>
+                    <td class="text-center">
+                        <div class="btn-group">
+                            {% if not user.isSecurity %}
+                            <a href="{{ path('course_student_edit', {'id': item.id}) }}" title="修改">
+                                <span class="fa fa-edit"></span>
+                            </a>&nbsp;
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="6" class="alert">no records found</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>

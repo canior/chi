@@ -1,0 +1,5 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <a class="btn btn-danger" href="{{ path('course_student_index', {'courseId': course_student.course.id}) }}">{{ '返回课程报到'|trans }}</a>
+    <button class="btn btn-primary">{{ button_label|default('提交') }}</button>
+{{ form_end(form) }}

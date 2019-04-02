@@ -1,0 +1,92 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}报到管理{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">课程报到</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="table-responsive col-md-6">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th class="col-md-2">课程ID</th>
+                                <td>{{ course.id }}</td>
+                            </tr>
+                            <tr>
+                                <th class="col-md-2">科目</th>
+                                <td>{{ course.subjectText }}</td>
+                            </tr>
+                            <tr>
+                                <th class="col-md-2">讲师</th>
+                                <td>{{ course.teacher.name }}</td>
+                            </tr>
+                            <tr>
+                                <th class="col-md-2">开始日期</th>
+                                <td>{{ course.startDateFormatted }}</td>
+                            </tr>
+                            <tr>
+                                <th class="col-md-2">结束日期</th>
+                                <td>{{ course.endDateFormatted }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>报到二维码</th>
+                                <th>签到二维码</th>
+                            </tr>
+                            <tr>
+                                <td><img class="img-responsive" src="{{ path('course_student_create_qr', {'id': course.id, status: 'welcome' }) }}"></td>
+                                <td><img class="img-responsive" src="{{ path('course_student_create_qr', {'id': course.id, 'status': 'signin'}) }}"></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">报到签到记录</h3>
+                    <span>注册人数：</span><span id="register_total">0</span>
+                    <span>报到人数:</span><span id="welcome_total">0</span>
+                </div>
+                <!-- /.box-header -->
+                <div id="studentTableDiv" class="box-body">
+
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+            <div>
+                <a class="btn btn-danger" href="{{ path('course_student_statistic_index') }}">{{ '返回报到管理'|trans }}</a>
+            </div>
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+
+    {% include 'backend/includes/delete.modal.html.twig' with {title: '报到签到记录'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include 'backend/includes/delete.js.html.twig' with {title: '报到签到记录'} %}
+    {% include 'backend/course_student/js.html.twig' %}
+{% endblock %}
