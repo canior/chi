@@ -1284,7 +1284,14 @@ class UserController extends BaseController
         /**
          * @var UpgradeOrderCoupon $upgradeOrderCoupon
          */
-        $upgradeOrderCoupon = $upgradeOrderCouponRepository->findBy(['coupon' => $coupon]);
+        $upgradeOrderCoupon = $upgradeOrderCouponRepository->findOneBy(['coupon' => $coupon]);
+
+        if ($upgradeOrderCoupon == null) {
+            return $this->responseJson('success', 201, [
+                'coupon' => $coupon,
+                'error' => '升级码不存在'
+            ]);
+        }
 
         if ($upgradeOrderCoupon->getUpgradeUser() != null) {
             return $this->responseJson('success', 201, [
