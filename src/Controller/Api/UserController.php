@@ -1313,4 +1313,24 @@ class UserController extends BaseController
         return $this->responseJson('success', 200, ['coupon' => $coupon]);
     }
 
+    /**
+     * 查看用户分享二维码
+     *
+     * @Route("/user/viewUserQrCard", name="viewUserQrCard", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @return Response
+     */
+    public function viewUserQrCard(Request $request, UserRepository $userRepository) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $url = isset($data['url']) ? $data['url'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        return $this->responseJson('success', 200, [
+            'shareSources' => $this->createUserShareSource($user, $url),
+        ]);
+    }
+
+
 }
