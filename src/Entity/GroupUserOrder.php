@@ -417,23 +417,31 @@ class GroupUserOrder implements Dao
                                 if (!$this->getProduct()->getCourse()->isSystemSubject()) { //思维课报名
                                     $this->getUser()->setParentUserExpiresAt(time() + User::PARENT_45_DAYS_EXPIRES_SECONDS);
                                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::VIP, $this);
-                                    $jinqiuUpgradeUserOrder->setApproved(false);
-                                    $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
+                                    if ($jinqiuUpgradeUserOrder) {
+                                        $jinqiuUpgradeUserOrder->setApproved(false);
+                                        $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
+                                    }
 
                                     $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::THINKING, $this);
-                                    $bianxianUpgradeUserOrder->setApproved(false);
-                                    $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
+                                    if ($bianxianUpgradeUserOrder) {
+                                        $bianxianUpgradeUserOrder->setApproved(false);
+                                        $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
+                                    }
 
                                 } else { //系统课报名
                                     $this->getUser()->setParentUserExpiresAt(time() + User::PARENT_365_DAYS_EXPIRES_SECONDS);
 
                                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED3, $this);
-                                    $jinqiuUpgradeUserOrder->setApproved(false);
-                                    $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
+                                    if ($jinqiuUpgradeUserOrder) {
+                                        $jinqiuUpgradeUserOrder->setApproved(false);
+                                        $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
+                                    }
 
                                     $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::ADVANCED, $this);
-                                    $bianxianUpgradeUserOrder->setApproved(true);
-                                    $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
+                                    if ($bianxianUpgradeUserOrder) {
+                                        $bianxianUpgradeUserOrder->setApproved(true);
+                                        $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
+                                    }
 
                                     //TODO 如果合伙人没有名额了怎么办
                                     $newParentUser->createUserRecommandStockOrder(-1);
@@ -478,23 +486,31 @@ class GroupUserOrder implements Dao
                 if ($this->getProduct()->isHasCoupon()) { //荣耀vip
                     $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED3];
                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED3, $this);
-                    $jinqiuUpgradeUserOrder->setApproved(true);
-                    $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
+                    if ($jinqiuUpgradeUserOrder) {
+                        $jinqiuUpgradeUserOrder->setApproved(true);
+                        $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
+                    }
 
                     $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::ADVANCED, $this);
-                    $bianxianUpgradeUserOrder->setApproved(false);
-                    $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
+                    if ($bianxianUpgradeUserOrder) {
+                        $bianxianUpgradeUserOrder->setApproved(false);
+                        $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
+                    }
 
                     $this->createUpgradeOrderCoupons(5);
                     $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
                 } else { //高级vip 或者 特权vip
                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED, $this);
-                    $jinqiuUpgradeUserOrder->setApproved(true);
-                    $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
+                    if ($jinqiuUpgradeUserOrder) {
+                        $jinqiuUpgradeUserOrder->setApproved(true);
+                        $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
+                    }
 
                     $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::THINKING, $this);
-                    $bianxianUpgradeUserOrder->setApproved(false);
-                    $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
+                    if ($bianxianUpgradeUserOrder) {
+                        $bianxianUpgradeUserOrder->setApproved(false);
+                        $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
+                    }
                 }
 
                 //每成功推荐6人即可升级为变现系统学员
@@ -503,6 +519,7 @@ class GroupUserOrder implements Dao
                     if (BianxianUserLevel::$userLevelPriorityArray[BianxianUserLevel::ADVANCED] > $recommander->getBianxianUserLevel()) {
                         $bianxianUpgradeUserOrder = $recommander->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::ADVANCED, null);
                         $bianxianUpgradeUserOrder->setApproved(false);
+                        $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
                     }
                 }
             }

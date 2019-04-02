@@ -160,7 +160,10 @@ class UpgradeUserOrder implements Dao
         $upgradeUserOrder->setType($type);
         $upgradeUserOrder->setUser($user);
         $upgradeUserOrder->setGroupUserOrder($groupUserOrder);
-        $upgradeUserOrder->setOldUserLevel($user->getUserLevel());
+        if ($type == UpgradeUserOrder::JINQIU)
+            $upgradeUserOrder->setOldUserLevel($user->getUserLevel());
+        if ($type == UpgradeUserOrder::BIANXIAN)
+            $upgradeUserOrder->setOldUserLevel($user->getBianxianUserLevel());
         $upgradeUserOrder->setUserLevel($newUserLevel);
         $upgradeUserOrder->setStatus(self::CREATED);
         if ($groupUserOrder) {

@@ -19,8 +19,8 @@ class BianxianUserLevel
 
     public static $userLevelTextArray = [
         self::VISITOR => '普通学员',
-        self::THINKING => '变现思维学员',
-        self::ADVANCED => '变现系统学员',
+        self::THINKING => '思维学员',
+        self::ADVANCED => '系统学员',
         self::PARTNER => '合伙人',
         self::DISTRIBUTOR => '分院',
     ];
