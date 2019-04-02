@@ -176,7 +176,7 @@ class BackendController extends DefaultController
                     'name' => '报到管理',
                     'icon' => 'fa fa-calendar-check-o',
                     'active' => false,
-                    'role' => 'ROLE_ADMIN',
+                    'role' => ['ROLE_ADMIN', 'ROLE_SECURITY'],
                 ],
 //                [
 //                    'path' => [
