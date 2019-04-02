@@ -26,6 +26,16 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
+}.offline-item .down .line .price {
+  color: #ff4d42;
+}.offline-item .down .line .addr {
+  width: 45%;
+  line-height: 30rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 .offline-item .down .line.title {
   font-size: 30rpx;

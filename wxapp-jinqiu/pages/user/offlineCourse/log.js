@@ -129,7 +129,7 @@ Page({
       title: '玩命加载中',
     })    
     wx.request({
-      url: app.globalData.baseUrl + '/user/signInCourse',
+      url: app.globalData.baseUrl + '/user/signInOfflineCourse',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
         courseId: courseId,

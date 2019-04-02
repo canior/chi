@@ -13,7 +13,7 @@
       <view class="down">
         <view class="line title">
           <view>{{course.title}}</view>
-          <view>￥{{course.price}}</view>
+          <view class="price">￥{{course.price}}</view>
         </view>
         <view class="line desc">
           <view>科目: {{course.subjectText}}</view>
@@ -21,7 +21,7 @@
         </view>
         <view class="line desc">
           <view>时间: {{course.startDate}} - {{course.endDate}}</view>
-          <view>地点: {{course.region.fullname}} {{course.address}}</view>
+          <view class="addr">地点: {{course.region.fullname}} {{course.address}}</view>
         </view>
       </view>
     </view>
