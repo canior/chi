@@ -11,6 +11,7 @@
       </view>
     </view>
     <view class="right" wx:if="{{isLogin}}">
+      <image src="/images/qrcode.png"/>
       <view class="arrow-right"/>
     </view>
     <view class="right" wx:if="{{!isLogin}}">

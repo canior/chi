@@ -81,9 +81,9 @@ Page({
       });
       return false;
     }
-    if (!(/^\d+$/.test(code))) {
+    if (!(/^[0-9a-zA-Z]+$/.test(code))) {
       wx.showModal({
-        content: '升级码应为数字',
+        content: '升级码不对',
         showCancel: false,
       });
       return false;

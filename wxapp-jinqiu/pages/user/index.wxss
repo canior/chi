@@ -25,13 +25,14 @@
   border-radius: 50%;
 }
 .top .right {
-  text-align: center;
+  display: flex;
+  align-items: center;
 }
 .top .right image {
-  width: 23rpx;
-  height: 25rpx;
+  width: 60rpx;
+  height: 60rpx;
   vertical-align: text-top;
-  margin-right: 5rpx;
+  margin-right: 20rpx;
 }
 .top .right .myreward {
   font-size: 24rpx;
