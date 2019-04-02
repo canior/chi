@@ -105,17 +105,20 @@ class BusinessLogicWithDb extends JinqiuBaseTestCase
 
         $teacher = $this->createTeacher(true);
         $thinkingWithSystemCourse = $this->createCourse($teacher, Subject::TRADING, true);
+        $thinkingWithSystemCourse->getProduct()->setHasCoupon(true);
+        $this->getEntityManager()->persist($thinkingWithSystemCourse);
+        $this->getEntityManager()->flush();
 
         $courseOrder = CourseOrder::factory($user, $thinkingWithSystemCourse->getProduct());
         $courseOrder->setRegistered();
         $this->getEntityManager()->persist($courseOrder);
         $this->getEntityManager()->flush();
 
+        $upgradeOrderCoupons = $this->getEntityManager()->getRepository(UpgradeOrderCoupon::class)->findAll();
+        $this->assertEquals(5, count($upgradeOrderCoupons));
+
         $this->assertEquals($partner, $user->getParentUser());
 
-        /**
-         * @var CourseStudentRepository
-         */
         $courseStudentRepository = $this->getEntityManager()->getRepository(CourseStudent::class);
         $courseStudent = $courseStudentRepository->findOneBy(['studentUser' => $user, 'course' => $thinkingWithSystemCourse, 'status' => CourseStudent::REGISTERED]);
         $this->assertTrue($courseStudent != null);
