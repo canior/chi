@@ -1270,7 +1270,7 @@ class UserController extends BaseController
 
     /**
      * 扫一扫报到，签到课程
-     * @Route("/user/signInOfflineCourse", name="signInCourse", methods="POST")
+     * @Route("/user/signInOfflineCourse", name="signInOfflineCourse", methods="POST")
      * @param Request $request
      * @return Response
      */
