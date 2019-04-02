@@ -460,7 +460,6 @@ class GroupUserOrder implements Dao
                         }
 
                         if ($this->getProduct()->isHasCoupon()) {
-                            $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED3];
 
                             $this->createUpgradeOrderCoupons(5);
 
@@ -493,7 +492,6 @@ class GroupUserOrder implements Dao
 
                 $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED];
                 if ($this->getProduct()->isHasCoupon()) { //荣耀vip
-                    $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED3];
                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED3, $this);
                     if ($jinqiuUpgradeUserOrder) {
                         $jinqiuUpgradeUserOrder->setApproved(true);

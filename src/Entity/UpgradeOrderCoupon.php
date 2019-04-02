@@ -30,7 +30,7 @@ class UpgradeOrderCoupon implements Dao
 
     /**
      * @var GroupUserOrder $groupUserOrder
-     * @ORM\ManyToOne(targetEntity="App\Entity\GroupUserOrder", inversedBy="upgradeCoupons")
+     * @ORM\ManyToOne(targetEntity="App\Entity\GroupUserOrder", inversedBy="upgradeOrderCoupons")
      * @ORM\JoinColumn(nullable=false)
      */
     private $groupUserOrder;
