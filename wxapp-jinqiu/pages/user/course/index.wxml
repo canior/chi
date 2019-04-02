@@ -58,8 +58,8 @@
         </view>
         <view class="row">
           <view class="left">{{item.statusText}}</view>
-          <view catchtap="toMyCourseLog" data-id="{{item.id}}" class="right btn">活动日志</view>
-        </view>    
+          <view class="right"><button catchtap="toMyCourseLog" data-id="{{item.id}}" class="btn">活动日志</button></view>
+        </view>
       </view>
       <view class="split-brand"/>
     </block>

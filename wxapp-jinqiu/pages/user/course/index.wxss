@@ -112,14 +112,14 @@
   font-size: 36rpx;
   color: #ff4d42;
 }
-.row .right.btn {
+.row button.btn {
   font-size: 24rpx;
-  color: #ff4d42;
-  text-align: center;
-  border: 1px solid #ff4d42;
-  border-radius: 20rpx;
-  margin: 0 10rpx;
-  padding: 0 10rpx;
+  background-color: #fff;
+  text-align: right;
+}.row button.btn::after {
+  border-color: #000;
+}.row button.btn:first-child {
+  margin-right: 20rpx;
 }
 .none {
   display: flex;
