@@ -38,16 +38,16 @@ class OfflineCourseStudentController extends BackendController
         ];
 
         if($data['form']['subject']) {
-            $data['data'] = $courseRepository->findBy(['subject' => $data['form']['subject']]);
+            $data['data'] = $courseRepository->findBy(['subject' => $data['form']['subject'], 'isOnline' => false]);
         } else {
-            $data['data'] = $courseRepository->findAll();
+            $data['data'] = $courseRepository->findBy(['isOnline' => false]);
         }
 
         if ($this->getUser()->isSecurity()) {
             if($data['form']['subject']) {
-                $data['data'] = $courseRepository->findBy(['subject' => $data['form']['subject'], 'ownerUser' => $this->getUser()]);
+                $data['data'] = $courseRepository->findBy(['subject' => $data['form']['subject'], 'ownerUser' => $this->getUser(), 'isOnline' => false]);
             } else {
-                $data['data'] = $courseRepository->findBy(['ownerUser' => $this->getUser()]);
+                $data['data'] = $courseRepository->findBy(['ownerUser' => $this->getUser(), 'isOnline' => false]);
             }
         }
 
@@ -103,7 +103,7 @@ class OfflineCourseStudentController extends BackendController
      * @return Response
      */
     public function studentTable(CourseStudentRepository $courseStudentRepository, $courseId) {
-        $courseStudents = $courseStudentRepository->findBy(['course' => $courseId], ['id' => 'desc']);
+        $courseStudents = $courseStudentRepository->findBy(['course' => $courseId, 'isOnline' => false], ['id' => 'desc']);
         return $this->render('backend/offline_course_student/table.html.twig', [
             'user' => $this->getUser(),
             'courseStudents' => $courseStudents,
