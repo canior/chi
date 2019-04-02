@@ -45,7 +45,7 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           wx.showModal({
-            content: '您输入的升级码已提交',
+            content: '您的升级码已确认',
             showCancel: false,
             success: function (res) {
               if (res.confirm) {
