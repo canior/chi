@@ -1300,7 +1300,7 @@ class UserController extends BaseController
             ]);
         }
 
-        if (UserLevel::$userLevelPriorityArray[$user->getUserLevel()] >= UserLevel::ADVANCED2) {
+        if (UserLevel::$userLevelPriorityArray[$user->getUserLevel()] >= UserLevel::$userLevelPriorityArray[UserLevel::ADVANCED2]) {
             return $this->responseJson('success', 201, [
                 'coupon' => $coupon,
                 'error' => '您已经是更高级别会员，无需使用升级码']);
