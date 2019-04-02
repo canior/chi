@@ -44,7 +44,7 @@ class UpgradeOrderCoupon implements Dao
 
     /**
      * @var UpgradeUserOrder[] | ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\UpgradeUserOrder", mappedBy="upgradeUserOrder", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\UpgradeUserOrder", mappedBy="upgradeOrderCoupon", cascade={"persist"}, orphanRemoval=true)
      */
     private $usedForUpgradeUserOrders;
 
