@@ -1285,8 +1285,17 @@ class User extends BaseUser implements Dao
 
         $upgradeUserOrder = UpgradeUserOrder::factory($upgradeUserOrderType, $this, $newUserLevel, $groupUserOrder);
         $upgradeUserOrder->setRecommanderUser($this->getParentUser());
-        $upgradeUserOrder->setPartnerUser($this->getTopParentPartnerUser());
-        $upgradeUserOrder->setPartnerTeacherUser($this->getTopParentPartnerUser() ? $this->getTopParentPartnerUser()->getPartnerTeacherRecommanderUser() : null);
+        if ($upgradeUserOrder->isJinqiu()) {
+            $upgradeUserOrder->setPartnerUser($this->getTopParentPartnerUser());
+        }
+        else {
+            $upgradeUserOrder->setPartnerUser($this->getBianxianTopParentPartnerUser());
+        }
+
+        if ($groupUserOrder and $groupUserOrder->isCourseOrder()) {
+            $upgradeUserOrder->setPartnerTeacherUser($groupUserOrder->getProduct()->getCourse()->getTeacher()->getUser());
+        }
+
         $this->upgradeUserOrders->add($upgradeUserOrder);
         return $upgradeUserOrder;
     }

@@ -240,6 +240,11 @@ class GroupUserOrderController extends BaseController
         }
 
         $this->getEntityManager()->persist($groupUserOrder);
+
+        if ($groupUserOrder->getProduct()->isHasCoupon()) {
+            $user->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($groupUserOrder->getId()));
+        }
+
         $this->getEntityManager()->flush();
 
         $data = [

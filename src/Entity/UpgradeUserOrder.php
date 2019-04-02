@@ -398,10 +398,11 @@ class UpgradeUserOrder implements Dao
         if ($partnerUser) {
             $rewards = Subject::$subjectRewards[$this->getGroupUserOrder()->getProduct()->getCourse()->getSubject()][$partnerUser->getBianxianUserLevel()];
             if ($this->isApproved()) {
-                $memo = '推荐' . $this->getUser()->getNickname() . '系统课成功';
+                $memo = '合伙人推荐' . $this->getUser()->getDisplayName() . '系统课成功';
                 $this->setRecommanderUser($partnerUser);
                 $this->setPartnerUser($partnerUser);
-                $partnerUser->createUserAccountOrder(UserAccountOrder::RECOMMAND_REWARDS, $rewards, $this, null, $memo);
+                $partnerUserAccountOrder = $partnerUser->createUserAccountOrder(UserAccountOrder::PARTNER_REWARDS, $rewards, $this, null, $memo);
+                $partnerUserAccountOrder->setCourse($this->getGroupUserOrder()->getProduct()->getCourse());
             }
         }
 
@@ -410,9 +411,10 @@ class UpgradeUserOrder implements Dao
         if ($teacher) {
             $rewards = Subject::$subjectRewards[$this->getGroupUserOrder()->getProduct()->getCourse()->getSubject()]['THINKING_TEACHER'];
             if ($this->isApproved()) {
-                $memo = '成交' . $this->getUser()->getNickname() . '系统课成功';
+                $memo = '学员' . $this->getUser()->getDisplayName() . '升级系统课成功';
                 $this->setPartnerTeacherUser($teacher);
-                $teacher->createUserAccountOrder(UserAccountOrder::RECOMMAND_REWARDS, $rewards, $this, null, $memo);
+                $teacherUserAccountOrder = $teacher->createUserAccountOrder(UserAccountOrder::TEACHER_REWARDS, $rewards, $this, null, $memo);
+                $teacherUserAccountOrder->setCourse($this->getGroupUserOrder()->getProduct()->getCourse());
             }
         }
     }

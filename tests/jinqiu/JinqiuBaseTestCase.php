@@ -7,7 +7,10 @@
  */
 
 namespace App\Tests\Jinqiu;
+use App\Entity\CourseStudent;
+use App\Entity\ProductReview;
 use App\Entity\Teacher;
+use App\Entity\UpgradeOrderCoupon;
 use App\Entity\UpgradeUserOrder;
 use App\Entity\User;
 use App\Entity\Course;
@@ -23,6 +26,24 @@ class JinqiuBaseTestCase extends BaseTestCase
 {
     protected function setUp() {
         parent::setUp();
+
+        $courseStudentRepository = $this->getEntityManager()->getRepository(CourseStudent::class);
+        foreach($courseStudentRepository->findAll() as $courseStudent) {
+            $this->getEntityManager()->remove($courseStudent);
+        }
+        $this->getEntityManager()->flush();
+
+        $productReviewRepository = $this->getEntityManager()->getRepository(ProductReview::class);
+        foreach($productReviewRepository->findAll() as $productReview) {
+            $this->getEntityManager()->remove($productReview);
+        }
+        $this->getEntityManager()->flush();
+
+        $upgradeOrderCouponRepository = $this->getEntityManager()->getRepository(UpgradeOrderCoupon::class);
+        foreach($upgradeOrderCouponRepository->findAll() as $coupon) {
+            $this->getEntityManager()->remove($coupon);
+        }
+        $this->getEntityManager()->flush();
 
         /**
          * @var UserRecommandStockOrderRepository $userRecommandStockOrderRepository
@@ -70,6 +91,7 @@ class JinqiuBaseTestCase extends BaseTestCase
         $this->getEntityManager()->flush();
 
     }
+
     /**
      * @param $userLevel
      * @param bool $isPersist

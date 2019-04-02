@@ -456,15 +456,12 @@ class GroupUserOrder implements Dao
                         //TODO 如果合伙人没有名额了怎么办
                         $topParentUser = $this->getUser()->getParentUser();
                         if ($topParentUser) {
-                            $topParentUser->createUserRecommandStockOrder(-1);
+                            $memo = '合伙人推荐系统学员成功，消除名额';
+                            $topParentUser->createUserRecommandStockOrder(-1, $bianxianUpgradeUserOrder, $memo);
                         }
 
                         if ($this->getProduct()->isHasCoupon()) {
-
                             $this->createUpgradeOrderCoupons(5);
-
-                            //推送用户coupon
-                            $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
                         }
                     }
 
@@ -505,7 +502,6 @@ class GroupUserOrder implements Dao
                     }
 
                     $this->createUpgradeOrderCoupons(5);
-                    $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
                 } else { //高级vip 或者 特权vip
                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED, $this);
                     if ($jinqiuUpgradeUserOrder) {

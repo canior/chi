@@ -29,6 +29,7 @@ class UserAccountOrder implements Dao
     const RECOMMAND_REWARDS = 'recommand_rewards';
     const SUPPLIER_REWARDS = 'supplier_rewards';
     const PARTNER_REWARDS = 'partner_rewards';
+    const TEACHER_REWARDS = 'teacher_rewards';
     const PARTNER_TEACHER_REWARDS = 'partner_teacher_rewards';
     const WITHDRAW = 'withdraw';
 
@@ -36,6 +37,7 @@ class UserAccountOrder implements Dao
         self::RECOMMAND_REWARDS => '推荐佣金',
         self::SUPPLIER_REWARDS => '供货商货款',
         self::PARTNER_REWARDS => '合伙人佣金',
+        self::TEACHER_REWARDS => '讲师佣金',
         self::PARTNER_TEACHER_REWARDS => '合伙人讲师佣金',
         self::WITHDRAW => '提现',
     ];
