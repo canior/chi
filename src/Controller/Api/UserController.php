@@ -1269,6 +1269,73 @@ class UserController extends BaseController
     }
 
     /**
+     * 扫一扫报到，签到课程
+     * @Route("/user/signInOfflineCourse", name="signInCourse", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function createOfflineCourseStudent(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
+        $courseId = isset($data['courseId']) ? $data['courseId'] : null;
+        $courseStudentStatus = isset($data['courseStudentStatus']) ? $data['courseStudentStatus'] : null;
+        $user = $this->getWxUser($thirdSession);
+
+        /**
+         * @var Course $course
+         */
+        $course = $this->getEntityManager()->getRepository(Course::class)->find($courseId);
+
+        /**
+         * @var GroupUserOrderRepository $groupUserOrderRepository
+         */
+        $groupUserOrderRepository = $this->getEntityManager()->getRepository(GroupUserOrder::class);
+        $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $course->getProduct(), 'user' => $user]);
+
+        if (!$groupUserOrder) {
+            $memo = '未找到课程注册订单记录';
+            $course->refuseStudent($user, $memo);
+        } else if (!$course->hasStudent($user)) {
+            $memo = '未找到注册记录';
+            $course->refuseStudent($user, $memo);
+        } else if ($course->isExpired()) {
+            $memo = '课程已结束';
+            $course->refuseStudent($user, $memo);
+        } else if (!$course->getProduct()->isActive()) {
+            $memo = '课程未发布';
+            $course->refuseStudent($user, $memo);
+        } else {
+            if ($courseStudentStatus == CourseStudent::WELCOME) {
+                if (!$course->isWelcomed($user)) {
+                    $course->welcomeStudent($user);
+                } else {
+                    $course->signInStudent($user);
+                }
+            } else if ($courseStudentStatus == CourseStudent::SIGNIN) {
+                $course->signInStudent($user);
+            }
+        }
+
+        $this->getEntityManager()->persist($course);
+        $this->getEntityManager()->flush();
+
+        $courseArray = [];
+        if ($course) {
+            $courseArray = $course->getArray();
+        }
+
+        $groupUserOrderArray = [];
+        if ($groupUserOrder) {
+            $groupUserOrderArray = $groupUserOrder->getArray();
+        }
+
+        return $this->responseJson('success', 200, [
+            'course' => $courseArray,
+            'groupUserOrder' => $groupUserOrderArray,
+        ]);
+    }
+
+    /**
      * @Route("/user/upgradeCoupon", name="signInCourse", methods="POST")
      * @param Request $request
      * @param UpgradeOrderCouponRepository $upgradeOrderCouponRepository
@@ -1331,6 +1398,5 @@ class UserController extends BaseController
             'shareSources' => $this->createUserShareSource($user, $url),
         ]);
     }
-
 
 }
