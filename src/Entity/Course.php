@@ -12,7 +12,7 @@ use App\Entity\Traits\IdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CourseRepository")
@@ -416,6 +416,44 @@ class Course implements Dao
      */
     public function registerStudent(User $studentUser) {
         $this->addStudentUser($studentUser, CourseStudent::REGISTERED);
+    }
+
+    /**
+     * 学生报到
+     * @param $studentUser
+     */
+    public function welcomeStudent($studentUser) {
+        $this->addStudentUser($studentUser, CourseStudent::WELCOME);
+    }
+
+    /**
+     * 学生签到
+     * @param $studentUser
+     */
+    public function signInStudent($studentUser) {
+        $this->addStudentUser($studentUser, CourseStudent::SIGNIN);
+    }
+
+    /**
+     * 拒绝学生
+     * @param $studentUser
+     * @param $memo
+     */
+    public function refuseStudent($studentUser, $memo) {
+        $this->addStudentUser($studentUser, CourseStudent::REFUSED, $memo);
+    }
+
+    /**
+     * @param User $studentUser
+     * @return bool true if student has already been welcomed
+     */
+    public function isWelcomed(User $studentUser) {
+        $criteria = Criteria::create();
+        $criteria->where(Criteria::expr()->eq('status', CourseStudent::WELCOME));
+        $criteria->andWhere(Criteria::expr()->eq('studentUser', $studentUser));
+
+        $courseStudents =  $this->courseStudents->matching($criteria);
+        return !$courseStudents->isEmpty();
     }
 
 
