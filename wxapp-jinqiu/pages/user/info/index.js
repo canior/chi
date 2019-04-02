@@ -1,11 +1,12 @@
 // pages/user/info/index.js
+const app = getApp()
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    imgUrlPrefix: app.globalData.imgUrlPrefix,
   },
 
   /**
@@ -18,6 +19,37 @@ Page({
   toPersonal: function () {
     wx.navigateTo({
       url: '/pages/user/info/update',
+    })
+  },
+
+  toQRCode: function () {
+    const that = this;
+    wx.showLoading({
+      title: '玩命加载中',
+    })    
+    wx.request({
+      url: app.globalData.baseUrl + '/user/viewUserQrCard',
+      data: {
+        thirdSession: wx.getStorageSync('thirdSession'),
+        url: '/pages/course/index'
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          const shareSources = res.data.data.shareSources;
+          const shareSource = shareSources['quan'];
+          wx.navigateTo({
+            url: '/pages/share/moment?imageUrl=' + encodeURIComponent(that.data.imgUrlPrefix + '/' + shareSource.bannerFileId),
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {},
+      complete(e) {
+        wx.hideLoading()
+      }
     })
   },
 
