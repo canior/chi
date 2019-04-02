@@ -45,13 +45,20 @@ Page({
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           wx.showModal({
-            content: '您输入的邀请码已提交',
+            content: '您输入的升级码已提交',
             showCancel: false,
             success: function (res) {
               if (res.confirm) {
                 wx.navigateBack({
                 })
               }
+            }
+          });
+        } else if (res.statusCode == 200 && res.data.code == 201) {
+          wx.showModal({
+            content: res.data.data.error,
+            showCancel: false,
+            success: function (res) {
             }
           });
         } else {
@@ -76,7 +83,7 @@ Page({
     }
     if (!(/^\d+$/.test(code))) {
       wx.showModal({
-        content: '邀请码应为数字',
+        content: '升级码应为数字',
         showCancel: false,
       });
       return false;
