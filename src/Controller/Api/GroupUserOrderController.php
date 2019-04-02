@@ -233,11 +233,6 @@ class GroupUserOrderController extends BaseController
         $groupUserOrder->setPending();
         $groupUserOrder->setPaid();
         $this->getEntityManager()->persist($groupUserOrder);
-
-        foreach($groupUserOrder->getPotentialUpgradeUserOrders() as $upgradeUserOrder) {
-            $this->getEntityManager()->persist($upgradeUserOrder);
-        }
-
         $this->getEntityManager()->flush();
 
         $data = [
