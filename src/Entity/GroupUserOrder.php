@@ -401,8 +401,9 @@ class GroupUserOrder implements Dao
                 if (!$this->getProduct()->getCourse()->isOnline()) {
 
                     //锁定讲师
-                    if ($this->getProduct()->getCourse()->getSubject() == Subject::THINKING) {
-                        $this->getUser()->setTeacherRecommanderUser($this->getProduct()->getCourse()->getTeacher()->getUser());
+                    if ($this->getProduct()->getCourse()->getSubject() == Subject::THINKING or $this->getProduct()->getCourse()->getSubject() == Subject::TRADING) {
+                        if ($this->getUser()->getTeacherRecommanderUser() == null)
+                            $this->getUser()->setTeacherRecommanderUser($this->getProduct()->getCourse()->getTeacher()->getUser());
                     }
 
                     //锁定合伙人为推荐人
@@ -413,50 +414,58 @@ class GroupUserOrder implements Dao
                             if ($oldParentUser !== $newParentUser) {
                                 $newParentUser = $newParentUser->getBianxianTopParentPartnerUser();
                                 $this->getUser()->setParentUser($newParentUser);
-
-                                if (!$this->getProduct()->getCourse()->isSystemSubject()) { //思维课报名
+                                if ($this->getProduct()->getCourse()->getSubject() == Subject::THINKING){
                                     $this->getUser()->setParentUserExpiresAt(time() + User::PARENT_45_DAYS_EXPIRES_SECONDS);
-                                    $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::VIP, $this);
-                                    if ($jinqiuUpgradeUserOrder) {
-                                        $jinqiuUpgradeUserOrder->setApproved(false);
-                                        $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
-                                    }
-
-                                    $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::THINKING, $this);
-                                    if ($bianxianUpgradeUserOrder) {
-                                        $bianxianUpgradeUserOrder->setApproved(false);
-                                        $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
-                                    }
-
-                                } else { //系统课报名
+                                } else {
                                     $this->getUser()->setParentUserExpiresAt(time() + User::PARENT_365_DAYS_EXPIRES_SECONDS);
-
-                                    $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED3, $this);
-                                    if ($jinqiuUpgradeUserOrder) {
-                                        $jinqiuUpgradeUserOrder->setApproved(false);
-                                        $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
-                                    }
-
-                                    $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::ADVANCED, $this);
-                                    if ($bianxianUpgradeUserOrder) {
-                                        $bianxianUpgradeUserOrder->setApproved(true);
-                                        $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
-                                    }
-
-                                    //TODO 如果合伙人没有名额了怎么办
-                                    $newParentUser->createUserRecommandStockOrder(-1);
-
-                                    if ($this->getProduct()->isHasCoupon()) {
-                                        $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED3];
-
-                                        $this->createUpgradeOrderCoupons(5);
-
-                                        //推送用户coupon
-                                        $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
-                                    }
                                 }
-
                             }
+                        }
+                    }
+
+                    //分钱逻辑
+                    if ($this->getProduct()->getCourse()->getSubject() == Subject::THINKING
+                        or $this->getProduct()->getCourse()->getSubject() == Subject::SYSTEM_1
+                        or $this->getProduct()->getCourse()->getSubject() == Subject::SYSTEM_2) { //思维课报名, 系统课1&2复训报名
+
+                        $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::VIP, $this);
+                        if ($jinqiuUpgradeUserOrder) {
+                            $jinqiuUpgradeUserOrder->setApproved(false);
+                            $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
+                        }
+
+                        $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::THINKING, $this);
+                        if ($bianxianUpgradeUserOrder) {
+                            $bianxianUpgradeUserOrder->setApproved(false);
+                            $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
+                        }
+
+                    } else { //思维直升系统课报名
+                        $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED3, $this);
+                        if ($jinqiuUpgradeUserOrder) {
+                            $jinqiuUpgradeUserOrder->setApproved(false);
+                            $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
+                        }
+
+                        $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::ADVANCED, $this);
+                        if ($bianxianUpgradeUserOrder) {
+                            $bianxianUpgradeUserOrder->setApproved(true);
+                            $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
+                        }
+
+                        //TODO 如果合伙人没有名额了怎么办
+                        $topParentUser = $this->getUser()->getParentUser();
+                        if ($topParentUser) {
+                            $topParentUser->createUserRecommandStockOrder(-1);
+                        }
+
+                        if ($this->getProduct()->isHasCoupon()) {
+                            $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED3];
+
+                            $this->createUpgradeOrderCoupons(5);
+
+                            //推送用户coupon
+                            $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
                         }
                     }
 

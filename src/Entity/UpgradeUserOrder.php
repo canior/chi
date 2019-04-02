@@ -389,7 +389,7 @@ class UpgradeUserOrder implements Dao
             return;
         }
 
-        if (!$this->getGroupUserOrder()->getProduct()->getCourse()->isSystemSubject()) {
+        if ($this->getGroupUserOrder()->getProduct()->getCourse()->getSubject() != Subject::TRADING) {
             return;
         }
 

@@ -402,7 +402,7 @@ class BusinessLogic extends JinqiuBaseTestCase
         ShareSourceUser::factory($recommanderShareSource, $user);
         $teacher = $this->createTeacher();
 
-        $systemCourse = $this->createCourse($teacher, Subject::SYSTEM_1);
+        $systemCourse = $this->createCourse($teacher, Subject::TRADING);
         $systemCourse->setPrice(12500);
         $systemCourse->getProduct()->setHasCoupon(true);
 
@@ -413,7 +413,7 @@ class BusinessLogic extends JinqiuBaseTestCase
 
         $this->assertEquals($thinkingTeacher->getUser(), $user->getTeacherRecommanderUser());
         $this->assertEquals($partner, $user->getParentUser());
-        $this->assertTrue($user->getParentUserExpiresAt() > 0);
+        $this->assertTrue($user->getParentUserExpiresAt() > time() + 364*3600*24);
 
         $this->assertEquals(1, $partner->getTotalUserAccountOrders());
         $partnerAccountOrder = $partner->getUserAccountOrders()[0];
