@@ -43,8 +43,8 @@ class CourseOrder extends GroupUserOrder
             return $this;
 
        $this->status = GroupUserOrder::DELIVERED;
-       $this->setUpdatedAt();
        $this->setPaid();
+       $this->setUpdatedAt();
 
        $this->getCourse()->registerStudent($this->getUser());
 

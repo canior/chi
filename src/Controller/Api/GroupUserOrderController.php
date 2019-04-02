@@ -13,6 +13,7 @@ use App\Command\EnqueueCommand;
 use App\Command\Notification\NotifyCompletedGroupOrderCommand;
 use App\Command\Notification\NotifyOrderRewardsSentCommand;
 use App\Command\Notification\NotifyPendingGroupOrderCommand;
+use App\Entity\CourseOrder;
 use App\Entity\CourseStudent;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
@@ -157,13 +158,13 @@ class GroupUserOrderController extends BaseController
         $user = $this->getWxUser($thirdSession);
         $product = $productRepository->find($productId);
 
-        $groupUserOrder = GroupUserOrder::factory($user, $product);
+        $offlineCourseOrder = CourseOrder::factory($user, $product);
 
-        $this->getEntityManager()->persist($groupUserOrder);
+        $this->getEntityManager()->persist($offlineCourseOrder);
         $this->getEntityManager()->flush();
 
         return $this->responseJson('success', 200, [
-            'groupUserOrder' => $groupUserOrder->getArray()
+            'groupUserOrder' => $offlineCourseOrder->getArray()
         ]);
     }
 

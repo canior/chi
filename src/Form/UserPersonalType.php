@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\BianxianUserLevel;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -26,6 +27,12 @@ class UserPersonalType extends AbstractType
                 'label' => '会员等级',
                 'mapped' => false,
                 'choices' => array_flip(UserLevel::$userLevelTextArray),
+                'required' => true
+            ])
+            ->add('bianxianUserLevel', ChoiceType::class, [
+                'label' => '变现等级',
+                'mapped' => false,
+                'choices' => array_flip(BianxianUserLevel::$userLevelTextArray),
                 'required' => true
             ])
             ->add('name', TextType::class, [

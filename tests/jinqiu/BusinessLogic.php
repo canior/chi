@@ -370,14 +370,18 @@ class BusinessLogic extends JinqiuBaseTestCase
 
         $this->assertFalse($thinkingCourse->isOnline());
 
+        $this->assertFalse($thinkingCourse->hasStudent($user));
+
         $courseOrder = CourseOrder::factory($user, $thinkingCourse->getProduct());
         $courseOrder->setRegistered();
 
+        $this->assertTrue($thinkingCourse->hasStudent($user));
         $this->assertEquals($teacher->getUser(), $user->getTeacherRecommanderUser());
         $this->assertEquals($partner, $user->getParentUser());
         $this->assertTrue($user->getParentUserExpiresAt() > time() + 44 * 3600 * 24);
         $this->assertEquals(BianxianUserLevel::THINKING, $user->getBianxianUserLevel());
         $this->assertEquals(UserLevel::VIP, $user->getUserLevel());
+
 
 
         /**
@@ -406,11 +410,13 @@ class BusinessLogic extends JinqiuBaseTestCase
         $systemCourse->setPrice(12500);
         $systemCourse->getProduct()->setHasCoupon(true);
 
+        $this->assertFalse($systemCourse->hasStudent($user));
         $courseOrder = CourseOrder::factory($user, $systemCourse->getProduct());
         $courseOrder->setId(random_int(1,100));
         $courseOrder->setRegistered();
-        $this->assertEquals(5, $courseOrder->getUpgradeOrderCoupons()->count());
+        $this->assertTrue($systemCourse->hasStudent($user));
 
+        $this->assertEquals(5, $courseOrder->getUpgradeOrderCoupons()->count());
         $this->assertEquals($thinkingTeacher->getUser(), $user->getTeacherRecommanderUser());
         $this->assertEquals($partner, $user->getParentUser());
         $this->assertTrue($user->getParentUserExpiresAt() > time() + 364*3600*24);

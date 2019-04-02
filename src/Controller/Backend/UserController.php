@@ -89,6 +89,7 @@ class UserController extends BackendController
     public function editUserPersonal(Request $request, User $user) {
         $form = $this->createForm(UserPersonalType::class, $user);
         $form->get('userLevel')->setData(array_search($user->getUserLevelText(), UserLevel::$userLevelTextArray));
+        $form->get('bianxianUserLevel')->setData(array_search($user->getUserLevelText(), BianxianUserLevel::$userLevelTextArray));
         $form->handleRequest($request);
 
         $verifyParentForm = $this->createForm(VerifyParentUserType::class, $user);
@@ -100,6 +101,7 @@ class UserController extends BackendController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user->setUserLevel($form->get('userLevel')->getData());
+            $user->setBianxianUserLevel($form->get('bianxianUserLevel')->getData());
             $this->getEntityManager()->persist($user);
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', '修改成功');

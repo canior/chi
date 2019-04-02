@@ -1096,6 +1096,18 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * @return string
+     */
+    public function getBianxianUserLevelText(): string
+    {
+        if ($this->getUserLevel()) {
+            return BianxianUserLevel::$userLevelTextArray[$this->getBianxianUserLevel()];
+        }
+
+        return "";
+    }
+
+    /**
      * @param string $userLevel
      */
     public function setUserLevel(string $userLevel): void
@@ -1798,7 +1810,8 @@ class User extends BaseUser implements Dao
     {
         return 'ID: ' . $this->getId()
             . ' 名称: ' . $this->getDisplayName()
-            . ' 等级: ' . $this->getUserLevelText();
+            . ' 等级: ' . $this->getUserLevelText() . '|' . $this->getBianxianUserLevelText();
+
     }
 
     /**
