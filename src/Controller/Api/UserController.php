@@ -866,35 +866,6 @@ class UserController extends BaseController
     }
 
     /**
-     * 提交学员升级订单
-     *
-     * @Route("/user/upgradeUserOrder/create", name="createUpgradeUserOrder", methods="POST")
-     * @param Request $request
-     * @return Response
-     */
-    public function createUpgradeUserOrderAction(Request $request) {
-        $data = json_decode($request->getContent(), true);
-        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
-        $userLevel = isset($data['userLevel']) ? $data['userLevel'] : null;
-        $recommanderName = isset($data['recommanderName']) ? $data['recommanderName'] : null;
-        $user = $this->getWxUser($thirdSession);
-
-        $upgradeUserOrder = $user->createUpgradeUserOrder($userLevel, $recommanderName);
-        $this->getEntityManager()->persist($upgradeUserOrder);
-        $this->getEntityManager()->flush();
-
-        /**
-         * @var ProjectTextMetaRepository $projectTextMetaRepository
-         */
-        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
-
-        return $this->responseJson('success', 200, [
-            'upgradeUserOrder' => $upgradeUserOrder->getArray(),
-            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
-        ]);
-    }
-
-    /**
      * 创建提现订单
      *
      * @Route("/user/account/withdraw", name="createWithdrawUserAccountOrder", methods="POST")
@@ -1315,7 +1286,7 @@ class UserController extends BaseController
          */
         $upgradeOrderCoupon = $upgradeOrderCouponRepository->findBy(['coupon' => $coupon]);
 
-        if ($upgradeOrderCoupon->getUpgradeUserOrder() != null) {
+        if ($upgradeOrderCoupon->getUpgradeUser() != null) {
             return $this->responseJson('success', 201, [
                 'coupon' => $coupon,
                 'error' => '升级已经被使用'
@@ -1328,17 +1299,7 @@ class UserController extends BaseController
                 'error' => '您已经是更高级别会员，无需使用升级码']);
         }
 
-        if ($user->getParentUser() == null or time() > $user->getParentUserExpiresAt()) {
-            $user->info('update parent user to ' . $upgradeOrderCoupon->getUpgradeUser());
-            $user->setParentUser($upgradeOrderCoupon->getUpgradeUser());
-            $this->getEntityManager()->persist($user);
-        }
-
-        //如果推荐人已被锁定，又输入用了别人的升级码， 给升级码的人认倒霉吧
-        $upgradeUserOrder = $user->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED2, null);
-        $upgradeUserOrder->setApproved();
-        $upgradeOrderCoupon->setUpgradeUser($user);
-        $upgradeOrderCoupon->setUpgradeUserOrder($upgradeUserOrder);
+        $upgradeOrderCoupon->setApproved($user);
         $this->getEntityManager()->persist($upgradeOrderCoupon);
         $this->getEntityManager()->flush();
 

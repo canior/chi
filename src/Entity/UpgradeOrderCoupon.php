@@ -30,7 +30,7 @@ class UpgradeOrderCoupon implements Dao
 
     /**
      * @var GroupUserOrder $groupUserOrder
-     * @ORM\ManyToOne(targetEntity="App\Entity\GroupUserOrder")
+     * @ORM\ManyToOne(targetEntity="App\Entity\GroupUserOrder", inversedBy="upgradeCoupons")
      * @ORM\JoinColumn(nullable=false)
      */
     private $groupUserOrder;
@@ -42,26 +42,23 @@ class UpgradeOrderCoupon implements Dao
      */
     private $upgradeUser;
 
-
     /**
-     * @var UpgradeUserOrder|null $upgradeUserOrder
-     * @ORM\ManyToOne(targetEntity="App\Entity\UpgradeUserOrder")
-     * @ORM\JoinColumn(nullable=true)
+     * @var UpgradeUserOrder[] | ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\UpgradeUserOrder", mappedBy="upgradeUserOrder", cascade={"persist"}, orphanRemoval=true)
      */
-    private $upgradeUserOrder;
+    private $usedForUpgradeUserOrders;
+
 
     /**
      * @param GroupUserOrder $groupUserOrder
      * @param $coupon
-     * @param UpgradeUserOrder|null $upgradeUserOrder
      * @param User $upgradeUser
      * @return UpgradeOrderCoupon
      */
-    public static function factory(GroupUserOrder $groupUserOrder, $coupon, UpgradeUserOrder $upgradeUserOrder = null, User $upgradeUser = null) {
+    public static function factory(GroupUserOrder $groupUserOrder, $coupon, User $upgradeUser = null) {
         $upgradeOrderCoupon = new UpgradeOrderCoupon();
         $upgradeOrderCoupon->setGroupUserOrder($groupUserOrder);
         $upgradeOrderCoupon->setCoupon($coupon);
-        $upgradeOrderCoupon->setUpgradeUserOrder($upgradeUserOrder);
         $upgradeOrderCoupon->setUpgradeUser($upgradeUser);
 
         return $upgradeOrderCoupon;
@@ -69,6 +66,7 @@ class UpgradeOrderCoupon implements Dao
 
     public function __construct()
     {
+        $this->usedForUpgradeUserOrders = new ArrayCollection();
         $this->setCreatedAt();
     }
 
@@ -105,22 +103,6 @@ class UpgradeOrderCoupon implements Dao
     }
 
     /**
-     * @return UpgradeUserOrder|null
-     */
-    public function getUpgradeUserOrder(): ?UpgradeUserOrder
-    {
-        return $this->upgradeUserOrder;
-    }
-
-    /**
-     * @param UpgradeUserOrder|null $upgradeUserOrder
-     */
-    public function setUpgradeUserOrder(?UpgradeUserOrder $upgradeUserOrder): void
-    {
-        $this->upgradeUserOrder = $upgradeUserOrder;
-    }
-
-    /**
      * @return User|null
      */
     public function getUpgradeUser(): ?User
@@ -134,6 +116,53 @@ class UpgradeOrderCoupon implements Dao
     public function setUpgradeUser(?User $upgradeUser): void
     {
         $this->upgradeUser = $upgradeUser;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setApproved(User $user) {
+        $this->setUpgradeUser($user);
+        $recommander = $user->getParentUser();
+
+        if ($recommander == null or time() > $recommander->getParentUserExpiresAt()) {
+            $user->setParentUser($this->getGroupUserOrder()->getUser());
+            $user->setParentUserExpiresAt(time() + User::PARENT_365_DAYS_EXPIRES_SECONDS);
+        }
+
+        $jinqiuUpgradeUserOrder = UpgradeUserOrder::factory(UpgradeUserOrder::JINQIU, $user, UserLevel::ADVANCED2, null);
+        $jinqiuUpgradeUserOrder->setApproved(true, $this);
+        $jinqiuUpgradeUserOrder->setUpgradeOrderCoupon($this);
+        $this->addUsedUpgradeUserOrders($jinqiuUpgradeUserOrder);
+
+        $bianxianUpgradeUserOrder = UpgradeUserOrder::factory(UpgradeUserOrder::BIANXIAN, $user, BianxianUserLevel::THINKING, null);
+        $bianxianUpgradeUserOrder->setApproved(false, $this);
+        $bianxianUpgradeUserOrder->setUpgradeOrderCoupon($this);
+        $this->addUsedUpgradeUserOrders($bianxianUpgradeUserOrder);
+    }
+
+    /**
+     * @return UpgradeUserOrder[]|ArrayCollection
+     */
+    public function getUsedForUpgradeUserOrders()
+    {
+        return $this->usedForUpgradeUserOrders;
+    }
+
+    /**
+     * @param UpgradeUserOrder[]|ArrayCollection $usedForUpgradeUserOrders
+     */
+    public function setUsedForUpgradeUserOrders($usedForUpgradeUserOrders): void
+    {
+        $this->usedForUpgradeUserOrders = $usedForUpgradeUserOrders;
+    }
+
+    /**
+     * @param UpgradeUserOrder $upgradeUserOrder
+     */
+    public function addUsedUpgradeUserOrders(UpgradeUserOrder $upgradeUserOrder) {
+        if (!$this->usedForUpgradeUserOrders->contains($upgradeUserOrder))
+            $this->usedForUpgradeUserOrders->add($upgradeUserOrder);
     }
 
     /**

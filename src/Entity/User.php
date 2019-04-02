@@ -1267,6 +1267,9 @@ class User extends BaseUser implements Dao
         }
 
         $upgradeUserOrder = UpgradeUserOrder::factory($upgradeUserOrderType, $this, $newUserLevel, $groupUserOrder);
+        $upgradeUserOrder->setRecommanderUser($this->getParentUser());
+        $upgradeUserOrder->setPartnerUser($this->getTopParentPartnerUser());
+        $upgradeUserOrder->setPartnerTeacherUser($this->getTopParentPartnerUser() ? $this->getTopParentPartnerUser()->getPartnerTeacherRecommanderUser() : null);
         $this->upgradeUserOrders->add($upgradeUserOrder);
         return $upgradeUserOrder;
     }

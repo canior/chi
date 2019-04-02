@@ -59,23 +59,18 @@ class NotifyCompletedCouponProductCommandHandler
          */
         $groupUserOrderRepository = $this->entityManager->getRepository(GroupUserOrder::class);
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+        $upgradeOrderCoupons = $groupUserOrder->getUpgradeOrderCoupons();
 
         /**
          * @var UpgradeOrderCouponRepository $upgradeOrderCouponRepository
          */
         $upgradeOrderCouponRepository = $this->entityManager->getRepository(UpgradeOrderCoupon::class);
-        $coupons = $upgradeOrderCouponRepository->createCoupons(6);
         $couponsString = "";
-        for ($i = 0; $i < sizeof($coupons); $i++) {
-            $coupon = $coupons[$i];
-            if ($i === 0 and $groupUserOrder->getUpgradeUserOrder()->getOldUserLevel() != $groupUserOrder->getUpgradeUserOrder()->getUserLevel()) {
-                $upgradeOrderCoupon = UpgradeOrderCoupon::factory($groupUserOrder, $coupon, $groupUserOrder->getUpgradeUserOrder(), $groupUserOrder->getUser());
-                $couponsString .=  $coupon . "(已用)\n";
-            } else {
-                $upgradeOrderCoupon = UpgradeOrderCoupon::factory($groupUserOrder, $coupon);
-                $couponsString .=  $coupon . "\n";
-            }
+        foreach($upgradeOrderCoupons as $upgradeOrderCoupon) {
+            $coupon = $upgradeOrderCouponRepository->createCoupon();
+            $upgradeOrderCoupon->setCoupon($coupon);
             $this->entityManager->persist($upgradeOrderCoupon);
+            $couponsString .=  $coupon . "\n";
         }
         $this->entityManager->flush();
 

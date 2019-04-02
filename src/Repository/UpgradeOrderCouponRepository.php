@@ -43,6 +43,13 @@ class UpgradeOrderCouponRepository extends ServiceEntityRepository
         return $coupons;
     }
 
+    /*
+     * @return string
+     */
+    public function createCoupon() {
+        return $this->createCoupons(1)[0];
+    }
+
     /**
      * @param $length
      * @return string

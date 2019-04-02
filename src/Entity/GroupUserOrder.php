@@ -144,12 +144,22 @@ class GroupUserOrder implements Dao
     private $product;
 
     /**
-     * @var UpgradeUserOrder|null
-     * @ORM\OneToOne(targetEntity="App\Entity\UpgradeUserOrder", mappedBy="groupUserOrder", cascade={"persist"})
+     * @var UpgradeUserOrder[]|Collection
+     * @ORM\OneToMany(targetEntity="App\Entity\UpgradeUserOrder", mappedBy="groupUserOrder", cascade={"persist"})
      */
-    private $upgradeUserOrder;
+    private $upgradeUserOrders;
+
+
+    /**
+     * @var UpgradeOrderCoupon[]|Collection
+     * @ORM\OneToMany(targetEntity="App\Entity\UpgradeUserOrder", mappedBy="groupUserOrder", cascade={"persist"})
+     */
+    private $upgradeOrderCoupons;
+
 
     public function __construct() {
+        $this->upgradeUserOrders = new ArrayCollection();
+        $this->upgradeOrderCoupons = new ArrayCollection();
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
         $this->groupUserOrderLogs = new ArrayCollection();
@@ -405,27 +415,33 @@ class GroupUserOrder implements Dao
                                 $this->getUser()->setParentUser($newParentUser);
 
                                 if (!$this->getProduct()->getCourse()->isSystemSubject()) { //思维课报名
-                                    $this->getUser()->setParentUserExpiresAt(User::PARENT_45_DAYS_EXPIRES_SECONDS);
+                                    $this->getUser()->setParentUserExpiresAt(time() + User::PARENT_45_DAYS_EXPIRES_SECONDS);
                                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::VIP, $this);
-                                    $jinqiuUpgradeUserOrder->setApproved();
+                                    $jinqiuUpgradeUserOrder->setApproved(false);
+                                    $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
 
                                     $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::THINKING, $this);
-                                    $bianxianUpgradeUserOrder->setApproved();
+                                    $bianxianUpgradeUserOrder->setApproved(false);
+                                    $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
 
                                 } else { //系统课报名
-                                    $this->getUser()->setParentUserExpiresAt(User::PARENT_365_DAYS_EXPIRES_SECONDS);
+                                    $this->getUser()->setParentUserExpiresAt(time() + User::PARENT_365_DAYS_EXPIRES_SECONDS);
 
                                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED3, $this);
-                                    $jinqiuUpgradeUserOrder->setApproved();
+                                    $jinqiuUpgradeUserOrder->setApproved(false);
+                                    $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
 
                                     $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::ADVANCED, $this);
-                                    $bianxianUpgradeUserOrder->setApproved();
+                                    $bianxianUpgradeUserOrder->setApproved(true);
+                                    $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
 
                                     //TODO 如果合伙人没有名额了怎么办
                                     $newParentUser->createUserRecommandStockOrder(-1);
 
                                     if ($this->getProduct()->isHasCoupon()) {
                                         $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED3];
+
+                                        $this->createUpgradeOrderCoupons(5);
 
                                         //推送用户coupon
                                         $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
@@ -437,10 +453,6 @@ class GroupUserOrder implements Dao
                     }
 
                     $this->setDelivered();
-
-                    if ($this->getUpgradeUserOrder()) {
-                        $this->getUpgradeUserOrder()->setApproved();
-                    }
 
                 } else {
                     // TODO: 在线视频还未实现购买功能
@@ -455,7 +467,7 @@ class GroupUserOrder implements Dao
                         $newParentUser = $this->getUser()->getLatestFromShareSource()->getUser();
                         if ($oldParentUser !== $newParentUser and $newParentUser->hasRecommandRight()) {
                             $this->getUser()->setParentUser($newParentUser);
-                            $this->getUser()->setParentUserExpiresAt(User::PARENT_365_DAYS_EXPIRES_SECONDS);
+                            $this->getUser()->setParentUserExpiresAt(time() + User::PARENT_365_DAYS_EXPIRES_SECONDS);
                         }
                     }
                 }
@@ -466,20 +478,31 @@ class GroupUserOrder implements Dao
                 if ($this->getProduct()->isHasCoupon()) { //荣耀vip
                     $memo = "购买" . UserLevel::$userLevelTextArray[UserLevel::ADVANCED3];
                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED3, $this);
-                    $jinqiuUpgradeUserOrder->setApproved();
+                    $jinqiuUpgradeUserOrder->setApproved(true);
+                    $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
 
-                    //推送用户coupon
+                    $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::ADVANCED, $this);
+                    $bianxianUpgradeUserOrder->setApproved(false);
+                    $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
+
+                    $this->createUpgradeOrderCoupons(5);
                     $this->getUser()->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($this->getId()));
-                } else {
+                } else { //高级vip 或者 特权vip
                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED, $this);
-                    $jinqiuUpgradeUserOrder->setApproved();
+                    $jinqiuUpgradeUserOrder->setApproved(true);
+                    $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
+
+                    $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::THINKING, $this);
+                    $bianxianUpgradeUserOrder->setApproved(false);
+                    $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
                 }
 
                 //每成功推荐6人即可升级为变现系统学员
                 $recommander = $this->getUser()->getParentUser();
-                if ($recommander != null and $recommander->getTotalUserAccountOrdersAsRecommander() > 5) {
+                if ($recommander != null and $recommander->getTotalUserAccountOrdersAsRecommander() >= 5) {
                     if (BianxianUserLevel::$userLevelPriorityArray[BianxianUserLevel::ADVANCED] > $recommander->getBianxianUserLevel()) {
-                        $recommander->upgradeBianxianUserLevel(BianxianUserLevel::ADVANCED);
+                        $bianxianUpgradeUserOrder = $recommander->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::ADVANCED, null);
+                        $bianxianUpgradeUserOrder->setApproved(false);
                     }
                 }
             }
@@ -823,21 +846,75 @@ class GroupUserOrder implements Dao
     }
 
     /**
-     * @return UpgradeUserOrder|null
+     * @return UpgradeUserOrder[]|Collection
      */
-    public function getUpgradeUserOrder(): ?UpgradeUserOrder
+    public function getUpgradeUserOrders()
     {
-        return $this->upgradeUserOrder;
+        return $this->upgradeUserOrders;
     }
 
     /**
-     * @param UpgradeUserOrder|null $upgradeUserOrder
+     * @param UpgradeUserOrder[]|Collection $upgradeUserOrders
      */
-    public function setUpgradeUserOrder(?UpgradeUserOrder $upgradeUserOrder): void
+    public function setUpgradeUserOrders($upgradeUserOrders): void
     {
-        $this->upgradeUserOrder = $upgradeUserOrder;
+        $this->upgradeUserOrders = $upgradeUserOrders;
     }
 
+    /**
+     * @param UpgradeUserOrder $upgradeUserOrder
+     */
+    public function addUpgradeUserOrder(UpgradeUserOrder $upgradeUserOrder) {
+        if (!$this->upgradeUserOrders->contains($upgradeUserOrder))
+            $this->upgradeUserOrders->add($upgradeUserOrder);
+    }
+
+    /**
+     * @param $upgradeUserOrderType
+     * @return UpgradeUserOrder|mixed|null
+     */
+    public function getUpgradeUserOrder($upgradeUserOrderType) {
+        foreach ($this->upgradeUserOrders as $upgradeUserOrder) {
+            if ($upgradeUserOrder->getType() == $upgradeUserOrderType) {
+                return $upgradeUserOrder;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @return UpgradeOrderCoupon[]|Collection
+     */
+    public function getUpgradeOrderCoupons()
+    {
+        return $this->upgradeOrderCoupons;
+    }
+
+    /**
+     * @param UpgradeOrderCoupon[]|Collection $upgradeOrderCoupons
+     */
+    public function setUpgradeOrderCoupons($upgradeOrderCoupons): void
+    {
+        $this->upgradeOrderCoupons = $upgradeOrderCoupons;
+    }
+
+    /**
+     * @param UpgradeOrderCoupon $upgradeOrderCoupon
+     */
+    public function addUpgradeOrderCoupons(UpgradeOrderCoupon $upgradeOrderCoupon) {
+        if (!$this->upgradeOrderCoupons->contains($upgradeOrderCoupon)) {
+            $this->upgradeOrderCoupons->add($upgradeOrderCoupon);
+        }
+    }
+
+    public function createUpgradeOrderCoupons($num) {
+        /* 生成5个升级码 */
+        for($i = 0; $i < $num; $i++) {
+            $coupon = "COUPON_$i";
+            $upgradeOrderCoupon = UpgradeOrderCoupon::factory($this, $coupon);
+            $this->addUpgradeOrderCoupons($upgradeOrderCoupon);
+        }
+    }
 
     /**
      * @return array
