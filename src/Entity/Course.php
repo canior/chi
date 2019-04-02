@@ -389,6 +389,23 @@ class Course implements Dao
     }
 
     /**
+     * 全部报到学生 （无重复）
+     * @return int
+     */
+    public function getTotalWelcomeStudentUsers() {
+        return $this->getStudentUsers(CourseStudent::WELCOME)->count();
+    }
+
+
+    /**
+     * 全部签到学生 （无重复）
+     * @return int
+     */
+    public function getTotalSignInStudentUsers() {
+        return $this->getStudentUsers(CourseStudent::SIGNIN)->count();
+    }
+
+    /**
      * @param CourseStudent[] $courseStudents
      */
     public function setCourseStudents($courseStudents): void
