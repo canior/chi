@@ -934,7 +934,7 @@ class GroupUserOrder implements Dao
     public function createUpgradeOrderCoupons($num) {
         /* 生成5个升级码 */
         for($i = 0; $i < $num; $i++) {
-            $coupon = "COUP_$i";
+            $coupon = "COUP0$i";
             $upgradeOrderCoupon = UpgradeOrderCoupon::factory($this, $coupon);
             $this->addUpgradeOrderCoupons($upgradeOrderCoupon);
         }
