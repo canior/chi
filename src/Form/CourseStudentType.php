@@ -30,6 +30,12 @@ class CourseStudentType extends AbstractType
                 'attr' => ['class' => 'form-control chosen'],
                 'class' => User::class,
             ])
+            ->add('status', ChoiceType::class, [
+                'label' => '科目',
+                'mapped' => false,
+                'choices' => array_flip(CourseStudent::$statusTexts),
+                'required' => true
+            ])
         ;
     }
 
