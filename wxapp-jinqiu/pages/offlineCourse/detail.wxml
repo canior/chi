@@ -57,5 +57,5 @@
   <template is="courseReview" data="{{...courseReviewData, imgUrlPrefix, course}}"/>
 </view>
 
-<template is="bottom" data="{{course, eligible, eligibleViewer, groupUserOrderId, ...bottomData, type:'bianxian', contact:user.recommanderName}}"/>
+<template is="bottom" data="{{course, user, eligible, groupUserOrderId, ...bottomData, type:'bianxian'}}"/>
 <template is="share" data="{{...shareData}}"/>

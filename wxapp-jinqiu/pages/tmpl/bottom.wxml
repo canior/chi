@@ -25,7 +25,7 @@
       </block>
       <block wx:if="{{type == 'bianxian'}}">
         <button class="item btn group" bindtap="wxCreateOfflineCourse" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrderId && eligible}}"><text>我要报名￥{{course.price}}</text></button>
-        <button class="item btn gray" bindtap="" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrderId && !eligible}}"><text>请联系{{contact}}</text></button>
+        <button class="item btn gray" bindtap="" disabled="{{btnDisabled}}" wx:if="{{!groupUserOrderId && !eligible}}"><text>请联系{{user.recommanderName}}</text></button>
         <button class="item btn group" bindtap="wxToCourseLog" disabled="{{btnDisabled}}" wx:if="{{groupUserOrderId}}"><text>活动已注册</text></button>
       </block>
   </view>

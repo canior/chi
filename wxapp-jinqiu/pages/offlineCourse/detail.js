@@ -11,7 +11,6 @@ Page({
     isLogin: false,
     user: null,
     eligible: false,
-    eligibleViewer: false,
     imgUrlPrefix: app.globalData.imgUrlPrefix,
     course: null,
     courseReviewData: {},
@@ -56,18 +55,9 @@ Page({
               if (level == userLevel) { eligible = true }
             })
           }
-          // eligibleViewer
-          let eligibleViewer = false;
-          if (course.eligibleViewer) {
-            let userLevel = that.data.user ? that.data.user.userLevel : null;
-            course.eligibleViewer.forEach((level) => {
-              if (level == userLevel) { eligibleViewer = true }
-            })
-          }
           that.setData({
             course: course,
             eligible: eligible,
-            eligibleViewer: eligibleViewer,
             groupUserOrderId: res.data.data.groupUserOrder ? res.data.data.groupUserOrder.id : null
           })
           share.setShareSources(that, res.data.data.shareSources)

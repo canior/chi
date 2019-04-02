@@ -10,6 +10,7 @@ Page({
   data: {
     isLogin: false,
     user: null,
+    eligibleViewer: false,
     imgUrlPrefix: app.globalData.imgUrlPrefix,
     course: null,
     courseReviewData: {},
@@ -48,8 +49,17 @@ Page({
           course.courseSpecImages.forEach((item) => {
             item.loading = true
           })
+          // eligibleViewer
+          let eligibleViewer = false;
+          if (course.eligibleViewer) {
+            let userLevel = that.data.user ? that.data.user.userLevel : null;
+            course.eligibleViewer.forEach((level) => {
+              if (level == userLevel) { eligibleViewer = true }
+            })
+          }          
           that.setData({
             course: course,
+            eligibleViewer: eligibleViewer,
             groupUserOrder: res.data.data.groupUserOrder,
             textMetaArray: res.data.data.textMetaArray
           })
