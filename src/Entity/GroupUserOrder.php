@@ -152,7 +152,7 @@ class GroupUserOrder implements Dao
 
     /**
      * @var UpgradeOrderCoupon[]|Collection
-     * @ORM\OneToMany(targetEntity="App\Entity\UpgradeUserOrder", mappedBy="groupUserOrder", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\UpgradeOrderCoupon", mappedBy="groupUserOrder", cascade={"persist"})
      */
     private $upgradeOrderCoupons;
 
