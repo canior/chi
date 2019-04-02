@@ -24,7 +24,7 @@
                     <td class="text-center">
                         <div class="btn-group">
                             {% if not user.isSecurity %}
-                            <a href="{{ path('course_student_edit', {'id': item.id}) }}" title="修改">
+                            <a href="{{ path('offline_course_student_edit', {'id': item.id}) }}" title="修改">
                                 <span class="fa fa-edit"></span>
                             </a>&nbsp;
                             {% endif %}

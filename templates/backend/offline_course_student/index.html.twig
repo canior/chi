@@ -44,8 +44,8 @@
                                 <th>签到二维码</th>
                             </tr>
                             <tr>
-                                <td><img class="img-responsive" src="{{ path('course_student_create_qr', {'id': course.id, status: 'welcome' }) }}"></td>
-                                <td><img class="img-responsive" src="{{ path('course_student_create_qr', {'id': course.id, 'status': 'signin'}) }}"></td>
+                                <td><img class="img-responsive" src="{{ path('offline_course_student_create_qr', {'id': course.id, status: 'welcome' }) }}"></td>
+                                <td><img class="img-responsive" src="{{ path('offline_course_student_create_qr', {'id': course.id, 'status': 'signin'}) }}"></td>
                             </tr>
                         </table>
                     </div>
@@ -74,7 +74,7 @@
             </div>
             <!-- /.box -->
             <div>
-                <a class="btn btn-danger" href="{{ path('course_student_statistic_index') }}">{{ '返回报到管理'|trans }}</a>
+                <a class="btn btn-danger" href="{{ path('offline_course_student_statistic_index') }}">{{ '返回报到管理'|trans }}</a>
             </div>
         </div>
         <!-- /.col -->

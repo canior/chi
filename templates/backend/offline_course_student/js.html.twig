@@ -3,7 +3,7 @@
         var currentTotal = 0;
 
         function loadTotal() {
-            $.ajax({url: "{{ path('course_student_count', {'courseId': course.id}) }}", success: function(totalJson){
+            $.ajax({url: "{{ path('offline_course_student_count', {'courseId': course.id}) }}", success: function(totalJson){
                 tmp = $.parseJSON(totalJson);
                 newTotal = tmp.total;
                 registeredTotal = tmp.registeredTotal;
@@ -11,7 +11,7 @@
                 if (currentTotal != newTotal) {
                     missingTotal = newTotal - currentTotal;
                     currentTotal = newTotal;
-                    $.ajax({url: "{{ path('course_student_table', {'courseId': course.id}) }}", success: function(result){
+                    $.ajax({url: "{{ path('offline_course_student_table', {'courseId': course.id}) }}", success: function(result){
                             $("#studentTableDiv").html(result)
                             for (i = 1; i <= missingTotal; i++) {
                                 $("#studentTableDiv tr").eq(i).addClass('text-bold')
