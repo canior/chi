@@ -52,11 +52,12 @@ class UserRepository extends ServiceEntityRepository
      * @param null $nameWildCard
      * @param null $role
      * @param null $userLevel
+     * @param null $bianxianUserLevel
      * @param null $createdAtStart
      * @param null $createdAtEnd
      * @return QueryBuilder
      */
-    public function findUsersQueryBuilder($userId = null, $nameWildCard = null, $role = null, $userLevel = null, $createdAtStart = null, $createdAtEnd = null)
+    public function findUsersQueryBuilder($userId = null, $nameWildCard = null, $role = null, $userLevel = null, $bianxianUserLevel = null, $createdAtStart = null, $createdAtEnd = null)
     {
         /**
          * @var QueryBuilder $query
@@ -78,6 +79,11 @@ class UserRepository extends ServiceEntityRepository
         if ($userLevel) {
             $query->andWhere('u.userLevel = :userLevel')
                 ->setParameter('userLevel', $userLevel);
+        }
+
+        if ($bianxianUserLevel) {
+            $query->andWhere('u.bianxianUserLevel = :bianxianUserLevel')
+                ->setParameter('bianxianUserLevel', $bianxianUserLevel);
         }
 
         if ($nameWildCard) {

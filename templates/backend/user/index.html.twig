@@ -28,7 +28,7 @@
                                 <input type="text" name="username" class="form-control" value="{{ form.username }}"
                                        placeholder="按姓名或昵称查询">
                             </div>
-                            <div class="col-md-1 form-group">
+                            <div class="col-md-2 form-group">
                                 <label>用户角色</label>
                                 <select name="role" class="form-control chosen">
                                     <option value="">全部</option>
@@ -37,12 +37,21 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-1 form-group">
+                            <div class="col-md-2 form-group">
                                 <label>会员等级</label>
                                 <select name="userLevel" class="form-control chosen">
                                     <option value="">全部</option>
                                     {% for userLevel, text in userLevels %}
                                         <option value="{{ userLevel }}"{% if userLevel == form.userLevel %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>变现等级</label>
+                                <select name="bianxianUserLevel" class="form-control chosen">
+                                    <option value="">全部</option>
+                                    {% for userLevel, text in bianxianUserLevels %}
+                                        <option value="{{ userLevel }}"{% if userLevel == form.bianxianUserLevel %} selected{% endif %}>{{ text }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -72,15 +81,16 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th width="10%">用户ID</th>
+                                <th width="6%">用户ID</th>
                                 <th width="10%">昵称</th>
                                 <th width="10%">姓名</th>
                                 <th width="10%">电话</th>
-                                <th width="10%">会员等级</th>
+                                <th width="8%">会员等级</th>
+                                <th width="8%">变现等级</th>
                                 <th width="10%">推荐人</th>
                                 <th width="10%">用户角色</th>
-                                <th width="10%">上次登录时间</th>
-                                <th width="10%">创建时间</th>
+                                <th width="9%">上次登录时间</th>
+                                <th width="9%">创建时间</th>
                                 <th width="10%" class="text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
@@ -93,6 +103,7 @@
                                         <td>{{ item.user.name }}</td>
                                         <td>{{ item.user.phone }}</td>
                                         <td>{{ item.user.userLevelText }}</td>
+                                        <td>{{ item.user.bianxianUserLevelText}}</td>
                                         <td>
 
                                             {% if item.user.isRecommanderVerified %}
