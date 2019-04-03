@@ -33,7 +33,8 @@
                             <tr>
                                 <th class="col-md-1">用户ID</th>
                                 <th class="col-md-2">姓名</th>
-                                <th class="col-md-2">用户等级</th>
+                                <th class="col-md-1">用户等级</th>
+                                <th class="col-md-1">变现等级</th>
                                 <th class="col-md-2">已提现总额</th>
                                 <th class="col-md-2">提现中数额</th>
                                 <th class="col-md-2">账户余额</th>
@@ -47,6 +48,7 @@
                                         <td>{{ item.id }}</td>
                                         <td>{{ item.name }}</td>
                                         <td>{{ item.userLevelText }}</td>
+                                        <td>{{ item.bianxianUserLevelText }}</td>
                                         <td>￥{{ item.withDrawedTotal}}</td>
                                         <td>￥{{ item.withdrawingTotal }}</td>
                                         <td>￥{{ item.userAccountTotal }}</td>
