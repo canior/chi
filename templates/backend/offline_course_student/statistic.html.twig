@@ -37,9 +37,10 @@
                             <tr>
                                 <th class="col-md-1">ID</th>
                                 <th class="col-md-1">科目</th>
+                                <th class="col-md-2">活动</th>
                                 <th class="col-md-1">讲师</th>
-                                <th class="col-md-2">开始日期</th>
-                                <th class="col-md-2">结束日期</th>
+                                <th class="col-md-1">开始日期</th>
+                                <th class="col-md-1">结束日期</th>
                                 <th class="col-md-1">状态</th>
                                 <th class="col-md-1">学生注册数</th>
                                 <th class="col-md-1">学生报到数</th>
@@ -53,6 +54,7 @@
                                     <tr>
                                         <td>{{ item.id }}</td>
                                         <td>{{ item.subjectText }}</td>
+                                        <td>{{ item.product.title }}</td>
                                         <td>{{ item.teacher.name }}</td>
                                         <td>{{ item.startDateFormatted }}</td>
                                         <td>{{ item.endDateFormatted }}</td>

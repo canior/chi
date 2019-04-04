@@ -41,7 +41,7 @@ class CourseController extends BackendController
             ]
         ];
 
-        $data['data'] = $courseRepository->findAll();
+        $data['data'] = $courseRepository->findBy(['isOnline' => true]);
 
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/course/index.html.twig', $data);

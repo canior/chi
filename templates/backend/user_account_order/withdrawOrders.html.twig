@@ -22,9 +22,10 @@
                                 <th class="col-md-2">用户</th>
                                 <th class="col-md-2">银行</th>
                                 <th class="col-md-2">银行账户号</th>
-                                <th class="col-md-2">银行账户名</th>
+                                <th class="col-md-1">银行账户名</th>
                                 <th class="col-md-1">提现中数额</th>
                                 <th class="col-md-1">账户余额</th>
+                                <th class="col-md-1">推荐人</th>
                                 <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
@@ -47,6 +48,7 @@
                                         <td>{{ item.user.bankAccountName }}</td>
                                         <td>￥{{ item.amount }}</td>
                                         <td>￥{{ item.user.userAccountTotal }}</td>
+                                        <td>{{ item.user.recommanderName }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
                                                 <a class="payBtn" href="javascript:void(0)"

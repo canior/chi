@@ -69,6 +69,7 @@
                                 <th class="col-md-1">订单状态</th>
                                 <th class="col-md-1">支付状态</th>
                                 <th class="col-md-2">创建时间</th>
+                                <th class="col-md-1">推荐人</th>
                                 <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
@@ -87,6 +88,7 @@
                                         <td>{{ item.statusText }}</td>
                                         <td>{{ item.paymentStatusText }}</td>
                                         <td>{{ item.createdAtFormatted }}</td>
+                                        <td>{{ item.user.recommanderName }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
                                                 <a href="{{ path('group_user_order_info', {'id': item.id}) }}"
