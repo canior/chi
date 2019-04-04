@@ -18,7 +18,7 @@ class Subject
 
     public static $subjectTextArray = [
         self::THINKING => '变现思维课',
-        self::TRADING => '变现思维系统课',
+        self::TRADING => '变现思维系统直通课',
         self::SYSTEM_1 => '变现系统课I',
         self::SYSTEM_2 => '变现系统课II',
     ];

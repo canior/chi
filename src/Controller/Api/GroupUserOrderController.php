@@ -36,6 +36,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\ShareSource;
 use App\Entity\ProjectShareMeta;
 use App\Entity\Subject;
+use App\Entity\CommandMessage;
 
 /**
  * @Route("/wxapi")
