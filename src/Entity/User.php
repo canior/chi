@@ -1710,6 +1710,10 @@ class User extends BaseUser implements Dao
 
         $user = $this;
         while ($parent = $user->getParentUser()) {
+            if ($parent == null) {
+                return null;
+            }
+
             if ($parent->isPartnerUser()) {
                 return $parent;
             }
@@ -1729,8 +1733,16 @@ class User extends BaseUser implements Dao
             return $this;
         }
 
+        if ($this->getParentUser() == null) {
+            return null;
+        }
+
         $user = $this;
         while ($parent = $user->getParentUser()) {
+            if ($parent == null) {
+                return null;
+            }
+
             if ($parent->isBianxianAdvancedUser()) {
                 return $parent;
             }
@@ -1750,8 +1762,16 @@ class User extends BaseUser implements Dao
             return $this;
         }
 
+        if ($this->getParentUser() == null) {
+            return null;
+        }
+
         $user = $this;
         while ($parent = $user->getParentUser()) {
+            if ($this->getParentUser() == null) {
+                return null;
+            }
+
             if ($parent->isBianxianPartnerUser()) {
                 return $parent;
             }

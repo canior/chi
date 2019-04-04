@@ -313,6 +313,6 @@ class BusinessLogicWithDb extends JinqiuBaseTestCase
 
         $this->assertEquals(UserLevel::ADVANCED2, $user->getUserLevel());
         $this->assertEquals(BianxianUserLevel::THINKING, $user->getBianxianUserLevel());
-
     }
+
 }

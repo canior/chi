@@ -585,6 +585,36 @@ class BusinessLogic extends JinqiuBaseTestCase
         $this->assertEquals(1 * 400, $supplierUser->getUserAccountTotal());
 
     }
+
+    /**
+     * 测试是否能找到上线
+     */
+    public function getGetParent() {
+        $user = $this->createUser();
+        $this->assertNull($user->getTopParentAdvancedUser());
+        $this->assertNull($user->getTopParentPartnerUser());
+        $this->assertNull($user->getBianxianTopParentPartnerUser());
+
+        $recommander = $this->createUser();
+        $recommander->setUserLevel(UserLevel::ADVANCED);
+        $this->assertTrue($recommander->hasRecommandRight());
+
+        $recommanderShareSource = $this->createShareSource($recommander);
+        ShareSourceUser::factory($recommanderShareSource, $user);
+        $this->assertEquals($recommander, $user->getTopParentAdvancedUser());
+
+        $partner = $this->createUser();
+        $partner->setUserLevel(UserLevel::PARTNER);
+        $partner->setBianxianUserLevel(BianxianUserLevel::PARTNER);
+
+        $recommander->setBianxianUserLevel(BianxianUserLevel::ADVANCED);
+        $this->assertNull($user->getTopParentPartnerUser());
+        $this->assertNull($user->getBianxianTopParentPartnerUser());
+
+        $recommander->setParentUser($partner);
+        $this->assertEquals($partner, $user->getTopParentPartnerUser());
+        $this->assertEquals($partner, $user->getBianxianTopParentPartnerUser());
+    }
 }
 
 
