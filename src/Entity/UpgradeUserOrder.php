@@ -397,7 +397,7 @@ class UpgradeUserOrder implements Dao
         $partnerUser = $this->getUser()->getParentUser();
         if ($partnerUser) {
             $rewards = Subject::$subjectRewards[$this->getGroupUserOrder()->getProduct()->getCourse()->getSubject()][$partnerUser->getBianxianUserLevel()];
-            if ($this->isApproved()) {
+            if ($rewards > 0 and $this->isApproved()) {
                 $memo = '合伙人推荐' . $this->getUser()->getDisplayName() . '系统课成功';
                 $this->setRecommanderUser($partnerUser);
                 $this->setPartnerUser($partnerUser);

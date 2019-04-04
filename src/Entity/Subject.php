@@ -44,6 +44,7 @@ class Subject
 
     public static $subjectRewards = [
         self::TRADING => [
+            BianxianUserLevel::ADVANCED => 0,
             BianxianUserLevel::PARTNER => 10000,
             BianxianUserLevel::DISTRIBUTOR => 10000,
             'THINKING_TEACHER' => 1000,
