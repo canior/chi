@@ -1679,6 +1679,10 @@ class User extends BaseUser implements Dao
             return $this;
         }
 
+        if ($this->getParentUser() == null) {
+            return null;
+        }
+
         $user = $this;
         while ($parent = $user->getParentUser()) {
             if ($parent->isAdvancedUser()) {
@@ -1698,6 +1702,10 @@ class User extends BaseUser implements Dao
         //如果自己就是partner则就是自己
         if ($this->isPartnerUser()) {
             return $this;
+        }
+
+        if ($this->getParentUser() == null) {
+            return null;
         }
 
         $user = $this;

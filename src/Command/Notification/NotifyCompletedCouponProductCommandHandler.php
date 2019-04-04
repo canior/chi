@@ -89,7 +89,7 @@ class NotifyCompletedCouponProductCommandHandler
             'keyword1' => ['value' => $groupUserOrderId],
             'keyword2' => ['value' => $groupUserOrder->getProduct()->getTitle()],
             'keyword3' => ['value' => $groupUserOrder->getCreatedAt(true)],
-            'keyword4' => ['value' => UserLevel::ADVANCED2 . "升级码: \n" . $couponsString],
+            'keyword4' => ['value' => UserLevel::$userLevelTextArray[UserLevel::ADVANCED2] . "升级码: \n" . $couponsString],
         ];
         $emphasisKeyword = "";
 
