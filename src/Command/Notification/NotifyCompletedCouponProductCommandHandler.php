@@ -11,6 +11,7 @@ namespace App\Command\Notification;
 use App\Command\CommandInterface;
 use App\Entity\GroupOrder;
 use App\Entity\UpgradeOrderCoupon;
+use App\Entity\UserLevel;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\UpgradeOrderCouponRepository;
 use App\Service\Wx\WxCommon;
@@ -76,14 +77,19 @@ class NotifyCompletedCouponProductCommandHandler
 
         $formId = $groupUserOrder->getPrePayId();
         $templateId = "UuD9-sOSncBNKiV1VXhD2xoBu0cIYhEherxMm9N1cIE";
+
         $page = "pages/user/order/detail?id=" . $groupUserOrderId;
+        if ($groupUserOrder->isCourseOrder() and !$groupUserOrder->getProduct()->getCourse()->isOnline()) {
+            $page = "pages/user/offlineCourse/log?id=" . $groupUserOrderId;
+        }
+
         $toUser = $groupUserOrder->getUser()->getWxOpenId();
 
         $data = [
             'keyword1' => ['value' => $groupUserOrderId],
             'keyword2' => ['value' => $groupUserOrder->getProduct()->getTitle()],
             'keyword3' => ['value' => $groupUserOrder->getCreatedAt(true)],
-            'keyword4' => ['value' => "特级VIP升级码: \n" . $couponsString],
+            'keyword4' => ['value' => UserLevel::ADVANCED2 . "升级码: \n" . $couponsString],
         ];
         $emphasisKeyword = "";
 
