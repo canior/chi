@@ -53,7 +53,7 @@ class ProductReviewController extends BackendController
      * @return \Doctrine\ORM\QueryBuilder
      */
     protected function findProductReviewsQuery(ProductReviewRepository $productReviewRepository, $rate, $status) {
-        return $productReviewRepository->findProductReviewsQueryBuilder(false, null, $rate, $status);
+        return $productReviewRepository->findProductReviewsQueryBuilder(false, null, null, $rate, $status);
     }
 
     /**

@@ -158,12 +158,13 @@ class ProductReviewRepository extends ServiceEntityRepository
 
     /**
      * @param bool $isCourse
+     * @param bool $isOnline {useful when isCourse is true}
      * @param null $productId
      * @param null $rate
      * @param null $status
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findProductReviewsQueryBuilder($isCourse = false, $productId = null, $rate = null, $status = null)
+    public function findProductReviewsQueryBuilder($isCourse = false, $isOnline = true, $productId = null, $rate = null, $status = null)
     {
         $query = $this->createQueryBuilder('pr')
             ->orderBy('pr.id', 'DESC');
@@ -185,7 +186,10 @@ class ProductReviewRepository extends ServiceEntityRepository
 
         if ($isCourse) {
             $query->leftJoin('pr.product', 'p')
-                ->andWhere('p.course is not null');
+                ->andWhere('p.course is not null')
+                ->join('p.course', 'c')
+                ->andWhere('c.isOnline = :isOnline')
+                ->setParameter('isOnline', $isOnline);
         } else {
             $query->leftJoin('pr.product', 'p')
                 ->andWhere('p.course is null');

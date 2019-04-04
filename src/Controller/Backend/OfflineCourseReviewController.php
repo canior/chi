@@ -16,10 +16,10 @@ use App\Entity\ProductReview;
 /**
  * @Route("/backend")
  */
-class CourseReviewController extends ProductReviewController
+class OfflineCourseReviewController extends ProductReviewController
 {
     /**
-     * @Route("/course/review/", name="course_review_index", methods="GET")
+     * @Route("/offline/course/review/", name="offline_course_review_index", methods="GET")
      * @param ProductReviewRepository $productReviewRepository
      * @param Request $request
      * @return Response
@@ -36,11 +36,11 @@ class CourseReviewController extends ProductReviewController
      * @return \Doctrine\ORM\QueryBuilder
      */
     protected function findProductReviewsQuery(ProductReviewRepository $productReviewRepository, $rate, $status) {
-        return $productReviewRepository->findProductReviewsQueryBuilder(true, true, null, $rate, $status);
+        return $productReviewRepository->findProductReviewsQueryBuilder(true, false, null, $rate, $status);
     }
 
     /**
-     * @Route("/course/review/{id}/edit", name="course_review_edit", methods="GET|POST")
+     * @Route("/offline/course/review/{id}/edit", name="course_review_edit", methods="GET|POST")
      * @param Request $request
      * @param ProductReview $productReview
      * @return Response

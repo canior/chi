@@ -178,16 +178,16 @@ class BackendController extends DefaultController
                     'active' => false,
                     'role' => ['ROLE_ADMIN', 'ROLE_SECURITY'],
                 ],
-//                [
-//                    'path' => [
-//                        'offline_course_review_index',
-//                        'offline_course_review_edit',
-//                    ],
-//                    'name' => '活动评价',
-//                    'icon' => 'fa fa-comments',
-//                    'active' => false,
-//                    'role' => 'ROLE_ADMIN',
-//                ],
+                [
+                    'path' => [
+                        'offline_course_review_index',
+                        'offline_course_review_edit',
+                    ],
+                    'name' => '活动评价',
+                    'icon' => 'fa fa-comments',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
             ]
         ],
         [
