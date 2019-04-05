@@ -1526,7 +1526,7 @@ class User extends BaseUser implements Dao
      */
     public function getRecommanderName(): ?string
     {
-        return $this->recommanderName ? $this->recommanderName : '变现商学院';
+        return $this->recommanderName;
     }
 
     /**
@@ -1944,6 +1944,17 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * @return null|string
+     */
+    public function getDisplayRecommanderName() {
+        if ($this->getParentUser()) {
+            return $this->getParentUser()->getDisplayName();
+        }
+
+        return $this->getRecommanderName() != null ? $this->getRecommanderName() : '变现商学院';
+    }
+
+    /**
      * @return array
      */
     public function getArray(): array
@@ -1981,7 +1992,7 @@ class User extends BaseUser implements Dao
             'phone' => $this->getPhone(),
             'idNum' => $this->getIdNum(),
             'wechat' => $this->getWechat(),
-            'recommanderName' => $this->getRecommanderName(),
+            'recommanderName' => $this->getDisplayRecommanderName(),
             'totalStudents' => $this->getTeacher() ? $this->getTeacher()->getTotalStudentUsers() : 0,
             'totalShares' => $this->getTotalSharedUsers(),
             'bank' => $this->getBank(),

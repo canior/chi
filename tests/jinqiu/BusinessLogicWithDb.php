@@ -35,7 +35,7 @@ class BusinessLogicWithDb extends JinqiuBaseTestCase
         $this->getEntityManager()->persist($selfShareSource);
         $this->getEntityManager()->flush();
         $this->assertNull($user->getLatestFromShareSource());
-        $this->assertEquals('变现商学院', $user->getRecommanderName());
+        $this->assertNull($user->getRecommanderName());
 
         /* 第一个分享 */
         $recommander1ShareSource = $this->createShareSource($recommander1, null, null, true);
