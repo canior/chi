@@ -48,6 +48,10 @@ class ShareSourceUser implements Dao
         $shareSourceUser->getUser()->addFromShareSourceUser($shareSourceUser);
         $shareSourceUser->getUser()->getOrCreateTodayUserStatistics()->increaseShareNum(1);
 
+        //分享者每次都变
+        if ($shareSource->getUser() != $child)
+            $shareSourceUser->getUser()->setRecommanderName($shareSource->getUser()->getDisplayName());
+
         return $shareSourceUser;
     }
 

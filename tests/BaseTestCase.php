@@ -126,6 +126,8 @@ class BaseTestCase extends WebTestCase
         $user->setEmailCanonical($openId . '@qq.com');
         $user->setPassword("IamCustomer");
         $user->setWxOpenId($openId);
+        $user->setName('name'. $openId);
+        $user->setNickname('nickname' . $openId);
         if ($isPersist) {
             $this->getEntityManager()->persist($user);
             $this->getEntityManager()->flush();

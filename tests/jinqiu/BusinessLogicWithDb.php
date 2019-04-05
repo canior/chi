@@ -23,6 +23,50 @@ use App\Entity\GroupUserOrder;
 
 class BusinessLogicWithDb extends JinqiuBaseTestCase
 {
+    /* 测试分享人更新 */
+    public function testUserSharer() {
+        $recommander1 = $this->createUser(true);
+        $user = $this->createUser(true);
+
+        /* 测试自己分享给自己 */
+        $selfShareSource = $this->createShareSource($user, null,null,true);
+        $selfShareSourceUser = ShareSourceUser::factory($selfShareSource, $user);
+        $selfShareSource->addShareSourceUser($selfShareSourceUser);
+        $this->getEntityManager()->persist($selfShareSource);
+        $this->getEntityManager()->flush();
+        $this->assertNull($user->getLatestFromShareSource());
+        $this->assertEquals('变现商学院', $user->getRecommanderName());
+
+        /* 第一个分享 */
+        $recommander1ShareSource = $this->createShareSource($recommander1, null, null, true);
+        $recommander1ShareSourceUser = ShareSourceUser::factory($recommander1ShareSource, $user);
+        $recommander1ShareSource->addShareSourceUser($recommander1ShareSourceUser);
+        $this->getEntityManager()->persist($recommander1ShareSource);
+        $this->getEntityManager()->flush();
+        $this->assertEquals($recommander1->getDisplayName(), $user->getRecommanderName());
+        $this->assertEquals($recommander1ShareSource, $user->getLatestFromShareSource());
+
+        /* 第二个分享 */
+        $recommander2 = $this->createUser(true);
+        $recommander2ShareSource = $this->createShareSource($recommander2, null, null, true);
+        $recommander2ShareSourceUser = ShareSourceUser::factory($recommander2ShareSource, $user);
+        $recommander2ShareSource->addShareSourceUser($recommander2ShareSourceUser);
+        $this->getEntityManager()->persist($recommander2ShareSource);
+        $this->getEntityManager()->flush();
+
+        $this->assertEquals($recommander2->getDisplayName(), $user->getRecommanderName());
+        $this->assertEquals($recommander2ShareSource, $user->getLatestFromShareSource());
+
+        /* 又分享给自己 */
+        $selfShareSource->addShareSourceUser($selfShareSourceUser);
+        $this->getEntityManager()->persist($selfShareSource);
+        $this->getEntityManager()->flush();
+
+        $this->assertEquals($recommander2->getDisplayName(), $user->getRecommanderName());
+        $this->assertEquals($recommander2ShareSource, $user->getLatestFromShareSource());
+
+    }
+
     public function testBusinessLogic() {
 
         /**

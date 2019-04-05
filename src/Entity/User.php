@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -135,7 +136,7 @@ class User extends BaseUser implements Dao
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ShareSource", mappedBy="user", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
-     * @ORM\OrderBy({"id" = "DESC"})
+     * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $shareSources;
 
@@ -148,7 +149,7 @@ class User extends BaseUser implements Dao
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ShareSourceUser", mappedBy="user", orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
-     * @var ArrayCollection $shareSourceUsers
+     * @var ArrayCollection|ShareSourceUser[] $shareSourceUsers
      */
     private $shareSourceUsers;
 
@@ -587,7 +588,6 @@ class User extends BaseUser implements Dao
 
         if ($memo != null) {
             $this->info('found a reason to change parent user');
-            $this->setRecommanderName($parentUser->getNickname());
             $userParentLog = UserParentLog::factory($this, $parentUser, $shareSource, $memo);
             $this->addUserParentLog($userParentLog);
         }
@@ -976,19 +976,24 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * 返回最近的一个ShareSource
+     * 返回最近的一个ShareSource不包含自己
      *
      * @return ShareSource
      */
     public function getLatestFromShareSource()
     {
-        /**
-         * @var ShareSourceUser[] $fromShareSources
-         */
-        $fromShareSourceUsers = $this->shareSourceUsers;
+        $criteria = Criteria::create()
+            ->orderBy(array("id" => Criteria::DESC));
 
-        if (!$fromShareSourceUsers->isEmpty())
-            return $fromShareSourceUsers->get(0)->getShareSource();
+        $fromShareSourceUsers = $this->shareSourceUsers->matching($criteria);
+
+        $filteredShareSourceUsers = $fromShareSourceUsers->filter(function (ShareSourceUser $shareSourceUser) {
+            return $shareSourceUser->getShareSource()->getUser() != $this;
+        });
+
+        if (!$filteredShareSourceUsers->isEmpty()) {
+            return $filteredShareSourceUsers->first()->getShareSource();
+        }
 
         return null;
     }
@@ -1538,11 +1543,7 @@ class User extends BaseUser implements Dao
      */
     public function isRecommanderVerified()
     {
-        if (!empty($this->getRecommanderName()) and $this->getParentUser() == null) {
-            return false;
-        }
-
-        return true;
+        return $this->getParentUser() != null;
     }
 
     /**
@@ -1980,7 +1981,7 @@ class User extends BaseUser implements Dao
             'phone' => $this->getPhone(),
             'idNum' => $this->getIdNum(),
             'wechat' => $this->getWechat(),
-            'recommanderName' => empty($recommanderArray) ? $this->getRecommanderName() : $recommanderArray['name'],
+            'recommanderName' => $this->getRecommanderName(),
             'totalStudents' => $this->getTeacher() ? $this->getTeacher()->getTotalStudentUsers() : 0,
             'totalShares' => $this->getTotalSharedUsers(),
             'bank' => $this->getBank(),
