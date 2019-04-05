@@ -49,6 +49,7 @@ class UpdateRecommandNameForUser extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output) {
 
         $this->log->info('start update recommand name');
+        echo 'start update recommand name';
 
         /**
          * @var UserRepository $userRepository
@@ -71,6 +72,8 @@ class UpdateRecommandNameForUser extends ContainerAwareCommand
             $recommanderName = $fromLastShareSource->getUser()->getDisplayName();
 
             $this->log->info('update user ' . $i . ' from ' . $oldRecommanderName . ' to ' . $recommanderName);
+            echo 'update user ' . $i . ' from ' . $oldRecommanderName . ' to ' . $recommanderName;
+
             $user->setRecommanderName($recommanderName);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
