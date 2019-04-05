@@ -1336,7 +1336,7 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route("/user/upgradeCoupon", name="signInCourse", methods="POST")
+     * @Route("/user/upgradeCoupon", name="upgradeCoupon", methods="POST")
      * @param Request $request
      * @param UpgradeOrderCouponRepository $upgradeOrderCouponRepository
      * @return \Symfony\Component\HttpFoundation\JsonResponse
