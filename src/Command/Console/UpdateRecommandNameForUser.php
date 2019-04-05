@@ -55,7 +55,7 @@ class UpdateRecommandNameForUser extends ContainerAwareCommand
          */
         $userRepository = $this->entityManager->getRepository(User::class);
 
-        for ($i = 1; $i < 15000; $i++) {
+        for ($i = 1; $i < 10; $i++) {
             $user = $userRepository->find($i);
 
             if ($user == null) {
