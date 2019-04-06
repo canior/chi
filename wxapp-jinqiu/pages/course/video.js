@@ -28,6 +28,7 @@ Page({
     this.getVideo(productId)
     const url = app.globalData.baseUrl + '/courses/' + productId + '/reviews'
     courseReview.init(this, url);
+    app.buriedPoint(options)
   },
 
   getVideo: function (id) {

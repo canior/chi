@@ -18,7 +18,7 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
-    //app.buriedPoint(options)
+    app.buriedPoint(options)
     this.setData({
       curStatus: options.status ? options.status : null
     })
