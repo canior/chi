@@ -1538,7 +1538,7 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * 是否已认证推荐人
+     * 是否已锁定推荐人
      * @return bool
      */
     public function isRecommanderVerified()
