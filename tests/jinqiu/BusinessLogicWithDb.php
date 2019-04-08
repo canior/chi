@@ -11,6 +11,7 @@ namespace App\Tests\Jinqiu;
 
 use App\Entity\BianxianUserLevel;
 use App\Entity\CourseStudent;
+use App\Entity\GroupOrder;
 use App\Entity\UpgradeOrderCoupon;
 use App\Entity\UserAccountOrder;
 use App\Entity\UserLevel;
@@ -357,6 +358,71 @@ class BusinessLogicWithDb extends JinqiuBaseTestCase
 
         $this->assertEquals(UserLevel::ADVANCED2, $user->getUserLevel());
         $this->assertEquals(BianxianUserLevel::THINKING, $user->getBianxianUserLevel());
+    }
+
+    public function testCreateGroupOrder() {
+        $recommander = $this->createUser(true);
+        $recommander->setUserLevel(UserLevel::PARTNER);
+        $recommander->setBianxianUserLevel(BianxianUserLevel::PARTNER);
+
+        $product = $this->createProduct(true);
+        $teacher = $this->createTeacher(true);
+        $course = $this->createCourse($teacher, Subject::THINKING, true);
+        $product->setTotalGroupUserOrdersRequired(2);
+        $product->setCourse($course);
+        $this->getEntityManager()->persist($product);
+        $this->getEntityManager()->flush();
+
+        $shareSource = $this->createShareSource($recommander, null, null,true);
+        $master = $this->createUser(true);
+        $masterShareSourceUser = ShareSourceUser::factory($shareSource, $master);
+        $this->getEntityManager()->persist($masterShareSourceUser);
+        $this->getEntityManager()->flush();
+
+        $this->assertEquals($recommander->getDisplayName(), $master->getDisplayRecommanderName());
+        $this->assertNull($master->getParentUser());
+        $this->assertNull($master->getParentUserExpiresAt());
+
+        $groupOrder = GroupOrder::factory(GroupOrder::GROUP_GIFT, $master, $product);
+        $this->assertTrue($groupOrder->isCreated());
+
+        $groupOrder->setPending();
+
+        $this->getEntityManager()->persist($groupOrder);
+        $this->getEntityManager()->flush();
+
+        $this->assertTrue($groupOrder->getMasterGroupUserOrder()->isPending());
+        $this->assertTrue($groupOrder->getMasterGroupUserOrder()->isPaid());
+
+        $this->assertEquals($recommander->getDisplayName(), $master->getDisplayRecommanderName());
+        $this->assertNull($master->getParentUser());
+        $this->assertNull($master->getParentUserExpiresAt());
+
+        $slave = $this->createUser(true);
+        $masterShareSource = $this->createShareSource($master, null, null,true);
+        $slaveShareSourceUser = ShareSourceUser::factory($masterShareSource, $slave);
+        $this->getEntityManager()->persist($slaveShareSourceUser);
+        $this->getEntityManager()->flush();
+
+        $this->assertEquals($master->getDisplayName(), $slave->getDisplayRecommanderName());
+        $this->assertNull($slave->getParentUser());
+        $this->assertNull($slave->getParentUserExpiresAt());
+
+        $groupUserOrder = GroupUserOrder::factory($slave, $product, $groupOrder);
+        $groupUserOrder->setPaid();
+        $this->getEntityManager()->persist($groupUserOrder);
+        $this->getEntityManager()->flush();
+
+        $this->assertTrue($groupOrder->isCompleted());
+        $this->assertTrue($groupOrder->getMasterGroupUserOrder()->isPaid());
+        $this->assertTrue($groupOrder->getMasterGroupUserOrder()->isDelivered());
+        $this->assertTrue($groupOrder->getSlaveGroupUserOrder($slave)->isDelivered());
+        $this->assertTrue($groupOrder->getSlaveGroupUserOrder($slave)->isPaid());
+
+        $this->assertEquals($master->getDisplayName(), $slave->getDisplayRecommanderName());
+        $this->assertNull($slave->getParentUser());
+        $this->assertNull($slave->getParentUserExpiresAt());
+
     }
 
 }

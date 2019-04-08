@@ -35,7 +35,7 @@ class Course implements Dao
 
     /**
      * @var Teacher
-     * @ORM\ManyToOne(targetEntity="App\Entity\Teacher", inversedBy="courses")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Teacher", cascade={"persist"}, inversedBy="courses")
      * @ORM\JoinColumn(nullable=false)
      */
     private $teacher;
