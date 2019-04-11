@@ -15,7 +15,7 @@ App({
           wx.getUserInfo({
             success: res => {
               // 可以将 res 发送给后台解码出 unionId
-              console.log('app:getUserInfo', res.userInfo);
+              // console.log('app:getUserInfo', res.userInfo);
               that.globalData.userInfo = res.userInfo
               that.login(res.userInfo, function () {
                 // 首页Page.onLoad的buriedPoint
@@ -58,7 +58,7 @@ App({
           },
           method: 'POST',
           success: (res) => {
-            console.log('app:wx.request /user/login', res);
+            // console.log('app:wx.request /user/login', res);
             if (res.data.code == 200 && res.data.msg == 'login_success') {
               const thirdSession = res.data.data.thirdSession
               wx.setStorageSync('thirdSession', thirdSession);
@@ -242,8 +242,9 @@ App({
 
   globalData: {
     appName: '金秋课堂',
-    baseUrl: 'https://jinqiu.yunlishuju.com/wxapi',
-    imgUrlPrefix: 'https://jinqiu.yunlishuju.com/image/preview',
+    baseUrl: 'http://127.0.0.1:8000/wxapi',
+    imgUrlPrefix: 'http://127.0.0.1:8000/image/preview',
+    videoUrlPrefix: '',
     //baseUrl: 'https://laowantong.yunlishuju.com/wxapi',
     //imgUrlPrefix: 'https://laowantong.yunlishuju.com/image/preview',
     isLogin: false,   //是否授权并登录

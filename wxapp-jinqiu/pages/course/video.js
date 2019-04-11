@@ -15,6 +15,24 @@ Page({
     course: null,
     courseReviewData: {},
     bottomData: {},
+
+    //
+
+    currentResource: '',
+    multiListShow: false,
+    rateShow: false,
+    currentRate: '1.0',
+    videoPlaying: false,
+    controlHidden: true,
+    currentTime: 0,
+    isSwitchDefinition: false,
+    currentVideoId: '',
+    currentPoster: '',
+    currentVideoTitle: '',
+    currentVideoResource: [],
+    currentDefinition: '',
+    isAndroid: false,
+    fullScreenData: "",
   },
 
   /**
@@ -43,7 +61,7 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
-          var course = res.data.data.course
+          var course = "https://outin-a7944acc383b11e9a86700163e1a625e.oss-cn-shanghai.aliyuncs.com/af1a8bb7780f498d9271f81e9ac635e4/5509478f319b4d65acc3ce13460d85b7-8bbdd78434fd4df70d1c2441fca70d4a-ld.mp4?Expires=1554978399&OSSAccessKeyId=LTAI8bKSZ6dKjf44&Signature=%2B80vJRKRkcAxrX41MDtWBy7csZY%3D"
           that.setData({
             course: course
           })
@@ -69,6 +87,48 @@ Page({
       url: '/pages/course/index',
     })
   },
+
+  //阿里点播
+  videoPlayHandle (e) {
+    this.data.videoPlaying = true
+    this.setData({
+      controlHidden: false,
+      multiListShow: false
+    })
+    this.videoContext.playbackRate(Number(this.data.currentRate))
+    if (this.data.isSwitchDefinition) {
+      this.videoContext.seek(this.data.currentTime)
+      this.data.isSwitchDefinition = false
+    }
+
+  },
+  tapVideo(e) {
+    this.setData({
+      multiListShow: false,
+      rateShow: false,
+    })
+    if (this.data.videoPlaying && !this.data.fullScreenData) {
+      this.setData({
+        controlHidden: !this.data.controlHidden
+      })
+    }
+  },
+  playPaused() {
+    this.data.videoplaying = false
+  },
+  timeUpdate (e) {
+    let { currentTime } = e.detail
+    this.data.currentTime = currentTime
+    this.data.videoplaying = true
+  },
+  // 视频缓冲触发事件
+  videoWaiting () {
+    this.setData({
+      controlHidden: true
+    })
+  },
+
+
 
   // 分享:邀请好友
   wxShowShareModal: function (e) {
@@ -105,7 +165,7 @@ Page({
   },
   videoErrorCallback: function (e) {
     console.log('视频错误信息:', e.detail.errMsg)
-  },  
+  },
 
   /**
    * 生命周期函数--监听页面显示

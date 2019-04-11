@@ -3,9 +3,20 @@
 <import src="/pages/tmpl/share.wxml"/>
 <import src="/pages/tmpl/bottom.wxml"/>
 <view class="container">
-  <video id="myVideo" src="{{imgUrlPrefix + '/' + course.courseVideos[0].fileId + '.' + course.courseVideos[0].type}}" binderror="videoErrorCallback"></video>
+    <video
+          id="myVideo"
+          bindplay="videoPlayHandle"
+          class="vod-video"
+          bindtap="tapVideo"
+          bindpause="playPaused"
+          bindended="playPaused"
+          bindtimeupdate="timeUpdate"
+          poster=""
+          src="{{course}}"
+          bindwaiting="videoWaiting">
+    </video>
 
-  <view class="course">
+    <view class="course">
     <view class="left">
       <view class="line name">{{course.title}}</view>
       <view class="line desc-box">{{course.shortDescription}}</view>

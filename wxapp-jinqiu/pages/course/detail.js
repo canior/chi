@@ -28,6 +28,7 @@ Page({
     wx.hideShareMenu()
     //options.scene = encodeURIComponent('ss=123&p=456&go=789');
     const productId = options.id ? options.id : app.parseScene(options, 'p')
+    console.log(productId)
     this.getCourse(productId);
     const url = app.globalData.baseUrl + '/courses/' + productId + '/reviews'
     courseReview.init(this, url);
@@ -44,7 +45,7 @@ Page({
       },
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
-          console.log(res.data.data)
+          // console.log(res.data.data)
           var course = res.data.data.product
           course.courseSpecImages.forEach((item) => {
             item.loading = true
