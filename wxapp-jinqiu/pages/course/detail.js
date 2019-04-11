@@ -32,14 +32,20 @@ Page({
     const url = app.globalData.baseUrl + '/courses/' + productId + '/reviews'
     courseReview.init(this, url);
     app.buriedPoint(options)
+    app.userActivityCallback = res => {
+      this.getCourse(productId);
+      app.buriedPoint(options)
+    }    
   },
 
   getCourse: function (id) {
     const that = this;
+    const thirdSession = wx.getStorageSync('thirdSession');
+    if (!thirdSession) return;
     wx.request({
       url: app.globalData.baseUrl + '/courses/' + id,
       data: {
-        thirdSession: wx.getStorageSync('thirdSession'),
+        thirdSession: thirdSession,
         url: '/pages/course/detail?id=' + id
       },
       success: (res) => {

@@ -7,6 +7,8 @@ Page({
    * 页面的初始数据
    */
   data: {
+    isLogin: false,
+    user: null,
     imgUrlPrefix: app.globalData.imgUrlPrefix,
     banners: [],
     courses: [],
@@ -26,6 +28,10 @@ Page({
     app.buriedPoint(options)
     app.userActivityCallback = res => {
       app.buriedPoint(options)
+      this.setData({
+        isLogin: app.globalData.isLogin,
+        user: app.globalData.user
+      })      
     }
   },
 
@@ -67,10 +73,17 @@ Page({
   },
 
   toCourseDetail: function(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({
-      url: '/pages/course/detail?id=' + id,
-    })
+    const id = e.currentTarget.dataset.id;
+    const url = '/pages/course/detail?id=' + id;
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: url,
+      })      
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login?retUrl=' + encodeURIComponent(url),
+      })
+    }
   },
 
   redirect: function(e) {
@@ -92,6 +105,10 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    this.setData({
+      isLogin: app.globalData.isLogin,
+      user: app.globalData.user
+    })
     share.init(this)
   },
 

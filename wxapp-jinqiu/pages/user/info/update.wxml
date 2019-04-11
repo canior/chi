@@ -21,12 +21,9 @@
     <input placeholder="请输入公司名称" value="{{user.company}}" bindblur="inputCompany"/>
   </view>
   <view class="row">
-    <view>推荐人</view>
-    <input placeholder="" value="{{user.recommanderName}}" bindblur="inputRefereeName" disabled="true"/>
+    <view>分享人</view>
+    <input placeholder="" value="{{user.recommanderName}}" bindblur="inputRefereeName" disabled="{{user.recommandNameEditable}}"/>
   </view>
-  <!--<view class="row">
-    <input placeholder="推荐人手机号码" value="{{user.recommanderPhone}}" bindblur="inputRefereePhone"/>
-  </view>-->
 </view>
 
 <view class="bottom" bindtap="save">

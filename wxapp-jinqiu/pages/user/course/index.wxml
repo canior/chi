@@ -9,7 +9,6 @@
   </view>
 </view>
 <view class="tab-content {{tab1_selected?'show':'hidden'}}">
-  <view class="body">
     <block wx:for="{{myCourses}}" wx:key="index" wx:if="{{myCourses.length > 0}}">
       <view class="section">
         <view class="row" bindtap="toCourseDetail" data-id="{{item.productId}}">
@@ -29,11 +28,10 @@
       <view class="none">暂时没有注册课程</view>
     </block>
 
-    <view class="bottom" bindtap="toHome">发现更多课程</view>  
-  </view>
+    <view class="bottom" bindtap="toHome">发现更多课程</view>
 </view>
+
 <view class="tab-content {{tab2_selected?'show':'hidden'}}">
-  <view class="body">
 
     <block wx:for="{{myCourses}}" wx:key="index" wx:if="{{myCourses.length > 0}}">
       <view class="section">
@@ -69,7 +67,6 @@
 
     <view class="bottom" bindtap="toOfflineHome">发现更多活动</view>
 
-  </view>
 </view>
 
 
