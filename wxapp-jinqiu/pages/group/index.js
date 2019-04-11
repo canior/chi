@@ -33,18 +33,23 @@ Page({
     //options.scene = encodeURIComponent('ss=123&p=456&go=789');
     console.log(options);
     var id = options.id ? options.id : app.parseScene(options, 'go')
-    if (id) {
-      this.getGroupOrder(id);      
-    }
+    this.getGroupOrder(id);
     app.buriedPoint(options)
+    const that = this;
+    app.userActivityCallback = res => {
+      that.getGroupOrder(id);
+      app.buriedPoint(options)
+    }    
   },
 
   getGroupOrder: function(id) {
     const that = this;
+    const thirdSession = wx.getStorageSync('thirdSession');
+    if (!thirdSession) return;
     wx.request({
       url: app.globalData.baseUrl + '/groupOrder/view',
       data: {
-        thirdSession: wx.getStorageSync('thirdSession'),        
+        thirdSession: thirdSession,        
         groupOrderId: id,
         url: '/pages/group/index?id=' + id
       },

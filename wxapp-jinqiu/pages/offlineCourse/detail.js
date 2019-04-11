@@ -30,6 +30,11 @@ Page({
     const url = app.globalData.baseUrl + '/offlineCourses/' + courseId + '/reviews'
     courseReview.init(this, url);
     app.buriedPoint(options)
+    const that = this;
+    app.userActivityCallback = res => {
+      that.getCourse(courseId);
+      app.buriedPoint(options)
+    }    
   },
 
   getCourse: function (id) {
