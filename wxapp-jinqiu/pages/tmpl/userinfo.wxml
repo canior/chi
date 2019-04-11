@@ -8,7 +8,7 @@
           <view class="line">{{user.name}} | {{user.userLevelText}} | {{user.bianxianUserLevelText}}</view>
           <view class="line">联系电话: {{user.phone ? user.phone : ''}}</view>
           <!--<view class="line">{{user.idNum ? phone.encode(user.idNum) : ''}}</view>-->
-          <view class="line">推荐人: {{user.recommanderName}}</view>
+          <view class="line">分享人: {{user.recommanderName}}</view>
         </block>
         <block wx:else>
           <view class="line">请输入您的个人资料</view>

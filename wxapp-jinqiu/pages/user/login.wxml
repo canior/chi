@@ -1,7 +1,7 @@
 <!--pages/user/login.wxml-->
 <view class="container">
     <view class="banner" bindtap="redirect" data-url="{{bannerMeta.redirectUrl}}">
-        <image mode="widthFix" src="{{imgUrlPrefix + '/' + bannerMeta.bannerFileId}}"></image>
+        <image mode="widthFix" wx:if="{{bannerMeta}}" src="{{imgUrlPrefix + '/' + bannerMeta.bannerFileId}}"></image>
     </view>
     <view class="">
         <!--未授权出弹窗,已授权不再出-->
@@ -15,11 +15,6 @@
             <text>微信用户快速登录</text>
         </view>
     </view>
-    <!--<view class="btn-container">
-        <button open-type="getUserInfo" bindgetuserinfo="tapMobileLogin" class="btn mobile">
-            <text>手机号登录</text>
-        </button>
-    </view>-->
     <view class="">
         <button bindtap="toHome" class="btn mobile">
             <text>返回首页</text>

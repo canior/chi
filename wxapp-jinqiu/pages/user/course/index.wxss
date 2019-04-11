@@ -20,7 +20,7 @@
   flex:1;
 }
 .tab-content {
-  margin: 40rpx;
+  margin: 20rpx 0;
 }
 .tab-content.show {
   display: block;
@@ -55,7 +55,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20rpx;
+  padding: 25rpx;
   border-bottom: 1px solid #ececec;
 }.row:last-child {
   border: none;

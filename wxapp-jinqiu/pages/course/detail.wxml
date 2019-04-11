@@ -19,7 +19,7 @@
 
   <view class="section">
     <view class="chi-item">
-      <view class="left"><image src="{{imgUrlPrefix + '/' + course.teacher.avatarFileId}}"/></view>
+      <view class="left"><image wx:if="{{course}}" src="{{imgUrlPrefix + '/' + course.teacher.avatarFileId}}"/></view>
       <view class="right">
         <view class="line title">{{course.teacher.name}}</view>
         <view class="line sub-title">{{course.teacher.title}}</view>
