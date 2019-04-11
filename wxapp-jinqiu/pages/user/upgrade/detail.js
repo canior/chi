@@ -16,7 +16,6 @@ Page({
     bottomData: {},
     shareData: {},
     loading: true,
-    options: null,
   },
 
   /**
@@ -24,21 +23,28 @@ Page({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
+    //options.scene = encodeURIComponent('ss=123&p=456&go=789');
+    const productId = options.id ? options.id : app.parseScene(options, 'p')
+    this.getProduct(productId);
     app.buriedPoint(options)
-    this.setData({
-      options: options
-    })    
+    const that = this;
+    app.userActivityCallback = res => {
+      that.getProduct(productId);
+      app.buriedPoint(options)
+    }    
   },
 
   getProduct: function (productId) {
     const that = this;
+    const thirdSession = wx.getStorageSync('thirdSession');
+    if (!thirdSession) return;
     wx.showLoading({
       title: '载入中',
     })
     wx.request({
       url: app.globalData.baseUrl + '/user/upgradeUserOrder/' + productId + '/view',
       data: {
-        thirdSession: wx.getStorageSync('thirdSession'),
+        thirdSession: thirdSession,
         url: '/pages/user/upgrade/detail?id=' + productId
       },
       method: 'POST',
@@ -115,10 +121,6 @@ Page({
     if (this.data.isLogin) {
       bottom.init(this)
       share.init(this)
-      //options.scene = encodeURIComponent('ss=123&p=456&go=789');
-      var productId = this.data.options.id ? this.data.options.id : app.parseScene(this.data.options, 'p')
-      this.getProduct(productId);
-      this.setData({ ['product.productSpecImages']: [] })
     } else {
       wx.navigateTo({
         url: '/pages/user/login',

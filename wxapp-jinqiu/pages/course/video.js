@@ -28,14 +28,22 @@ Page({
     this.getVideo(productId)
     const url = app.globalData.baseUrl + '/courses/' + productId + '/reviews'
     courseReview.init(this, url);
+    app.buriedPoint(options)
+    const that = this;
+    app.userActivityCallback = res => {
+      that.getVideo(productId);
+      app.buriedPoint(options)
+    }
   },
 
   getVideo: function (id) {
     const that = this;
+    const thirdSession = wx.getStorageSync('thirdSession');
+    if (!thirdSession) return;
     wx.request({
       url: app.globalData.baseUrl + '/user/signInCourse',
       data: {
-        thirdSession: wx.getStorageSync('thirdSession'),
+        thirdSession: thirdSession,
         productId: id,
         url: '/pages/course/video?id=' + id
       },

@@ -32,10 +32,11 @@ Page({
     const url = app.globalData.baseUrl + '/courses/' + productId + '/reviews'
     courseReview.init(this, url);
     app.buriedPoint(options)
+    const that = this;
     app.userActivityCallback = res => {
-      this.getCourse(productId);
+      that.getCourse(productId);
       app.buriedPoint(options)
-    }    
+    }
   },
 
   getCourse: function (id) {

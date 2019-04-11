@@ -24,7 +24,7 @@ Page({
   onLoad: function (options) {
     wx.hideShareMenu()
     app.buriedPoint(options)
-    console.log('/pages/user/course/log: options', options);
+    console.log('/pages/user/offlineCourse/log: options', options);
     this.setData({
       options: options
     })

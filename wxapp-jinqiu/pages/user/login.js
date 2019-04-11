@@ -56,15 +56,16 @@ Page({
   
   // bindgetuserinfo: 授权并登录
   getUserInfo: function (e) {
+    const that = this;
     let userInfo = e.detail.userInfo
     if (userInfo) {// 用户接受授权
       //console.log('login', e.detail.userInfo)
       app.globalData.userInfo = e.detail.userInfo;
       if (app.globalData.isLogin) {// 有thirdSession,登录成功
-        this.back()
+        that.back()
       } else {// 无thirdSession,继续登录
         app.login(userInfo, function () {
-          this.back()
+          that.back()
         });
       }
     } else {// 用户拒绝授权
