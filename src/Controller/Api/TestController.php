@@ -20,6 +20,8 @@ use App\Repository\FileRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\UpgradeOrderCouponRepository;
 use App\Repository\UserRepository;
+use App\Service\Ali\AliCommon;
+use App\Service\Ali\AliVod;
 use App\Service\Wx\WxCommon;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,9 +43,17 @@ class TestController extends BaseController
      * @Route("/testYadi", name="testYadi", methods="GET")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \AlibabaCloud\Client\Exception\ClientException
+     * @throws \AlibabaCloud\Client\Exception\ServerException
      */
     public function testAction(Request $request) {
         if ($this->getEnvironment() != 'dev') exit;
+        $aliClient = new AliCommon();
+        $result = $aliClient->getPlayInfo('af1a8bb7780f498d9271f81e9ac635e4');
+        echo AliVod::getVideoUrl($result) . '<br/>';
+        echo AliVod::getVideoImageUrl($result) . '<br/>';
+        echo AliVod::getVideoExpiresAt($result) . '<br/>';
+        exit;
 
 //        /**
 //         * @var UpgradeOrderCouponRepository $upgradeOrderCouponRepository

@@ -19,6 +19,8 @@ use App\Repository\ProductReviewRepository;
 use App\Repository\ProjectBannerMetaRepository;
 use App\Repository\ProjectMetaRepository;
 use App\Repository\ProjectTextMetaRepository;
+use App\Service\Ali\AliCommon;
+use App\Service\Ali\AliVod;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -79,7 +81,7 @@ class ProductController extends BaseController
             'products' => $productsArray,
             'baseUrl' => $request->getUri(),
         ];
-        
+
         return $this->responseJson('success', 200, $data);
     }
 
@@ -179,4 +181,67 @@ class ProductController extends BaseController
         return $this->responseJson('success', 200, $data);
     }
 
+    /**
+     * @Route("/product/{productId}/aliyun/video", name="aliyunVideo", methods="GET")
+     * @param ProductRepository $productRepository
+     * @param $productId
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \AlibabaCloud\Client\Exception\ClientException
+     * @throws \AlibabaCloud\Client\Exception\ServerException
+     * @return Response
+     */
+    public function getAliyunVideo(ProductRepository $productRepository, $productId) {
+        $product = $productRepository->find($productId);
+
+        if ($product->isAliyunVideoExpired()) {
+            $ali = new AliCommon();
+            $playInfo = $ali->getPlayInfo($product->getAliyunVideoId());
+
+            $aliyunVideoUrl = AliVod::getVideoUrl($playInfo);
+            $aliyunVideoImageUrl = AliVod::getVideoImageUrl($playInfo);
+            $aliyunVideoExpiresAt = AliVod::getVideoExpiresAt($playInfo);
+
+            $product->setAliyunVideoUrl($aliyunVideoUrl);
+            $product->setAliyunVideoImageUrl($aliyunVideoImageUrl);
+            $product->setAliyunVideoExpiresAt($aliyunVideoExpiresAt);
+            $this->getEntityManager()->persist($product);
+            $this->getEntityManager()->flush();
+        }
+
+        return $this->responseJson('success', 200, [
+            'aliyunVideoUrl' => $product->getAliyunVideoUrl()
+        ]);
+    }
+
+    /**
+     * @Route("/product/{productId}/aliyun/video/image", name="aliyunVideoImage", methods="GET")
+     * @param ProductRepository $productRepository
+     * @param $productId
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \AlibabaCloud\Client\Exception\ClientException
+     * @throws \AlibabaCloud\Client\Exception\ServerException
+     * @return Response
+     */
+    public function getAliyunVideoImage(ProductRepository $productRepository, $productId) {
+        $product = $productRepository->find($productId);
+
+        if ($product->isAliyunVideoExpired()) {
+            $ali = new AliCommon();
+            $playInfo = $ali->getPlayInfo($product->getAliyunVideoId());
+
+            $aliyunVideoUrl = AliVod::getVideoUrl($playInfo);
+            $aliyunVideoImageUrl = AliVod::getVideoImageUrl($playInfo);
+            $aliyunVideoExpiresAt = AliVod::getVideoExpiresAt($playInfo);
+
+            $product->setAliyunVideoUrl($aliyunVideoUrl);
+            $product->setAliyunVideoImageUrl($aliyunVideoImageUrl);
+            $product->setAliyunVideoExpiresAt($aliyunVideoExpiresAt);
+            $this->getEntityManager()->persist($product);
+            $this->getEntityManager()->flush();
+        }
+
+        return $this->responseJson('success', 200, [
+            'aliyunVideoImageUrl' => $product->getAliyunVideoImageUrl()
+        ]);
+    }
 }

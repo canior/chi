@@ -11,6 +11,7 @@ namespace App\Controller;
 use App\Command\File\BatchUploadFilesCommand;
 use App\Command\File\UploadFileCommand;
 use App\Entity\File;
+use App\Repository\ProductRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;

@@ -6,6 +6,7 @@
         "ext-gd": "*",
         "ext-iconv": "*",
         "ext-json": "*",
+        "alibabacloud/sdk": "^1.4",
         "endroid/qr-code-bundle": "^3.3",
         "friendsofsymfony/user-bundle": "~2.0",
         "guzzlehttp/guzzle": "^6.3",

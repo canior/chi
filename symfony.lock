@@ -1,9 +1,24 @@
 {
+    "adbario/php-dot-notation": {
+        "version": "2.2.0"
+    },
+    "alibabacloud/client": {
+        "version": "1.1.1"
+    },
+    "alibabacloud/sdk": {
+        "version": "1.4.0"
+    },
     "bacon/bacon-qr-code": {
         "version": "1.0.3"
     },
+    "clagiordano/weblibs-configmanager": {
+        "version": "v1.0.6"
+    },
     "composer/ca-bundle": {
         "version": "1.1.1"
+    },
+    "danielstjules/stringy": {
+        "version": "3.1.0"
     },
     "dasprid/enum": {
         "version": "1.0.0"
@@ -163,6 +178,9 @@
     },
     "monolog/monolog": {
         "version": "1.23.0"
+    },
+    "mtdowling/jmespath.php": {
+        "version": "2.4.0"
     },
     "myclabs/deep-copy": {
         "version": "1.8.1"

@@ -63,7 +63,9 @@ class CourseController extends BackendController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $status = $request->request->get('course')['status'];
+            $subject = $request->request->get('course')['subject'];
             $course->setStatus($status);
+            $course->setSubject($subject);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($course);
@@ -95,21 +97,6 @@ class CourseController extends BackendController
                     die;
                 }
                 return new Response('页面错误', 500);
-            }
-
-            //add videos
-            $videoFileId = isset($request->request->get('course')['courseVideo']) ? $request->request->get('course')['courseVideo'] : null;
-            if ($videoFileId) {
-                /**
-                 * @var File $videoFile
-                 */
-                $videoFile = $this->getEntityManager()->getRepository(File::class)->find($videoFileId);
-                $productVideo = ProductVideo::factory($course->getProduct(), $videoFile);
-                $productVideos = new ArrayCollection();
-                $productVideos->add($productVideo);
-                $course->getProduct()->setProductVideos($productVideos);
-                $this->getEntityManager()->persist($course->getProduct());
-                $this->getEntityManager()->flush();
             }
 
             //add share image
@@ -145,6 +132,7 @@ class CourseController extends BackendController
     {
         $form = $this->createForm(CourseType::class, $course);
         $form->get('status')->setData(array_search($course->getProduct()->getStatusText(), Product::$statuses));
+        $form->get('subject')->setData(array_search($course->getSubjectText(), Subject::$subjectTextArray));
 
         // init images
         $productImages = $course->getCourseImages();
@@ -177,21 +165,6 @@ class CourseController extends BackendController
             $form->get('specImages')->setData($images);
         }
 
-        $productVideos = $course->getProduct()->getProductVideos();
-        if (!$productVideos->isEmpty()) {
-            $videos = [];
-            foreach ($productVideos as $video) {
-                $videos[$video->getFile()->getId()] = [
-                    'id' => $video->getId(),
-                    'fileId' => $video->getFile()->getId(),
-                    'priority' => $video->getPriority(),
-                    'name' => $video->getFile()->getName(),
-                    'size' => $video->getFile()->getSize()
-                ];
-            }
-            $form->get('courseVideo')->setData($videos);
-        }
-
         $shareImageFile = $course->getShareImageFile();
         if ($shareImageFile) {
             $fileArray[$shareImageFile->getId()] = [
@@ -208,7 +181,9 @@ class CourseController extends BackendController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $status = $request->request->get('course')['status'];
+            $subject = $request->request->get('course')['subject'];
             $course->setStatus($status);
+            $course->setSubject($subject);
             $this->getEntityManager()->persist($course);
 
             try {
@@ -237,23 +212,6 @@ class CourseController extends BackendController
                     die;
                 }
                 return new Response('页面错误', 500);
-            }
-
-            //update videos
-            $courseVideoFileId = isset($request->request->get('course')['courseVideo']) ? $request->request->get('course')['courseVideo'] : [];
-            if ($courseVideoFileId) {
-                /**
-                 * @var File $courseVideoFile
-                 */
-                $courseVideoFile = $this->getEntityManager()->getRepository(File::class)->find($courseVideoFileId);
-                $courseVideo = ProductVideo::factory($course->getProduct(), $courseVideoFile);
-                $courseVideos = new ArrayCollection();
-                $courseVideos->add($courseVideo);
-                $course->getProduct()->setProductVideos($courseVideos);
-                $this->getEntityManager()->persist($course->getProduct());
-            } else {
-                $course->getProduct()->setProductVideos(null);
-                $this->getEntityManager()->persist($course->getProduct());
             }
 
             //update share image
@@ -296,4 +254,5 @@ class CourseController extends BackendController
 
         return $this->redirectToRoute('course_index');
     }
+
 }
