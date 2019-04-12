@@ -93,6 +93,7 @@ class UserController extends BackendController
         $form = $this->createForm(UserPersonalType::class, $user);
         $form->get('userLevel')->setData(array_search($user->getUserLevelText(), UserLevel::$userLevelTextArray));
         $form->get('bianxianUserLevel')->setData(array_search($user->getBianxianUserLevelText(), BianxianUserLevel::$userLevelTextArray));
+
         $form->handleRequest($request);
 
         $verifyParentForm = $this->createForm(VerifyParentUserType::class, $user);

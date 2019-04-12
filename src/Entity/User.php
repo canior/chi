@@ -18,6 +18,11 @@ class User extends BaseUser implements Dao
     const PARENT_45_DAYS_EXPIRES_SECONDS = 3888000; //锁定45天
     const PARENT_365_DAYS_EXPIRES_SECONDS = 31536000; //锁定365天
 
+    public static $lockTimeTextArray = [
+        self::PARENT_45_DAYS_EXPIRES_SECONDS => '45天',
+        self::PARENT_365_DAYS_EXPIRES_SECONDS => '365天',
+    ];
+
     const ROLE_CUSTOMER = 'ROLE_CUSTOMER';
     const ROLE_SECURITY = 'ROLE_SECURITY';
     const ROLE_CUSTOMER_SERVICE = 'ROLE_CUSTOMER_SERVICE';

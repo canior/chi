@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use App\Entity\UserLevel;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class VerifyParentUserType extends AbstractType
 {
@@ -30,6 +31,12 @@ class VerifyParentUserType extends AbstractType
                         ->where('u.userLevel in (:userLevels)')
                         ->setParameter('userLevels', [UserLevel::PARTNER, UserLevel::ADVANCED]);
                 }
+            ])
+            ->add('parentUserExpiresAt', DateType::class, [
+                'label' => '锁定至日期',
+                'placeholder' => ['year' => '年', 'month' => '月', 'day' => '日'],
+                'input' => 'timestamp',
+                'required' => true
             ])
         ;
     }
