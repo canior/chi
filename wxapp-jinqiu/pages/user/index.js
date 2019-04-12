@@ -226,8 +226,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    const that = this
     app.userActivityCallback = res => {
-      this.setData({
+      that.setData({
         isLogin: app.globalData.isLogin,
         user: app.globalData.user,
         textMeta: app.globalData.textMeta

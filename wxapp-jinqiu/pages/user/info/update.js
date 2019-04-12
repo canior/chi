@@ -40,6 +40,9 @@ Page({
   // 获取个人资料
   getUserInfo: function() {
     const that = this;
+    wx.showLoading({
+      title: '玩命加载中',
+    })    
     wx.request({
       url: app.globalData.baseUrl + '/user/personal/view',
       data: {
@@ -65,7 +68,7 @@ Page({
       },
       fail(e) {
       },
-      complete(e) { }
+      complete(e) { wx.hideLoading() }
     })
   },
 
@@ -125,6 +128,8 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
+          // update user
+          app.globalData.user = res.data.data.user
           if (that.data.groupUserOrderId) {
             wx.redirectTo({
               url: '/pages/offlineCourse/pay?orderId=' + that.data.groupUserOrderId,
