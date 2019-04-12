@@ -146,6 +146,32 @@ class Product implements Dao
      */
     private $course;
 
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var string|null
+     */
+    private $aliyunVideoUrl;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var string|null
+     */
+    private $aliyunVideoImageUrl;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var int|null
+     */
+    private $aliyunVideoExpiresAt;
+
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var string | null
+     */
+    private $aliyunVideoId;
+
+
 
     /**
      * @var ProductVideo[]|ArrayCollection
@@ -861,6 +887,74 @@ class Product implements Dao
     }
 
     /**
+     * @return null|string
+     */
+    public function getAliyunVideoUrl(): ?string
+    {
+        return $this->aliyunVideoUrl;
+    }
+
+    /**
+     * @param null|string $aliyunVideoUrl
+     */
+    public function setAliyunVideoUrl(?string $aliyunVideoUrl): void
+    {
+        $this->aliyunVideoUrl = $aliyunVideoUrl;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getAliyunVideoImageUrl(): ?string
+    {
+        return $this->aliyunVideoImageUrl;
+    }
+
+    /**
+     * @param null|string $aliyunVideoImageUrl
+     */
+    public function setAliyunVideoImageUrl(?string $aliyunVideoImageUrl): void
+    {
+        $this->aliyunVideoImageUrl = $aliyunVideoImageUrl;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAliyunVideoExpiresAt(): ?int
+    {
+        return $this->aliyunVideoExpiresAt;
+    }
+
+    /**
+     * @param int|null $aliyunVideoExpiresAt
+     */
+    public function setAliyunVideoExpiresAt(?int $aliyunVideoExpiresAt): void
+    {
+        $this->aliyunVideoExpiresAt = $aliyunVideoExpiresAt;
+    }
+
+    public function isAliyunVideoExpired() {
+        return time() + 600 > $this->getAliyunVideoExpiresAt();
+    }
+
+    /**
+    * @return null|string
+    */
+    public function getAliyunVideoId(): ?string
+    {
+        return $this->aliyunVideoId;
+    }
+
+    /**
+     * @param null|string $aliyunVideoId
+     */
+    public function setAliyunVideoId(?string $aliyunVideoId): void
+    {
+        $this->aliyunVideoId = $aliyunVideoId;
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {
@@ -906,6 +1000,7 @@ class Product implements Dao
             'similarProducts' => $similarProductsArray,
             'soldNum' => 1000, //TODO 需要从product statistics里拿
             'reviewsNum' => $this->getTotalActiveReviews(),
+            'aliyunVideoId' => $this->aliyunVideoId,
         ];
     }
 

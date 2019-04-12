@@ -25,6 +25,12 @@ class CourseType extends AbstractType
     {
         $builder
             ->add('id', null, ['label' => 'ID', 'disabled' => true])
+            ->add('subject', ChoiceType::class, [
+                'label' => '科目',
+                'mapped' => false,
+                'choices' => array_flip(Subject::$subjectTextArray),
+                'required' => true
+            ])
             ->add('title', TextType::class, [
                 'label' => '课程名称',
                 'required' => true
@@ -68,12 +74,9 @@ class CourseType extends AbstractType
                 'data_class' => null,
                 'mapped' => false,
             ])
-            ->add('courseVideo', DropzoneType::class, [
-                'label' => '课程视频（1个）',
-                'maxFiles' => 1,
-                'priority' => true,
-                'data_class' => null,
-                'mapped' => false,
+            ->add('aliyunVideoId', TextType::class, [
+                'label' => '课程视频（阿里云视频ID）',
+                'required' => false,
             ])
             ->add('shareImageFile', DropzoneType::class, [
                 'label' => '课程分享图片（1张：注意留空保留二维码位置）',

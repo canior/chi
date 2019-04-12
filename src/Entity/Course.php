@@ -86,7 +86,6 @@ class Course implements Dao
      */
     private $isOnline;
 
-
     public function __construct() {
         $product = new Product();
         $product->setCourse($this);
@@ -607,6 +606,22 @@ class Course implements Dao
     }
 
     /**
+     * @return null|string
+     */
+    public function getAliyunVideoId(): ?string
+    {
+        return $this->getProduct()->getAliyunVideoId();
+    }
+
+    /**
+     * @param null|string $aliyunVideoId
+     */
+    public function setAliyunVideoId(?string $aliyunVideoId): void
+    {
+        $this->getProduct()->setAliyunVideoId($aliyunVideoId);
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {
@@ -647,6 +662,7 @@ class Course implements Dao
             'subject' => $this->getSubject(),
             'subjectText' => $this->getSubject() ? Subject::$subjectTextArray[$this->getSubject()] : null,
             'eligibleViewer' => $this->getEligibleViewerUserLevels(),
+            'aliyunVideoId' => $this->getAliyunVideoId(),
         ];
     }
 }
