@@ -36,10 +36,61 @@ Page({
     }
   },
 
+  // GET /product/{productId}/aliyun/video/image
+  getVideoImageUrl: function (id) {
+    const that = this;
+    const url = app.globalData.baseUrl + '/product/' + id + '/aliyun/video/image';
+    wx.request({
+      url: url,
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          that.setData({
+            videoImageUrl: res.data.data.aliyunVideoImageUrl
+          })
+        } else {
+          console.log('wx.request '+url+' return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) {
+        wx.hideLoading()
+      }
+    })   
+  },
+
+  // GET /product/{productId}/aliyun/video
+  getVideoUrl: function (id) {
+    const that = this;
+    const url = app.globalData.baseUrl + '/product/' + id + '/aliyun/video';
+    wx.request({
+      url: url,
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          that.setData({
+            videoUrl: res.data.data.aliyunVideoUrl
+          })
+        } else {
+          console.log('wx.request '+url+' return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) {
+        wx.hideLoading()
+      }
+    })   
+  },
+
   getVideo: function (id) {
     const that = this;
     const thirdSession = wx.getStorageSync('thirdSession');
     if (!thirdSession) return;
+    wx.showLoading({
+      title: '玩命加载中',
+    })
     wx.request({
       url: app.globalData.baseUrl + '/user/signInCourse',
       data: {
@@ -56,13 +107,17 @@ Page({
             course: course
           })
           share.setShareSources(that, res.data.data.shareSources)
+          that.getVideoImageUrl(id)
+          that.getVideoUrl(id)
         } else {
           console.log('wx.request return error', res.statusCode);
         }
       },
       fail(e) {
       },
-      complete(e) { }
+      complete(e) {
+        wx.hideLoading()
+      }
     })
   },
 
