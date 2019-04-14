@@ -85,6 +85,10 @@ class CourseType extends AbstractType
                 'data_class' => null,
                 'mapped' => false,
             ])
+            ->add('priority', IntegerType::class, [
+                'label' => '排序优先级（数字越大越靠前）',
+                'required' => true,
+            ])
         ;
     }
 

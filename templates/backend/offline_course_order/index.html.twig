@@ -1,6 +1,6 @@
 {% extends 'backend/base.html.twig' %}
 
-{% block title %}产品订单{% endblock %}
+{% block title %}活动订单{% endblock %}
 
 {% import 'form/macros.html.twig' as macros %}
 
@@ -17,22 +17,22 @@
                     <div class="row">
                         <form class="cmxform" id="myForm">
                             <div class="col-md-2 form-group">
-                                <label>产品订单号</label>
+                                <label>活动订单号</label>
                                 <input type="number" name="groupUserOrderId" class="form-control"
                                        value="{{ form.groupUserOrderId > 0 ? form.groupUserOrderId : '' }}"
                                        placeholder="按 订单ID 查询">
                             </div>
                             <div class="col-md-2 form-group">
-                                <label>用户</label>
+                                <label>用户ID</label>
                                 <input type="number" name="userId" class="form-control"
                                        value="{{ form.userId > 0 ? form.userId : '' }}"
                                        placeholder="按 用户ID 查询">
                             </div>
                             <div class="col-md-2 form-group">
-                                <label>产品名称</label>
+                                <label>活动名称</label>
                                 <input type="text" name="productName" class="form-control"
                                        value="{{ form.productName }}"
-                                       placeholder="按产品名称查询">
+                                       placeholder="按活动名称查询">
                             </div>
                             <div class="col-md-2 form-group">
                                 <label>订单状态</label>
@@ -58,7 +58,7 @@
                             </div>
                             <div class="col-md-1 form-group">
                                 <label>&nbsp;</label>
-                                <a class="form-control btn btn-danger" href="{{ path('group_user_order_export') }}"
+                                <a class="form-control btn btn-danger" href="{{ path('offline_course_order_export') }}"
                                    title="导出">
                                     导出
                                 </a>
@@ -69,14 +69,14 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th class="col-md-1">产品订单号</th>
-                                <th class="col-md-2">产品</th>
+                                <th class="col-md-1">活动订单号</th>
+                                <th class="col-md-2">创建时间</th>
+                                <th class="col-md-2">活动</th>
                                 <th class="col-md-2">用户</th>
+                                <th class="col-md-2">推荐人</th>
                                 <th class="col-md-1">支付金额</th>
                                 <th class="col-md-1">订单状态</th>
                                 <th class="col-md-1">支付状态</th>
-                                <th class="col-md-2">创建时间</th>
-                                <th class="col-md-1">推荐人</th>
                                 <th class="col-md-1 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
@@ -85,20 +85,23 @@
                                 {% for item in pagination %}
                                     <tr>
                                         <td>{{ item.id }}</td>
+                                        <td>{{ item.createdAtFormatted }}</td>
                                         <td>
                                             {{ item.product.title }}
                                         </td>
                                         <td>
                                             {{ item.user }}
                                         </td>
-                                        <td>￥{{ item.total }}</td>
-                                        <td>{{ item.statusText }}</td>
+                                        <td>
+                                            {{ item.user.parentUser }}
+                                        </td>
+                                        <td>{{ item.total }}</td>
+                                        <td>{{ item.courseStatusText }}</td>
                                         <td>{{ item.paymentStatusText }}</td>
-                                        <td>{{ item.createdAtFormatted }}</td>
-                                        <td>{{ item.user.recommanderName }}</td>
+
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{ path('group_user_order_info', {'id': item.id}) }}"
+                                                <a href="{{ path('offline_course_order_edit', {'id': item.id}) }}"
                                                    title="查看详情">
                                                     <span class="fa fa-edit"></span>
                                                 </a>
@@ -108,7 +111,7 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="8" class="alert">no records found</td>
+                                    <td colspan="11" class="alert">no records found</td>
                                 </tr>
                             {% endif %}
                             </tbody>

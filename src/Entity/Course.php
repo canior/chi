@@ -622,6 +622,20 @@ class Course implements Dao
     }
 
     /**
+     * @param $priority
+     */
+    public function setPriority($priority) {
+        $this->getProduct()->setPriority($priority);
+    }
+
+    /**
+     * @return int
+     */
+    public function getPriority() {
+        return $this->getProduct()->getPriority();
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {

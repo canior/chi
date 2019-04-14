@@ -893,13 +893,27 @@ class GroupUserOrder implements Dao
      * @param $upgradeUserOrderType
      * @return UpgradeUserOrder|mixed|null
      */
-    public function getUpgradeUserOrder($upgradeUserOrderType) {
+    protected function getUpgradeUserOrder($upgradeUserOrderType) {
         foreach ($this->upgradeUserOrders as $upgradeUserOrder) {
             if ($upgradeUserOrder->getType() == $upgradeUserOrderType) {
                 return $upgradeUserOrder;
             }
         }
         return null;
+    }
+
+    /**
+     * @return UpgradeUserOrder|null
+     */
+    public function getJinqiuUpgradeUserOrder() {
+        return $this->getUpgradeUserOrder(UpgradeUserOrder::JINQIU);
+    }
+
+    /**
+     * @return UpgradeUserOrder|null
+     */
+    public function getBianxianUpgradeUserOrder() {
+        return $this->getUpgradeUserOrder(UpgradeUserOrder::BIANXIAN);
     }
 
     /**

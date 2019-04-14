@@ -39,8 +39,7 @@ class ProductRepository extends ServiceEntityRepository
             $query->andWhere('p.course is null');
         }
 
-        return $query->orderBy('p.id', 'DESC')
-            ->getQuery();
+        return $query->orderBy('p.priority', 'DESC')->addOrderBy('p.id', 'DESC')->getQuery();
     }
 
     /**
@@ -72,6 +71,6 @@ class ProductRepository extends ServiceEntityRepository
                 ->setParameter('status', $status);
         }
 
-        return $query->orderBy('p.id', 'DESC');
+        return $query->orderBy('p.priority', 'DESC')->addOrderBy('p.id', 'DESC');
     }
 }

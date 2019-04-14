@@ -19,6 +19,7 @@ use App\Entity\Subject;
 use App\Entity\Product;
 use App\Form\Type\DropzoneType;
 use App\Entity\User;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class OfflineCourseType extends AbstractType
 {
@@ -40,6 +41,11 @@ class OfflineCourseType extends AbstractType
                 'currency' => 'CNY',
                 'label' => '会务费',
                 'required' => true
+            ])
+            ->add('hasCoupon', ChoiceType::class, [
+                'label' => '是否特级VIP升级码产品',
+                'mapped' => false,
+                'choices' => array_flip(Product::$hasCouponValues)
             ])
             ->add('status', ChoiceType::class, [
                 'label' => '状态',
@@ -108,6 +114,10 @@ class OfflineCourseType extends AbstractType
                 'priority' => true,
                 'data_class' => null,
                 'mapped' => false,
+            ])
+            ->add('priority', IntegerType::class, [
+                'label' => '排序优先级（数字越大越靠前）',
+                'required' => true,
             ])
         ;
     }

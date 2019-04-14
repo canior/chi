@@ -35,9 +35,11 @@
                                                 <tr>
                                                     <th>会员升级订单</th>
                                                     <td>
-                                                        <a href="{{ path('upgrade_user_order_edit', {'id': group_user_order.upgradeUserOrder.id}) }}">
-                                                            {{ group_user_order.upgradeUserOrder }}
+                                                        {% if group_user_order.jinqiuUpgradeUserOrder  %}
+                                                        <a href="{{ path('upgrade_user_order_edit', {'id': group_user_order.jinqiuUpgradeUserOrder.id}) }}">
+                                                            {{ group_user_order.jinqiuUpgradeUserOrder }}
                                                         </a>
+                                                        {% endif %}
                                                     </td>
                                                 </tr>
                                                 <tr>

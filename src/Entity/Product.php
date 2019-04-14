@@ -172,7 +172,6 @@ class Product implements Dao
     private $aliyunVideoId;
 
 
-
     /**
      * @var ProductVideo[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\ProductVideo", mappedBy="product", orphanRemoval=true, cascade={"persist","remove"})
@@ -221,10 +220,18 @@ class Product implements Dao
 
 
     /**
+     * @ORM\Column(type="integer", nullable=false)
+     * @var integer
+     */
+    private $priority;
+
+
+    /**
      * Product constructor.
      */
     public function __construct()
     {
+        $this->setPriority(0);
         $this->setUpdatedAt(time());
         $this->setCreatedAt(time());
         $this->setActive();
@@ -1018,6 +1025,22 @@ class Product implements Dao
     public function setHasCoupon(bool $hasCoupon): void
     {
         $this->hasCoupon = $hasCoupon;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @param integer $priority
+     */
+    public function setPriority($priority): void
+    {
+        $this->priority = $priority;
     }
 
     /**

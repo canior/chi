@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\User;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class ProductType extends AbstractType
 {
@@ -77,6 +78,10 @@ class ProductType extends AbstractType
                 'label' => '状态',
                 'mapped' => false,
                 'choices' => array_flip(Product::$statuses)
+            ])
+            ->add('priority', IntegerType::class, [
+                'label' => '排序优先级（数字越大越靠前）',
+                'required' => true,
             ])
         ;
     }

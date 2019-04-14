@@ -11,6 +11,8 @@ use App\Repository\GroupUserOrderRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * @Route("/backend")
@@ -47,6 +49,9 @@ class GroupUserOrderController extends BackendController
 
     /**
      * @Route("/group/user/order/info/{id}", name="group_user_order_info", methods="GET|POST")
+     * @param Request $request
+     * @param GroupUserOrder $groupUserOrder
+     * @return Response
      */
     public function info(Request $request, GroupUserOrder $groupUserOrder): Response
     {
@@ -161,5 +166,85 @@ class GroupUserOrderController extends BackendController
         }
 
         return $this->redirectToRoute('group_user_order_index');
+    }
+
+    /**
+     * @Route("/group/user/order/export", name="group_user_order_export", methods="GET")
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @param Request $request
+     * @return Response
+     */
+    public function export(GroupUserOrderRepository $groupUserOrderRepository, Request $request): Response
+    {
+        $data = [
+            'title' => '产品订单',
+            'form' => [
+                'groupUserOrderId' => $request->query->getInt('groupUserOrderId', null),
+                'userId' => $request->query->getInt('userId', null),
+                'productName' => $request->query->get('productName', null),
+                'status' => $request->query->get('status', null),
+                'paymentStatus' => $request->query->get('paymentStatus', null),
+                'page' => $request->query->getInt('page', 1)
+            ],
+            'statuses' => GroupUserOrder::$courseStatuses,
+            'paymentStatuses' => GroupUserOrder::$paymentStatuses,
+        ];
+
+        /**
+         * @var GroupUserOrder[] $exportData
+         */
+        $exportData = $groupUserOrderRepository->findGroupUserOrdersQueryBuilder(false, $data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['productName'], null, $data['form']['status'], $data['form']['paymentStatus'])->getQuery()->getResult();
+
+        $csvData = new ArrayCollection();
+        $csvData->add([]);
+        $csvData->add(['订单号','创建时间', '产品ID', '产品', '用户ID', '用户姓名', '用户电话', '用户等级', '推荐人ID', '推荐人姓名', '推荐人电话', '会务费', '订单状态', '支付状态', '物流商', '物流单号']);
+
+        foreach ($exportData as $groupUserOrder) {
+            $parentUserId = '';
+            $parentUserName = '';
+            $parentUserPhone = '';
+
+            if ($groupUserOrder->getUser()->getParentUser()) {
+                $parentUserId = $groupUserOrder->getUser()->getParentUser()->getId();
+                $parentUserName = $groupUserOrder->getUser()->getParentUser()->getName();
+                $parentUserPhone = $groupUserOrder->getUser()->getParentUser()->getPhone();
+            }
+
+            $line = [
+                $groupUserOrder->getId(),
+                $groupUserOrder->getCreatedAtDateFormatted(),
+                $groupUserOrder->getProduct()->getId(),
+                $groupUserOrder->getProduct()->getTitle(),
+                $groupUserOrder->getUser()->getId(),
+                $groupUserOrder->getUser()->getName(),
+                $groupUserOrder->getUser()->getPhone(),
+                $groupUserOrder->getUser()->getUserLevelText(),
+                $parentUserId,
+                $parentUserName,
+                $parentUserPhone,
+                $groupUserOrder->getTotal(),
+                $groupUserOrder->getStatusText(),
+                $groupUserOrder->getPaymentStatusText(),
+                $groupUserOrder->getCarrierName(),
+                $groupUserOrder->getTrackingNo(),
+            ];
+
+            $csvData->add($line);
+        }
+
+        $callBack = function () use ($csvData) {
+            $csv = fopen('php://output', 'w+');
+            //This line is important:
+            fwrite($csv,"\xEF\xBB\xBF");
+            while (false !== ($line = $csvData->next())) {
+                fputcsv($csv, $line, ',');
+            }
+            fclose($csv);
+        };
+
+        return new StreamedResponse($callBack, 200, [
+            'Content-Type' => 'text/csv; charset=gbk',
+            'Content-Disposition' => 'attachment; filename="产品订单_'.date("Ymd_His").'.csv"'
+        ]);
     }
 }

@@ -262,6 +262,16 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
+                        'offline_course_order_index',
+                        'offline_course_order_edit',
+                    ],
+                    'name' => '活动订单',
+                    'icon' => 'fa fa-shopping-cart',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
                         'user_account_withdraw_orders',
                     ],
                     'name' => '提现订单',

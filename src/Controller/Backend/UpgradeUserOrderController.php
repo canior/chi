@@ -6,6 +6,7 @@ use App\Entity\UpgradeUserOrder;
 use App\Entity\UserLevel;
 use App\Form\NewUpgradeUserOrderType;
 use App\Repository\UpgradeUserOrderRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -68,7 +69,7 @@ class UpgradeUserOrderController extends BackendController
                 'upgrade_user_order' => $upgradeUserOrder,
                 'title' => '编辑会员升级订单',
                 'user' => $user,
-                'userAccountOrders' => $upgradeUserOrder->isApproved() ? $upgradeUserOrder->getUserAccountOrders() : $upgradeUserOrder->getPotentialUserAccountOrders()
+                'userAccountOrders' => $upgradeUserOrder->isApproved() ? $upgradeUserOrder->getUserAccountOrders() : new ArrayCollection()
             ]);
         }
 

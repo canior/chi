@@ -86,6 +86,21 @@ class GroupUserOrderRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param null $groupUserOrderId
+     * @param null $userId
+     * @param null $courseName
+     * @param null $status
+     * @param null $paymentStatus
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findOfflineCourseOrders($groupUserOrderId = null, $userId = null, $courseName = null, $status = null, $paymentStatus = null) {
+        $query = $this->findGroupUserOrdersQueryBuilder(true, null, $groupUserOrderId, $userId, $courseName,  null, $status, $paymentStatus);
+        $query->join('p.course', 'c')
+            ->andWhere('c.isOnline = false');
+        return $query;
+    }
+
+    /**
      * @param $productId
      * @return \Doctrine\ORM\QueryBuilder
      */
