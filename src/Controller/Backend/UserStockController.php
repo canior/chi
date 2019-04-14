@@ -3,6 +3,7 @@
 namespace App\Controller\Backend;
 
 use App\Entity\UserAddress;
+use App\Entity\UserLevel;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,6 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\File;
 use App\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * @Route("/backend")
@@ -40,7 +43,7 @@ class UserStockController extends BackendController
             }
         }
         else {
-            $data['data'] = $userRepository->findUserWithRecommandStocks();
+            $data['data'] = $userRepository->findBy(['userLevel' => UserLevel::PARTNER]);
         }
 
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
@@ -68,6 +71,64 @@ class UserStockController extends BackendController
         $data['user'] = $user;
 
         return $this->render('backend/user_stock/index.html.twig', $data);
+    }
+
+    /**
+     * @Route("/user/stockExport", name="user_stock_export", methods="GET")
+     * @param UserRepository $userRepository
+     * @param Request $request
+     * @return Response
+     */
+    public function export(UserRepository $userRepository, Request $request): Response
+    {
+        /**
+         * @var User[] $user
+         */
+        $exportData = $userRepository->findBy(['userLevel' => UserLevel::PARTNER]);
+
+        $csvData = new ArrayCollection();
+        $csvData->add([]);
+        $csvData->add(['合伙人ID', '合伙人姓名', '合伙人电话', '变现等级', '剩余名额', '推荐人ID', '推荐人姓名', '推荐人电话']);
+
+        foreach ($exportData as $user) {
+            $parentUserId = '';
+            $parentUserName = '';
+            $parentUserPhone = '';
+
+            if ($user->getParentUser()) {
+                $parentUserId = $user->getParentUser()->getId();
+                $parentUserName = $user->getParentUser()->getName();
+                $parentUserPhone = $user->getParentUser()->getPhone();
+            }
+
+            $line = [
+                $user->getId(),
+                $user->getName(),
+                $user->getPhone(),
+                $user->getBianxianUserLevelText(),
+                $user->getRecommandStock(),
+                $parentUserId,
+                $parentUserName,
+                $parentUserPhone,
+            ];
+
+            $csvData->add($line);
+        }
+
+        $callBack = function () use ($csvData) {
+            $csv = fopen('php://output', 'w+');
+            //This line is important:
+            fwrite($csv,"\xEF\xBB\xBF");
+            while (false !== ($line = $csvData->next())) {
+                fputcsv($csv, $line, ',');
+            }
+            fclose($csv);
+        };
+
+        return new StreamedResponse($callBack, 200, [
+            'Content-Type' => 'text/csv; charset=gbk',
+            'Content-Disposition' => 'attachment; filename="合伙人名额_'.date("Ymd_His").'.csv"'
+        ]);
     }
 
 }
