@@ -36,7 +36,7 @@ class GroupUserOrderController extends BackendController
                 'productName' => $request->query->get('productName', null),
                 'type' => $request->query->get('type', null),
                 'status' => $request->query->get('status', null),
-                'paymentStatus' => $request->query->get('paymentStatus', null),
+                'paymentStatus' => $request->query->get('paymentStatus', GroupUserOrder::PAID),
                 'page' => $request->query->getInt('page', 1)
             ],
             'statuses' => GroupUserOrder::$statuses,
@@ -184,7 +184,6 @@ class GroupUserOrderController extends BackendController
                 'productName' => $request->query->get('productName', null),
                 'status' => $request->query->get('status', null),
                 'paymentStatus' => $request->query->get('paymentStatus', null),
-                'page' => $request->query->getInt('page', 1)
             ],
             'statuses' => GroupUserOrder::$courseStatuses,
             'paymentStatuses' => GroupUserOrder::$paymentStatuses,

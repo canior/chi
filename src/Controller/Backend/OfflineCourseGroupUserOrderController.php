@@ -104,8 +104,7 @@ class OfflineCourseGroupUserOrderController extends BackendController
                 'userId' => $request->query->getInt('userId', null),
                 'productName' => $request->query->get('productName', null),
                 'status' => $request->query->get('status', null),
-                'paymentStatus' => $request->query->get('paymentStatus', null),
-                'page' => $request->query->getInt('page', 1)
+                'paymentStatus' => $request->query->get('paymentStatus', GroupUserOrder::PAID),
             ],
             'statuses' => GroupUserOrder::$courseStatuses,
             'paymentStatuses' => GroupUserOrder::$paymentStatuses,
