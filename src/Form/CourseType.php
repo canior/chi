@@ -48,6 +48,10 @@ class CourseType extends AbstractType
                     return $teacher->getName();
                 }
             ])
+            ->add('price', MoneyType::class, [
+                'label' => '课程单独购买价格',
+                'currency' => 'CNY'
+            ])
             ->add('groupOrderValidForHours', IntegerType::class, [
                 'label' => '集call有效期 (小时)',
                 'required' => true
