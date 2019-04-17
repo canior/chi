@@ -1959,6 +1959,14 @@ class User extends BaseUser implements Dao
         return $this->getRecommanderName() != null ? $this->getRecommanderName() : '变现商学院';
     }
 
+    /*
+     * 当前用户等级是否大于等于高级VIP用户
+     * @return bool
+     */
+    public function isAdavancePlusUserLevel() {
+        return UserLevel::$userLevelPriorityArray[$this->getUserLevel()] >= UserLevel::$userLevelPriorityArray[UserLevel::ADVANCED];
+    }
+
     /**
      * @return array
      */
@@ -2005,6 +2013,7 @@ class User extends BaseUser implements Dao
             'bankAccountName' => $this->getBankAccountName(),
             'isSupplier' => !$this->getSupplierProducts()->isEmpty(),
             'recommandNameEditable' => $this->getParentUser() == null ? true : false,
+            'isAdvancedPlus' => $this->isAdavancePlusUserLevel(),
         ];
     }
 }
