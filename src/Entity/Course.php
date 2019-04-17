@@ -677,6 +677,7 @@ class Course implements Dao
             'subjectText' => $this->getSubject() ? Subject::$subjectTextArray[$this->getSubject()] : null,
             'eligibleViewer' => $this->getEligibleViewerUserLevels(),
             'aliyunVideoId' => $this->getAliyunVideoId(),
+            'requiredGroupUserOrders' => $this->getTotalGroupUserOrdersRequired(),
         ];
     }
 }
