@@ -72,7 +72,7 @@ Page({
             if (groupUserOrder.groupOrderId) {
               if (groupUserOrder.groupOrderStatus == 'completed') groupUserOrderCompleted = true;
             } else {
-              //if (groupUserOrder.paymentStatus == 'paid') groupUserOrderCompleted = true;
+              if (groupUserOrder.paymentStatus == 'paid') groupUserOrderCompleted = true;
             }
           }
           that.setData({
