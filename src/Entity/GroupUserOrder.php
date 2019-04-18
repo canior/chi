@@ -409,11 +409,14 @@ class GroupUserOrder implements Dao
                     //锁定合伙人为推荐人
                     $oldParentUser = $this->getUser()->getParentUser();
                     if ($this->getUser()->getParentUser() == null or $this->getUser()->getParentUserExpiresAt() < time()) {
-                        if ($this->getUser()->getLatestFromShareSource() != null) {
+                        $latestShareSource = $this->getUser()->getLatestFromShareSource();
+                        if ($latestShareSource != null) {
                             $newParentUser = $this->getUser()->getLatestFromShareSource()->getUser();
                             if ($oldParentUser !== $newParentUser) {
                                 $newParentUser = $newParentUser->getBianxianTopParentPartnerUser();
-                                $this->getUser()->setParentUser($newParentUser);
+
+                                $memo = '支付成功活动订单： [' . $this->getId() . '], 变更推荐人 [' . $oldParentUser . '] => [' . $newParentUser . '], 来自分享: [' . $latestShareSource . ']';
+                                $this->getUser()->setParentUser($newParentUser, $latestShareSource, $memo);
                                 if ($this->getProduct()->getCourse()->getSubject() == Subject::THINKING){
                                     $this->getUser()->setParentUserExpiresAt(time() + User::PARENT_45_DAYS_EXPIRES_SECONDS);
                                 } else {
@@ -464,22 +467,42 @@ class GroupUserOrder implements Dao
                             $this->createUpgradeOrderCoupons(5);
                         }
                     }
+                } else { //线上课程购买
+                    $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::VIP, $this);
+                    if ($jinqiuUpgradeUserOrder) {
+                        $jinqiuUpgradeUserOrder->setApproved(false);
+                        $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
+                    }
 
-                    $this->setDelivered();
+                    //锁定推荐人
+                    $oldParentUser = $this->getUser()->getParentUser();
+                    if ($this->getUser()->getParentUser() == null or $this->getUser()->getParentUserExpiresAt() < time()) {
+                        $latestShareSource = $this->getUser()->getLatestFromShareSource();
+                        if ($latestShareSource != null) {
+                            $newParentUser = $this->getUser()->getLatestFromShareSource()->getUser();
+                            if ($oldParentUser !== $newParentUser and $newParentUser->hasRecommandRight()) {
+                                $memo = '支付成功视频订单： [' . $this->getId() . '], 变更推荐人 [' . $oldParentUser . '] => [' . $newParentUser . '], 来自分享: [' . $latestShareSource . ']';
+                                $this->getUser()->setParentUser($newParentUser, $latestShareSource, $memo);
+                                $this->getUser()->setParentUserExpiresAt(time() + User::PARENT_45_DAYS_EXPIRES_SECONDS);
+                            }
+                        }
+                    }
 
-                } else {
-                    // TODO: 在线视频还未实现购买功能
                 }
+
+                $this->setDelivered();
 
             } else { //产品购买订单
 
                 //锁定推荐人
                 $oldParentUser = $this->getUser()->getParentUser();
                 if ($this->getUser()->getParentUser() == null or $this->getUser()->getParentUserExpiresAt() < time()) {
-                    if ($this->getUser()->getLatestFromShareSource() != null) {
+                    $latestShareSource = $this->getUser()->getLatestFromShareSource();
+                    if ($latestShareSource != null) {
                         $newParentUser = $this->getUser()->getLatestFromShareSource()->getUser();
                         if ($oldParentUser !== $newParentUser and $newParentUser->hasRecommandRight()) {
-                            $this->getUser()->setParentUser($newParentUser);
+                            $memo = '支付成功产品订单： [' . $this->getId() . '], 变更推荐人 [' . $oldParentUser . '] => [' . $newParentUser . '], 来自分享: [' . $latestShareSource . ']';
+                            $this->getUser()->setParentUser($newParentUser, $latestShareSource, $memo);
                             $this->getUser()->setParentUserExpiresAt(time() + User::PARENT_365_DAYS_EXPIRES_SECONDS);
                         }
                     }

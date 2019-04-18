@@ -311,6 +311,6 @@ class ShareSource implements Dao
 
     public function __toString()
     {
-        return $this->getUser() . '的' . $this->getTypeText();
+        return $this->getUser() . '分享的' . $this->getTypeText() . ', ssId=' . $this->getId();
     }
 }

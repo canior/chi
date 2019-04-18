@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use App\Entity\BianxianUserLevel;
 use App\Entity\User;
 use App\Entity\UserLevel;
+use App\Entity\UserParentLog;
 use App\Form\UserRoleType;
 use App\Form\UserType;
 use App\Form\VerifyParentUserType;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\UserPersonalType;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * @Route("/backend")
@@ -102,6 +104,13 @@ class UserController extends BackendController
         $verifyPartnerTeacherForm = $this->createForm(VerifyPartnerTeacherType::class, $user);
         $verifyPartnerTeacherForm->handleRequest($request);
 
+        $session = $this->getSession();
+        $oldParentUserId = $user->getParentUser() ? $user->getParentUser()->getId() : 0;
+        if (!$session->has('user_' . $user->getId() . '_parent')) {
+            $session->set('user_' . $user->getId() . '_parent', $oldParentUserId);
+            $this->getLog()->info('user = ' . $user . ' parent = ' . $user->getParentUser());
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user->setUserLevel($form->get('userLevel')->getData());
@@ -115,6 +124,21 @@ class UserController extends BackendController
         if ($verifyParentForm->isSubmitted() && $verifyParentForm->isValid()) {
             $this->getEntityManager()->persist($user);
             $this->getDoctrine()->getManager()->flush();
+
+            $newParentId = $user->getParentUser() ? $user->getParentUser()->getId() : 0;
+            if ($session->get('user_' . $user->getId() . '_parent') != $newParentId) {
+                $this->getLog()->info('changed parent: user = ' . $user . ' parent = ' . $user->getParentUser());
+                $oldParentUser = '';
+                if ($oldParentUserId != 0)
+                    $oldParentUser = $this->getEntityManager()->getRepository(User::class)->find($oldParentUserId);
+
+                $memo = "后台人员 [" . $this->getUser()->getUsername() . "] 变更推荐人为 [" . $user->getParentUser() . "]";
+                $user->addUserParentLog(UserParentLog::factory($user, $user->getParentUser(), null, $memo));
+                $this->getEntityManager()->persist($user);
+                $this->getEntityManager()->flush();
+                $session->remove('user_' . $user->getId(). '_parent');
+            }
+
             $this->addFlash('notice', '修改成功');
             return $this->redirectToRoute('user_personal_edit', ['id' => $user->getId()]);
         }
@@ -251,6 +275,21 @@ class UserController extends BackendController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/user/{id}/parentLog", name="user_parent_log", methods="GET")
+     * @param $id
+     * @param UserRepository $userRepository
+     * @return Response
+     */
+    public function viewUserParentLog($id, UserRepository $userRepository) {
+        $userParentLogs = $userRepository->find($id)->getUserParentLogs();
+        return $this->render('backend/user/userParentLog.html.twig', [
+            'userParentLogs' => $userParentLogs,
+            'title' => '用户推荐人变更记录',
+        ]);
+    }
+
 
     /**
      * @Route("/user/{id}", name="user_delete", methods="DELETE")

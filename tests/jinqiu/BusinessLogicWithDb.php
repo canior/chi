@@ -13,6 +13,7 @@ use App\Entity\BianxianUserLevel;
 use App\Entity\CourseStudent;
 use App\Entity\GroupOrder;
 use App\Entity\UpgradeOrderCoupon;
+use App\Entity\User;
 use App\Entity\UserAccountOrder;
 use App\Entity\UserLevel;
 use App\Entity\ShareSourceUser;
@@ -24,6 +25,59 @@ use App\Entity\GroupUserOrder;
 
 class BusinessLogicWithDb extends JinqiuBaseTestCase
 {
+    public function testBuyOnlineCourse() {
+        $teacher = $this->createTeacher(true);
+        $course = $this->createCourse($teacher, Subject::THINKING, true);
+        $price = 9.9;
+        $course->setIsOnline(true);
+        $course->setPrice($price);
+        $this->getEntityManager()->persist($course);
+        $this->getEntityManager()->flush();
+
+        $this->assertTrue($course->isOnline());
+
+        $recommander = $this->createUser(true);
+        $recommander->setUserLevel(UserLevel::ADVANCED);
+        $this->getEntityManager()->persist($recommander);
+        $this->getEntityManager()->flush();
+        $shareSource = $this->createShareSource($recommander, null, null, true);
+
+        $user = $this->createUser(true);
+
+        $shareSourceUser = ShareSourceUser::factory($shareSource, $user);
+        $this->getEntityManager()->persist($shareSourceUser);
+        $this->getEntityManager()->flush();
+
+        $this->assertEquals($shareSource, $user->getLatestFromShareSource());
+        $this->assertNull($user->getParentUser());
+
+        $courseOrder = $user->createCourseOrder($course);
+        $this->getEntityManager()->persist($courseOrder);
+        $this->getEntityManager()->flush();
+
+        $this->assertEquals($price, $courseOrder->getTotal());
+        $this->assertEquals(CourseOrder::CREATED, $courseOrder->getStatus());
+
+        $courseOrder->setPaid();
+        $this->getEntityManager()->persist($courseOrder);
+        $this->getEntityManager()->flush();
+
+        $this->assertEquals(0, $recommander->getTotalUserAccountOrders());
+        $this->assertEquals(0, $user->getTotalUserAccountOrders());
+
+        //$this->assertEquals(1, $course->getTotalRegisteredStudentUsers());
+
+        $this->assertEquals(1, $courseOrder->getUpgradeUserOrders()->count());
+        $upgradeUserOrder = $courseOrder->getUpgradeUserOrders()[0];
+        $this->assertTrue($upgradeUserOrder->isApproved());
+
+        $this->assertEquals(UserLevel::VIP, $user->getUserLevel());
+        $this->assertEquals($recommander, $user->getParentUser());
+        $this->assertTrue($user->getParentUserExpiresAt() <= time() + User::PARENT_45_DAYS_EXPIRES_SECONDS);
+
+    }
+
+
     /* 测试分享人更新 */
     public function testUserSharer() {
         $recommander1 = $this->createUser(true);

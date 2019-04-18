@@ -16,6 +16,7 @@ use Knp\Component\Pager\Paginator;
 use League\Tactician\CommandBus;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -54,6 +55,13 @@ class DefaultController extends Controller
     public function getLog()
     {
         return $this->logger;
+    }
+
+    /**
+     * @return Session
+     */
+    public function getSession() {
+        return $this->get('session');
     }
 
     /**

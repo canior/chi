@@ -122,6 +122,10 @@
             </div>
             <!-- /.box -->
 
+            <div class="box">
+                {{ render(controller('App\\Controller\\Backend\\UserController::viewUserParentLog', {id: user.id})) }}
+            </div>
+
             <!-- general form elements disabled -->
             {% if user.isPartnerUser %}
             <div class="box">

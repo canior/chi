@@ -1,4 +1,10 @@
 {{ form_start(verifyParentForm) }}
+    <label>
+        最近一次分享来自：
+    </label>
+    <label class="text-blue">
+        {{ user.recommanderName }}
+    </label>
     <h3 class="box-title">
         推荐人
         {% if user.isRecommanderVerified %}

@@ -23,6 +23,11 @@ use App\Entity\UserLevel;
 use App\Entity\UserParentLog;
 use App\Entity\User;
 
+/**
+ * @deprecated
+ * Class BusinessLogic
+ * @package App\Tests\Jinqiu
+ */
 class BusinessLogic extends JinqiuBaseTestCase
 {
     /**

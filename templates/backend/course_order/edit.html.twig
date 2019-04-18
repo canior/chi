@@ -1,0 +1,99 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}视频订单{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="box">
+            <div class="box-body">
+                <div class="table-responsive">
+                    <h3 class="box-title">交易信息</h3>
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <th>视频订单号</th>
+                            <td>{{ group_user_order.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>视频</th>
+                            <td>{{ group_user_order.product.title }}</td>
+                        </tr>
+                        <tr>
+                            <th>科目</th>
+                            <td>{{ group_user_order.product.course.subjectText }}</td>
+                        </tr>
+                        <tr>
+                            <th>讲师</th>
+                            <td>{{ group_user_order.product.course.teacher.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>金额</th>
+                            <td>￥{{ group_user_order.total }}</td>
+                        </tr>
+                        <tr>
+                            <th>用户</th>
+                            <td>{{ group_user_order.user }}</td>
+                        </tr>
+                        <tr>
+                            <th>会员升级订单</th>
+                            <td>
+                                {% if group_user_order.bianxianUpgradeUserOrder  %}
+                                    <a href="{{ path('upgrade_user_order_edit', {'id': group_user_order.jinqiuUpgradeUserOrder.id}) }}">
+                                        {{ group_user_order.jinqiuUpgradeUserOrder }}
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>电话</th>
+                            <td>{{ group_user_order.user.phone }}</td>
+                        </tr>
+                        <tr>
+                            <th>推荐人</th>
+                            <td>{{ group_user_order.user.parentUser }}</td>
+                        </tr>
+                        <tr>
+                            <th>创建时间</th>
+                            <td>{{ group_user_order.createdAtFormatted }}</td>
+                        </tr>
+                        <tr>
+                            <th>更新时间</th>
+                            <td>{{ group_user_order.updatedAtFormatted }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+            <!-- general form elements disabled -->
+
+            <div class="box">
+                <div class="box-header with-border">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    {{ include('backend/user/_form.verifyParent.html.twig', {'button_label': '提交'}) }}
+                </div>
+                <!-- /.box-body -->
+            </div>
+
+
+            <div class="box">
+                <div class="box-header with-border">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    {{ include('backend/course_order/_form.html.twig', {'button_label': '提交'}) }}
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!--/.col (right) -->
+    </div>
+    <!-- /.row -->
+{% endblock %}
