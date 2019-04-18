@@ -284,13 +284,6 @@ Page({
     })
   },
   
-  // 单独购买提醒弹窗
-  wxShowModal: function (e) {
-    bottom.showModal(this)
-  },
-  wxHideModal: function (e) {
-    bottom.hideModal(this)
-  },
   // 单独购买
   wxCreateOrder: function (e) {
     bottom.createOrder(this, app.globalData.baseUrl + '/groupUserOrder/create', this.data.groupOrder.product.id)

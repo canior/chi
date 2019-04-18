@@ -1,4 +1,4 @@
-<!--pages/course/pay.wxml-->
+<!--pages/offlineCourse/pay.wxml-->
 <import src="/pages/tmpl/price.wxml"/>
 <import src="/pages/tmpl/userinfo.wxml"/>
 

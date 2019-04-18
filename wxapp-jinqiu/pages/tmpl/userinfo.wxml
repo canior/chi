@@ -1,4 +1,3 @@
-<wxs src="phone.wxs" module="phone"/>
 <template name="userinfo">
   <view class="section">
     <view class="left">
@@ -7,7 +6,6 @@
         <block wx:if="{{user.isCompletedPersonalInfo}}">
           <view class="line">{{user.name}} | {{user.userLevelText}} | {{user.bianxianUserLevelText}}</view>
           <view class="line">联系电话: {{user.phone ? user.phone : ''}}</view>
-          <!--<view class="line">{{user.idNum ? phone.encode(user.idNum) : ''}}</view>-->
           <view class="line">分享人: {{user.recommanderName}}</view>
         </block>
         <block wx:else>

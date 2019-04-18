@@ -1,0 +1,4 @@
+var toFix = function (value) {
+  return parseFloat(value)
+}
+module.exports.toFix = toFix;

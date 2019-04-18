@@ -3,7 +3,9 @@
 <import src="/pages/tmpl/share.wxml"/>
 <import src="/pages/tmpl/bottom.wxml"/>
 <view class="container">
-
+  <view wx:if="{{!user.isAdvancedPlus}}">
+    <button bindtap="wxUpgrade" disabled="{{btnDisabled}}">{{textMetaArray ? textMetaArray.text_unlock_all_meta.textMeta : ''}}</button>
+  </view>
   <view class="banner">
     <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
       <swiper-item wx:for="{{course.courseImages}}" wx:key="id" wx:for-item="courseImage">
@@ -47,5 +49,5 @@
   <template is="courseReview" data="{{...courseReviewData, imgUrlPrefix, course}}"/>
 </view>
 
-<template is="bottom" data="{{course, user, eligibleViewer, groupUserOrder, textMetaArray, ...bottomData, type:'course'}}"/>
+<template is="bottom" data="{{course, user, eligibleViewer, groupUserOrder, textMetaArray, ...bottomData, groupUserOrderCompleted, type:'course'}}" wx:if="{{course}}"/>
 <template is="share" data="{{...shareData}}"/>

@@ -1,4 +1,4 @@
-// pages/course/pay.js
+// pages/offlineCourse/pay.js
 const app = getApp()
 Page({
 

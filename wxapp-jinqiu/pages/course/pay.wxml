@@ -1,6 +1,6 @@
 <!--pages/course/pay.wxml-->
 <import src="/pages/tmpl/price.wxml"/>
-<import src="/pages/tmpl/address.wxml"/>
+<import src="/pages/tmpl/userinfo.wxml"/>
 
 <view class="container">
   <view class="chi-item">
@@ -21,7 +21,7 @@
 <view class="container">
   <view class="split-line"/>
   <view class="title">个人资料</view>
-  <template is="address" data="{{user:groupUserOrder.user, unpaid:true}}"/>
+  <template is="userinfo" data="{{user:groupUserOrder.user, unpaid:true}}"/>
 </view>
 
 <view class="bottom">

@@ -11,6 +11,7 @@ Page({
     isLogin: false,
     user: null,
     eligibleViewer: false,
+    groupUserOrderCompleted: false,
     imgUrlPrefix: app.globalData.imgUrlPrefix,
     course: null,
     courseReviewData: {},
@@ -18,7 +19,7 @@ Page({
     shareData: {},
     loading: true,
     groupUserOrder: null,
-    textMetaArray: null
+    textMetaArray: null,
   },
 
   /**
@@ -63,11 +64,22 @@ Page({
             course.eligibleViewer.forEach((level) => {
               if (level == userLevel) { eligibleViewer = true }
             })
-          }          
+          }
+          // groupUserOrderCompleted: watch all
+          const groupUserOrder = res.data.data.groupUserOrder;
+          let groupUserOrderCompleted = false;
+          if (groupUserOrder) {
+            if (groupUserOrder.groupOrderId) {
+              if (groupUserOrder.groupOrderStatus == 'completed') groupUserOrderCompleted = true;
+            } else {
+              //if (groupUserOrder.paymentStatus == 'paid') groupUserOrderCompleted = true;
+            }
+          }
           that.setData({
             course: course,
             eligibleViewer: eligibleViewer,
-            groupUserOrder: res.data.data.groupUserOrder,
+            groupUserOrderCompleted: groupUserOrderCompleted,
+            groupUserOrder: groupUserOrder,
             textMetaArray: res.data.data.textMetaArray
           })
           share.setShareSources(that, res.data.data.shareSources)
@@ -148,6 +160,10 @@ Page({
     this.setData({
       ['course.courseSpecImages['+index+'].loading']: false
     })
+  },
+
+  wxBuy: function () {
+    bottom.createOrder(this, app.globalData.baseUrl + '/groupUserOrder/createOfflineCourse', this.data.course.productId)    
   },
 
   /**

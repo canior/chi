@@ -1,11 +1,10 @@
-<wxs src="phone.wxs" module="phone"/>
 <template name="address">
 <view class="top-address">
   <block wx:if="{{address}}">
     <view class="left">
       <view class="line name">
         <image src="/images/addr-white.png"/>
-        <text>{{address.name}} {{address.phone ? phone.encode(address.phone) : ''}}</text>
+        <text>{{address.name}} {{address.phone ? address.phone : ''}}</text>
       </view>
       <view class="line addr">
         <text>{{address.region.fullname}} {{address.address}}</text>

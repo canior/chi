@@ -107,9 +107,9 @@ Page({
                 success: (res) => {
                   if (res.statusCode == 200 && res.data.code == 200) {
                     console.log(res.data.data)
-                    //转订单详情页
+                    //转课程详情页
                     wx.redirectTo({
-                      url: '/pages/user/course/log?id=' + groupUserOrderId,
+                      url: '/pages/course/detail?id=' + groupUserOrder.product.id,
                     })
                   } else {
                     console.log('wx.request return error', res.statusCode);
@@ -129,11 +129,6 @@ Page({
               that.setData({ btnDisabled: false });
             },
             complete: function (res) { }
-          })
-        } else if (res.statusCode == 200 && res.data.code == 302) {
-          //拼团订单已被其它参团人抢先支付了
-          wx.redirectTo({
-            url: '/pages/group/index?id=' + groupUserOrder.groupOrderId,
           })
         } else {
           console.log('wx.request return error', res.statusCode);

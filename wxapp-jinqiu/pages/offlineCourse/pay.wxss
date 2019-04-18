@@ -1,4 +1,4 @@
-/* pages/course/pay.wxss */
+/* pages/offlineCourse/pay.wxss */
 @import "/pages/tmpl/userinfo.wxss";
 page {
   background-color: #f5f5f5;
