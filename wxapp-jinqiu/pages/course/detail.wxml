@@ -3,9 +3,6 @@
 <import src="/pages/tmpl/share.wxml"/>
 <import src="/pages/tmpl/bottom.wxml"/>
 <view class="container">
-  <view wx:if="{{!user.isAdvancedPlus}}">
-    <button bindtap="wxUpgrade" disabled="{{btnDisabled}}">{{textMetaArray ? textMetaArray.text_unlock_all_meta.textMeta : ''}}</button>
-  </view>
   <view class="banner">
     <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
       <swiper-item wx:for="{{course.courseImages}}" wx:key="id" wx:for-item="courseImage">
@@ -34,7 +31,11 @@
 
 <view class="container">
   <view class="specs">
-    <view class="title">课程详情</view>
+    <view class="title-wrap">
+      <view class="title">课程详情</view>
+      <view><button class="btn" bindtap="wxUpgrade" disabled="{{btnDisabled}}" wx:if="{{!user.isAdvancedPlus}}">{{textMetaArray ? textMetaArray.text_unlock_all_meta.textMeta : ''}}</button></view>
+    </view>
+
     <block wx:for="{{course.courseSpecImages}}" wx:key="id" wx:for-item="courseSpecImage">
       <view class="img">
         <image mode="widthFix" src="{{imgUrlPrefix + '/' + courseSpecImage.fileId}}" bindload="imgLoadDone" data-index="{{index}}"/>

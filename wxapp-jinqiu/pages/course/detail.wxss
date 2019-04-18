@@ -50,6 +50,21 @@
   color: #353535;
   margin: 20rpx 0;
 }
+.specs .title-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.specs .title-wrap .btn {
+  font-size: 30rpx;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 10rpx;
+  color: #333;
+  background-color: #ffee94;
+  height: 60rpx;
+  line-height: 60rpx;
+}
 .specs .desc {
   font-size: 24rpx;
   color: #b2b2b2;
