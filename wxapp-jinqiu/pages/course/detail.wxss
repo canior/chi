@@ -57,11 +57,9 @@
 }
 .specs .title-wrap .btn {
   font-size: 30rpx;
-  font-weight: bold;
   text-align: center;
   border-radius: 10rpx;
-  color: #333;
-  background-color: #ffee94;
+  color:#ffee94;
   height: 60rpx;
   line-height: 60rpx;
 }

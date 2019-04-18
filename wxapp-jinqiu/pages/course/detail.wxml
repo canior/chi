@@ -33,7 +33,7 @@
   <view class="specs">
     <view class="title-wrap">
       <view class="title">课程详情</view>
-      <view><button class="btn" bindtap="wxUpgrade" disabled="{{btnDisabled}}" wx:if="{{!user.isAdvancedPlus}}">{{textMetaArray ? textMetaArray.text_unlock_all_meta.textMeta : ''}}</button></view>
+      <view class="btn" bindtap="wxUpgrade" disabled="{{btnDisabled}}" wx:if="{{!user.isAdvancedPlus}}">{{textMetaArray ? textMetaArray.text_unlock_all_meta.textMeta : ''}} >></view>
     </view>
 
     <block wx:for="{{course.courseSpecImages}}" wx:key="id" wx:for-item="courseSpecImage">
