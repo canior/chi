@@ -11,7 +11,7 @@
       </view>
       <block wx:if="{{type == 'course'}}">
         <block wx:if="{{eligibleViewer || groupUserOrderCompleted}}">
-          <button class="item btn group" bindtap="wxViewCourse" disabled="{{btnDisabled}}"><text>{{textMetaArray ? textMetaArray.text_watch_meta.textMeta : ''}}</text></button>
+          <button class="item btn other" bindtap="wxViewCourse" disabled="{{btnDisabled}}"><text>{{textMetaArray ? textMetaArray.text_watch_meta.textMeta : ''}}</text></button>
         </block>
         <block wx:else>
           <button class="item btn other" bindtap="wxCreateGroup" disabled="{{btnDisabled}}" wx:if="{{course.requiredGroupUserOrders >= 2 && (!groupUserOrder || groupUserOrder.groupOrderStatus == 'expired')}}"><text>{{textMetaArray ? textMetaArray.text_group_unlock_meta.textMeta : ''}}</text></button>
