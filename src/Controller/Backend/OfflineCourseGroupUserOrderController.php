@@ -110,6 +110,11 @@ class OfflineCourseGroupUserOrderController extends BackendController
             'paymentStatuses' => GroupUserOrder::$paymentStatuses,
         ];
 
+        if ($data['form']['groupUserOrderId'] === 0)
+            $data['form']['groupUserOrderId'] = null;
+        if ($data['form']['userId'] === 0)
+            $data['form']['userId'] = null;
+
         /**
          * @var GroupUserOrder[] $exportData
          */
