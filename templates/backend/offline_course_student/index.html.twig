@@ -41,15 +41,14 @@
                         <table class="table table-bordered table-striped">
                             <tr>
                                 <th>报到二维码</th>
-                                <th>签到二维码</th>
+                                {#<th>签到二维码</th>#}
                             </tr>
                             <tr>
                                 <td><img class="img-responsive" src="{{ path('offline_course_student_create_qr', {'id': course.id, status: 'welcome' }) }}"></td>
-                                <td><img class="img-responsive" src="{{ path('offline_course_student_create_qr', {'id': course.id, 'status': 'signin'}) }}"></td>
+                                {#<td><img class="img-responsive" src="{{ path('offline_course_student_create_qr', {'id': course.id, 'status': 'signin'}) }}"></td>#}
                             </tr>
                         </table>
                     </div>
-
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -65,6 +64,12 @@
                     <h3 class="box-title">报到签到记录</h3>
                     <span>注册人数：</span><span id="register_total">0</span>
                     <span>报到人数:</span><span id="welcome_total">0</span>
+                    <span>
+                        <a class="btn btn-file pull-right" href="{{ path('offline_course_order_export', {'productName': course.title, 'paymentStatus': 'paid'}) }}"
+                           title="导出">
+                        导出注册记录>>
+                        </a>
+                    </span>
                 </div>
                 <!-- /.box-header -->
                 <div id="studentTableDiv" class="box-body">

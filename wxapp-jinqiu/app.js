@@ -242,10 +242,10 @@ App({
 
   globalData: {
     appName: '金秋课堂',
-    //baseUrl: 'https://jinqiu.yunlishuju.com/wxapi',
-    //imgUrlPrefix: 'https://jinqiu.yunlishuju.com/image/preview',
-    baseUrl: 'https://laowantong.yunlishuju.com/wxapi',
-    imgUrlPrefix: 'https://laowantong.yunlishuju.com/image/preview',
+    baseUrl: 'https://jinqiu.yunlishuju.com/wxapi',
+    imgUrlPrefix: 'https://jinqiu.yunlishuju.com/image/preview',
+    //baseUrl: 'https://laowantong.yunlishuju.com/wxapi',
+    //imgUrlPrefix: 'https://laowantong.yunlishuju.com/image/preview',
     isLogin: false,   //是否授权并登录
     userInfo: null,   //授权后获取的用户信息, 如昵称头像
     user: null,       //用户信息:userId,nickName,...
