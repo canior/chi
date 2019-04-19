@@ -46,7 +46,7 @@ class CourseGroupUserOrderController extends BackendController
         ];
         $data['data'] = $groupUserOrderRepository->findOnlineCourseOrders($data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['productName'], $data['form']['status'], $data['form']['paymentStatus']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
-        return $this->render('backend/offline_course_order/index.html.twig', $data);
+        return $this->render('backend/course_order/index.html.twig', $data);
     }
 
     /**

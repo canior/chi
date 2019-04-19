@@ -58,7 +58,7 @@
                             </div>
                             <div class="col-md-1 form-group">
                                 <label>&nbsp;</label>
-                                <a class="form-control btn btn-danger" href="{{ path('course_order_export') }}"
+                                <a class="form-control btn btn-danger" href="{{ path('course_order_export', {'groupUserOrderId':form.groupUserOrderId, 'userId':form.userId, 'productName':form.productName, 'status':form.status, 'paymentStatus':form.paymentStatus }) }}"
                                    title="导出">
                                     导出
                                 </a>
