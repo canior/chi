@@ -61,10 +61,20 @@ class CourseController extends ProductController
      */
     protected function findGroupUserOrder(User $user, Product $product) {
         $groupUserOrderRepository = $this->getEntityManager()->getRepository(GroupUserOrder::class);
+
         /**
          * @var GroupUserOrder $groupUserOrder
          */
-        $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $product, 'user' => $user]);
+        $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $product, 'user' => $user, 'paymentStatus' => 'paid']);
+
+
+        if (!$groupUserOrder) {
+            /**
+             * @var GroupUserOrder $groupUserOrder
+             */
+            $groupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $product, 'user' => $user]);
+        }
+
         return $groupUserOrder;
     }
 
