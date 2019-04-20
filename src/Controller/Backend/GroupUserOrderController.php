@@ -189,15 +189,19 @@ class GroupUserOrderController extends BackendController
             'paymentStatuses' => GroupUserOrder::$paymentStatuses,
         ];
 
-        if ($data['form']['groupUserOrderId'] === 0)
+        if ($data['form']['groupUserOrderId'] === 0) {
             $data['form']['groupUserOrderId'] = null;
-        if ($data['form']['userId'] === 0)
+        }
+
+        if ($data['form']['userId'] === 0) {
             $data['form']['userId'] = null;
+        }
+
 
         /**
          * @var GroupUserOrder[] $exportData
          */
-        $exportData = $groupUserOrderRepository->findGroupUserOrdersQueryBuilder(false, $data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['productName'], null, $data['form']['status'], $data['form']['paymentStatus'])->getQuery()->getResult();
+        $exportData = $groupUserOrderRepository->findGroupUserOrdersQueryBuilder(false, $data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['groupUserOrderId'], $data['form']['productName'], null, $data['form']['status'], $data['form']['paymentStatus'])->getQuery()->getResult();
 
         $csvData = new ArrayCollection();
         $csvData->add([]);
