@@ -607,7 +607,16 @@ class UpgradeUserOrder implements Dao
     public function getType(): string
     {
         return $this->type;
-    }/**
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeText() {
+        return self::$typeText[$this->type];
+    }
+
+    /**
      * @param string $type
      */
     public function setType(string $type): void
@@ -650,7 +659,9 @@ class UpgradeUserOrder implements Dao
      */
     public function __toString()
     {
-        return ' 订单号: ' . $this->getId()
+        return
+            ' 类型: ' . $this->getTypeText() .
+            ' 订单号: ' . $this->getId()
             . ' , 用户: ' . $this->getUser()
             . ' , 升级: ' . $this->getOldUserLevelText() . '->' . $this->getUserLevelText()
             . ' , 金额: ￥' . $this->getTotal()

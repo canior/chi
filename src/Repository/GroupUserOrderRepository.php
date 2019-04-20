@@ -111,7 +111,8 @@ class GroupUserOrderRepository extends ServiceEntityRepository
     public function findOnlineCourseOrders($groupUserOrderId = null, $userId = null, $courseName = null, $status = null, $paymentStatus = null) {
         $query = $this->findGroupUserOrdersQueryBuilder(true, null, $groupUserOrderId, $userId, $courseName,  null, $status, $paymentStatus);
         $query->join('p.course', 'c')
-            ->andWhere('c.isOnline = true');
+            ->andWhere('c.isOnline = true')
+            ->andWhere('guo.groupOrder is null');
         return $query;
     }
 
