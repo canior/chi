@@ -103,7 +103,7 @@ class OfflineCourseStudentController extends BackendController
      * @return Response
      */
     public function studentTable(CourseStudentRepository $courseStudentRepository, $courseId) {
-        $courseStudents = $courseStudentRepository->findBy(['course' => $courseId, 'isOnline' => false], ['id' => 'desc']);
+        $courseStudents = $courseStudentRepository->findBy(['course' => $courseId], ['id' => 'desc']);
         return $this->render('backend/offline_course_student/table.html.twig', [
             'user' => $this->getUser(),
             'courseStudents' => $courseStudents,
