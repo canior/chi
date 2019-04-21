@@ -421,7 +421,8 @@ class User extends BaseUser implements Dao
     {
         return $this->hasRole(static::ROLE_SUPER_ADMIN)
             or $this->hasRole(static::ROLE_ADMIN)
-            or $this->hasRole(static::ROLE_CUSTOMER_SERVICE);
+            or $this->hasRole(static::ROLE_CUSTOMER_SERVICE)
+            or $this->hasRole(static::ROLE_SECURITY);
     }
 
     /**
