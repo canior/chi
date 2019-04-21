@@ -337,8 +337,11 @@ class BackendController extends DefaultController
      */
     public function indexAction()
     {
-        $data = ['title' => '仪表盘', 'intro' => ''];
+        if ($this->getUser()->isSecurity()) {
+            return $this->redirectToRoute('offline_course_student_statistic_index');
+        }
 
+        $data = ['title' => '仪表盘', 'intro' => ''];
         return $this->render('backend/index.html.twig', $data);
     }
 
