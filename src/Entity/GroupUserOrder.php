@@ -443,6 +443,10 @@ class GroupUserOrder implements Dao
                             $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
                         }
 
+                        if ($this->getProduct()->isHasCoupon()) {
+                            $this->createUpgradeOrderCoupons(5);
+                        }
+
                     } else { //思维直升系统课报名
                         $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED3, $this);
                         if ($jinqiuUpgradeUserOrder) {

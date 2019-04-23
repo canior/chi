@@ -131,7 +131,7 @@ class UpgradeOrderCoupon implements Dao
         }
 
         $jinqiuUpgradeUserOrder = UpgradeUserOrder::factory(UpgradeUserOrder::JINQIU, $user, UserLevel::ADVANCED2, null);
-        $jinqiuUpgradeUserOrder->setApproved(true, $this);
+        $jinqiuUpgradeUserOrder->setApproved(false, $this);
         $jinqiuUpgradeUserOrder->setUpgradeOrderCoupon($this);
         $this->addUsedUpgradeUserOrders($jinqiuUpgradeUserOrder);
 
