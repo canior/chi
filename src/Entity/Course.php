@@ -599,7 +599,7 @@ class Course implements Dao
      */
     public function getEligibleViewerUserLevels() {
         if (Subject::THINKING == $this->getSubject()) {
-            return [UserLevel::VIP, UserLevel::ADVANCED, UserLevel::ADVANCED2, UserLevel::ADVANCED3, UserLevel::PARTNER];
+            return [BianxianUserLevel::THINKING, UserLevel::ADVANCED, UserLevel::ADVANCED2, UserLevel::ADVANCED3, UserLevel::PARTNER];
         } else {
             return [UserLevel::ADVANCED, UserLevel::ADVANCED2, UserLevel::ADVANCED3, UserLevel::PARTNER];
         }
