@@ -1,5 +1,5 @@
 {
-  "pages":[
+  "pages": [
     "pages/course/index",
     "pages/course/detail",
     "pages/course/pay",
@@ -20,11 +20,11 @@
     "pages/user/mobile/login",
     "pages/share/moment"
   ],
-  "window":{
-    "backgroundTextStyle":"light",
+  "window": {
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle":"black"
+    "navigationBarTextStyle": "black"
   },
   "tabBar": {
     "borderStyle": "black",
@@ -41,7 +41,7 @@
       },
       {
         "pagePath": "pages/user/course/index",
-        "text": "我的课程",
+        "text": "我的展会",
         "iconPath": "images/course.png",
         "selectedIconPath": "images/course-active.png"
       },
@@ -52,5 +52,6 @@
         "selectedIconPath": "images/mine-active.png"
       }
     ]
-  }  
+  },
+  "sitemapLocation": "sitemap.json"
 }

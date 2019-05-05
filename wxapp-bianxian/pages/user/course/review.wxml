@@ -6,10 +6,10 @@
       <image mode="widthFix" src="{{imgUrlPrefix+'/'+course.product.courseImages[0].fileId}}"/>
       <view>
         <view class="line name">{{course.product.title}}</view>
-        <view class="line desc">科目: {{course.product.subjectText}}</view>
+        <!--<view class="line desc">科目: {{course.product.subjectText}}</view>-->
         <view class="line desc">时间: {{course.product.startDate}} - {{course.product.endDate}}</view>
         <view class="line desc">地点: {{course.product.address}}</view>
-        <view class="line desc">讲师: {{course.product.teacher.name}} | {{course.product.teacher.title}}</view>
+        <!--<view class="line desc">讲师: {{course.product.teacher.name}} | {{course.product.teacher.title}}</view>-->
       </view>
     </view>
     <view class="right">
