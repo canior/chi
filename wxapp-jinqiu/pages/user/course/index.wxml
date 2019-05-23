@@ -2,10 +2,10 @@
 <import src="/pages/tmpl/price.wxml"/>
 <view class="tab-bar">
   <view class="{{tab1_selected?'active':'default'}}" bindtap="tab1Click">
-    <text>在线课程</text>
+    <text>往期活动</text>
   </view>
   <view class="{{tab2_selected?'active':'default'}}" bindtap="tab2Click">
-    <text>线下活动</text>
+    <text>预约活动</text>
   </view>
 </view>
 <view class="tab-content {{tab1_selected?'show':'hidden'}}">

@@ -7,7 +7,7 @@
       </view>
       <view class="info">
         <view class="line">{{isLogin ? user.nickname : '未登录'}}</view>
-        <view class="line" wx:if="{{isLogin}}">{{user.userLevelText}} | {{user.bianxianUserLevelText}}</view>
+        <!--view class="line" wx:if="{{isLogin}}">{{user.userLevelText}} | {{user.bianxianUserLevelText}}</view-->
       </view>
     </view>
     <view class="right" wx:if="{{isLogin}}">
@@ -26,7 +26,7 @@
       <text>我的分享</text><text>{{user.totalShares ? user.totalShares : 0}}人</text>
     </view>
     <view class="step" bindtap="toQuota" data-status="shipping">
-      <text>我的名额</text><text>{{user.userRecommandStock ? user.userRecommandStock : 0}}</text>
+      <text>我的展会</text><text>{{user.userRecommandStock ? user.userRecommandStock : 0}}</text>
     </view>
   </view>
 </view>
@@ -42,7 +42,8 @@
   <block>
     <view class="split-line"/>
     <view class="row" bindtap="toUpgrade">
-      <view class="left"><image src="/images/upgrade.png"/>{{textMeta ? textMeta.text_upgrade_meta.textMeta : ''}}</view>
+      <!--view class="left"><image src="/images/upgrade.png"/>{{textMeta ? textMeta.text_upgrade_meta.textMeta : ''}}</view-->
+      <view class="left"><image src="/images/upgrade.png"/>我的日程</view>
       <view class="right"><view class="arrow-right"/></view>
     </view>
     <view class="split-line"/>

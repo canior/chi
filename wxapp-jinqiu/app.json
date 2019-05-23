@@ -60,13 +60,13 @@
       },
       {
         "pagePath": "pages/offlineCourse/index",
-        "text": "线下活动",
+        "text": "展会活动",
         "iconPath": "images/new-offline.png",
         "selectedIconPath": "images/new-offline-active.png"
       },      
       {
         "pagePath": "pages/user/course/index",
-        "text": "我的课程",
+        "text": "我的活动",
         "iconPath": "images/new-course.png",
         "selectedIconPath": "images/new-course-active.png"
       },
