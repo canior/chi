@@ -87,6 +87,35 @@ class OfflineCourseController extends BackendController
                 return new Response('页面错误', 500);
             }
 
+            try {
+                $specImages = isset($request->request->get('offline_course')['specImages']) ? $request->request->get('offline_course')['specImages'] : [];
+                $specImagesCommand = new CreateOrUpdateProductSpecImagesCommand($course->getProduct()->getId(), $specImages);
+                $this->getCommandBus()->handle($specImagesCommand);
+            } catch (\Exception $e) {
+                $this->getLog()->error('can not run CreateOrUpdateProductSpecImagesCommand because of' . $e->getMessage());
+                if ($this->isDev()) {
+                    dump($e->getFile());
+                    dump($e->getMessage());
+                    die;
+                }
+                return new Response('页面错误', 500);
+            }
+
+            //update share image
+            $shareImageFileId = isset($request->request->get('offline_course')['shareImageFile']) ? $request->request->get('offline_course')['shareImageFile'] : [];
+            if ($shareImageFileId) {
+                /**
+                 * @var File $shareImageFile
+                 */
+                $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
+                $course->setShareImageFile($shareImageFile);
+
+            } else {
+                $course->setShareImageFile(null);
+            }
+
+            $em->flush();
+
             $this->addFlash('notice', '创建成功');
             return $this->redirectToRoute('offline_course_index');
         }
