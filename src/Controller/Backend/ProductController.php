@@ -20,6 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\File;
 use Intervention\Image\AbstractFont;
 use Intervention\Image\ImageManagerStatic as Image;
+use App\Entity\ShareSource;
 
 /**
  * @Route("/backend")
@@ -239,7 +240,7 @@ class ProductController extends BackendController
             }
 
             //update share image
-            $shareImageFileId = isset($request->request->get('product')['shareImageFile']) ? $request->request->get('product')['shareImageFile'] : [];
+            $shareImageFileId = isset($request->request->get('product')['shareImageFile']) ? $request->request->get('product')['shareImageFile'] : null;
             if ($shareImageFileId) {
                 /**
                  * @var File $shareImageFile
@@ -250,6 +251,9 @@ class ProductController extends BackendController
             } else {
                 $product->setShareImageFile(null);
             }
+
+            //update share_source banner_file_id
+            $this->getEntityManager()->getRepository(ShareSource::class)->updateShareSourcesBannerFile($product->getId(),$shareImageFileId);
 
             $product->setUpdatedAt(time());
 

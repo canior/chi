@@ -70,4 +70,20 @@ class ShareSourceRepository extends ServiceEntityRepository
             ->groupBy('ss.user');
         return $query->getQuery()->getResult();
     }
+
+    /**
+     * @param number $product_id
+     * @param number $banner_file_id
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function updateShareSourcesBannerFile($product_id,$banner_file_id)
+    {
+        $query = $this->getEntityManager()->createQueryBuilder();
+        $query->update('App:ShareSource', 'ss')
+            ->set('ss.bannerFile', $banner_file_id?$banner_file_id:'null')
+            ->where('ss.product = :product_id')
+            ->setParameter('product_id', $product_id)
+            ->getQuery();
+        return $query->getQuery()->getResult();
+    }
 }
