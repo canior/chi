@@ -5,6 +5,14 @@
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 
+appApiAuthLogin:
+    path: /appApi/loginCheck
+    methods:  ['POST']
+
+appApi:
+    prefix: /appApi
+    resource: '../src/Controller/AppApi'
+
 # redirecting the root
 root:
     path: /

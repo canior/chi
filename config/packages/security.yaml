@@ -11,11 +11,32 @@ security:
         in_memory: { memory: ~ }
         fos_userbundle:
             id: fos_user.user_provider.username
-
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        login:
+            pattern:  ^/appApi/login
+            stateless: true
+            anonymous: true
+            form_login:
+                check_path:               /appApi/loginCheck
+                success_handler:          lexik_jwt_authentication.handler.authentication_success
+                failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+                require_previous_session: false
+            provider: fos_userbundle
+        register:
+            pattern:  ^/appApi/auth/register
+            stateless: true
+            anonymous: true
+        api:
+            pattern:   ^/appApi
+            stateless: true
+            provider: fos_userbundle
+            lexik_jwt:
+                authorization_header: # check token in Authorization Header
+                    enabled: true
+                    prefix:  Bearer
         main:
             pattern: ^/
             form_login:
