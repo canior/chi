@@ -27,6 +27,7 @@ class ErrorCode
     const ERROR_TOKEN_AUTH_NOT_FOUND = 12003;
     const ERROR_LOGIN_USER_NOT_FIND = 12004;
     const ERROR_LOGIN_USERNAME_OR_PASSWORD_ERROR = 12005;
+    const ERROR_LOGIN_PHONE_OR_CODE_ERROR = 12006;
     //-------课程---------------------------------------
 
     //-------产品---------------------------------------
@@ -47,6 +48,7 @@ class ErrorCode
             self::ERROR_TOKEN_AUTH_NOT_FOUND => 'token不存在',
             self::ERROR_LOGIN_USER_NOT_FIND => '用户不存在',
             self::ERROR_LOGIN_USERNAME_OR_PASSWORD_ERROR => '用户名或密码不不正确',
+            self::ERROR_LOGIN_PHONE_OR_CODE_ERROR => '手机号或动态码不不正确',
         ];
     }
 

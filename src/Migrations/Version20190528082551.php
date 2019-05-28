@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20190528080136 extends AbstractMigration
+final class Version20190528082551 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -19,12 +19,13 @@ final class Version20190528080136 extends AbstractMigration
 
     public function up(Schema $schema) : void
     {
-        $this->addSql('CREATE TABLE message_code (id INT AUTO_INCREMENT NOT NULL, code varchar(255) NOT NULL, type varchar(20) NOT NULL, phone varchar(255) NOT NULL, created_at INT, PRIMARY KEY(id)) ENGINE = InnoDB');
+        // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('ALTER TABLE `message_code` ADD INDEX `IDX_MESSAGE_MOBILE_1`(`phone`) USING BTREE');
     }
 
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        
+
     }
 }
