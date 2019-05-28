@@ -26,7 +26,11 @@ security:
                 require_previous_session: false
             provider: fos_userbundle
         register:
-            pattern:  ^/appApi/auth/register
+            pattern:  ^/appApi/user/register
+            stateless: true
+            anonymous: true
+        autologin:
+            pattern:  ^/appApi/user/login
             stateless: true
             anonymous: true
         api:

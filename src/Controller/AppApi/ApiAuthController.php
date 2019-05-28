@@ -9,6 +9,7 @@
 namespace App\Controller\AppApi;
 
 use FOS\UserBundle\Model\UserManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,8 +17,13 @@ use App\Entity\User;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Repository\UserRepository;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use App\Service\Util\CommonUtil;
+use App\Service\ErrorCode;
+
 /**
- * @Route("/auth")
+ * @Route("/user")
  */
 class ApiAuthController extends AbstractController
 {
@@ -27,7 +33,7 @@ class ApiAuthController extends AbstractController
      * @param UserManagerInterface $userManager
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function register(Request $request, UserManagerInterface $userManager)
+    public function register(Request $request, UserManagerInterface $userManager,JWTTokenManagerInterface $JWTTokenManager)
     {
         $data = json_decode(
             $request->getContent(),
@@ -42,7 +48,7 @@ class ApiAuthController extends AbstractController
         $violations = $validator->validate($data, $constraint);
 
         if ($violations->count() > 0) {
-            return new JsonResponse(["error" => (string)$violations], 500);
+            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, 417, (string)$violations)->toJsonResponse();
         }
         $username = $data['username'];
         $password = $data['password'];
@@ -60,6 +66,49 @@ class ApiAuthController extends AbstractController
         } catch (\Exception $e) {
             return new JsonResponse(["error" => $e->getMessage()], 500);
         }
-        return new JsonResponse(["success" => $user->getUsername(). " has been registered!"], 200);
+
+        return CommonUtil::resultData(['token' => $JWTTokenManager->create($user)])->toJsonResponse();
+    }
+
+
+    /**
+     * @Route("/login", name="apiAuthlogin",  methods={"POST"})
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param EncoderFactoryInterface $encoderFactory
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function login(Request $request, UserRepository $userRepository,EncoderFactoryInterface $encoderFactory,JWTTokenManagerInterface $JWTTokenManager)
+    {
+        $data = json_decode(
+            $request->getContent(),
+            true
+        );
+
+        // 请求参数验证
+        $validator = Validation::createValidator();
+        $constraint = new Assert\Collection([
+            'username' => new Assert\Length(['min' => 6, 'max' => 30]),
+            'password' => new Assert\Length(['min' => 6, 'max' => 30]),
+        ]);
+        $violations = $validator->validate($data, $constraint);
+        if ($violations->count() > 0) {
+            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, 417, (string)$violations)->toJsonResponse();
+        }
+
+        // 查询匹配用户
+        $user = $userRepository->findOneBy(['username' => $data['username']]);
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        // 验证密码
+        $passwordValid = $encoderFactory->getEncoder($user)->isPasswordValid($user->getPassword(),$data['password'], $user->getSalt());
+        if( !$passwordValid ){
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USERNAME_OR_PASSWORD_ERROR )->toJsonResponse();
+        }
+
+        // 返回
+        return CommonUtil::resultData(['token' => $JWTTokenManager->create($user)])->toJsonResponse();
     }
 }
