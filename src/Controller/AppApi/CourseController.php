@@ -40,7 +40,7 @@ class CourseController extends BaseController
             'freeZoneBanner' => $this->createHomeFreeZoneBannerMetas($projectBannerMetaRepository),
             'recommendProducts' => $recommendProductsArray,
             'newestProducts' => $newestProductsArray,
-            'baseUrl' => $request->getUri1(),
+            'baseUrl' => $request->getUri(),
         ];
 
         return CommonUtil::resultData($data)->toJsonResponse();

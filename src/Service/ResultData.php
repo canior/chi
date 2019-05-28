@@ -8,7 +8,9 @@
 
 namespace App\Service;
 
+use App\Exception\ApiHttpException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * 通用数据返回对象
@@ -49,28 +51,12 @@ class ResultData implements \ArrayAccess
      * @param string $msg
      * @param int $statusCode
      */
-    public function __construct(array $data = [], int $code = 0, string $msg = 'success', int $statusCode = 200)
+    public function __construct(array $data = [], int $code = 0, string $msg = 'success', int $statusCode = Response::HTTP_OK)
     {
-        $this->code = $code;
         $this->data = $data;
-
-        //处理通用错误code对应错误码msg情况
-        if ($code > 0 ) {
-            $tmp_msg = $msg == 'success' ? '' : $msg;
-
-            if (!empty($tmp_msg)) {
-                $error_msg = $tmp_msg;
-            } else {
-                $error_msg = ErrorCode::getMessage($code);
-            }
-            $msg = $error_msg;
-
-            if ($statusCode == 200) {
-                $statusCode = 417;
-            }
-        }
         $this->statusCode = $statusCode;
         $this->msg = $msg;
+        $this->setCode($code);
     }
 
     /**
@@ -88,6 +74,17 @@ class ResultData implements \ArrayAccess
     public function setCode(int $code)
     {
         $this->code = $code;
+        //处理通用错误code对应错误码msg情况
+        if ($code > 0 ) {
+            if ($code < 10000) {
+                $error_msg = Response::$statusTexts[$code] ?? Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR];
+                $this->setStatusCode($code);
+            } else {
+                $error_msg = ErrorCode::getMessage($code);
+                $this->setStatusCode(Response::HTTP_EXPECTATION_FAILED);
+            }
+            $this->setMsg($error_msg);
+        }
         return $this;
     }
 
@@ -138,22 +135,25 @@ class ResultData implements \ArrayAccess
 
     /**
      * @param int $statusCode
+     * @return ResultData
      */
-    public function setStatusCode(int $statusCode): void
+    public function setStatusCode(int $statusCode)
     {
         $this->statusCode = $statusCode;
+
+        return $this;
     }
 
     /**
      * 合并data
      * @param array $data
-     * @return array
      * @author zxqc2018
+     * @return ResultData
      */
     public function mergeData(array $data)
     {
         $this->data = array_merge($this->data, $data);
-        return $data;
+        return $this;
     }
     /**
      * 返回数组形式
@@ -192,6 +192,22 @@ class ResultData implements \ArrayAccess
         return new JsonResponse($this->toArray(), $this->getStatusCode(), $headers);
     }
 
+
+    /**
+     * 对象转化为异常抛出
+     * @param array $excludeCodeArr 排除抛出异常的code数组
+     * @return $this
+     * @author zxqc2018
+     */
+    public function throwErrorException($excludeCodeArr = [])
+    {
+        //处理需要抛出异常的情况
+        if ($this->getCode() > 0 && !in_array($this->getCode(), $excludeCodeArr)) {
+            $apiHttpException = new ApiHttpException($this->getCode(), $this->getData());
+            throw $apiHttpException;
+        }
+        return $this;
+    }
     /**
      * Whether a offset exists
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php

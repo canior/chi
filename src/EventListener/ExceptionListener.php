@@ -8,8 +8,9 @@
 
 namespace App\EventListener;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use App\Exception\ApiHttpException;
+use App\Service\ErrorCode;
+use App\Service\Util\CommonUtil;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
@@ -25,31 +26,26 @@ class ExceptionListener
 
         //判断是否/appApi 开头的请求 返回json
         if (!empty($event->getRequest()->getRequestUri()) && strpos($event->getRequest()->getRequestUri(), '/appApi') === 0) {
-            $response = new JsonResponse();
-            $data = [
-                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-                'data' => [],
-            ];
+            $resultData = CommonUtil::resultData([], ErrorCode::ERROR_COMMON_UNKNOWN_ERROR);
 
             $env = $_SERVER['APP_ENV'] ?? $_ENV['APP_ENV'] ?? 'dev';
             $debug = (bool) ($_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? ('prod' !== $env));
 
             //debug模式下输出对应异常信息
-            if ($debug) {
-                $data['exceptionMsg'] = $exception->getMessage();
+            if ($debug && !empty($exception->getMessage())) {
+                $resultData['exceptionMsg'] = $exception->getMessage();
             }
 
-            if ($exception instanceof HttpExceptionInterface) {
-                $response->setStatusCode($exception->getStatusCode());
-                $response->headers->replace($exception->getHeaders());
-                $data['code'] = $exception->getStatusCode();
-            } else {
-                $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            if ($exception instanceof ApiHttpException) {
+                $resultData->setCode($exception->getCode());
+                if (!empty($exception->getData())) {
+                    $resultData->setData($exception->getData());
+                }
+            } else if ($exception instanceof HttpExceptionInterface) {
+                $resultData->setStatusCode($exception->getStatusCode())->setCode($exception->getStatusCode());
             }
 
-            $data['msg'] = Response::$statusTexts[$data['code']] ?? 'Internal Server Error';
-            $response->setData($data);
-            $event->setResponse($response);
+            $event->setResponse($resultData->toJsonResponse());
         }
     }
 }
