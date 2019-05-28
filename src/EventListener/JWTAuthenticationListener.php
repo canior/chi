@@ -9,6 +9,8 @@
 namespace App\EventListener;
 
 
+use App\Service\ErrorCode;
+use App\Service\Util\CommonUtil;
 use FOS\UserBundle\Model\UserInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
@@ -35,16 +37,11 @@ class JWTAuthenticationListener
             return;
         }
 
-        $data = [
-            'code'  => JsonResponse::HTTP_OK,
-            'msg' => 'success',
-            'data' => [
-                'token' => $data['token'],
-                'userId' => $user->getId(),
-            ],
-        ];
+        $resultData = CommonUtil::resultData();
+        $resultData['token'] = $data['token'];
+        $resultData['userId'] = $user->getId();
 
-        $event->setData($data);
+        $event->setData($resultData->toArray());
     }
 
     /**
@@ -52,14 +49,7 @@ class JWTAuthenticationListener
      */
     public function onAuthenticationFailureResponse(AuthenticationFailureEvent $event)
     {
-        $data = [
-            'code'  => JsonResponse::HTTP_UNAUTHORIZED,
-            'msg' => 'Bad credentials, please verify that your username/password are correctly set',
-            'data' => []
-        ];
-
-        $response = new JsonResponse($data, JsonResponse::HTTP_UNAUTHORIZED);
-
+        $response = CommonUtil::resultData([], ErrorCode::ERROR_TOKEN_AUTH_FAILURE, JsonResponse::HTTP_UNAUTHORIZED)->toJsonResponse();
         $event->setResponse($response);
     }
 
@@ -68,13 +58,7 @@ class JWTAuthenticationListener
      */
     public function onJWTInvalid(JWTInvalidEvent $event)
     {
-        $data = [
-            'code'  => JsonResponse::HTTP_FORBIDDEN,
-            'msg' => 'token invalid',
-            'data' => []
-        ];
-
-        $response = new JsonResponse($data, JsonResponse::HTTP_FORBIDDEN);
+        $response = CommonUtil::resultData([], ErrorCode::ERROR_TOKEN_INVALID, JsonResponse::HTTP_FORBIDDEN)->toJsonResponse();
 
         $event->setResponse($response);
     }
@@ -84,14 +68,7 @@ class JWTAuthenticationListener
      */
     public function onJWTNotFound(JWTNotFoundEvent $event)
     {
-        $data = [
-            'code'  => JsonResponse::HTTP_FORBIDDEN,
-            'msg' => 'token not found',
-            'data' => []
-        ];
-
-        $response = new JsonResponse($data, JsonResponse::HTTP_FORBIDDEN);
-
+        $response = CommonUtil::resultData([], ErrorCode::ERROR_TOKEN_AUTH_NOT_FOUND, JsonResponse::HTTP_FORBIDDEN)->toJsonResponse();
         $event->setResponse($response);
     }
 }
