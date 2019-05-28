@@ -31,4 +31,43 @@ class CommonUtil
     {
         return new ResultData($data, $code, $msg, $statusCode);
     }
+
+    /**
+     * entity对象数组转换成entity数据数组
+     * @param $entityArray
+     * @return array
+     * @author zxqc2018
+     */
+    public static function entityArray2DataArray($entityArray)
+    {
+        $res = [];
+        foreach ($entityArray as $entity) {
+            $res[] = self::Obj2Array($entity);
+        }
+
+        return $res;
+    }
+
+    /**
+     * 对象转换数组
+     * @param $obj
+     * @param array $defaultValue 默认值
+     * @param string $toArrayMethod 对象转换数组方法
+     * @return array|null
+     * @author zxqc2018
+     */
+    public static function Obj2Array($obj, $defaultValue = [], $toArrayMethod = 'getArray')
+    {
+        $res = $defaultValue;
+
+        if (empty($obj)) {
+            return $res;
+        }
+
+        if (method_exists($obj, $toArrayMethod)) {
+            $res = $obj->$toArrayMethod();
+        }
+
+        return $res;
+    }
 }

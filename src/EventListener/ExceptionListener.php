@@ -23,22 +23,33 @@ class ExceptionListener
     {
         $exception = $event->getException();
 
-        $response = new JsonResponse();
-        $data = [
-            'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-            'data' => [],
-        ];
+        //判断是否/appApi 开头的请求 返回json
+        if (!empty($event->getRequest()->getRequestUri()) && strpos($event->getRequest()->getRequestUri(), '/appApi') === 0) {
+            $response = new JsonResponse();
+            $data = [
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'data' => [],
+            ];
 
-        if ($exception instanceof HttpExceptionInterface) {
-            $response->setStatusCode($exception->getStatusCode());
-            $response->headers->replace($exception->getHeaders());
-            $data['code'] = $exception->getStatusCode();
-        } else {
-            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $env = $_SERVER['APP_ENV'] ?? $_ENV['APP_ENV'] ?? 'dev';
+            $debug = (bool) ($_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? ('prod' !== $env));
+
+            //debug模式下输出对应异常信息
+            if ($debug) {
+                $data['exceptionMsg'] = $exception->getMessage();
+            }
+
+            if ($exception instanceof HttpExceptionInterface) {
+                $response->setStatusCode($exception->getStatusCode());
+                $response->headers->replace($exception->getHeaders());
+                $data['code'] = $exception->getStatusCode();
+            } else {
+                $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            $data['msg'] = Response::$statusTexts[$data['code']] ?? 'Internal Server Error';
+            $response->setData($data);
+            $event->setResponse($response);
         }
-
-        $data['msg'] = Response::$statusTexts[$data['code']] ?? 'Internal Server Error';
-        $response->setData($data);
-        $event->setResponse($response);
     }
 }

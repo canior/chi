@@ -225,7 +225,11 @@ class Product implements Dao
      */
     private $priority;
 
-
+    /**
+     * @ORM\Column(type="integer", nullable=false)
+     * @var integer
+     */
+    private $lookNum;
     /**
      * Product constructor.
      */
@@ -1041,6 +1045,30 @@ class Product implements Dao
     public function setPriority($priority): void
     {
         $this->priority = $priority;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLookNum(): int
+    {
+        return $this->lookNum;
+    }
+
+    /**
+     * @param int $lookNum
+     */
+    public function setLookNum(int $lookNum): void
+    {
+        $this->lookNum = $lookNum;
+    }
+
+    /**
+     * 增加观看次数
+     * @param int $num
+     */
+    public function increaseLookNum(int $num = 1) {
+        $this->lookNum += $num;
     }
 
     /**

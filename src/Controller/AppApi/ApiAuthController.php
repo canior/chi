@@ -76,6 +76,7 @@ class ApiAuthController extends AbstractController
      * @param Request $request
      * @param UserRepository $userRepository
      * @param EncoderFactoryInterface $encoderFactory
+     * @param JWTTokenManagerInterface $JWTTokenManager
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function login(Request $request, UserRepository $userRepository,EncoderFactoryInterface $encoderFactory,JWTTokenManagerInterface $JWTTokenManager)

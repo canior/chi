@@ -73,4 +73,42 @@ class ProductRepository extends ServiceEntityRepository
 
         return $query->orderBy('p.priority', 'DESC')->addOrderBy('p.id', 'DESC');
     }
+
+    /**
+     * @param bool $isCourse
+     * @param array $orderBy
+     * @param int $limit
+     * @return \Doctrine\ORM\QueryBuilder
+     * @author zxqc2018
+     */
+    public function findRecommendProductsQueryBuilder($isCourse = false, $orderBy = [], $limit = null)
+    {
+        $query = $this->createQueryBuilder('p')
+        ->where('p.status = :status')
+        ->setParameter('status', Product::ACTIVE);
+
+        if ($isCourse) {
+            $query->andWhere('p.course is not null');
+        } else {
+            $query->andWhere('p.course is null');
+        }
+
+        if (empty($orderBy)) {
+            $orderBy['p.priority'] = 'DESC';
+        }
+
+        $orderBy['p.id'] = 'DESC';
+        $flag = false;
+        foreach ($orderBy as $oKey => $oVal) {
+            $orderMethod = $flag ? 'addOrderBy' : 'orderBy';
+            call_user_func_array([$query, $orderMethod], [$oKey, $oVal]);
+            $flag = true;
+        }
+
+        if (!empty($limit)) {
+            $query->setMaxResults($limit);
+        }
+
+        return $query;
+    }
 }
