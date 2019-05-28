@@ -20,7 +20,7 @@ final class Version20190528082551 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE `message_code` ADD INDEX `IDX_MESSAGE_MOBILE_1`(`mobile`) USING BTREE');
+        $this->addSql('ALTER TABLE `message_code` ADD INDEX `IDX_MESSAGE_MOBILE_1`(`phone`) USING BTREE');
     }
 
     public function down(Schema $schema) : void

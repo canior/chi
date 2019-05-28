@@ -19,7 +19,7 @@ final class Version20190528080136 extends AbstractMigration
 
     public function up(Schema $schema) : void
     {
-        $this->addSql('CREATE TABLE message_code (id INT AUTO_INCREMENT NOT NULL, code varchar(255) NOT NULL, type INT NOT NULL, mobile varchar(255), created_at INT NOT NULL, PRIMARY KEY(id)) ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE message_code (id INT AUTO_INCREMENT NOT NULL, code varchar(255) NOT NULL, type varchar(20) NOT NULL, phone varchar(255) NOT NULL, created_at INT, PRIMARY KEY(id)) ENGINE = InnoDB');
     }
 
     public function down(Schema $schema) : void
