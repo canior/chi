@@ -28,7 +28,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 /**
  * @Route("/auth/member")
  */
-class MemberController extends AbstractController
+class MemberController extends AppApiBaseController
 {
     /**
      * @Route("/setNewPhone", name="apiSetNewPhone",  methods={"POST"})
@@ -63,11 +63,15 @@ class MemberController extends AbstractController
         ]);
         $violations = $validator->validate($data, $constraint);
         if ($violations->count() > 0) {
-            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, 417, (string)$violations)->toJsonResponse();
+            $message = [];
+            foreach ($violations as $violation) {
+                $message[] = $violation->getMessage();
+            }
+            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, implode(',', $message))->toJsonResponse();
         }
 
         // 查询匹配用户
-        $user = $tokenStorage->getToken()->getUser();
+        $user =  $this->getAppUser();
         if ($user == null) {
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
@@ -116,18 +120,27 @@ class MemberController extends AbstractController
         );
 
         // 请求参数验证
-        $validator = Validation::createValidator();
-        $constraint = new Assert\Collection([
-            'oldPassword' => new Assert\Length(['min' => 6, 'max' => 30]),
-            'newPassword' => new Assert\Length(['min' => 6, 'max' => 30]),
-        ]);
-        $violations = $validator->validate($data, $constraint);
+        $validator = Validation::createValidator(['allowExtraFields'=>true]);
+        
+        $constraint = new Assert\Collection(
+            [
+                'oldPassword' => [
+                    new Assert\Length(['min' => 4,'minMessage'=>'不能低于{{ limit }}个字符'])
+                ],
+                'newPassword' => new Assert\Length(['min' => 6,'minMessage'=>'不能低于{{ limit }}个字符']),
+            ]
+        );
+        $violations = $validator->validate($data, $constraint);  
         if ($violations->count() > 0) {
-            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, 417, (string)$violations)->toJsonResponse();
+            $message = [];
+            foreach ($violations as $violation) {
+                $message[] = $violation->getMessage();
+            }
+            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, implode(',', $message))->toJsonResponse();
         }
 
         // 查询匹配用户
-        $user = $tokenStorage->getToken()->getUser();
+        $user =  $this->getAppUser();
         if ($user == null) {
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }

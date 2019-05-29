@@ -146,7 +146,11 @@ class ApiAuthController extends AppApiBaseController
         ]);
         $violations = $validator->validate($data, $constraint);
         if ($violations->count() > 0) {
-            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, 417, (string)$violations)->toJsonResponse();
+            $message = [];
+            foreach ($violations as $violation) {
+                $message[] = $violation->getMessage();
+            }
+            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, implode(',', $message))->toJsonResponse();
         }
 
         // 查询匹配用户
@@ -199,7 +203,11 @@ class ApiAuthController extends AppApiBaseController
         ]);
         $violations = $validator->validate($data, $constraint);
         if ($violations->count() > 0) {
-            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, 417, (string)$violations)->toJsonResponse();
+            $message = [];
+            foreach ($violations as $violation) {
+                $message[] = $violation->getMessage();
+            }
+            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, implode(',', $message))->toJsonResponse();
         }
 
         // 查询匹配用户
