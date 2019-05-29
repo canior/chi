@@ -30,7 +30,7 @@ use App\Repository\MessageCodeRepository;
 class MemberController extends AbstractController
 {
     /**
-     * @Route("/setNewPhone", name="apiAuthResetPassword",  methods={"POST"})
+     * @Route("/setNewPhone", name="apiSetNewPhone",  methods={"POST"})
      * @param Request $request
      * @param UserRepository $userRepository
      * @param EncoderFactoryInterface $encoderFactory
