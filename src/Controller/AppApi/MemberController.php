@@ -23,6 +23,7 @@ use App\Service\Util\CommonUtil;
 use App\Service\ErrorCode;
 use App\Entity\MessageCode;
 use App\Repository\MessageCodeRepository;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @Route("/auth/member")
@@ -45,7 +46,8 @@ class MemberController extends AbstractController
         EncoderFactoryInterface $encoderFactory,
         JWTTokenManagerInterface $JWTTokenManager,
         MessageCodeRepository $messageCodeRepository,
-        UserManagerInterface $userManager
+        UserManagerInterface $userManager,
+        TokenStorageInterface $tokenStorage
     )
     {
         $data = json_decode(
@@ -64,13 +66,8 @@ class MemberController extends AbstractController
             return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, 417, (string)$violations)->toJsonResponse();
         }
 
-        // 获取用户ID TODO
-        // $data['user_id'] = 18;
-        echo '获取用户ID TODO';die;
-
         // 查询匹配用户
-        $user = $userRepository->find($data['user_id']);
-        // dump($user);die;
+        $user = $tokenStorage->getToken()->getUser();
         if ($user == null) {
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
