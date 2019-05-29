@@ -22,12 +22,12 @@ class CommonUtil
      * 通用结果返回类
      * @param array $data 数据
      * @param int $code 错误码 0 默认正确
-     * @param int $statusCode http状态码
      * @param string $msg 错误码描述
+     * @param int $statusCode http状态码
      * @author zxqc2018
      * @return ResultData
      */
-    public static function resultData($data = [], $code = 0, $statusCode = 200, $msg = 'success'): ResultData
+    public static function resultData($data = [], $code = 0, $msg = 'success', $statusCode = 200): ResultData
     {
         return new ResultData($data, $code, $msg, $statusCode);
     }

@@ -27,7 +27,7 @@ use App\Repository\MessageCodeRepository;
 /**
  * @Route("/user")
  */
-class ApiAuthController extends AbstractController
+class ApiAuthController extends AppApiBaseController
 {
     /**
      * @Route("/register", name="apiAuthRegister",  methods={"POST"})

@@ -49,7 +49,7 @@ class JWTAuthenticationListener
      */
     public function onAuthenticationFailureResponse(AuthenticationFailureEvent $event)
     {
-        $response = CommonUtil::resultData([], ErrorCode::ERROR_TOKEN_AUTH_FAILURE, JsonResponse::HTTP_UNAUTHORIZED)->toJsonResponse();
+        $response = CommonUtil::resultData([], ErrorCode::ERROR_TOKEN_AUTH_FAILURE,'', JsonResponse::HTTP_UNAUTHORIZED)->toJsonResponse();
         $event->setResponse($response);
     }
 
@@ -58,7 +58,7 @@ class JWTAuthenticationListener
      */
     public function onJWTInvalid(JWTInvalidEvent $event)
     {
-        $response = CommonUtil::resultData([], ErrorCode::ERROR_TOKEN_INVALID, JsonResponse::HTTP_FORBIDDEN)->toJsonResponse();
+        $response = CommonUtil::resultData([], ErrorCode::ERROR_TOKEN_INVALID,'', JsonResponse::HTTP_FORBIDDEN)->toJsonResponse();
 
         $event->setResponse($response);
     }
@@ -68,7 +68,7 @@ class JWTAuthenticationListener
      */
     public function onJWTNotFound(JWTNotFoundEvent $event)
     {
-        $response = CommonUtil::resultData([], ErrorCode::ERROR_TOKEN_AUTH_NOT_FOUND, JsonResponse::HTTP_FORBIDDEN)->toJsonResponse();
+        $response = CommonUtil::resultData([], ErrorCode::ERROR_TOKEN_AUTH_NOT_FOUND,'', JsonResponse::HTTP_FORBIDDEN)->toJsonResponse();
         $event->setResponse($response);
     }
 }

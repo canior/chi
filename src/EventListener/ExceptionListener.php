@@ -41,6 +41,7 @@ class ExceptionListener
                 if (!empty($exception->getData())) {
                     $resultData->setData($exception->getData());
                 }
+                $resultData->setMsg($exception->getMessage());
             } else if ($exception instanceof HttpExceptionInterface) {
                 $resultData->setStatusCode($exception->getStatusCode())->setCode($exception->getStatusCode());
             }

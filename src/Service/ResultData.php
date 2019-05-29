@@ -20,6 +20,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ResultData implements \ArrayAccess
 {
+
+    const SUCCESS_MSG = 'success';
+
+    const HTTP_OK_STATUS_CODE = Response::HTTP_OK;
     /**
      * 错误码
      * @var int
@@ -45,17 +49,28 @@ class ResultData implements \ArrayAccess
     private $statusCode;
 
     /**
+     * @var string 对象初始化字符串
+     */
+    private $originMsg;
+
+    /**
+     * @var int 对象初始化statusCode
+     */
+    private $originStatusCode;
+    /**
      * ResultData constructor.
      * @param array $data
      * @param int $code
      * @param string $msg
      * @param int $statusCode
      */
-    public function __construct(array $data = [], int $code = 0, string $msg = 'success', int $statusCode = Response::HTTP_OK)
+    public function __construct(array $data = [], int $code = 0, string $msg = self::SUCCESS_MSG, int $statusCode = self::HTTP_OK_STATUS_CODE)
     {
         $this->data = $data;
         $this->statusCode = $statusCode;
         $this->msg = $msg;
+        $this->setOriginMsg($msg);
+        $this->setOriginStatusCode($statusCode);
         $this->setCode($code);
     }
 
@@ -102,10 +117,45 @@ class ResultData implements \ArrayAccess
      */
     public function setMsg(string $msg)
     {
-        $this->msg = $msg;
+        if (empty($this->originMsg) || $this->originMsg == self::SUCCESS_MSG) {
+            $this->msg = $msg;
+        }
+
         return $this;
     }
-    
+
+    /**
+     * @return string
+     */
+    public function getOriginMsg(): string
+    {
+        return $this->originMsg;
+    }
+
+    /**
+     * @param string $originMsg
+     */
+    public function setOriginMsg(string $originMsg): void
+    {
+        $this->originMsg = $originMsg;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOriginStatusCode(): int
+    {
+        return $this->originStatusCode;
+    }
+
+    /**
+     * @param int $originStatusCode
+     */
+    public function setOriginStatusCode(int $originStatusCode): void
+    {
+        $this->originStatusCode = $originStatusCode;
+    }
+
     /**
      * @return array
      */
@@ -139,7 +189,9 @@ class ResultData implements \ArrayAccess
      */
     public function setStatusCode(int $statusCode)
     {
-        $this->statusCode = $statusCode;
+        if (empty($this->statusCode) || $this->originStatusCode == self::HTTP_OK_STATUS_CODE) {
+            $this->statusCode = $statusCode;
+        }
 
         return $this;
     }
@@ -203,7 +255,7 @@ class ResultData implements \ArrayAccess
     {
         //处理需要抛出异常的情况
         if ($this->getCode() > 0 && !in_array($this->getCode(), $excludeCodeArr)) {
-            $apiHttpException = new ApiHttpException($this->getCode(), $this->getData());
+            $apiHttpException = new ApiHttpException($this->getCode(), $this->getData(), $this->getMsg());
             throw $apiHttpException;
         }
         return $this;

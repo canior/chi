@@ -9,7 +9,6 @@
 namespace App\Controller\AppApi;
 
 
-use App\Controller\Api\BaseController;
 use App\Entity\ProjectBannerMeta;
 use App\Repository\ProductRepository;
 use App\Repository\ProjectBannerMetaRepository;
@@ -17,7 +16,7 @@ use App\Service\Util\CommonUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class CourseController extends BaseController
+class CourseController extends AppApiBaseController
 {
     /**
      * 首页
