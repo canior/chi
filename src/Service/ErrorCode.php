@@ -20,7 +20,8 @@ class ErrorCode
     const ERROR_COMMON_UNKNOWN_ERROR = 10000;
 
     //-------通用---------------------------------------
-
+    const ERROR_UPLOAD_FILE_NOT_EXISTS = 11001;
+    const ERROR_UPLOAD_FILE_SAVE = 11002;
     //-------认证---------------------------------------
     const ERROR_TOKEN_INVALID = 12001;
     const ERROR_TOKEN_AUTH_FAILURE = 12002;
@@ -43,6 +44,8 @@ class ErrorCode
     {
         return [
             self::ERROR_COMMON_UNKNOWN_ERROR => '未知错误',
+            self::ERROR_UPLOAD_FILE_NOT_EXISTS => '文件不存在',
+            self::ERROR_UPLOAD_FILE_SAVE => '文件保存失败',
             self::ERROR_TOKEN_INVALID => 'token无效',
             self::ERROR_TOKEN_AUTH_FAILURE => 'token认证失败',
             self::ERROR_TOKEN_AUTH_NOT_FOUND => 'token不存在',
