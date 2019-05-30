@@ -263,7 +263,7 @@ class MemberController extends AppApiBaseController
      * @param RegionRepository $regionRepository
      * @return Response
      */
-    public function updateUserAddressAction(Request $request, UserAddressRepository $userAddressRepository, RegionRepository $regionRepository): Response {
+    public function updateUserAddressAction(Request $request, UserAddressRepository $userAddressRepository, RegionRepository $regionRepository) {
 
         $data = json_decode($request->getContent(), true);
         
@@ -321,9 +321,8 @@ class MemberController extends AppApiBaseController
         $this->getEntityManager()->flush();
 
 
-        return $this->responseJson('success', 200, [
-            'userAddress' => $userAddress->getArray()
-        ]);
+        // 返回
+        return CommonUtil::resultData(['userAddress' => $userAddress->getArray()])->toJsonResponse();
     }
 
     /**
@@ -334,7 +333,7 @@ class MemberController extends AppApiBaseController
      * @param UserAddressRepository $userAddressRepository
      * @return Response
      */
-    public function deleteUserAddressAction(Request $request, UserAddressRepository $userAddressRepository): Response {
+    public function deleteUserAddressAction(Request $request, UserAddressRepository $userAddressRepository) {
 
         $data = json_decode($request->getContent(), true);
 
@@ -350,8 +349,27 @@ class MemberController extends AppApiBaseController
         $this->getEntityManager()->persist($userAddress);
         $this->getEntityManager()->flush();
 
-        return $this->responseJson('success', 200, [
-            'userAddresses' => $userAddress->getArray()
-        ]);
+        // 返回
+        return CommonUtil::resultData(['userAddresses' => $userAddress->getArray()])->toJsonResponse();
+    }
+
+    /**
+     * 查看用户分享二维码
+     *
+     * @Route("qrCcode", name="qrCcode", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @return Response
+     */
+    public function qrCcode(Request $request, UserRepository $userRepository) {
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        // 返回
+        return CommonUtil::resultData(['shareSources' =>  $this->createUserShareSource($user, $url)])->toJsonResponse();
     }
 }
