@@ -24,6 +24,8 @@ use App\Service\ErrorCode;
 use App\Entity\MessageCode;
 use App\Repository\MessageCodeRepository;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use App\Repository\UserAddressRepository;
+use App\Repository\RegionRepository;
 
 /**
  * @Route("/auth/member")
@@ -161,5 +163,195 @@ class MemberController extends AppApiBaseController
 
         // 返回
         return CommonUtil::resultData([])->toJsonResponse();
+    }
+
+    /**
+     * @Route("/userInfo", name="apiUserInfo",  methods={"POST"})
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param EncoderFactoryInterface $encoderFactory
+     * @param JWTTokenManagerInterface $JWTTokenManager
+     * @param MessageCodeRepository $messageCodeRepository
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @param UserManagerInterface $userManager
+     */
+    public function userInfo(
+        Request $request, 
+        UserRepository $userRepository,
+        EncoderFactoryInterface $encoderFactory,
+        JWTTokenManagerInterface $JWTTokenManager,
+        MessageCodeRepository $messageCodeRepository,
+        UserManagerInterface $userManager,
+        TokenStorageInterface $tokenStorage
+    )
+    {
+        $data = json_decode(
+            $request->getContent(),
+            true
+        );
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        // 返回
+        return CommonUtil::resultData($user->getArray())->toJsonResponse();
+    }
+
+
+    /**
+     * 获取用户收货地址列表
+     *
+     * @Route("/address", name="myAddress", methods="POST")
+     * @param Request $request
+     * @param UserAddressRepository $userAddressRepository
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function addressAction(Request $request, UserAddressRepository $userAddressRepository){
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $userAddresses = $userAddressRepository->findBy(['user' => $user, 'isDeleted' => false], ['id' => 'DESC']);
+
+        $userAddressesArray = [];
+        foreach($userAddresses as $userAddress) {
+            $userAddressesArray[] = $userAddress->getArray();
+        }
+
+        // 返回
+        return CommonUtil::resultData($userAddressesArray)->toJsonResponse();
+    }
+
+    /**
+     * 获取用户收货地址详情
+     *
+     * @Route("/addressDetail", name="addressDetail", methods="POST")
+     * @param Request $request
+     * @param UserAddressRepository $userAddressRepository
+     * @return Response
+     */
+    public function addressDetailAction(Request $request, UserAddressRepository $userAddressRepository): Response {
+
+        $data = json_decode($request->getContent(), true);
+        $userAddressId = isset($data['userAddressId']) ? $data['userAddressId'] : null;
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        // 查询地址
+        $userAddress = $userAddressRepository->find($userAddressId);
+
+        // 返回
+        return CommonUtil::resultData($userAddress)->toJsonResponse();
+    }
+
+    /**
+     * 添加或更新用户收货地址
+     *
+     * @Route("/user/addressPost", name="addressPost", methods="POST")
+     * @param Request $request
+     * @param UserAddressRepository $userAddressRepository
+     * @param RegionRepository $regionRepository
+     * @return Response
+     */
+    public function updateUserAddressAction(Request $request, UserAddressRepository $userAddressRepository, RegionRepository $regionRepository): Response {
+
+        $data = json_decode($request->getContent(), true);
+        
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $userAddressId = isset($data['userAddressId']) ? $data['userAddressId'] : null;
+        $name = isset($data['name']) ? $data['name'] : null;
+        $phone = isset($data['phone']) ? $data['phone'] : null;
+        $province = isset($data['province']) ? $data['province'] : null;
+        $city = isset($data['city']) ? $data['city'] : null;
+        $county = isset($data['county']) ? $data['county'] : null;
+        $address = isset($data['address']) ? $data['address'] : null;
+
+        // 查询或新建region
+        $provinceDao = $regionRepository->findOneBy(['name' => $province, 'parentRegion' => null]);
+        if (!$provinceDao) {
+            $provinceDao = new Region();
+            $provinceDao->setName($province);
+            $this->getEntityManager()->persist($provinceDao);
+            $this->getEntityManager()->flush();
+        }
+        $cityDao = $regionRepository->findOneBy(['name' => $city, 'parentRegion' => $provinceDao]);
+        if (!$cityDao) {
+            $cityDao = new Region();
+            $cityDao->setName($city)->setParentRegion($provinceDao);
+            $this->getEntityManager()->persist($cityDao);
+            $this->getEntityManager()->flush();
+        }
+        $countyDao = $regionRepository->findOneBy(['name' => $county, 'parentRegion' => $cityDao]);
+        if (!$countyDao) {
+            $countyDao = new Region();
+            $countyDao->setName($county)->setParentRegion($cityDao);
+            $this->getEntityManager()->persist($countyDao);
+            $this->getEntityManager()->flush();
+        }
+
+        // 查询或新建userAddress
+        if ($userAddressId) {
+            $userAddress = $userAddressRepository->find($userAddressId);
+        } else {
+            $userAddress = new UserAddress();
+            $userAddress->setUser($user);
+            if ($user->getActiveUserAddress()->count() == 0) {
+                $userAddress->setIsDefault(true);
+            }
+        }
+
+
+        $userAddress->setName($name)->setPhone($phone)->setRegion($countyDao)->setAddress($address)->setUpdatedAt(time());
+        $this->getEntityManager()->persist($userAddress);
+        $this->getEntityManager()->flush();
+
+
+        return $this->responseJson('success', 200, [
+            'userAddress' => $userAddress->getArray()
+        ]);
+    }
+
+    /**
+     * 删除用户收货地址
+     *
+     * @Route("/user/address/delete", name="deleteUserAddress", methods="POST")
+     * @param Request $request
+     * @param UserAddressRepository $userAddressRepository
+     * @return Response
+     */
+    public function deleteUserAddressAction(Request $request, UserAddressRepository $userAddressRepository): Response {
+
+        $data = json_decode($request->getContent(), true);
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $userAddressId = isset($data['userAddressId']) ? $data['userAddressId'] : null;
+        $userAddress = $userAddressRepository->find($userAddressId);
+        $userAddress->setIsDeleted(true)->setUpdatedAt(time());
+        $this->getEntityManager()->persist($userAddress);
+        $this->getEntityManager()->flush();
+
+        return $this->responseJson('success', 200, [
+            'userAddresses' => $userAddress->getArray()
+        ]);
     }
 }
