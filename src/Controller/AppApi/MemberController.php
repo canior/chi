@@ -26,6 +26,7 @@ use App\Repository\MessageCodeRepository;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use App\Repository\UserAddressRepository;
 use App\Repository\RegionRepository;
+use App\Entity\UserAddress;
 
 /**
  * @Route("/auth/member")
@@ -236,7 +237,7 @@ class MemberController extends AppApiBaseController
      * @param UserAddressRepository $userAddressRepository
      * @return Response
      */
-    public function addressDetailAction(Request $request, UserAddressRepository $userAddressRepository): Response {
+    public function addressDetailAction(Request $request, UserAddressRepository $userAddressRepository) {
 
         $data = json_decode($request->getContent(), true);
         $userAddressId = isset($data['userAddressId']) ? $data['userAddressId'] : null;
@@ -251,21 +252,21 @@ class MemberController extends AppApiBaseController
         $userAddress = $userAddressRepository->find($userAddressId);
 
         // 返回
-        return CommonUtil::resultData($userAddress)->toJsonResponse();
+        return CommonUtil::resultData(['userAddress'=>$userAddress->getArray()] )->toJsonResponse();
     }
 
     /**
      * 添加或更新用户收货地址
      *
-     * @Route("/user/addressPost", name="addressPost", methods="POST")
+     * @Route("/addressPost", name="addressPost", methods="POST")
      * @param Request $request
      * @param UserAddressRepository $userAddressRepository
      * @param RegionRepository $regionRepository
      * @return Response
      */
-    public function updateUserAddressAction(Request $request, UserAddressRepository $userAddressRepository, RegionRepository $regionRepository) {
+    public function addressPostAction(Request $request, UserAddressRepository $userAddressRepository, RegionRepository $regionRepository) {
 
-        $data = json_decode($request->getContent(), true);
+        $data = json_decode($request->getContent(), true );
         
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -328,12 +329,12 @@ class MemberController extends AppApiBaseController
     /**
      * 删除用户收货地址
      *
-     * @Route("/user/address/delete", name="deleteUserAddress", methods="POST")
+     * @Route("/addressDelete", name="addressDelete", methods="POST")
      * @param Request $request
      * @param UserAddressRepository $userAddressRepository
      * @return Response
      */
-    public function deleteUserAddressAction(Request $request, UserAddressRepository $userAddressRepository) {
+    public function addressDeleteAction(Request $request, UserAddressRepository $userAddressRepository) {
 
         $data = json_decode($request->getContent(), true);
 
@@ -362,6 +363,9 @@ class MemberController extends AppApiBaseController
      * @return Response
      */
     public function qrCcode(Request $request, UserRepository $userRepository) {
+
+        $data = json_decode($request->getContent(), true);
+        $url = isset($data['url']) ? $data['url'] : null;
 
         // 查询匹配用户
         $user =  $this->getAppUser();
