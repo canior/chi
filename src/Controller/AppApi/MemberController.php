@@ -28,6 +28,8 @@ use App\Repository\UserAddressRepository;
 use App\Repository\RegionRepository;
 use App\Entity\UserAddress;
 use App\Entity\Region;
+use App\Entity\UserAccountOrder;
+use App\Repository\GroupUserOrderRepository;
 
 /**
  * @Route("/auth/member")
@@ -430,5 +432,177 @@ class MemberController extends AppApiBaseController
 
         // 返回
         return CommonUtil::resultData($data)->toJsonResponse();
+    }
+
+
+    /**
+     * 更新提现的银行账户信息
+     * @Route("/bankUpdate", name="bankUpdate", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function bankUpdateAction(Request $request) {
+
+        $data = json_decode($request->getContent(), true);
+
+        // 账户信息
+        $bank = isset($data['bank']) ? $data['bank'] : null;
+        $bankAccountNumber = isset($data['bankAccountNumber']) ? $data['bankAccountNumber'] : null;
+        $bankAccountName = isset($data['bankAccountName']) ? $data['bankAccountName'] : null;
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $user->setBank($bank);
+        $user->setBankAccountNumber($bankAccountNumber);
+        $user->setBankAccountName($bankAccountName);
+
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+
+        // 返回
+        return CommonUtil::resultData( ['user' => $user->getArray()] )->toJsonResponse();
+    }
+
+
+    /**
+     * 创建提现订单
+     *
+     * @Route("/accountWithdraw", name="accountWithdraw", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function accountWithdrawAction(Request $request) {
+        
+        $data = json_decode($request->getContent(), true);
+        $amount = isset($data['amount']) ? $data['amount'] : null;
+        
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        // 大于0
+        if ($amount <= 0) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_GREATER_COUNT)->toJsonResponse();
+        }
+
+        // 余额
+        if ($user->getUserAccountTotal() < $amount) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_GREATER_THEN_ACCOUNT)->toJsonResponse();
+        }
+
+        $withdrawOrder = $user->createUserAccountOrder(UserAccountOrder::WITHDRAW, $amount);
+        $this->getEntityManager()->persist($withdrawOrder);
+        $this->getEntityManager()->flush();
+
+        // 返回
+        return CommonUtil::resultData( ['withdrawOrder' => $withdrawOrder->getArray() ] )->toJsonResponse();
+    }
+
+    /**
+     * 我的订单列表
+     *
+     * 全部，待成团， 待发货， 已发货， 待收货
+     *
+     * 全部: status = null, paymentStatus in ['paid', 'refunding', 'refunded']
+     * 待成团: status = 'created', paymentStatus = 'paid'
+     * 待发货: status = 'pending', paymentStatus = 'paid'
+     * 已发货：status = 'shipping' paymentStatus = 'paid'
+     * 已收货: status = 'delivered' paymentStatus = 'paid'
+     *
+     * @Route("/groupUserOrders", name="groupUserOrders", methods="GET")
+     * @param Request $request
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @return Response
+     */
+    public function groupUserOrdersAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
+
+        $data = json_decode($request->getContent(), true);
+        $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
+
+        /**
+         * product, onlineCourse, offlineCourse
+         */
+        $productType = isset($data['productType']) ? $data['productType'] : false;
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        if ($groupUserOrderStatus == null)
+            $groupUserOrderStatus =  array_keys(GroupUserOrder::$statuses);
+
+        $paymentStatusArray = ['paid', 'refunding', 'refunded'];
+
+        $groupUserOrders = $groupUserOrderRepository->findBy(['user' => $user, 'status' => $groupUserOrderStatus, 'paymentStatus' => $paymentStatusArray], ['id' => 'DESC']);
+
+        $groupUserOrdersArray = [];
+        foreach ($groupUserOrders as $groupUserOrder) {
+            $product = $groupUserOrder->getProduct();
+
+            if ($productType == 'product' and !$product->isCourseProduct()) {
+                $groupUserOrdersArray[] = $groupUserOrder->getArray();
+            } else if ($productType == 'onlineCourse' and $product->isCourseProduct() and $product->getCourse()->isOnline()) {
+                $groupUserOrdersArray[] = $groupUserOrder->getArray();
+            } else if ($productType == 'offlineCourse' and $product->isCourseProduct() and !$product->getCourse()->isOnline()) {
+                $groupUserOrdersArray[] = $groupUserOrder->getArray();
+            }
+        }
+
+        // 返回
+        return CommonUtil::resultData( ['groupUserOrders' => $groupUserOrdersArray ] )->toJsonResponse();
+    }
+
+    /**
+     * 查看用户最近的分享记录
+     *
+     * @Route("/shareList", name="shareList", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function shareListAction(Request $request, UserRepository $userRepository) {
+
+        $data = json_decode($request->getContent(), true);
+        $url = isset($data['url']) ? $data['url'] : null;
+        $page = isset($data['page']) ? $data['page'] : 1;
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+        
+        $totalShareSourceUsers = $userRepository->findTotalShareUsers($user->getId(), null);
+        $totalValidShareSourceUsers = $user->getSubUsers()->count();
+
+        /* 临时更改 我的分享列出来全部用户头像， 需要加入下拉更新  */
+        $shareSourceUsers = $userRepository->findShareUsers($user->getId(), null, $page, null);
+        $shareSourceUserArray = [];
+        foreach($shareSourceUsers as $shareSourceUser) {
+            $shareSourceUserArray[] = $shareSourceUser->getArray();
+        }
+
+        /**
+         * @var ProjectBannerMetaRepository $projectBannerMetaRepository
+         */
+        $projectBannerMetaRepository = $this->getEntityManager()->getRepository(ProjectBannerMeta::class);
+
+        // 返回
+        return CommonUtil::resultData( [
+            'validShareSourceUsersTotal' => $totalValidShareSourceUsers,
+            'shareSourceUsersTotal' => $totalShareSourceUsers,
+            'shareSourceUsers' => $shareSourceUserArray,
+            'shareSources' => $this->createUserShareSource($user, $url),
+            'bannerMetaArray' => $this->createMySharePageProjectBannerMetas($projectBannerMetaRepository)
+        ] )->toJsonResponse();
     }
 }

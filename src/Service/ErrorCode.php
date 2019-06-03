@@ -29,6 +29,8 @@ class ErrorCode
     const ERROR_LOGIN_USER_NOT_FIND = 12004;
     const ERROR_LOGIN_USERNAME_OR_PASSWORD_ERROR = 12005;
     const ERROR_LOGIN_PHONE_OR_CODE_ERROR = 12006;
+    const ERROR_GREATER_THEN_ACCOUNT = 12007;
+    const ERROR_GREATER_COUNT = 12008;
     //-------课程---------------------------------------
 
     //-------产品---------------------------------------
@@ -52,6 +54,8 @@ class ErrorCode
             self::ERROR_LOGIN_USER_NOT_FIND => '用户不存在',
             self::ERROR_LOGIN_USERNAME_OR_PASSWORD_ERROR => '用户名或密码不不正确',
             self::ERROR_LOGIN_PHONE_OR_CODE_ERROR => '手机号或动态码不不正确',
+            self::ERROR_GREATER_THEN_ACCOUNT => '提现金额大于余额',
+            self::ERROR_GREATER_COUNT => '提现金额必须大于0',
         ];
     }
 
