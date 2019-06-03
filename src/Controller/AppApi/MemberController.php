@@ -606,4 +606,55 @@ class MemberController extends AppApiBaseController
             'bannerMetaArray' => $this->createMySharePageProjectBannerMetas($projectBannerMetaRepository)
         ] )->toJsonResponse();
     }
+
+
+    /**
+     * 我的销售列表
+     *
+     * 全部，待成团， 待发货， 已发货， 待收货
+     *
+     * 全部: status = null, paymentStatus in ['paid', 'refunding', 'refunded']
+     * 待成团: status = 'created', paymentStatus = 'paid'
+     * 待发货: status = 'pending', paymentStatus = 'paid'
+     * 已发货：status = 'shipping' paymentStatus = 'paid'
+     * 已收货: status = 'delivered' paymentStatus = 'paid'
+     *
+     * @Route("/saleGroupUserOrders/", name="saleGroupUserOrders", methods="POST")
+     * @param Request $request
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @return Response
+     */
+    public function saleGroupUserOrdersAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
+
+        $data = json_decode($request->getContent(), true);
+        $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $groupUserOrderStatuses = [];
+        if ($groupUserOrderStatus == null) {
+            $groupUserOrderStatuses =  [GroupUserOrder::PENDING, GroupUserOrder::SHIPPING, GroupUserOrder::DELIVERED];
+        } else {
+            $groupUserOrderStatuses = [$groupUserOrderStatus];
+        }
+
+        /**
+         * @var GroupUserOrder[] $groupUserOrders
+         */
+        $groupUserOrders = $groupUserOrderRepository->findSupplierGroupUserOrdersQuery($user->getId(), $groupUserOrderStatuses)->getResult();
+
+        $groupUserOrdersArray = [];
+        foreach ($groupUserOrders as $groupUserOrder) {
+            if (!$groupUserOrder->getProduct()->isCourseProduct()) {
+                $groupUserOrdersArray[] = $groupUserOrder->getArray();
+            }
+        }
+
+        // 返回
+        return CommonUtil::resultData( ['groupUserOrders' => $groupUserOrdersArray ] )->toJsonResponse();
+    }
 }
