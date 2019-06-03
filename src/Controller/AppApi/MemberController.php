@@ -377,4 +377,22 @@ class MemberController extends AppApiBaseController
         // 返回
         return CommonUtil::resultData(['shareSources' =>  $this->createUserShareSource($user, $url)])->toJsonResponse();
     }
+
+
+    /**
+     * 获取版本号
+     *
+     * @Route("/getVersions", name="getVersions", methods="GET")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @return Response
+     */
+    public function getVersionsAction(Request $request) {
+
+        // TODO
+        $versions = ['app'=>'jq','versions'=>'1.0'];
+
+        // 返回
+        return CommonUtil::resultData($versions)->toJsonResponse();
+    }
 }
