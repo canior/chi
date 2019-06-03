@@ -395,4 +395,40 @@ class MemberController extends AppApiBaseController
         // 返回
         return CommonUtil::resultData($versions)->toJsonResponse();
     }
+
+
+    /**
+     * 查看用户账户
+     *
+     * @Route("/account", name="account", methods="GET")
+     * @param Request $request
+     * @return Response
+     */
+    public function accountAction(Request $request) {
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $accountBalance = $user->getUserAccountTotal();
+        $withdrawedTotal = $user->getWithDrawedTotal();
+        $withdrawingTotal = $user->getWithDrawingTotal();
+
+        $userAccountOrderArray = [];
+        foreach ($user->getUserAccountOrders() as $userAccountOrder) {
+            $userAccountOrderArray[] = $userAccountOrder->getArray();
+        }
+
+        $data = [
+            'balance' => $accountBalance,
+            'withdrawedTotal' => $withdrawedTotal,
+            'withdrawingTotal' => $withdrawingTotal,
+            'userAccountOrders' => $userAccountOrderArray
+        ];
+
+        // 返回
+        return CommonUtil::resultData($data)->toJsonResponse();
+    }
 }
