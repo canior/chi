@@ -357,12 +357,12 @@ class MemberController extends AppApiBaseController
     /**
      * 查看用户分享二维码
      *
-     * @Route("qrCcode", name="qrCcode", methods="POST")
+     * @Route("/qrCcode", name="qrCcode", methods="POST")
      * @param Request $request
      * @param UserRepository $userRepository
      * @return Response
      */
-    public function qrCcode(Request $request, UserRepository $userRepository) {
+    public function qrCcodeAction(Request $request, UserRepository $userRepository) {
 
         $data = json_decode($request->getContent(), true);
         $url = isset($data['url']) ? $data['url'] : null;
