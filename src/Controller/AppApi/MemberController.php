@@ -30,6 +30,7 @@ use App\Entity\UserAddress;
 use App\Entity\Region;
 use App\Entity\UserAccountOrder;
 use App\Repository\GroupUserOrderRepository;
+use App\Entity\ProjectBannerMeta;
 
 /**
  * @Route("/auth/member")
