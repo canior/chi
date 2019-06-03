@@ -27,6 +27,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use App\Repository\UserAddressRepository;
 use App\Repository\RegionRepository;
 use App\Entity\UserAddress;
+use App\Entity\Region;
 
 /**
  * @Route("/auth/member")
