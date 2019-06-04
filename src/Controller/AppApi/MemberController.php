@@ -31,6 +31,7 @@ use App\Entity\Region;
 use App\Entity\UserAccountOrder;
 use App\Repository\GroupUserOrderRepository;
 use App\Entity\ProjectBannerMeta;
+use App\Repository\GroupOrderRepository;
 
 /**
  * @Route("/auth/member")
@@ -690,5 +691,40 @@ class MemberController extends AppApiBaseController
             'children' => $childrenArray,
             'shareSources' => $this->createUserShareSource($user, $url),
         ] )->toJsonResponse();
+    }
+
+
+    /**
+     * 注册过的课程列表
+     * @Route("/courses", name="courses", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return Response
+     */
+    public function coursesAction(Request $request, UserRepository $userRepository, GroupOrderRepository $groupOrderRepository) {
+
+        $data = json_decode($request->getContent(), true);
+        $page = isset($data['page']) ? $data['page'] : 1;
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $courseArray = [];
+        $courseStudentsQuery = $userRepository->findCourseStudentQuery($user->getId());
+
+        /**
+         * @var CourseStudent[] $courseStudents
+         */
+        $courseStudents = $this->getPaginator()->paginate($courseStudentsQuery, $page, self::PAGE_LIMIT);
+        foreach ($courseStudents as $courseStudent) {
+            $courseArray[] = $courseStudent->getCourse()->getArray();
+        }
+
+        // 返回
+        return CommonUtil::resultData( ['courses' => $courseArray ] )->toJsonResponse();
     }
 }
