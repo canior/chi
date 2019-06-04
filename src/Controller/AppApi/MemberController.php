@@ -657,4 +657,38 @@ class MemberController extends AppApiBaseController
         // 返回
         return CommonUtil::resultData( ['groupUserOrders' => $groupUserOrdersArray ] )->toJsonResponse();
     }
+
+
+    /**
+     * 我的名额
+     * @Route("/children", name="children", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function childrenAction(Request $request) {
+        
+        $data = json_decode($request->getContent(), true);
+        $url = isset($data['url']) ? $data['url'] : null;
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $childrenArray = [];
+        $userStockOrders = $user->getUserRecommandStockOrders();
+        foreach ($userStockOrders as $userStockOrder) {
+            $childrenArray[] = $userStockOrder->getArray();
+        }
+
+        // 返回
+        return CommonUtil::resultData( [
+            'recommandStock' => $user->getRecommandStock(),
+            'usedStock' => $user->getUserAccountOrdersAsRecommander()->count(),
+            'totalStock' => $user->getTotalRecommandStock(),
+            'children' => $childrenArray,
+            'shareSources' => $this->createUserShareSource($user, $url),
+        ] )->toJsonResponse();
+    }
 }
