@@ -32,6 +32,10 @@ use App\Entity\UserAccountOrder;
 use App\Repository\GroupUserOrderRepository;
 use App\Entity\ProjectBannerMeta;
 use App\Repository\GroupOrderRepository;
+use App\Repository\FollowRepository;
+use App\Entity\Follow;
+use App\Repository\CourseRepository;
+use App\Repository\TeacherRepository;
 
 /**
  * @Route("/auth/member")
@@ -41,22 +45,10 @@ class MemberController extends AppApiBaseController
     /**
      * @Route("/setNewPhone", name="apiSetNewPhone",  methods={"POST"})
      * @param Request $request
-     * @param UserRepository $userRepository
-     * @param EncoderFactoryInterface $encoderFactory
-     * @param JWTTokenManagerInterface $JWTTokenManager
      * @param MessageCodeRepository $messageCodeRepository
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
-     * @param UserManagerInterface $userManager
      */
-    public function setNewPhone(
-        Request $request, 
-        UserRepository $userRepository,
-        EncoderFactoryInterface $encoderFactory,
-        JWTTokenManagerInterface $JWTTokenManager,
-        MessageCodeRepository $messageCodeRepository,
-        UserManagerInterface $userManager,
-        TokenStorageInterface $tokenStorage
-    )
+    public function setNewPhone(Request $request, MessageCodeRepository $messageCodeRepository   )
     {
         $data = json_decode(
             $request->getContent(),
@@ -105,22 +97,11 @@ class MemberController extends AppApiBaseController
     /**
      * @Route("/setNewPwd", name="apiSetNewPwd",  methods={"POST"})
      * @param Request $request
-     * @param UserRepository $userRepository
      * @param EncoderFactoryInterface $encoderFactory
-     * @param JWTTokenManagerInterface $JWTTokenManager
-     * @param MessageCodeRepository $messageCodeRepository
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      * @param UserManagerInterface $userManager
+     * @return @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function setNewPwd(
-        Request $request, 
-        UserRepository $userRepository,
-        EncoderFactoryInterface $encoderFactory,
-        JWTTokenManagerInterface $JWTTokenManager,
-        MessageCodeRepository $messageCodeRepository,
-        UserManagerInterface $userManager,
-        TokenStorageInterface $tokenStorage
-    )
+    public function setNewPwd(Request $request, EncoderFactoryInterface $encoderFactory, UserManagerInterface $userManager)
     {
         $data = json_decode(
             $request->getContent(),
@@ -174,22 +155,9 @@ class MemberController extends AppApiBaseController
     /**
      * @Route("/userInfo", name="apiUserInfo",  methods={"POST"})
      * @param Request $request
-     * @param UserRepository $userRepository
-     * @param EncoderFactoryInterface $encoderFactory
-     * @param JWTTokenManagerInterface $JWTTokenManager
-     * @param MessageCodeRepository $messageCodeRepository
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
-     * @param UserManagerInterface $userManager
      */
-    public function userInfo(
-        Request $request, 
-        UserRepository $userRepository,
-        EncoderFactoryInterface $encoderFactory,
-        JWTTokenManagerInterface $JWTTokenManager,
-        MessageCodeRepository $messageCodeRepository,
-        UserManagerInterface $userManager,
-        TokenStorageInterface $tokenStorage
-    )
+    public function userInfo(Request $request)
     {
         $data = json_decode(
             $request->getContent(),
@@ -364,10 +332,9 @@ class MemberController extends AppApiBaseController
      *
      * @Route("/qrCcode", name="qrCcode", methods="POST")
      * @param Request $request
-     * @param UserRepository $userRepository
      * @return Response
      */
-    public function qrCcodeAction(Request $request, UserRepository $userRepository) {
+    public function qrCcodeAction(Request $request) {
 
         $data = json_decode($request->getContent(), true);
         $url = isset($data['url']) ? $data['url'] : null;
@@ -394,7 +361,13 @@ class MemberController extends AppApiBaseController
     public function getVersionsAction(Request $request) {
 
         // TODO
-        $versions = ['app'=>'jq','versions'=>'1.0'];
+        $versions = [
+            'app'=>'jqktapp',
+            'versions'=>'2.0',
+            'title'=>'2.0版本正式发布',
+            'info'=>'1.全新视觉设计 2.性能全面提升',
+            'url'=>'http://download.jqktapp.com'
+        ];
 
         // 返回
         return CommonUtil::resultData($versions)->toJsonResponse();
@@ -726,5 +699,120 @@ class MemberController extends AppApiBaseController
 
         // 返回
         return CommonUtil::resultData( ['courses' => $courseArray ] )->toJsonResponse();
+    }
+
+
+    /**
+     * 我的关注列表
+     * @Route("/follow", name="follow", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return Response
+     */
+    public function followAction(Request $request, FollowRepository $followRepository,CourseRepository $courseRepository,TeacherRepository $teacherRepository) {
+
+        $data = json_decode($request->getContent(), true);
+        $type = isset($data['type']) ? $data['type'] : '';
+        $page = isset($data['page']) ? $data['page'] : 1;
+        $pageLimit = isset($data['pageLimit']) ? $data['pageLimit'] : 10;
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $followArray = $followRepository->findMyFollow($user->getId(),$type,$page,$pageLimit);
+        foreach ($followArray as $k => $v) {
+            switch ($v['type']) {
+                case 'course':
+                    $course = $courseRepository->find( $v['dataId'] );
+                    if($course){
+                        $followArray[$k]['course'] = $course->getArray();
+                    }
+                    break;
+                case 'teacher':
+                    $teacher = $teacherRepository->find( $v['dataId'] );
+                    if($teacher){
+                        $followArray[$k]['teacher'] = $teacher->getArray();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // 返回
+        return CommonUtil::resultData(  $followArray )->toJsonResponse();
+    }
+
+
+    /**
+     * 添加关注 
+     * @Route("/postFollow", name="postFollow", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return Response
+     */
+    public function postFollowAction(Request $request, FollowRepository $followRepository) {
+
+        $data = json_decode($request->getContent(), true);
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $dataId = isset($data['dataId']) ? $data['dataId'] : null;
+        $type = isset($data['type']) ? $data['type'] : null;
+
+        // 是否已经关注
+        $had = $followRepository->findBy(['dataId' => $dataId, 'type' => $type, 'userId' => $user->getId()]);
+        if( $had ){
+            return CommonUtil::resultData( [], ErrorCode::ERROR_HAD_FOLLOW )->toJsonResponse();
+        }
+
+        // 持久化
+        $follow = new Follow();
+        $follow->setDataId($dataId)->setType($type)->setUserId($user->getId());
+        $this->getEntityManager()->persist($follow);
+        $this->getEntityManager()->flush();
+
+        // 返回
+        return CommonUtil::resultData( ['follow_id' => $follow->getId() ] )->toJsonResponse();
+    }
+
+    /**
+     * 取消关注 
+     * @Route("/delFollow", name="delFollow", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return Response
+     */
+    public function delFollowAction(Request $request, FollowRepository $followRepository) {
+
+        $data = json_decode($request->getContent(), true);
+        $id = isset($data['id']) ? $data['id'] : null;
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $follow = $followRepository->find($id);
+        if( !$follow ){
+            return CommonUtil::resultData( [], ErrorCode::ERROR_FOLLOW_NOTFIND )->toJsonResponse();
+        }
+
+        $this->getEntityManager()->remove($follow);
+        $this->getEntityManager()->flush();
+
+        // 返回
+        return CommonUtil::resultData( ['follow' => $follow ] )->toJsonResponse();
     }
 }
