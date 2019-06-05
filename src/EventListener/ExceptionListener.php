@@ -34,6 +34,9 @@ class ExceptionListener
             //debug模式下输出对应异常信息
             if ($debug && !empty($exception->getMessage())) {
                 $resultData['exceptionMsg'] = $exception->getMessage();
+                if (!empty($exception->getTrace())) {
+                    $resultData['exceptionTrace'] = $exception->getTrace();
+                }
             }
 
             if ($exception instanceof ApiHttpException) {
