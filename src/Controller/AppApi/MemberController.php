@@ -36,6 +36,9 @@ use App\Repository\FollowRepository;
 use App\Entity\Follow;
 use App\Repository\CourseRepository;
 use App\Repository\TeacherRepository;
+use App\Entity\GroupUserOrder;
+use App\Entity\Message;
+use App\Repository\MessageRepository;
 
 /**
  * @Route("/auth/member")
@@ -511,12 +514,20 @@ class MemberController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        if ($groupUserOrderStatus == null)
+        if ($groupUserOrderStatus == null){
             $groupUserOrderStatus =  array_keys(GroupUserOrder::$statuses);
+        }
 
         $paymentStatusArray = ['paid', 'refunding', 'refunded'];
 
-        $groupUserOrders = $groupUserOrderRepository->findBy(['user' => $user, 'status' => $groupUserOrderStatus, 'paymentStatus' => $paymentStatusArray], ['id' => 'DESC']);
+        $groupUserOrders = $groupUserOrderRepository->findBy(
+            [
+            'user' => $user,
+            'status' => $groupUserOrderStatus,
+            'paymentStatus' => $paymentStatusArray
+            ], 
+            ['id' => 'DESC']
+        );
 
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
@@ -715,7 +726,6 @@ class MemberController extends AppApiBaseController
         $data = json_decode($request->getContent(), true);
         $type = isset($data['type']) ? $data['type'] : '';
         $page = isset($data['page']) ? $data['page'] : 1;
-        $pageLimit = isset($data['pageLimit']) ? $data['pageLimit'] : 10;
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -723,7 +733,7 @@ class MemberController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        $followArray = $followRepository->findMyFollow($user->getId(),$type,$page,$pageLimit);
+        $followArray = $followRepository->findMyFollow($user->getId(),$type,$page,self::PAGE_LIMIT);
         foreach ($followArray as $k => $v) {
             switch ($v['type']) {
                 case Follow::COURSE:
@@ -814,5 +824,98 @@ class MemberController extends AppApiBaseController
 
         // 返回
         return CommonUtil::resultData( ['follow' => $follow ] )->toJsonResponse();
+    }
+
+    /**
+     * 我的消息列表
+     * @Route("/message", name="message", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return Response
+     */
+    public function messageAction(Request $request, MessageRepository $messageRepository) {
+
+        $data = json_decode($request->getContent(), true);
+        $page = isset($data['page']) ? $data['page'] : 1;
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $messageQuery = $messageRepository->findMessageQuery($user->getId());
+        $messageArray = $this->getPaginator()->paginate($messageQuery, $page, self::PAGE_LIMIT);
+
+
+        // 返回
+        return CommonUtil::resultData(  ['messageArray'=>$messageArray] )->toJsonResponse();
+    }
+
+
+    /**
+     * 已读 消息 
+     * @Route("/postMessage", name="postMessage", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function postMessageAction(Request $request, MessageRepository $messageRepository) {
+
+        $data = json_decode($request->getContent(), true);
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $id = isset($data['id']) ? $data['id'] : null;
+        $isRead = isset($data['isRead']) ? $data['isRead'] : null;
+
+        // 是否已经存在
+        $message = $messageRepository->find($id);
+        if( !$message ){
+            return CommonUtil::resultData( [], ErrorCode::ERROR_MESSAGE_NOT_FIND )->toJsonResponse();
+        }
+
+        // 持久化
+        $message->setIsRead($isRead);
+        $this->getEntityManager()->persist($message);
+        $this->getEntityManager()->flush();
+
+        // 返回
+        return CommonUtil::resultData( ['message_id' => $message->getId() ] )->toJsonResponse();
+    }
+
+    /**
+     * 删除 消息 
+     * @Route("/delMessage", name="delMessage", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return Response
+     */
+    public function delMessageAction(Request $request, MessageRepository $messageRepository) {
+
+        $data = json_decode($request->getContent(), true);
+        $id = isset($data['id']) ? $data['id'] : null;
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $message = $messageRepository->find($id);
+        if( !$message ){
+            return CommonUtil::resultData( [], ErrorCode::ERROR_MESSAGE_NOT_FIND )->toJsonResponse();
+        }
+
+        $this->getEntityManager()->remove($message);
+        $this->getEntityManager()->flush();
+
+        // 返回
+        return CommonUtil::resultData( ['message' => $message ] )->toJsonResponse();
     }
 }

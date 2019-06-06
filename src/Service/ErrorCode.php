@@ -33,6 +33,7 @@ class ErrorCode
     const ERROR_GREATER_COUNT = 12008;
     const ERROR_HAD_FOLLOW = 12009;
     const ERROR_FOLLOW_NOTFIND = 12010;
+    const ERROR_MESSAGE_NOT_FIND = 12011;
     //-------课程---------------------------------------
 
     //-------产品---------------------------------------
@@ -63,6 +64,7 @@ class ErrorCode
             self::ERROR_HAD_FOLLOW => '你已经关注了',
             self::ERROR_FOLLOW_NOTFIND => '关注不存在或已经取消',
             self::ERROR_PAY_COMMON => '支付异常',
+            self::ERROR_MESSAGE_NOT_FIND => '消息不存在',
         ];
     }
 
