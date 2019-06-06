@@ -38,6 +38,7 @@ use App\Repository\CourseRepository;
 use App\Repository\TeacherRepository;
 use App\Entity\GroupUserOrder;
 use App\Entity\Message;
+use App\Entity\Product;
 use App\Repository\MessageRepository;
 
 /**
@@ -507,6 +508,7 @@ class MemberController extends AppApiBaseController
          * product, onlineCourse, offlineCourse
          */
         $productType = isset($data['productType']) ? $data['productType'] : false;
+        $productCategory = isset($data['productCategory']) ? $data['productCategory'] :'';
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -532,12 +534,11 @@ class MemberController extends AppApiBaseController
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
             $product = $groupUserOrder->getProduct();
-
-            if ($productType == 'product' and !$product->isCourseProduct()) {
+            if ($productType == 'product' and !$product->isCourseProduct() and $product->getProductCategory() == Product::CATEGORY_PRODUCT) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            } else if ($productType == 'onlineCourse' and $product->isCourseProduct() and $product->getCourse()->isOnline()) {
+            } else if ($productType == 'onlineCourse' and $product->isCourseProduct() and $product->getCourse()->isOnline() and $product->getProductCategory() == Product::CATEGORY_ONLINE) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            } else if ($productType == 'offlineCourse' and $product->isCourseProduct() and !$product->getCourse()->isOnline()) {
+            } else if ($productType == 'offlineCourse' and $product->isCourseProduct() and !$product->getCourse()->isOnline() and $product->getProductCategory() == Product::CATEGORY_OFFLINE) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
             }
         }
