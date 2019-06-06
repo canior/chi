@@ -646,7 +646,7 @@ class MemberController extends AppApiBaseController
 
 
     /**
-     * 我的名额
+     * 我的名额统计
      * @Route("/children", name="children", methods="POST")
      * @param Request $request
      * @return Response
@@ -661,18 +661,11 @@ class MemberController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        $childrenArray = [];
-        $userStockOrders = $user->getUserRecommandStockOrders();
-        foreach ($userStockOrders as $userStockOrder) {
-            $childrenArray[] = $userStockOrder->getArray();
-        }
-
         // 返回
         return CommonUtil::resultData( [
             'recommandStock' => $user->getRecommandStock(),
             'usedStock' => $user->getUserAccountOrdersAsRecommander()->count(),
             'totalStock' => $user->getTotalRecommandStock(),
-            'children' => $childrenArray,
         ] )->toJsonResponse();
     }
 
