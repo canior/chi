@@ -189,4 +189,19 @@ class DefaultController extends Controller
     {
         return $this->get('App\Service\ProjectMetaHelper')->getMetaValue($key);
     }
+
+    /**
+     * 持久entity
+     * @param $entity
+     * @param bool $isFlush 是否需要flush
+     * @author zxqc2018
+     */
+    public function entityPersist($entity, $isFlush = true)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($entity);
+        if ($isFlush) {
+            $em->flush();
+        }
+    }
 }

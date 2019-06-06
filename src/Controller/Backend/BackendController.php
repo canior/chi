@@ -146,6 +146,17 @@ class BackendController extends DefaultController
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
+                [
+                    'path' => [
+                        'category_index',
+                        'category_new',
+                        'category_edit',
+                    ],
+                    'name' => '课程分类管理',
+                    'icon' => 'fas fa-cog',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
             ]
         ],
         [

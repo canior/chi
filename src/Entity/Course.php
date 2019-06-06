@@ -636,6 +636,22 @@ class Course implements Dao
     }
 
     /**
+     * @param Category $category
+     * @author zxqc2018
+     */
+    public function setProductCategory(Category $category) {
+        $this->getProduct()->setProductCategory($category);
+    }
+
+    /**
+     * @return Category
+     * @author zxqc2018
+     */
+    public function getProductCategory() {
+        return $this->getProduct()->getProductCategory();
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {

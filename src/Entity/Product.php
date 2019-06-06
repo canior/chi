@@ -230,6 +230,16 @@ class Product implements Dao
      * @var integer
      */
     private $lookNum;
+
+    /**
+     * @var Category
+     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="product_category_id", referencedColumnName="id")
+     * })
+     */
+    private $productCategory;
+
     /**
      * Product constructor.
      */
@@ -241,6 +251,7 @@ class Product implements Dao
         $this->setActive();
         $this->setPrice(0);
         $this->setFreight(0);
+        $this->setLookNum(0);
         $this->productImages = new ArrayCollection();
         $this->productSpecImages = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
@@ -1069,6 +1080,22 @@ class Product implements Dao
      */
     public function increaseLookNum(int $num = 1) {
         $this->lookNum += $num;
+    }
+
+    /**
+     * @return Category
+     */
+    public function getProductCategory(): ?Category
+    {
+        return $this->productCategory;
+    }
+
+    /**
+     * @param Category $productCategory
+     */
+    public function setProductCategory(Category $productCategory): void
+    {
+        $this->productCategory = $productCategory;
     }
 
     /**

@@ -39,6 +39,8 @@ class ErrorCode
 
     //-------订单---------------------------------------
 
+    //-------支付---------------------------------------
+    const ERROR_PAY_COMMON = 16001;
     /**
      * 错误消息集合
      * @return array
@@ -60,6 +62,7 @@ class ErrorCode
             self::ERROR_GREATER_COUNT => '提现金额必须大于0',
             self::ERROR_HAD_FOLLOW => '你已经关注了',
             self::ERROR_FOLLOW_NOTFIND => '关注不存在或已经取消',
+            self::ERROR_PAY_COMMON => '支付异常',
         ];
     }
 

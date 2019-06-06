@@ -2,8 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Course;
 use App\Entity\Teacher;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -34,6 +36,24 @@ class CourseType extends AbstractType
             ->add('title', TextType::class, [
                 'label' => '课程名称',
                 'required' => true
+            ])
+            ->add('productCategory', EntityType::class, [
+                'label' => '分类',
+                'empty_data' => null,
+                'placeholder' => '选择课程分类',
+                'attr' => ['class' => 'form-control chosen'],
+                'class' => Category::class,
+                'required' => false,
+                'choice_label' => function (Category $category) {
+                     if (!empty($category->getParentCategory())) {
+                         return $category->getParentCategory()->__toString() .'-'.$category->__toString();
+                     } else {
+                         return $category->__toString();
+                     }
+                },
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('c');
+                }
             ])
             ->add('status', ChoiceType::class, [
                 'label' => '状态',
