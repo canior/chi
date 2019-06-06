@@ -37,10 +37,11 @@ class Follow implements Dao
     private $type;
 
     /**
-     * @ORM\Column(type="integer")
-     * @var string|null
+     * @var User|null $ownerUser
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=true)
      */
-    private $userId;
+    private $user;
 
 
     public function getId()
@@ -72,15 +73,19 @@ class Follow implements Dao
         return $this;
     }
 
-    public function getUserId(): ?string
+    /**
+     * @return User|null
+     */
+    public function getUser(): ?User
     {
-        return $this->userId;
+        return $this->user;
     }
 
-    public function setUserId(string $userId): self
+    /**
+     * @param User|null $user
+     */
+    public function setUser(?User $user): void
     {
-        $this->userId = $userId;
-
-        return $this;
+        $this->user = $user;
     }
 }

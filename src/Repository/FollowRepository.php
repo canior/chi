@@ -28,7 +28,7 @@ class FollowRepository extends ServiceEntityRepository
         $query = $this->getEntityManager()->createQueryBuilder();
         $query->select('ff.id,ff.type,ff.dataId')
             ->from('App:Follow', 'ff')
-            ->where('ff.userId = :userId')
+            ->where('ff.user = :userId')
             ->setParameter('userId', $userId);
 
         if ($type) {

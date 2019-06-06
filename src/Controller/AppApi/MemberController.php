@@ -762,8 +762,7 @@ class MemberController extends AppApiBaseController
      * 添加关注 
      * @Route("/postFollow", name="postFollow", methods="POST")
      * @param Request $request
-     * @param UserRepository $userRepository
-     * @param GroupOrderRepository $groupOrderRepository
+     * @param FollowRepository $followRepository
      * @return Response
      */
     public function postFollowAction(Request $request, FollowRepository $followRepository) {
@@ -780,14 +779,14 @@ class MemberController extends AppApiBaseController
         $type = isset($data['type']) ? $data['type'] : null;
 
         // 是否已经关注
-        $had = $followRepository->findBy(['dataId' => $dataId, 'type' => $type, 'userId' => $user->getId()]);
+        $had = $followRepository->findBy(['dataId' => $dataId, 'type' => $type, 'user' => $user->getId()]);
         if( $had ){
             return CommonUtil::resultData( [], ErrorCode::ERROR_HAD_FOLLOW )->toJsonResponse();
         }
 
         // 持久化
         $follow = new Follow();
-        $follow->setDataId($dataId)->setType($type)->setUserId($user->getId());
+        $follow->setDataId($dataId)->setType($type)->setUser($user);
         $this->getEntityManager()->persist($follow);
         $this->getEntityManager()->flush();
 
@@ -798,9 +797,8 @@ class MemberController extends AppApiBaseController
     /**
      * 取消关注 
      * @Route("/delFollow", name="delFollow", methods="POST")
+     * @param FollowRepository $followRepository
      * @param Request $request
-     * @param UserRepository $userRepository
-     * @param GroupOrderRepository $groupOrderRepository
      * @return Response
      */
     public function delFollowAction(Request $request, FollowRepository $followRepository) {
@@ -830,8 +828,7 @@ class MemberController extends AppApiBaseController
      * 我的消息列表
      * @Route("/message", name="message", methods="POST")
      * @param Request $request
-     * @param UserRepository $userRepository
-     * @param GroupOrderRepository $groupOrderRepository
+     * @param MessageRepository $messageRepository
      * @return Response
      */
     public function messageAction(Request $request, MessageRepository $messageRepository) {
@@ -858,6 +855,7 @@ class MemberController extends AppApiBaseController
      * 已读 消息 
      * @Route("/postMessage", name="postMessage", methods="POST")
      * @param Request $request
+     * @param MessageRepository $messageRepository
      * @return Response
      */
     public function postMessageAction(Request $request, MessageRepository $messageRepository) {
@@ -892,8 +890,7 @@ class MemberController extends AppApiBaseController
      * 删除 消息 
      * @Route("/delMessage", name="delMessage", methods="POST")
      * @param Request $request
-     * @param UserRepository $userRepository
-     * @param GroupOrderRepository $groupOrderRepository
+     * @param MessageRepository $messageRepository
      * @return Response
      */
     public function delMessageAction(Request $request, MessageRepository $messageRepository) {
