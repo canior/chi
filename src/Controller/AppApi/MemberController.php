@@ -654,7 +654,6 @@ class MemberController extends AppApiBaseController
     public function childrenAction(Request $request) {
         
         $data = json_decode($request->getContent(), true);
-        $url = isset($data['url']) ? $data['url'] : null;
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -674,7 +673,48 @@ class MemberController extends AppApiBaseController
             'usedStock' => $user->getUserAccountOrdersAsRecommander()->count(),
             'totalStock' => $user->getTotalRecommandStock(),
             'children' => $childrenArray,
-            'shareSources' => $this->createUserShareSource($user, $url),
+        ] )->toJsonResponse();
+    }
+
+    /**
+     * 我的系统学员已用名额列表
+     * @Route("/childrenUse", name="childrenUse", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function childrenUseAction(Request $request) {
+        
+        $data = json_decode($request->getContent(), true);
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $childrenArray = [];
+        $userStockOrders = $user->getUserRecommandStockOrders();
+        foreach ($userStockOrders as $userStockOrder) {
+            switch ( $userStockOrder->getUser()->getBianxianUserLevel() ) {
+                case 'PARTNER':
+                    # 合伙人
+                    $childrenArray['PARTNER'][] = $userStockOrder->getArray();
+                    break;
+                case 'DISTRIBUTOR':
+                    # 分院(分合伙入 学员)
+                    break;
+                    $childrenArray['DISTRIBUTOR'][] = $userStockOrder->getArray();
+                default:
+                    break;
+            }
+        }
+
+        // 返回
+        return CommonUtil::resultData( [
+            'recommandStock' => $user->getRecommandStock(),
+            'usedStock' => $user->getUserAccountOrdersAsRecommander()->count(),
+            'totalStock' => $user->getTotalRecommandStock(),
+            'children' => $childrenArray,
         ] )->toJsonResponse();
     }
 
