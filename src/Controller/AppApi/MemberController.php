@@ -949,4 +949,34 @@ class MemberController extends AppApiBaseController
         // 返回
         return CommonUtil::resultData( ['message' => $message ] )->toJsonResponse();
     }
+
+    //根据订单号获取桌号
+    private function getUserTable($order,$product){
+
+        $table_num = $product->getTableNum();
+        $order_no = $order->getOrderNo();
+
+        return $order_no%$table_num;
+    }
+
+    public function createUserTable($user,$order){
+
+        $user_table = $this->getUserTable($order,$product);
+
+        //创建供应商消息
+        $msg = new Message();
+        $msg->setTitle('报名消息确认')->setContent('名称为'.$user->getparent()->getName().'的用户，报名了线下系统课程课程的并线上支付了'.$order->getTotal().'元的会务费，请确认其是否完成系统学员身份的升级')->setUser($user->getparent());
+        $this->getEntityManager()->remove($msg);
+        $this->getEntityManager()->flush();
+
+        //发送短信 TODO
+        $sms = new AliSms();
+        $data = [];
+        $sms->send($use->getMobile(), $data,'XXX');
+        if( !$res['succes'] ){
+            return $res;
+        }
+
+        return ['succes'=>true,'msg'=>'操作成功'];
+    }
 }
