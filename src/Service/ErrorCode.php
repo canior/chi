@@ -42,6 +42,12 @@ class ErrorCode
 
     //-------支付---------------------------------------
     const ERROR_PAY_COMMON = 16001;
+    const ERROR_WX_PAY_CONFIG = 16002;
+    const ERROR_ALI_PAY_CONFIG = 16003;
+    const ERROR_PAY_HTTP_RESPONSE = 16004;
+    const ERROR_CONFIG_SET_GET = 16005;
+    const ERROR_WX_PAY_TRANSFER = 16006;
+    const ERROR_WX_PAY_TRANSFER_BANK = 16007;
     /**
      * 错误消息集合
      * @return array
@@ -65,6 +71,12 @@ class ErrorCode
             self::ERROR_FOLLOW_NOTFIND => '关注不存在或已经取消',
             self::ERROR_PAY_COMMON => '支付异常',
             self::ERROR_MESSAGE_NOT_FIND => '消息不存在',
+            self::ERROR_WX_PAY_CONFIG => '微信支付配置异常',
+            self::ERROR_ALI_PAY_CONFIG => '阿里支付配置异常',
+            self::ERROR_PAY_HTTP_RESPONSE => '支付请求失败',
+            self::ERROR_CONFIG_SET_GET => '支付配置设置错误',
+            self::ERROR_WX_PAY_TRANSFER => '微信支付企业转账错误',
+            self::ERROR_WX_PAY_TRANSFER_BANK => '微信支付转账银行卡错误',
         ];
     }
 

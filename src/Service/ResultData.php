@@ -254,17 +254,23 @@ class ResultData implements \ArrayAccess
      * 对象转化为异常抛出
      * @param null $code
      * @param null $data
+     * @param null $msg
      * @param array $excludeCodeArr 排除抛出异常的code数组
      * @return $this
      * @author zxqc2018
      */
-    public function throwErrorException($code = null, $data = null, $excludeCodeArr = [])
+    public function throwErrorException($code = null, $data = null, $msg = null, $excludeCodeArr = [])
     {
         if (!is_null($code)) {
             $this->setCode($code);
         }
         if (!is_null($data)) {
             $this->setData($data);
+        }
+
+        if (!is_null($msg)) {
+            $this->setOriginMsg('');
+            $this->setMsg($msg);
         }
 
         //处理需要抛出异常的情况
