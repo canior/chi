@@ -950,33 +950,109 @@ class MemberController extends AppApiBaseController
         return CommonUtil::resultData( ['message' => $message ] )->toJsonResponse();
     }
 
+
     //根据订单号获取桌号
-    private function getUserTable($order,$product){
+    private function getUserTable($groupUserOrder,$groupUserOrderRepository,$user){
 
-        $table_num = $product->getTableNum();
-        $order_no = $order->getOrderNo();
+        // 默认按订单号取余
+        // 如果共一个推荐人，分配到不同桌号
+        $table_num = (int)$groupUserOrder->getCourse()->getTableCount();
+        if( !$table_num ){
+            return false;
+        }
 
-        return $order_no%$table_num;
+        // 取余
+        $user_table = (int)$groupUserOrder->getId()%$table_num;
+
+
+        // 如果该用户没有推荐用户
+        if( !$user->getParentUser() && $groupUserOrderRepository->getTableUserCount($groupUserOrder->getProduct()->getId(),$user_table)){
+            return $user_table;
+        }
+
+        // 本产品下所有订单
+        $table = [];
+        $count_arr = $groupUserOrderRepository->findOrdersUsers( $groupUserOrder->getProduct()->getId() );
+        if( count($count_arr) > 0 ){
+            foreach ($count_arr as $v) {
+                $t = $v->getUser()->getParentUser()?$v->getUser()->getParentUser()->getId():0;
+                if( $t == $user->getParentUser()->getId() ){
+                    $table[$v->getTable()][] = $t;
+                }
+            } 
+        }
+
+        $table_count = [];
+        foreach ($table as $k => $v) {
+            $table_count[$k] = count($v);
+        }
+
+
+        // 取余桌没有同级推荐人
+        if( !isset($table_count[$user_table])  && $groupUserOrderRepository->getTableUserCount($groupUserOrder->getProduct()->getId(),$user_table) ){
+            return $user_table;
+        }
+
+        // TODO 开发测试
+        // echo '-----';
+        // echo '每桌人数：'.$table_num;
+        // echo '-----';
+        // echo '取余桌：'.$user_table;
+        // echo '<br>';
+
+        // 取余桌有同级推荐人，相近的没有兄弟的桌子
+        for ( $i = $user_table+1; $i <= $table_num+$user_table-1; $i++) {
+            if( $i > $table_num ){
+                $j = $i-$table_num;
+                if( !isset($table_count[$j]) && $groupUserOrderRepository->getTableUserCount($groupUserOrder->getProduct()->getId(),$j) ){
+                    return $j;
+                }
+            }else{
+                if( !isset($table_count[$i]) && $groupUserOrderRepository->getTableUserCount($groupUserOrder->getProduct()->getId(),$i) ){
+                    return $i;
+                }
+            }
+        }
+
+        // 每桌都有兄弟，哪一个桌子的兄弟最少
+        $table_count = [];
+        foreach ($table as $k => $v) {
+            $table_count[$k] = count($v);
+        }
+        asort($table_count);
+        $user_table = array_keys($table_count)[0];
+
+        // 桌子都满了
+        if(  $groupUserOrderRepository->getTableUserCount($groupUserOrder->getProduct()->getId(),$user_table) ){
+            return false;
+        }
+
+        return $user_table;
     }
 
-    public function createUserTable($user,$order){
+    public function createUserTable($user,$groupUserOrder,$groupUserOrderRepository){
 
-        $user_table = $this->getUserTable($order,$product);
+        $user_table = $this->getUserTable($groupUserOrder,$groupUserOrderRepository,$user);
+        if( !$user_table ){
+            return ['succes'=>false,'msg'=>'桌数为空'];
+        }
+
 
         //创建供应商消息
         $msg = new Message();
-        $msg->setTitle('报名消息确认')->setContent('名称为'.$user->getparent()->getName().'的用户，报名了线下系统课程课程的并线上支付了'.$order->getTotal().'元的会务费，请确认其是否完成系统学员身份的升级')->setUser($user->getparent());
-        $this->getEntityManager()->remove($msg);
+        $msg->setTitle('报名消息确认')->setContent('名称为'.$user->getParentUser()->getName().'的用户，报名了线下系统课程课程的并线上支付了'.$groupUserOrder->getTotal().'元的会务费，请确认其是否完成系统学员身份的升级')->setUser($user->getParentUser());
+        $this->getEntityManager()->persist($msg);
         $this->getEntityManager()->flush();
 
-        //发送短信 TODO
-        $sms = new AliSms();
-        $data = [];
-        $sms->send($use->getMobile(), $data,'XXX');
-        if( !$res['succes'] ){
-            return $res;
-        }
 
-        return ['succes'=>true,'msg'=>'操作成功'];
+        //发送短信 TODO
+        // $sms = new AliSms();
+        // $data = [];
+        // $sms->send($use->getMobile(), $data,'XXX');
+        // if( !$res['succes'] ){
+        //     return $res;
+        // }
+
+        return ['succes'=>true,'msg'=>'操2作成功'];
     }
 }

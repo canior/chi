@@ -65,6 +65,18 @@ class Course implements Dao
     private $address;
 
     /**
+     * @var string
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $tableCount;
+
+    /**
+     * @var string
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $tableUserCount;
+
+    /**
      * @var CourseStudent[]
      * @ORM\OneToMany(targetEntity="CourseStudent", mappedBy="course", indexBy="studentUser", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"id" = "DESC"})
@@ -249,6 +261,38 @@ class Course implements Dao
     public function setAddress(?string $address): void
     {
         $this->address = $address;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTableCount(): ?int
+    {
+        return $this->tableCount;
+    }
+
+    /**
+     * @param int|null $tableCount
+     */
+    public function setTableCount(?int $tableCount): void
+    {
+        $this->tableCount = $tableCount;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTableUserCount(): ?int
+    {
+        return $this->tableUserCount;
+    }
+
+    /**
+     * @param int|null $tableUserCount
+     */
+    public function setTableUserCount(?int $tableUserCount): void
+    {
+        $this->tableUserCount = $tableUserCount;
     }
 
     /**

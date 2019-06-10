@@ -156,6 +156,11 @@ class GroupUserOrder implements Dao
      */
     private $upgradeOrderCoupons;
 
+    /**
+     * @var string
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $table;
 
     public function __construct() {
         $this->upgradeUserOrders = new ArrayCollection();
@@ -975,6 +980,22 @@ class GroupUserOrder implements Dao
             $upgradeOrderCoupon = UpgradeOrderCoupon::factory($this, $coupon);
             $this->addUpgradeOrderCoupons($upgradeOrderCoupon);
         }
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTable(): ?int
+    {
+        return $this->table;
+    }
+
+    /**
+     * @param int|null $table
+     */
+    public function setTable(?int $table): void
+    {
+        $this->table = $table;
     }
 
     /**

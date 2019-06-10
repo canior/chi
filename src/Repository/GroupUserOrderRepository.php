@@ -150,4 +150,36 @@ class GroupUserOrderRepository extends ServiceEntityRepository
 
         return $query->orderBy('guo.id', 'DESC')->getQuery();
     }
+
+    /**
+     * @param null $productId
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findOrdersUsers($productId) {
+        $query = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('guo')
+            ->from(GroupUserOrder::class, 'guo')
+            ->innerJoin('guo.product', 'p')
+            ->where('guo.product = :product')
+            ->setParameter('product', $productId);
+        return $query->orderBy('guo.id', 'DESC')->getQuery()->getResult();
+    }
+
+    /**
+     * @param null $productId
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getTableUserCount($productId,$table) {
+        $query = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('guo')
+            ->from(GroupUserOrder::class, 'guo')
+            ->innerJoin('guo.product', 'p')
+            ->where('guo.product = :product')
+            ->andWhere('guo.table = :table')
+            ->setParameter('product',$productId)
+            ->setParameter('table', $table);
+        return $query->orderBy('guo.id', 'DESC')->getQuery()->getResult();
+    }
 }

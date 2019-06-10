@@ -94,6 +94,13 @@ class OfflineCourseType extends AbstractType
                 'label' => '活动描述',
                 'required' => true
             ])
+            ->add('tableCount', IntegerType::class, [
+                'label' => '桌数',
+                'required' => true,
+            ])
+            ->add('tableUserCount', IntegerType::class, [
+                'label' => '每桌人数',
+            ])
             ->add('images', DropzoneType::class, [
                 'label' => '活动简介图片（最多5张）',
                 'maxFiles' => 5,
