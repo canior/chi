@@ -35,7 +35,14 @@ class ExceptionListener
             if ($debug && !empty($exception->getMessage())) {
                 $resultData['exceptionMsg'] = $exception->getMessage();
                 if (!empty($exception->getTrace())) {
-                    $resultData['exceptionTrace'] = $exception->getTrace();
+                    $trace = $exception->getTrace();
+                    array_unshift($trace, [
+                        'file' => $exception->getFile(),
+                        'line' => $exception->getLine(),
+                        'msg' => $exception->getMessage(),
+                        'exceptionName' => get_class($exception),
+                    ]);
+                    $resultData['exceptionTrace'] = $trace;
                 }
             }
 
