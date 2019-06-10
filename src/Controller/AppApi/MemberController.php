@@ -982,25 +982,17 @@ class MemberController extends AppApiBaseController
             } 
         }
 
+        
+        // 取余桌没有同级推荐人
         $table_count = [];
         foreach ($table as $k => $v) {
             $table_count[$k] = count($v);
         }
-
-
-        // 取余桌没有同级推荐人
         if( !isset($table_count[$user_table])  && $groupUserOrderRepository->getTableUserCount($groupUserOrder->getProduct()->getId(),$user_table) ){
             return $user_table;
         }
 
-        // TODO 开发测试
-        // echo '-----';
-        // echo '每桌人数：'.$table_num;
-        // echo '-----';
-        // echo '取余桌：'.$user_table;
-        // echo '<br>';
-
-        // 取余桌有同级推荐人，相近的没有兄弟的桌子
+        // 取余桌有同级推荐人，相近的没有同推荐人用户的桌子
         for ( $i = $user_table+1; $i <= $table_num+$user_table-1; $i++) {
             if( $i > $table_num ){
                 $j = $i-$table_num;
@@ -1014,7 +1006,7 @@ class MemberController extends AppApiBaseController
             }
         }
 
-        // 每桌都有兄弟，哪一个桌子的兄弟最少
+        // 每桌都有同推荐人用户，哪一个桌子的同推荐人用户最少
         $table_count = [];
         foreach ($table as $k => $v) {
             $table_count[$k] = count($v);
