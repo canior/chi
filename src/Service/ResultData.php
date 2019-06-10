@@ -235,24 +235,38 @@ class ResultData implements \ArrayAccess
 
     /**
      * 返回jsonResponse给控制器
+     * @param null $data 数据
      * @param array $headers
      * @return JsonResponse
      * @author zxqc2018
      */
-    public function toJsonResponse($headers = [])
+    public function toJsonResponse($data = null, $headers = [])
     {
+        if (!is_null($data)) {
+            $this->setData($data);
+        }
+
         return new JsonResponse($this->toArray(), $this->getStatusCode(), $headers);
     }
 
 
     /**
      * 对象转化为异常抛出
+     * @param null $code
+     * @param null $data
      * @param array $excludeCodeArr 排除抛出异常的code数组
      * @return $this
      * @author zxqc2018
      */
-    public function throwErrorException($excludeCodeArr = [])
+    public function throwErrorException($code = null, $data = null, $excludeCodeArr = [])
     {
+        if (!is_null($code)) {
+            $this->setCode($code);
+        }
+        if (!is_null($data)) {
+            $this->setData($data);
+        }
+
         //处理需要抛出异常的情况
         if ($this->getCode() > 0 && !in_array($this->getCode(), $excludeCodeArr)) {
             $apiHttpException = new ApiHttpException($this->getCode(), $this->getData(), $this->getMsg());
