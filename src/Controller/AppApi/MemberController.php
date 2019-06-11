@@ -528,9 +528,9 @@ class MemberController extends AppApiBaseController
         }
 
         // 大于0
-        if ($amount <= 0) {
-            return CommonUtil::resultData( [], ErrorCode::ERROR_GREATER_COUNT)->toJsonResponse();
-        }
+        // if ($amount <= 0) {
+        //     return CommonUtil::resultData( [], ErrorCode::ERROR_GREATER_COUNT)->toJsonResponse();
+        // }
 
         // 余额
         if ($user->getUserAccountTotal() < $amount) {
