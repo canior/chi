@@ -37,7 +37,7 @@ class CourseType extends AbstractType
                 'label' => '课程名称',
                 'required' => true
             ])
-            ->add('productCategory', EntityType::class, [
+            ->add('courseCategory', EntityType::class, [
                 'label' => '分类',
                 'empty_data' => null,
                 'placeholder' => '选择课程分类',
@@ -52,7 +52,11 @@ class CourseType extends AbstractType
                      }
                 },
                 'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('c');
+                    return $er->createQueryBuilder('c')
+                        ->where('c.isDeleted =:isDeleted')
+                        ->setParameter('isDeleted', false)
+                        ->andWhere('c.singleCourse =:singleCourse')
+                        ->setParameter('singleCourse', false);
                 }
             ])
             ->add('status', ChoiceType::class, [

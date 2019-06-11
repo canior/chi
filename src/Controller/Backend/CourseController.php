@@ -2,6 +2,7 @@
 
 namespace App\Controller\Backend;
 
+use App\Entity\Category;
 use App\Entity\Course;
 use App\Entity\File;
 use App\Entity\ProductImage;
@@ -67,9 +68,18 @@ class CourseController extends BackendController
             $course->setStatus($status);
             $course->setSubject($subject);
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($course);
-            $em->flush();
+            //假如选择一级分类默认创建一个二级的单课类别
+            if (empty($course->getCourseCategory()->getParentCategory())) {
+                $categoryActual = Category::factory($course->getTitle(), $course->getCourseCategory());
+                $categoryActual->setSingleCourse(1);
+                $categoryActual->setPriority($course->getPriority());
+                $this->entityPersist($categoryActual, false);
+                $course->setCourseActualCategory($categoryActual);
+            } else {
+                $course->setCourseActualCategory($course->getCourseCategory());
+            }
+
+            $this->entityPersist($course);
 
             try {
                 $images = isset($request->request->get('course')['images']) ? $request->request->get('course')['images'] : [];
@@ -134,6 +144,15 @@ class CourseController extends BackendController
         $form->get('status')->setData(array_search($course->getProduct()->getStatusText(), Product::$statuses));
         $form->get('subject')->setData(array_search($course->getSubjectText(), Subject::$subjectTextArray));
 
+        /**
+         * @var Category $originCourseCategory
+         */
+        $originCourseCategory = $form->get('courseCategory')->getData();
+
+        $originCourseTitle = $form->get('title')->getData();
+
+        $originCoursePriority = $form->get('priority')->getData();
+
         // init images
         $productImages = $course->getCourseImages();
         if (!$productImages->isEmpty()) {
@@ -182,6 +201,43 @@ class CourseController extends BackendController
         if ($form->isSubmitted() && $form->isValid()) {
             $status = $request->request->get('course')['status'];
             $subject = $request->request->get('course')['subject'];
+
+            //假如课程有改动
+            if ($originCourseCategory !== $course->getCourseCategory()) {
+                //假如选择一级分类默认创建一个二级的单课类别
+                if (empty($course->getCourseCategory()->getParentCategory())) {
+                    //假如原类是单课程类去除 类别表中的category
+                    if (!empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
+                        $course->getCourseActualCategory()->setName($course->getTitle());
+                        $course->getCourseActualCategory()->setPriority($course->getPriority());
+                        $course->getCourseActualCategory()->setParentCategory($course->getCourseCategory());
+                    } else {
+                        $categoryActual = Category::factory($course->getTitle(), $course->getCourseCategory());
+                        $categoryActual->setSingleCourse(1);
+                        $categoryActual->setPriority($course->getPriority());
+                        $this->entityPersist($categoryActual, false);
+                        $course->setCourseActualCategory($categoryActual);
+                    }
+                } else {
+                    //假如原类是单课程类去除 类别表中的category
+                    if (!empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
+                        $course->getCourseActualCategory()->setIsDeleted(1);
+                        $this->entityPersist($course->getCourseActualCategory(), false);
+                    }
+                    $course->setCourseActualCategory($course->getCourseCategory());
+                }
+            }
+
+            //假如课程有改动 单课程
+            if ($originCourseTitle != $course->getTitle() && !empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
+                $course->getCourseActualCategory()->setName($course->getTitle());
+            }
+
+            //假如排序有改动 单课程
+            if ($originCoursePriority != $course->getPriority() && !empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
+                $course->getCourseActualCategory()->setPriority($course->getPriority());
+            }
+
             $course->setStatus($status);
             $course->setSubject($subject);
             $this->getEntityManager()->persist($course);

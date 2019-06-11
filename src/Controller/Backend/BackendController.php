@@ -151,6 +151,7 @@ class BackendController extends DefaultController
                         'category_index',
                         'category_new',
                         'category_edit',
+                        'category_second_index',
                     ],
                     'name' => '课程分类管理',
                     'icon' => 'fas fa-cog',

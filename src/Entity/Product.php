@@ -237,21 +237,6 @@ class Product implements Dao
     private $priority;
 
     /**
-     * @ORM\Column(type="integer", nullable=false)
-     * @var integer
-     */
-    private $lookNum;
-
-    /**
-     * @var Category
-     * @ORM\ManyToOne(targetEntity="Category")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="product_category_id", referencedColumnName="id")
-     * })
-     */
-    private $productCategory;
-
-    /**
      * Product constructor.
      */
     public function __construct()
@@ -262,7 +247,6 @@ class Product implements Dao
         $this->setActive();
         $this->setPrice(0);
         $this->setFreight(0);
-        $this->setLookNum(0);
         $this->productImages = new ArrayCollection();
         $this->productSpecImages = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
@@ -1067,46 +1051,6 @@ class Product implements Dao
     public function setPriority($priority): void
     {
         $this->priority = $priority;
-    }
-
-    /**
-     * @return int
-     */
-    public function getLookNum(): int
-    {
-        return $this->lookNum;
-    }
-
-    /**
-     * @param int $lookNum
-     */
-    public function setLookNum(int $lookNum): void
-    {
-        $this->lookNum = $lookNum;
-    }
-
-    /**
-     * 增加观看次数
-     * @param int $num
-     */
-    public function increaseLookNum(int $num = 1) {
-        $this->lookNum += $num;
-    }
-
-    /**
-     * @return Category
-     */
-    public function getProductCategory(): ?Category
-    {
-        return $this->productCategory;
-    }
-
-    /**
-     * @param Category $productCategory
-     */
-    public function setProductCategory(Category $productCategory): void
-    {
-        $this->productCategory = $productCategory;
     }
 
     /**
