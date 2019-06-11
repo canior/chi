@@ -2025,7 +2025,7 @@ class User extends BaseUser implements Dao
             'bankAccountNumber' => $this->getBankAccountNumber(),
             'bankAccountName' => $this->getBankAccountName(),
             'isSupplier' => !$this->getSupplierProducts()->isEmpty(),
-            'isPartner' => $this->getUserLevel()== UserLevel::PARTNER?true:false,
+            'isPartner' => true,
             'isCertification' => $this->isCertification(),
             'recommandNameEditable' => $this->getParentUser() == null ? true : false,
             'isAdvancedPlus' => $this->isAdavancePlusUserLevel(),
