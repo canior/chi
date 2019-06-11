@@ -181,9 +181,9 @@ class GroupUserOrder implements Dao
     private $paymentChannel;
     /**
      * @var string
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(name="table_no", type="integer", nullable=true)
      */
-    private $table;
+    private $tableNo;
 
     public function __construct() {
         $this->upgradeUserOrders = new ArrayCollection();
@@ -191,6 +191,9 @@ class GroupUserOrder implements Dao
         $this->groupUserOrderRewards = new ArrayCollection();
         $this->productReviews = new ArrayCollection();
         $this->groupUserOrderLogs = new ArrayCollection();
+        $this->setOutTradeNo('');
+        $this->setPaymentStatus('');
+        $this->setTableNo(0);
         $this->setCreatedAt();
         $this->setUpdatedAt();
     }
@@ -1046,20 +1049,21 @@ class GroupUserOrder implements Dao
     {
         return !empty($this->getOutTradeNo());
     }
+
     /**
-     * @return int|null
+     * @return string
      */
-    public function getTable(): ?int
+    public function getTableNo(): string
     {
-        return $this->table;
+        return $this->tableNo;
     }
 
     /**
-     * @param int|null $table
+     * @param string $tableNo
      */
-    public function setTable(?int $table): void
+    public function setTableNo(string $tableNo): void
     {
-        $this->table = $table;
+        $this->tableNo = $tableNo;
     }
 
     /**
