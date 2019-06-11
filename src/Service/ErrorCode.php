@@ -23,6 +23,8 @@ class ErrorCode
     const ERROR_UPLOAD_FILE_NOT_EXISTS = 11001;
     const ERROR_UPLOAD_FILE_SAVE = 11002;
     const ERROR_PARAM_NOT_ALL_EXISTS = 11003;
+    const ERROR_SMS_CLIENT_INIT = 11004;
+    const ERROR_SMS_SEND_RESPONSE = 11005;
     //-------认证---------------------------------------
     const ERROR_TOKEN_INVALID = 12001;
     const ERROR_TOKEN_AUTH_FAILURE = 12002;
@@ -90,6 +92,8 @@ class ErrorCode
             self::ERROR_PRODUCT_NOT_EXISTS => '产品不存在',
             self::ERROR_PAY_NOTIFY => '回调处理失败',
             self::ERROR_PAY_ORDER_ALREADY_WAIT => '订单已经待支付',
+            self::ERROR_SMS_CLIENT_INIT => '短信客户端初始化失败',
+            self::ERROR_SMS_SEND_RESPONSE => '短信发送失败',
         ];
     }
 

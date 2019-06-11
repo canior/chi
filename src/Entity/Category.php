@@ -39,6 +39,16 @@ class Category implements Dao
     private $parentCategory;
 
     /**
+     * @var File
+     *
+     * @ORM\ManyToOne(targetEntity="File", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="icon_file_id", referencedColumnName="id")
+     * })
+     */
+    private $iconFile;
+
+    /**
      * @ORM\Column(type="string", nullable=true)
      * @var string | null
      */
@@ -316,6 +326,22 @@ class Category implements Dao
     public function setPriority(int $priority): void
     {
         $this->priority = $priority;
+    }
+
+    /**
+     * @return File
+     */
+    public function getIconFile(): ?File
+    {
+        return $this->iconFile;
+    }
+
+    /**
+     * @param File $iconFile
+     */
+    public function setIconFile(File $iconFile): void
+    {
+        $this->iconFile = $iconFile;
     }
 
     public function __toString()

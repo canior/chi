@@ -70,15 +70,26 @@ class CategoryController extends BackendController
      * @param Request $request
      * @param $parentId
      * @param CategoryRepository $categoryRepository
+     * @param FileRepository $fileRepository
      * @return Response
      */
-    public function new(Request $request, $parentId, CategoryRepository $categoryRepository): Response
+    public function new(Request $request, $parentId, CategoryRepository $categoryRepository, FileRepository $fileRepository): Response
     {
         $category = new Category();
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $iconFileId = $request->request->get('category')['iconFile'] ?? null;
+            $iconFile = null;
+            if (!empty($iconFileId)) {
+                $iconFile = $fileRepository->find($iconFileId);
+            }
+
+            if (empty($iconFile)) {
+                return new Response('页面错误', 500);
+            }
 
             if (!empty($parentId)) {
                 $parentCategory = $categoryRepository->find($parentId);
@@ -87,6 +98,7 @@ class CategoryController extends BackendController
                 }
                 $category->setParentCategory($parentCategory);
             }
+            $category->setIconFile($iconFile);
             $this->entityPersist($category);
 
             $this->addFlash('notice', '添加成功');
@@ -118,15 +130,42 @@ class CategoryController extends BackendController
      * @Route("/category/{id}/edit/{parentId?}", name="category_edit", methods="GET|POST")
      * @param Request $request
      * @param Category $category
+     * @param FileRepository $fileRepository
      * @param $parentId
      * @return Response
      */
-    public function edit(Request $request, Category $category, $parentId): Response
+    public function edit(Request $request, Category $category, FileRepository $fileRepository, $parentId): Response
     {
         $form = $this->createForm(CategoryType::class, $category);
+        $iconFile = $category->getIconFile();
+        if ($iconFile) {
+            $fileArray[$iconFile->getId()] = [
+                'id' => $iconFile->getId(),
+                'fileId' => $iconFile->getId(),
+                'priority' => 0,
+                'name' => $iconFile->getName(),
+                'size' => $iconFile->getSize()
+            ];
+
+            $form->get('iconFile')->setData($fileArray);
+        }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $iconFileId = $request->request->get('category')['iconFile'] ?? null;
 
+            $iconFile = null;
+            if (!empty($iconFileId)) {
+                /**
+                 * @var File $iconFile
+                 */
+                $iconFile = $fileRepository->find($iconFileId);
+            }
+
+            if (empty($iconFile)) {
+                return new Response('页面错误', 500);
+            }
+
+            $category->setIconFile($iconFile);
             $this->entityPersist($category);
             $this->addFlash('notice', '修改成功');
             $routeParam = ['id' => $category->getId()];

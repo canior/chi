@@ -9,6 +9,8 @@
 namespace App\Controller\AppApi;
 
 
+use App\Command\EnqueueCommand;
+use App\Command\Sms\SendMsgCommand;
 use App\Controller\Api\BaseController;
 use App\Entity\User;
 use App\Service\ErrorCode;
@@ -82,5 +84,23 @@ class AppApiBaseController extends BaseController
         }
 
         return $res;
+    }
+
+    /**
+     * 异步发送短信
+     * @param $phone
+     * @param $msgData
+     * @param $msgTemplateId
+     * @author zxqc2018
+     */
+    public function sendMsg($phone, $msgData, $msgTemplateId)
+    {
+        $command = new SendMsgCommand($phone, $msgData, $msgTemplateId);
+        $qCommand = new EnqueueCommand($command);
+        try {
+            $this->getCommandBus()->handle($qCommand);
+        } catch (\Exception $e) {
+            CommonUtil::resultData()->throwErrorException(ErrorCode::ERROR_SMS_SEND_RESPONSE, [], 'can not add SendMsgCommand into EnqueueCommand: ' . $e->getMessage());
+        }
     }
 }

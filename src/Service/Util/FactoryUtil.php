@@ -10,6 +10,7 @@ namespace App\Service\Util;
 
 
 use App\Service\Pay\Pay;
+use App\Service\Sms\AliSms;
 
 class FactoryUtil
 {
@@ -34,5 +35,15 @@ class FactoryUtil
     public static function wxPayDriver($gateway)
     {
         return Pay::getInstance()->driver(Pay::WX_PAY_DRIVER)->gateway($gateway);
+    }
+
+    /**
+     * 获取阿里短信服务类
+     * @return AliSms
+     * @author zxqc2018
+     */
+    public static function aliSms()
+    {
+        return new AliSms();
     }
 }

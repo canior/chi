@@ -68,23 +68,28 @@ class CategoryRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param $parentId
-     * @param string $name
-     * @param bool $isSingleCourse
+     * 取得产品类别
+     * @param null|int $parentId 父类ID
+     * @param string $name 分类名
+     * @param bool $isSingleCourse 是否单课程
+     * @param null $showFreeZone 是否免费专区
+     * @param null $showRecommendZone 是否推荐专区
      * @return \Doctrine\ORM\QueryBuilder
      * @author zxqc2018
      */
-    public function findCategoryListQuery($parentId, $name = '', $isSingleCourse = false)
+    public function findCategoryListQuery($parentId = null, $name = '', $isSingleCourse = false, $showFreeZone = null, $showRecommendZone = null)
     {
         $query = $this->createQueryBuilder('c')
             ->where('c.isDeleted =:isDeleted')
             ->setParameter('isDeleted', false);
 
-        if (empty($parentId)) {
-            $query->andWhere('c.parentCategory is null');
-        } else {
-            $query->andWhere('c.parentCategory =:parentId')
-                ->setParameter('parentId', $parentId);
+        if (!is_null($parentId)) {
+            if (empty($parentId)) {
+                $query->andWhere('c.parentCategory is null');
+            } else {
+                $query->andWhere('c.parentCategory =:parentId')
+                    ->setParameter('parentId', $parentId);
+            }
         }
 
         if (!empty($name)) {
@@ -96,7 +101,38 @@ class CategoryRepository extends ServiceEntityRepository
             $query->andWhere('c.singleCourse =:singleCourse')
                 ->setParameter('singleCourse', $isSingleCourse);
         }
+
+        if (!is_null($showFreeZone)) {
+            $query->andWhere('c.showFreeZone =:showFreeZone')
+                ->setParameter('showFreeZone', $showFreeZone);
+        }
+
+        if (!is_null($showRecommendZone)) {
+            $query->andWhere('c.showRecommendZone =:showRecommendZone')
+                ->setParameter('showRecommendZone', $showRecommendZone);
+        }
+
         $query->addOrderBy('c.priority', 'DESC')->addOrderBy('c.id', 'DESC');
         return $query;
+    }
+
+    /**
+     * 取得免费类别
+     * @return \Doctrine\ORM\QueryBuilder
+     * @author zxqc2018
+     */
+    public function findFreeCategory()
+    {
+        return $this->findCategoryListQuery(null, '', null, true, null);
+    }
+
+    /**
+     * 取得推荐类别
+     * @return \Doctrine\ORM\QueryBuilder
+     * @author zxqc2018
+     */
+    public function findRecommendCategory()
+    {
+        return $this->findCategoryListQuery(null, '', null, null, true);
     }
 }

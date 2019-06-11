@@ -9,6 +9,7 @@
 namespace App\Form;
 
 use App\Entity\Category;
+use App\Form\Type\DropzoneType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -22,6 +23,13 @@ class CategoryType extends AbstractType
         $builder
             ->add('id', null, ['label' => 'ID', 'disabled' => true])
             ->add('name', TextType::class, ['label' => '名称'])
+            ->add('iconFile', DropzoneType::class, [
+                'label' => '图片',
+                'maxFiles' => 1,
+                'priority' => true,
+                'data_class' => null,
+                'mapped' => false,
+            ])
             ->add('aliyunVideoId', TextType::class, [
                 'label' => '阿里云视频ID',
                 'required' => false,

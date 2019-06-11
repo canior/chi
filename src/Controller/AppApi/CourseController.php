@@ -10,6 +10,7 @@ namespace App\Controller\AppApi;
 
 
 use App\Entity\ProjectBannerMeta;
+use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProjectBannerMetaRepository;
 use App\Service\Util\CommonUtil;
@@ -24,22 +25,25 @@ class CourseController extends AppApiBaseController
      * @param Request $request
      * @param ProductRepository $productRepository
      * @param ProjectBannerMetaRepository $projectBannerMetaRepository
-     * @author zxqc2018
+     * @param CategoryRepository $categoryRepository
      * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @author zxqc2018
      */
-    public function homeAction(Request $request, ProductRepository $productRepository, ProjectBannerMetaRepository $projectBannerMetaRepository)
+    public function homeAction(Request $request, ProductRepository $productRepository, ProjectBannerMetaRepository $projectBannerMetaRepository, CategoryRepository $categoryRepository)
     {
         $bannersArray = $this->createProductBanners($projectBannerMetaRepository);
 
-        $recommendProductsArray = $this->findHomeRecommendProducts($productRepository);
+        $recommendProductsArray = $this->findHomeRecommendProducts($categoryRepository);
 
         $newestProductsArray = $this->findHomeNewestProducts($productRepository);
+
+        $category = $categoryRepository->findCategoryListQuery(0, '', null)->getQuery()->getResult();
         $data = [
             'banners' => $bannersArray,
             'freeZoneBanner' => $this->createHomeFreeZoneBannerMetas($projectBannerMetaRepository),
             'recommendProducts' => $recommendProductsArray,
             'newestProducts' => $newestProductsArray,
-            'baseUrl' => $request->getUri(),
+            'category' => CommonUtil::entityArray2DataArray($category),
         ];
 
         return CommonUtil::resultData($data)->toJsonResponse();
@@ -69,15 +73,13 @@ class CourseController extends AppApiBaseController
 
     /**
      * 首页推荐课程
-     * @param ProductRepository $productRepository
-     * @author zxqc2018
+     * @param CategoryRepository $categoryRepository
      * @return array
+     * @author zxqc2018
      */
-    protected function findHomeRecommendProducts(ProductRepository $productRepository)
+    protected function findHomeRecommendProducts(CategoryRepository $categoryRepository)
     {
-        return CommonUtil::entityArray2DataArray($productRepository->findRecommendProductsQueryBuilder(true, [
-            'p.lookNum' => 'desc',
-        ], 20)->getQuery()->getResult());
+        return CommonUtil::entityArray2DataArray($categoryRepository->findRecommendCategory()->getQuery()->getResult());
     }
 
     /**
