@@ -199,6 +199,7 @@ class MemberController extends AppApiBaseController
         $code = isset($data['code']) ? $data['code'] : null;
         $idNum = isset($data['idNum']) ? $data['idNum'] : null;
         $nickname = isset($data['nickname']) ? $data['nickname'] : null;
+        $company = isset($data['company']) ? $data['company'] : null;
         $wechat = isset($data['wechat']) ? $data['wechat'] : null;
         $recommanderName = isset($data['recommanderName']) ? $data['recommanderName'] : null;
 
@@ -217,6 +218,9 @@ class MemberController extends AppApiBaseController
         }
         if($wechat){
             $user->setWechat($wechat);
+        }
+        if($company){
+            $user->setCompany($company);
         }
         if($recommanderName){
             $user->setRecommanderName($recommanderName);
@@ -1099,6 +1103,6 @@ class MemberController extends AppApiBaseController
         //     return $res;
         // }
 
-        return ['succes'=>true,'msg'=>'操2作成功'];
+        return ['succes'=>true,'msg'=>'操作成功'];
     }
 }
