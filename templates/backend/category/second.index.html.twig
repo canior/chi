@@ -33,6 +33,7 @@
                             <tr>
                                 <th width="6%">ID</th>
                                 <th width="10%">二级分类</th>
+                                <th width="10%">优先级(越大越靠前)</th>
                                 <th width="10%">分类名称</th>
                                 <th width="10%" class="text-center hidden-xs">操作</th>
                             </tr>
@@ -43,6 +44,7 @@
                                     <tr>
                                         <td>{{ item.id }}</td>
                                         <td>{{ item.name }}</td>
+                                        <td>{{ item.priority }}</td>
                                         <td>{{ item.parentCategory.name }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">

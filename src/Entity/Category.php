@@ -62,6 +62,60 @@ class Category implements Dao
      */
     private $aliyunVideoExpiresAt;
 
+    /**
+     * @ORM\Column(name="show_free_zone",type="boolean", nullable=false)
+     * @var integer
+     */
+    private $showFreeZone;
+
+    /**
+     * @ORM\Column(name="show_recommend_zone",type="boolean", nullable=false)
+     * @var integer
+     */
+    private $showRecommendZone;
+
+    /**
+     * @ORM\Column(name="single_course",type="boolean", nullable=false)
+     * @var integer
+     */
+    private $singleCourse;
+
+    /**
+     * @var integer
+     * @ORM\Column(name="is_deleted", type="boolean")
+     */
+    private $isDeleted;
+
+    /**
+     * @ORM\Column(type="integer", nullable=false)
+     * @var integer
+     */
+    private $priority;
+
+    public function __construct()
+    {
+        $this->setShowFreeZone(0);
+        $this->setShowRecommendZone(0);
+        $this->setSingleCourse(0);
+        $this->setIsDeleted(0);
+        $this->setPriority(0);
+    }
+
+    /**
+     * @param $name
+     * @param Category|null $parentCategory
+     * @return Category
+     * @author zxqc2018
+     */
+    public static function factory($name , ?Category $parentCategory)
+    {
+        $category = new self();
+        $category->setName($name);
+        $category->setParentCategory($parentCategory);
+
+        return $category;
+    }
+
     public function getName(): ?string
     {
         return $this->name;
@@ -152,6 +206,116 @@ class Category implements Dao
     public function setAliyunVideoExpiresAt(?int $aliyunVideoExpiresAt): void
     {
         $this->aliyunVideoExpiresAt = $aliyunVideoExpiresAt;
+    }
+
+    /**
+     * @return int
+     */
+    public function getShowFreeZone(): int
+    {
+        return $this->showFreeZone;
+    }
+
+    /**
+     * @param int $showFreeZone
+     */
+    public function setShowFreeZone(int $showFreeZone): void
+    {
+        $this->showFreeZone = $showFreeZone;
+    }
+
+    /**
+     * 是否免费专区
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isShowFreeZone()
+    {
+        return !empty($this->getShowFreeZone());
+    }
+
+    /**
+     * @return int
+     */
+    public function getShowRecommendZone(): int
+    {
+        return $this->showRecommendZone;
+    }
+
+    /**
+     * @param int $showRecommendZone
+     */
+    public function setShowRecommendZone(int $showRecommendZone): void
+    {
+        $this->showRecommendZone = $showRecommendZone;
+    }
+
+    /**
+     * 是否推荐专区
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isShowRecommendZone()
+    {
+        return !empty($this->getShowRecommendZone());
+    }
+
+    /**
+     * @return int
+     */
+    public function getSingleCourse(): int
+    {
+        return $this->singleCourse;
+    }
+
+    /**
+     * @param int $singleCourse
+     */
+    public function setSingleCourse(int $singleCourse): void
+    {
+        $this->singleCourse = $singleCourse;
+    }
+
+    /**
+     * 是否单课程类别
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isSingleCourse()
+    {
+        return !empty($this->getSingleCourse());
+    }
+
+    /**
+     * @return int
+     */
+    public function getIsDeleted(): int
+    {
+        return $this->isDeleted;
+    }
+
+    /**
+     * @param int $isDeleted
+     */
+    public function setIsDeleted(int $isDeleted): void
+    {
+        $this->isDeleted = $isDeleted;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPriority(): int
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @param int $priority
+     */
+    public function setPriority(int $priority): void
+    {
+        $this->priority = $priority;
     }
 
     public function __toString()

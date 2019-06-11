@@ -70,16 +70,20 @@ class CategoryRepository extends ServiceEntityRepository
     /**
      * @param $parentId
      * @param string $name
+     * @param bool $isSingleCourse
      * @return \Doctrine\ORM\QueryBuilder
      * @author zxqc2018
      */
-    public function findCategoryListQuery($parentId, $name = '')
+    public function findCategoryListQuery($parentId, $name = '', $isSingleCourse = false)
     {
-        $query = $this->createQueryBuilder('c');
+        $query = $this->createQueryBuilder('c')
+            ->where('c.isDeleted =:isDeleted')
+            ->setParameter('isDeleted', false);
+
         if (empty($parentId)) {
-            $query->where('c.parentCategory is null');
+            $query->andWhere('c.parentCategory is null');
         } else {
-            $query->where('c.parentCategory =:parentId')
+            $query->andWhere('c.parentCategory =:parentId')
                 ->setParameter('parentId', $parentId);
         }
 
@@ -88,6 +92,11 @@ class CategoryRepository extends ServiceEntityRepository
                 ->setParameter('name', "%{$name}%");
         }
 
+        if (!is_null($isSingleCourse)) {
+            $query->andWhere('c.singleCourse =:singleCourse')
+                ->setParameter('singleCourse', $isSingleCourse);
+        }
+        $query->addOrderBy('c.priority', 'DESC')->addOrderBy('c.id', 'DESC');
         return $query;
     }
 }

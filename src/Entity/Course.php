@@ -98,12 +98,37 @@ class Course implements Dao
      */
     private $isOnline;
 
+    /**
+     * @ORM\Column(type="integer", nullable=false)
+     * @var integer
+     */
+    private $lookNum;
+
+    /**
+     * @var Category
+     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="course_category_id", referencedColumnName="id")
+     * })
+     */
+    private $courseCategory;
+
+    /**
+     * @var Category
+     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="course_actual_category_id", referencedColumnName="id")
+     * })
+     */
+    private $courseActualCategory;
+
     public function __construct() {
         $product = new Product();
         $product->setCourse($this);
         $this->setProduct($product);
         $this->courseStudents = new ArrayCollection();
         $this->setOnline();
+        $this->setLookNum(0);
     }
 
     /**
@@ -680,19 +705,59 @@ class Course implements Dao
     }
 
     /**
-     * @param Category $category
-     * @author zxqc2018
+     * @return int
      */
-    public function setProductCategory(Category $category) {
-        $this->getProduct()->setProductCategory($category);
+    public function getLookNum(): int
+    {
+        return $this->lookNum;
+    }
+
+    /**
+     * @param int $lookNum
+     */
+    public function setLookNum(int $lookNum): void
+    {
+        $this->lookNum = $lookNum;
+    }
+
+    /**
+     * 增加观看次数
+     * @param int $num
+     */
+    public function increaseLookNum(int $num = 1) {
+        $this->lookNum += $num;
     }
 
     /**
      * @return Category
-     * @author zxqc2018
      */
-    public function getProductCategory() {
-        return $this->getProduct()->getProductCategory();
+    public function getCourseCategory(): ?Category
+    {
+        return $this->courseCategory;
+    }
+
+    /**
+     * @param Category $courseCategory
+     */
+    public function setCourseCategory(Category $courseCategory): void
+    {
+        $this->courseCategory = $courseCategory;
+    }
+
+    /**
+     * @return Category
+     */
+    public function getCourseActualCategory(): ?Category
+    {
+        return $this->courseActualCategory;
+    }
+
+    /**
+     * @param Category $courseActualCategory
+     */
+    public function setCourseActualCategory(Category $courseActualCategory): void
+    {
+        $this->courseActualCategory = $courseActualCategory;
     }
 
     /**
