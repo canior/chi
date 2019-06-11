@@ -20,4 +20,20 @@ class UserAccountOrderRepository extends ServiceEntityRepository
         parent::__construct($registry, UserAccountOrder::class);
     }
 
+    
+    /**
+     * 佣金总额
+     * @param $user
+     * @return array
+     */
+    public function getUserCommissionAmount($user){
+    	$query = $this->getEntityManager()->createQueryBuilder()
+            ->select('sum(uao.amount) as count')
+            ->from('App:UserAccountOrder', 'uao')
+            ->where('uao.userAccountOrderType != :userAccountOrderType')
+            ->andWhere('uao.user = :user')
+            ->setParameter('userAccountOrderType', UserAccountOrder::WITHDRAW)
+            ->setParameter('user', $user->getId());
+        return $query->getQuery()->getOneOrNullResult();
+    }
 }

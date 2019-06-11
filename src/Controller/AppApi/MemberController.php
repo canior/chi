@@ -40,6 +40,7 @@ use App\Entity\GroupUserOrder;
 use App\Entity\Message;
 use App\Entity\Product;
 use App\Repository\MessageRepository;
+use App\Repository\UserAccountOrderRepository;
 
 /**
  * @Route("/auth/member")
@@ -443,7 +444,7 @@ class MemberController extends AppApiBaseController
      * @param Request $request
      * @return Response
      */
-    public function accountAction(Request $request) {
+    public function accountAction(Request $request, UserAccountOrderRepository $userAccountOrderRepository) {
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -468,6 +469,7 @@ class MemberController extends AppApiBaseController
             'balance' => $accountBalance,
             'withdrawedTotal' => $withdrawedTotal,
             'withdrawingTotal' => $withdrawingTotal,
+            'userCommissionAmount'=>$userAccountOrderRepository->getUserCommissionAmount($user)['count'],
             'userAccountOrders' => $userAccountOrderArray
         ];
 
