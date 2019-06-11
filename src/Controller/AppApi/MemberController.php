@@ -180,6 +180,60 @@ class MemberController extends AppApiBaseController
 
 
     /**
+     * @Route("/updateUserInfo", name="updateUserInfo",  methods={"POST"})
+     * @param Request $request
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function updateUserInfo(Request $request, UserManagerInterface $userManager)
+    {
+        $data = json_decode($request->getContent(), true );
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $name = isset($data['name']) ? $data['name'] : null;
+        $phone = isset($data['phone']) ? $data['phone'] : null;
+        $code = isset($data['code']) ? $data['code'] : null;
+        $idNum = isset($data['idNum']) ? $data['idNum'] : null;
+        $nickname = isset($data['nickname']) ? $data['nickname'] : null;
+        $wechat = isset($data['wechat']) ? $data['wechat'] : null;
+        $recommanderName = isset($data['recommanderName']) ? $data['recommanderName'] : null;
+
+        // 更新资料
+        if($name){
+            $user->setName($name);
+        }
+        if($phone){
+            $user->setPhone($phone);
+        }
+        if($idNum){
+            $user->getIdNum($idNum);
+        }
+        if($nickname){
+            $user->setNickname($nickname);
+        }
+        if($wechat){
+            $user->setWechat($wechat);
+        }
+        if($recommanderName){
+            $user->setRecommanderName($recommanderName);
+        }
+
+        try {
+            $userManager->updateUser($user, true);
+        } catch (\Exception $e) {
+            return new JsonResponse(["error" => $e->getMessage()], 500);
+        }
+
+        // 返回
+        return CommonUtil::resultData($user->getArray())->toJsonResponse();
+    }
+
+
+    /**
      * 获取用户收货地址列表
      *
      * @Route("/address", name="myAddress", methods="POST")
