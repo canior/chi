@@ -211,7 +211,7 @@ class MemberController extends AppApiBaseController
             $user->setPhone($phone);
         }
         if($idNum){
-            $user->getIdNum($idNum);
+            $user->setIdNum($idNum);
         }
         if($nickname){
             $user->setNickname($nickname);
