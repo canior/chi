@@ -457,7 +457,11 @@ class MemberController extends AppApiBaseController
 
         $userAccountOrderArray = [];
         foreach ($user->getUserAccountOrders() as $userAccountOrder) {
-            $userAccountOrderArray[] = $userAccountOrder->getArray();
+            if( $userAccountOrder->getPaymentStatus() == UserAccountOrder::UNPAID ){
+                $userAccountOrderArray['UNPAID'][] = $userAccountOrder->getArray();
+            }else{
+                $userAccountOrderArray['PAID'][] = $userAccountOrder->getArray();
+            }
         }
 
         $data = [
