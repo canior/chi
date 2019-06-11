@@ -22,6 +22,7 @@ class ErrorCode
     //-------通用---------------------------------------
     const ERROR_UPLOAD_FILE_NOT_EXISTS = 11001;
     const ERROR_UPLOAD_FILE_SAVE = 11002;
+    const ERROR_PARAM_NOT_ALL_EXISTS = 11003;
     //-------认证---------------------------------------
     const ERROR_TOKEN_INVALID = 12001;
     const ERROR_TOKEN_AUTH_FAILURE = 12002;
@@ -37,7 +38,7 @@ class ErrorCode
     //-------课程---------------------------------------
 
     //-------产品---------------------------------------
-
+    const ERROR_PRODUCT_NOT_EXISTS = 14001;
     //-------订单---------------------------------------
 
     //-------支付---------------------------------------
@@ -48,6 +49,11 @@ class ErrorCode
     const ERROR_CONFIG_SET_GET = 16005;
     const ERROR_WX_PAY_TRANSFER = 16006;
     const ERROR_WX_PAY_TRANSFER_BANK = 16007;
+    const ERROR_WX_PAY_PREPAY_ID = 16008;
+    const ERROR_PAY_ORDER_ID_NO_EXISTS = 16009;
+    const ERROR_PAY_CHANNEL_NO_EXISTS = 16010;
+    const ERROR_PAY_NOTIFY = 16011;
+    const ERROR_PAY_ORDER_ALREADY_WAIT = 16012;
     /**
      * 错误消息集合
      * @return array
@@ -77,6 +83,13 @@ class ErrorCode
             self::ERROR_CONFIG_SET_GET => '支付配置设置错误',
             self::ERROR_WX_PAY_TRANSFER => '微信支付企业转账错误',
             self::ERROR_WX_PAY_TRANSFER_BANK => '微信支付转账银行卡错误',
+            self::ERROR_PARAM_NOT_ALL_EXISTS => '参数错误',
+            self::ERROR_WX_PAY_PREPAY_ID => '微信统一支付id获取失败',
+            self::ERROR_PAY_ORDER_ID_NO_EXISTS => '支付订单ID不存在',
+            self::ERROR_PAY_CHANNEL_NO_EXISTS => '支付渠道不存在',
+            self::ERROR_PRODUCT_NOT_EXISTS => '产品不存在',
+            self::ERROR_PAY_NOTIFY => '回调处理失败',
+            self::ERROR_PAY_ORDER_ALREADY_WAIT => '订单已经待支付',
         ];
     }
 

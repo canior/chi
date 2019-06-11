@@ -42,7 +42,31 @@ class CommonUtil
     {
         $res = [];
         foreach ($entityArray as $entity) {
-            $res[] = self::Obj2Array($entity);
+            $res[] = self::obj2Array($entity);
+        }
+
+        return $res;
+    }
+
+
+    /**
+     * 调用对象方法
+     * @param $obj
+     * @param mixed $defaultValue 默认值
+     * @param string $method 对象方法
+     * @return mixed
+     * @author zxqc2018
+     */
+    public static function invokingObjMethod($obj, $defaultValue = [], $method = 'getArray')
+    {
+        $res = $defaultValue;
+
+        if (empty($obj)) {
+            return $res;
+        }
+
+        if (method_exists($obj, $method)) {
+            $res = $obj->$method();
         }
 
         return $res;
@@ -56,18 +80,102 @@ class CommonUtil
      * @return array|null
      * @author zxqc2018
      */
-    public static function Obj2Array($obj, $defaultValue = [], $toArrayMethod = 'getArray')
+    public static function obj2Array($obj, $defaultValue = [], $toArrayMethod = 'getArray')
     {
-        $res = $defaultValue;
+        return self::invokingObjMethod($obj, $defaultValue, $toArrayMethod);
+    }
 
-        if (empty($obj)) {
-            return $res;
+
+    /**
+     * 对象转换ID
+     * @param $obj
+     * @param int $defaultValue 默认值
+     * @param string $toIdMethod 对象转换ID方法
+     * @return int
+     * @author zxqc2018
+     */
+    public static function obj2Id($obj, $defaultValue = 0, $toIdMethod = 'getId')
+    {
+        return self::invokingObjMethod($obj, $defaultValue, $toIdMethod);
+    }
+
+    /**
+     * 封装explode和join
+     * @param mixed $data 处理的数据
+     * @param string|array $separator 分割数据 字符串 explode 处理 数组 正则处理 如  ['[3-4\s]+']
+     * @param bool $retArr 是否返回数组
+     * @param null|int $arrLimit 返回数组并且原数据不是数组情况下有效[数组的长度]  默认不限制
+     * @return array|string
+     * @author zxqc2018
+     */
+    public static function myExplode($data, $separator = ',', $retArr = true, $arrLimit = null)
+    {
+        if (is_null($data)) {
+            $data = [];
         }
 
-        if (method_exists($obj, $toArrayMethod)) {
-            $res = $obj->$toArrayMethod();
+        if ($retArr && is_array($data)) {
+            return $data;
         }
 
-        return $res;
+        if (!$retArr && !is_array($data)) {
+            return $data;
+        }
+        if (!is_array($data)) {
+            //数组则当正则处理
+            if (is_array($separator)) {
+                $separator = $separator[0];
+                $data      = preg_split('#' . preg_quote($separator, '/') . '#', $data, $arrLimit);
+            } else {
+                //由于默认传null  explode 会当成 1处理 所以
+                if (is_null($arrLimit)) {
+                    $data = explode($separator, $data);
+                } else {
+                    $data = explode($separator, $data, $arrLimit);
+                }
+            }
+        }
+
+        return $retArr ? $data : join($separator, $data);
+    }
+
+    /**
+     * 获取用户ip
+     * @return string
+     * @author zxqc2018
+     */
+    public static function getUserIp()
+    {
+        if(!empty($_SERVER["HTTP_CLIENT_IP"]))
+        {
+            $cip = $_SERVER["HTTP_CLIENT_IP"];
+        }
+        else if(!empty($_SERVER["HTTP_X_FORWARDED_FOR"]))
+        {
+            $cip = $_SERVER["HTTP_X_FORWARDED_FOR"];
+        }
+        else if(!empty($_SERVER["REMOTE_ADDR"]))
+        {
+            $cip = $_SERVER["REMOTE_ADDR"];
+        }
+        else
+        {
+            $cip = '';
+        }
+        preg_match("/[\d\.]{7,15}/", $cip, $cips);
+        $cip = isset($cips[0]) ? $cips[0] : 'unknown';
+        unset($cips);
+        return $cip;
+    }
+
+    /**
+     * 是否debug模式
+     * @return bool
+     * @author zxqc2018
+     */
+    public static function isDebug()
+    {
+        $env = $_SERVER['APP_ENV'] ?? $_ENV['APP_ENV'] ?? 'dev';
+        return (bool) ($_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? ('prod' !== $env));
     }
 }

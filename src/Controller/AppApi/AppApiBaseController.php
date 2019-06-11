@@ -11,6 +11,9 @@ namespace App\Controller\AppApi;
 
 use App\Controller\Api\BaseController;
 use App\Entity\User;
+use App\Service\ErrorCode;
+use App\Service\Util\CommonUtil;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class AppApiBaseController extends BaseController
@@ -36,5 +39,48 @@ class AppApiBaseController extends BaseController
         }
 
         return $tokenStorage->getToken()->getUser();
+    }
+
+    /**
+     * 处理请求
+     * @param Request $request 请求对象
+     * @param array $paramKeys ["k", "kk"]
+     * @param array $keyFilters
+     * @param array $extensionParam 扩展参数 下面参数介绍 () 为默认值
+     * isDefaultConvert (true) 是否需要默认类型转换 paramKeysDefault ([]) 不能为空的key数组
+     * @return \App\Service\ResultData
+     * @author zxqc2018
+     */
+    public function processRequest(Request $request, $paramKeys = [], $keyFilters = [], $extensionParam = [])
+    {
+        $res = CommonUtil::resultData();
+
+        $data = json_decode($request->getContent(), true);
+
+        $isDefaultConvert = $extensionParam['isDefaultConvert'] ?? true;
+        $paramKeysDefault = $extensionParam['paramKeysDefault'] ?? [];
+        //取得登陆用户
+
+        //默认需要转换int 的 key
+        $defaultIntKeyArr = [
+            'page', 'pageNum', 'productId', 'groupUserOrderId'
+        ];
+
+        foreach ($paramKeys as $key) {
+            $res[$key] = $data[$key] ?? $paramKeysDefault[$key] ?? null;
+            //自动处理字段的类型转换
+            if ($isDefaultConvert) {
+                if (in_array($key, $defaultIntKeyArr)) {
+                    $res[$key] = intval($res[$key]);
+                }
+            }
+
+            //字段基本检查 不能为空
+            if (in_array($key, $keyFilters) && empty($res[$key])) {
+                $res->throwErrorException(ErrorCode::ERROR_PARAM_NOT_ALL_EXISTS, ['errorKey' => $key]);
+            }
+        }
+
+        return $res;
     }
 }

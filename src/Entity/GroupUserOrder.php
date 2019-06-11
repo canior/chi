@@ -8,6 +8,7 @@ use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\PaymentStatusTrait;
 use App\Entity\Traits\StatusTrait;
 use App\Entity\Traits\UpdatedAtTrait;
+use App\Service\Util\CommonUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -77,7 +78,18 @@ class GroupUserOrder implements Dao
         self::COURSE_ORDER => '课程订单'
     ];
 
+    const PAYMENT_CHANNEL_ALI = 'alipay';
+    const PAYMENT_CHANNEL_WX = 'wechat';
 
+    public static $paymentChannelTexts = [
+        self::PAYMENT_CHANNEL_ALI => '支付宝',
+        self::PAYMENT_CHANNEL_WX => '微信'
+    ];
+
+    public static $paymentTraceNoTypes = [
+        self::PAYMENT_CHANNEL_ALI => 'ali',
+        self::PAYMENT_CHANNEL_WX => 'wx'
+    ];
     /**
      * @ORM\ManyToOne(targetEntity="GroupOrder", inversedBy="groupUserOrders")
      * @ORM\JoinColumn(nullable=true)
@@ -156,6 +168,17 @@ class GroupUserOrder implements Dao
      */
     private $upgradeOrderCoupons;
 
+    /**
+     * @var string
+     * @ORM\Column(name="out_trade_no", type="string", length=50, nullable=false)
+     */
+    private $outTradeNo;
+
+    /**
+     * @var string
+     * @ORM\Column(name="payment_channel", type="string", length=20, nullable=false)
+     */
+    private $paymentChannel;
     /**
      * @var string
      * @ORM\Column(type="integer", nullable=true)
@@ -983,6 +1006,47 @@ class GroupUserOrder implements Dao
     }
 
     /**
+     * @return string
+     */
+    public function getOutTradeNo(): ?string
+    {
+        return $this->outTradeNo;
+    }
+
+    /**
+     * @param string $outTradeNo
+     */
+    public function setOutTradeNo(string $outTradeNo): void
+    {
+        $this->outTradeNo = $outTradeNo;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentChannel(): ?string
+    {
+        return $this->paymentChannel;
+    }
+
+    /**
+     * @param string $paymentChannel
+     */
+    public function setPaymentChannel(string $paymentChannel): void
+    {
+        $this->paymentChannel = $paymentChannel;
+    }
+
+    /**
+     * 是否等待支付中[app环境]
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isWaitingPayWithApp()
+    {
+        return !empty($this->getOutTradeNo());
+    }
+    /**
      * @return int|null
      */
     public function getTable(): ?int
@@ -1036,5 +1100,17 @@ class GroupUserOrder implements Dao
             . ' 金额：￥' . $this->getTotal()
             . ' 状态：' . $this->getStatusText()
             . ' 支付状态 ' . $this->getPaymentStatusText();
+    }
+
+    /**
+     * 生成跟踪订单号
+     * @return string
+     * @author zxqc2018
+     */
+    public function makeTraceNo()
+    {
+        $typeStr = GroupUserOrder::$paymentTraceNoTypes[$this->getPaymentChannel()] ?? '';
+        $tradeNoLen = CommonUtil::isDebug() ? 10: 16;
+        return 'jq' . $typeStr . sprintf("%0{$tradeNoLen}d", $this->getId());
     }
 }

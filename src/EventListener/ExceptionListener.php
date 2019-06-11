@@ -28,11 +28,8 @@ class ExceptionListener
         if (!empty($event->getRequest()->getRequestUri()) && strpos($event->getRequest()->getRequestUri(), '/appApi') === 0) {
             $resultData = CommonUtil::resultData([], ErrorCode::ERROR_COMMON_UNKNOWN_ERROR);
 
-            $env = $_SERVER['APP_ENV'] ?? $_ENV['APP_ENV'] ?? 'dev';
-            $debug = (bool) ($_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? ('prod' !== $env));
-
             //debug模式下输出对应异常信息
-            if ($debug && !empty($exception->getMessage())) {
+            if (CommonUtil::isDebug() && !empty($exception->getMessage())) {
                 $resultData['exceptionMsg'] = $exception->getMessage();
                 if (!empty($exception->getTrace())) {
                     $trace = $exception->getTrace();

@@ -63,7 +63,7 @@ class CourseController extends AppApiBaseController
      */
     protected function createHomeFreeZoneBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
         return [
-            ProjectBannerMeta::BANNER_HOME_FREE_ZONE => CommonUtil::Obj2Array($projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_FREE_ZONE])),
+            ProjectBannerMeta::BANNER_HOME_FREE_ZONE => CommonUtil::obj2Array($projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_FREE_ZONE])),
         ];
     }
 

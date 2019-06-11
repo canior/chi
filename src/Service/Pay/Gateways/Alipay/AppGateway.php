@@ -32,11 +32,11 @@ class AppGateway extends Alipay
     /**
      * 应用并返回参数
      * @param array $options
-     * @return string
+     * @return array
      */
     public function apply(array $options = [])
     {
         parent::apply($options);
-        return http_build_query($this->config);
+        return $this->config;
     }
 }

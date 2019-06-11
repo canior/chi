@@ -221,7 +221,11 @@ class UpgradeUserOrder implements Dao
      * @return string
      */
     public function getOldUserLevelText() {
-        return UserLevel::$userLevelTextArray[$this->getOldUserLevel()];
+        $textArr = UserLevel::$userLevelTextArray;
+        if ($this->isBianxian()) {
+            $textArr = BianxianUserLevel::$userLevelTextArray;
+        }
+        return $textArr[$this->getOldUserLevel()];
     }
 
     /**
@@ -268,7 +272,11 @@ class UpgradeUserOrder implements Dao
      * @return string
      */
     public function getUserLevelText() {
-        return UserLevel::$userLevelTextArray[$this->getUserLevel()];
+        $textArr = UserLevel::$userLevelTextArray;
+        if ($this->isBianxian()) {
+            $textArr = BianxianUserLevel::$userLevelTextArray;
+        }
+        return $textArr[$this->getUserLevel()];
     }
 
     /**

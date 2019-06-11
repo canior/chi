@@ -301,7 +301,6 @@ class UserAccountOrder implements Dao
         $this->course = $course;
     }
 
-
     /**
      * @return array
      */
