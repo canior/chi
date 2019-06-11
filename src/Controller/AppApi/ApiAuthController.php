@@ -112,7 +112,7 @@ class ApiAuthController extends AppApiBaseController
         }
 
         // 返回
-        return CommonUtil::resultData(['token' => $JWTTokenManager->create($user)])->toJsonResponse();
+        return CommonUtil::resultData(['user'=>$user->getArray(),'token' => $JWTTokenManager->create($user)])->toJsonResponse();
     }
 
 
@@ -166,7 +166,7 @@ class ApiAuthController extends AppApiBaseController
         }
 
         // 返回
-        return CommonUtil::resultData(['token' => $JWTTokenManager->create($user)])->toJsonResponse();
+        return CommonUtil::resultData(['user'=>$user->getArray(),'token' => $JWTTokenManager->create($user)])->toJsonResponse();
     }
 
 
