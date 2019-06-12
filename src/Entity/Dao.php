@@ -14,4 +14,6 @@ interface Dao
     const DATE_FORMAT = 'Y/m/d';
     const DATETIME_START = 'Y/m/d 00:00:00';
     const DATETIME_END = 'Y/m/d 23:59:59';
+    const DATE_FORMAT_LINE = 'Y-m-d';
+    const DATE_FORMAT_DOT = 'Y.m.d';
 }

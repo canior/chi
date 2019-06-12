@@ -61,4 +61,13 @@ trait CreatedAtTrait
 
         return $this;
     }
+
+    /**
+     * @return false|string
+     * @author zxqc2018
+     */
+    public function getCreatedAtFormattedLineDate()
+    {
+        return date(self::DATE_FORMAT_LINE, $this->createdAt);
+    }
 }

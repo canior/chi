@@ -406,6 +406,7 @@ class Category implements Dao
             'mainImageId' => CommonUtil::getInsideValue($firstCourse, 'getCourseImages.first.getId', 0),
             'lookNum' => $this->getCategoryLookNum(),
             'courseNum' => $this->getCourses()->count(),
+            'mainCourseCreateDate' => CommonUtil::getInsideValue($firstCourse, 'getProduct.getCreatedAtFormattedLineDate', ''),
         ];
     }
 

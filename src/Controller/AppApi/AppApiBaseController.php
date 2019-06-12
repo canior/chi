@@ -50,6 +50,7 @@ class AppApiBaseController extends BaseController
      * @param array $keyFilters
      * @param array $extensionParam 扩展参数 下面参数介绍 () 为默认值
      * isDefaultConvert (true) 是否需要默认类型转换 paramKeysDefault ([]) 不能为空的key数组
+     * paginatorAutoProcess (true) 是否默认处理分页参数
      * @return \App\Service\ResultData
      * @author zxqc2018
      */
@@ -61,11 +62,12 @@ class AppApiBaseController extends BaseController
 
         $isDefaultConvert = $extensionParam['isDefaultConvert'] ?? true;
         $paramKeysDefault = $extensionParam['paramKeysDefault'] ?? [];
+        $paginatorAutoProcess = $extensionParam['paginatorAutoProcess'] ?? true;
         //取得登陆用户
 
         //默认需要转换int 的 key
         $defaultIntKeyArr = [
-            'page', 'pageNum', 'productId', 'groupUserOrderId'
+            'page', 'pageNum', 'productId', 'groupUserOrderId', 'cateId'
         ];
 
         foreach ($paramKeys as $key) {
@@ -80,6 +82,18 @@ class AppApiBaseController extends BaseController
             //字段基本检查 不能为空
             if (in_array($key, $keyFilters) && empty($res[$key])) {
                 $res->throwErrorException(ErrorCode::ERROR_PARAM_NOT_ALL_EXISTS, ['errorKey' => $key]);
+            }
+        }
+
+
+        //处理分页参数
+        if ($paginatorAutoProcess) {
+            if (isset($res['page']) && is_numeric($res['page'])) {
+                $res['page'] = max(1, $res['page']);
+            }
+
+            if (isset($res['pageNum']) && is_numeric($res['pageNum']) && empty($res['pageNum'])) {
+                $res['pageNum'] = 20;
             }
         }
 

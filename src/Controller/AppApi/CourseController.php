@@ -41,8 +41,8 @@ class CourseController extends AppApiBaseController
         $data = [
             'banners' => $bannersArray,
             'freeZoneBanner' => $this->createHomeFreeZoneBannerMetas($projectBannerMetaRepository),
-            'recommendProducts' => $recommendProductsArray,
-            'newestProducts' => $newestProductsArray,
+            'recommendCategoryList' => $recommendProductsArray,
+            'newestCategoryList' => $newestProductsArray,
             'category' => CommonUtil::entityArray2DataArray($category, 'simpleArray'),
         ];
 
@@ -93,5 +93,29 @@ class CourseController extends AppApiBaseController
         return CommonUtil::entityArray2DataArray($productRepository->findRecommendProductsQueryBuilder(true, [
             'p.id' => 'desc',
         ], 6)->getQuery()->getResult());
+    }
+
+    /**
+     * 获取分类列表
+     * @Route("/course/list")
+     * @param Request $request
+     * @param CategoryRepository $categoryRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @author zxqc2018
+     */
+    public function categoryCoursesAction(Request $request, CategoryRepository $categoryRepository)
+    {
+        $requestProcess = $this->processRequest($request, [
+            'cateId', 'page', 'pageNum'
+        ], ['cateId']);
+        $user = $this->getAppUser();
+
+        $categoryQuery = $categoryRepository->findCategoryListQuery($requestProcess['cateId']);
+        $categoryList = $this->getPaginator()->paginate($categoryQuery, $requestProcess['page'], $requestProcess['pageNum']);
+
+        return $requestProcess->toJsonResponse([
+            'categoryList' => CommonUtil::entityArray2DataArray($categoryList),
+            'user' => CommonUtil::getInsideValue($user, 'array')
+        ]);
     }
 }
