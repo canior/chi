@@ -658,7 +658,6 @@ class MemberController extends AppApiBaseController
 
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
-            dump($groupUserOrder->getProduct()->getCourse()->getArray());die;
             $product = $groupUserOrder->getProduct();
             $courseCategory = $groupUserOrder->getCourse()->getCourseCategory()?$groupUserOrder->getCourse()->getCourseCategory()->getId():'';
             if ($productType == 'product' and !$product->isCourseProduct() and $product->getProductCategory() == Product::CATEGORY_PRODUCT) {
