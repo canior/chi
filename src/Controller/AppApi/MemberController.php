@@ -225,7 +225,7 @@ class MemberController extends AppApiBaseController
         $this->getEntityManager()->flush();
 
         // 发送验证码
-        $msgTemplateId = "SMS_47485035";
+        $msgTemplateId = "SMS_167760193";
         $msgData = ['code'=>$code];
         $this->sendSmsMsg($phone, $msgData, $msgTemplateId);
 
@@ -236,6 +236,7 @@ class MemberController extends AppApiBaseController
     /**
      * @Route("/updateUserInfo", name="updateUserInfo",  methods={"POST"})
      * @param Request $request
+     * @param MessageCodeRepository $messageCodeRepository
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function updateUserInfo(Request $request, UserManagerInterface $userManager, MessageCodeRepository $messageCodeRepository)
