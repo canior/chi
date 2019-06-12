@@ -558,7 +558,7 @@ class MemberController extends AppApiBaseController
      * 已发货：status = 'shipping' paymentStatus = 'paid'
      * 已收货: status = 'delivered' paymentStatus = 'paid'
      *
-     * @Route("/groupUserOrders", name="groupUserOrders", methods="GET")
+     * @Route("/groupUserOrders", name="groupUserOrders", methods="POST")
      * @param Request $request
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
