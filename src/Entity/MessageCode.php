@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\CreatedAtTrait;
+use App\Entity\Traits\IdTrait;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MessageCodeRepository")
@@ -11,18 +13,15 @@ class MessageCode implements Dao
 {
     const LOGIN = 'login';
     const FORGET = 'forget';
+    const UPDATE_INFO = 'update_info';
 
     public static $types = [
         self::LOGIN => '用户登陆',
+        self::UPDATE_INFO => '编辑资料',
         self::FORGET => '忘记密码'
     ];
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    protected $id;
+    use IdTrait, CreatedAtTrait;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -40,6 +39,14 @@ class MessageCode implements Dao
      * @var string|null
      */
     private $type;
+
+    /**
+     * GroupUserOrderRewards constructor.
+     */
+    public function __construct()
+    {
+        $this->setCreatedAt(time());
+    }
 
 
     public function getCode(): ?string

@@ -90,6 +90,25 @@ class GroupUserOrder implements Dao
         self::PAYMENT_CHANNEL_ALI => 'ali',
         self::PAYMENT_CHANNEL_WX => 'wx'
     ];
+
+    const CHECK_PASS = 'pass';
+    const CHECK_REJECT = 'reject';
+
+    public static $checkStatusTexts = [
+        self::CHECK_PASS => '审核通过',
+        self::CHECK_REJECT => '驳回',
+    ];
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $checkStatus;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $checkAt;
+
     /**
      * @ORM\ManyToOne(targetEntity="GroupOrder", inversedBy="groupUserOrders")
      * @ORM\JoinColumn(nullable=true)
@@ -1067,6 +1086,38 @@ class GroupUserOrder implements Dao
     }
 
     /**
+     * @return string
+     */
+    public function getCheckStatus()
+    {
+        return $this->checkStatus;
+    }
+
+    /**
+     * @param string $checkStatus
+     */
+    public function setCheckStatus(string $checkStatus)
+    {
+        $this->checkStatus = $checkStatus;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCheckAt()
+    {
+        return $this->checkAt;
+    }
+
+    /**
+     * @param string $checkAt
+     */
+    public function setCheckAt(int $checkAt)
+    {
+        $this->checkAt = $checkAt;
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {
@@ -1095,6 +1146,7 @@ class GroupUserOrder implements Dao
             'address' => $this->getUserAddress() == null ? null : $this->getUserAddress()->getArray(),
             'carrierName' => $this->getCarrierName(),
             'trackingNo' => $this->getTrackingNo(),
+            'timeLine' =>$this->getTimeLine(),
         ];
     }
 
@@ -1116,5 +1168,65 @@ class GroupUserOrder implements Dao
         $typeStr = GroupUserOrder::$paymentTraceNoTypes[$this->getPaymentChannel()] ?? '';
         $tradeNoLen = CommonUtil::isDebug() ? 10: 16;
         return 'jq' . $typeStr . sprintf("%0{$tradeNoLen}d", $this->getId());
+    }
+
+    public function getTimeLine(){
+        $log = [];
+        switch ( $this->getUser()->getBianxianUserLevel() ){
+            case BianxianUserLevel::VISITOR;
+            case BianxianUserLevel::THINKING;
+
+                // 判断活动开始
+                if( $this->getCheckStatus() ){
+                    if( $this->getProduct()->getCourse()->getStartDate() <= time() ){
+                        $log[] = ['title'=>'活动结束','time'=>date('m-d H:i',$this->getProduct()->getCourse()->getEndDate()) ];
+                        $log[] = ['title'=>'活动开始','time'=>date('m-d H:i',$this->getProduct()->getCourse()->getStartDate()) ];
+                    }else{
+                        $log[] = ['title'=>'等待活动开始','time'=>date('m-d H:i',time())];
+                    }
+                }
+
+                if( $this->getCheckStatus() && $this->getTableNo() ){
+                    $log[] = ['title'=>'生成坐席号：'.$this->getTableNo().'号','time'=>date('m-d H:i',strtotime($this->getCheckAt()))];
+                }
+
+                // 审核状态
+                if( $this->getCheckStatus() == self::CHECK_PASS ){
+                    $log[] = ['title'=>'申请通过','time'=> date('m-d H:i',$this->getCheckAt())];
+                }else if( $this->getCheckStatus() == self::CHECK_PASS ){
+                    $log[] = ['title'=>'申请未通过','time'=> date('m-d H:i',$this->getCheckAt()) ];
+                }else{
+                    $log[] = ['title'=>'等待审核 ','time'=>date('m-d H:i', time() )];
+                }
+
+                if( $this->getTableNo() ){
+                    $log[] = ['title'=>'支付完成活动报名费，并申请活动请求 ','time'=>date('m-d H:i',strtotime($this->getCreatedAt()))];
+                }
+
+                break;
+            case BianxianUserLevel::ADVANCED;
+            case BianxianUserLevel::PARTNER;
+            case BianxianUserLevel::DISTRIBUTOR;
+
+                // 判断活动开始
+                if( $this->getProduct()->getCourse()->getStartDate() <= time() ){
+                    $log[] = ['title'=>'活动结束','time'=>date('m-d H:i',$this->getProduct()->getCourse()->getEndDate()) ];
+                    $log[] = ['title'=>'活动开始','time'=>date('m-d H:i',$this->getProduct()->getCourse()->getStartDate()) ];
+                }else{
+                    $log[] = ['title'=>'等待活动开始','time'=>date('m-d H:i',time())];
+                }
+
+                if( $this->getTableNo() ){
+                    $log[] = ['title'=>'生成坐席号：'.$this->getTableNo().'号','time'=>date('m-d H:i',strtotime($this->getCreatedAt()))];
+                }
+                if( $this->getTableNo() ){
+                    $log[] = ['title'=>'活动报名成功','time'=>date('m-d H:i',strtotime($this->getCreatedAt()))];
+                }
+                break;
+            default:
+                break;
+        }
+        
+        return $log;
     }
 }
