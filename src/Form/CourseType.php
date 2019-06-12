@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\Course;
+use App\Entity\GroupUserOrder;
 use App\Entity\Teacher;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -43,7 +44,7 @@ class CourseType extends AbstractType
                 'placeholder' => '选择课程分类',
                 'attr' => ['class' => 'form-control chosen'],
                 'class' => Category::class,
-                'required' => false,
+                'required' => true,
                 'choice_label' => function (Category $category) {
                      if (!empty($category->getParentCategory())) {
                          return $category->getParentCategory()->__toString() .'-'.$category->__toString();
@@ -83,6 +84,12 @@ class CourseType extends AbstractType
             ->add('totalGroupUserOrdersRequired', IntegerType::class, [
                 'label' => '集call开启课程订单量',
                 'required' => true
+            ])
+            ->add('unlockType', ChoiceType::class, [
+                'label' => '解锁方式',
+                'mapped' => false,
+                'required' => true,
+                'choices' => array_flip(Course::$unlockTypeTexts)
             ])
             ->add('shortDescription', TextareaType::class, [
                 'label' => '课程描述',

@@ -38,7 +38,7 @@ class ErrorCode
     const ERROR_FOLLOW_NOTFIND = 12010;
     const ERROR_MESSAGE_NOT_FIND = 12011;
     //-------课程---------------------------------------
-
+    const ERROR_CATEGORY_NOT_EXISTS = 13001;
     //-------产品---------------------------------------
     const ERROR_PRODUCT_NOT_EXISTS = 14001;
     //-------订单---------------------------------------
@@ -94,6 +94,7 @@ class ErrorCode
             self::ERROR_PAY_ORDER_ALREADY_WAIT => '订单已经待支付',
             self::ERROR_SMS_CLIENT_INIT => '短信客户端初始化失败',
             self::ERROR_SMS_SEND_RESPONSE => '短信发送失败',
+            self::ERROR_CATEGORY_NOT_EXISTS => '课程类别不存在',
         ];
     }
 
