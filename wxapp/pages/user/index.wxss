@@ -6,6 +6,7 @@
   align-items: center;
   border: 1px solid #ededed;
   padding: 20rpx;
+  background-color: #ffee94;
 }
 .top .left {
   display: flex;
@@ -24,13 +25,14 @@
   border-radius: 50%;
 }
 .top .right {
-  text-align: center;
+  display: flex;
+  align-items: center;
 }
 .top .right image {
-  width: 23rpx;
-  height: 25rpx;
+  width: 60rpx;
+  height: 60rpx;
   vertical-align: text-top;
-  margin-right: 5rpx;
+  margin-right: 20rpx;
 }
 .top .right .myreward {
   font-size: 24rpx;
@@ -38,7 +40,7 @@
   border-radius: 20rpx;
   padding: 0 20rpx;
 }
-.top .right navigator {
+.top .right .login {
   font-size: 24rpx;
   color: #ff4d42;
   border: 1px solid #ff4d42;
@@ -54,6 +56,12 @@
 .row .left {
   font-size: 30rpx;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+}.row .left image {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 20rpx;
 }
 .row .right {
   font-size: 24rpx;
@@ -70,7 +78,7 @@
   transform: rotate(45deg);
 }
 .row .step {
-  font-size: 24rpx;
+  font-size: 30rpx;
   display: flex;
   flex-direction: column;
   align-items: center;

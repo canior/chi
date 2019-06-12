@@ -15,56 +15,56 @@ Page({
     imgUrlPrefix: app.globalData.imgUrlPrefix,
     groupOrder: null,
     openUserOrder: null, //开团人订单
-    joinUserOrder: null, //参团人订单
+    joinUserOrders: null, //参团人订单
+    restUserOrders: null, //剩余订单
     productReviewData: {},
     moreProducts: [],
     shareData: {},
     bottomData: {},
     btnDisabled: false, //防止连击button
     countdown: {hr: '00', min: '00', sec: '00'}, //倒计时数据
+    textMetaArray: null
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const id = options.id ? options.id : 10216;
-    if (id) {
-      this.getGroupOrder(id);      
-    }
+    //options.scene = encodeURIComponent('ss=123&p=456&go=789');
+    console.log(options);
+    var id = options.id ? options.id : app.parseScene(options, 'go')
+    this.getGroupOrder(id);
     app.buriedPoint(options)
-    /*app.userActivityCallback = res => {
+    const that = this;
+    app.userActivityCallback = res => {
+      that.getGroupOrder(id);
       app.buriedPoint(options)
-      this.setData({
-        isLogin: app.globalData.isLogin,
-        user: app.globalData.user
-      })
-    }*/
+    }    
   },
 
   getGroupOrder: function(id) {
     const that = this;
-    const pages = getCurrentPages();
-    const currentPageUrl = '/' + pages[pages.length - 1].route;
+    const thirdSession = wx.getStorageSync('thirdSession');
+    if (!thirdSession) return;
     wx.request({
       url: app.globalData.baseUrl + '/groupOrder/view',
       data: {
+        thirdSession: thirdSession,        
         groupOrderId: id,
-        url: currentPageUrl
+        url: '/pages/group/index?id=' + id
       },
       method: 'POST',
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
           var groupOrder = res.data.data.groupOrder;
-          groupOrder.product.realPrice = app.roundFixed(parseFloat(groupOrder.product.price) + parseFloat(groupOrder.product.freight), 2);
-          groupOrder.product.realGroupPrice = app.roundFixed(parseFloat(groupOrder.product.groupPrice) + parseFloat(groupOrder.product.freight), 2);
-          that.setGroupData(groupOrder);
+          var textMetaArray = res.data.data.textMetaArray;
+          that.setGroupData(groupOrder, textMetaArray);
           share.setShareSources(that, res.data.data.shareSources)          
           if (groupOrder.status == 'completed') {//拼团完成
             // 更多精彩拼团
             that.setData({
-              moreProducts: res.data.data.product.similarProducts
+              moreProducts: []//res.data.data.product.similarProducts
             })
           } else {//拼团未完成:pending, expired
             // 产品评价
@@ -147,24 +147,26 @@ Page({
   },
 
   // 设置拼团数据，包括用户类型,开团订单,参团订单
-  setGroupData: function (groupOrder) {
+  setGroupData: function (groupOrder, textMetaArray) {
     var userType = null;
     var openUserOrder = null;
-    var joinUserOrder = null;
+    var joinUserOrders = [];
+    var restUserOrders = [];
     // 开团订单,参团订单
     groupOrder.groupUserOrders.forEach((item) => {
         if (item.isMasterOrder) {
           openUserOrder = item
         } else {
-          joinUserOrder = item
+          joinUserOrders.push(item)
         }
     })
+    for (var i = 0; i < groupOrder.restNumOrderRequired; i++) restUserOrders[i] =1;
     // 用户类型
     const user = this.data.user;
     if (user) {//登录用户
       if (user.id == groupOrder.user.id) {//开团人
         userType = 'open';
-      } else if (joinUserOrder && joinUserOrder.user.id == user.id) {//参团人
+      } else if (joinUserOrders.length > 0 && this.in_array(joinUserOrders, user.id)) {//参团人
         userType = 'join'
       } else {//其它登录用户
         userType = 'other'
@@ -177,9 +179,20 @@ Page({
       groupOrder: groupOrder,
       userType: userType,
       openUserOrder: openUserOrder,
-      joinUserOrder: joinUserOrder
+      joinUserOrders: joinUserOrders,
+      restUserOrders: restUserOrders,
+      textMetaArray: textMetaArray
     })
   },
+
+  in_array: function (joinUserOrders, useId) {
+    for (var i in joinUserOrders) {
+      if (joinUserOrders[i].user.id == useId) {
+        return true;
+      }
+    }
+    return false;
+  },  
 
   // 产品评价图片预览
   wxPreviewImage(e) {
@@ -214,12 +227,6 @@ Page({
         wx.hideLoading();
         console.log(res.data.data)
         if (res.statusCode == 200 && res.data.code == 200) {
-          wx.redirectTo({
-            url: '/pages/group/pay?orderId=' + res.data.data.groupUserOrder.id,
-          })
-        } else if (res.statusCode == 200 && res.data.code == 302) {
-          console.log('group order is expired or completed');
-          //---拼团订单已被其它参团人抢先支付了
           wx.redirectTo({
             url: '/pages/group/index?id=' + that.data.groupOrder.id,
           })
@@ -260,24 +267,23 @@ Page({
   // 转首页
   wxHome: function (e) {
     wx.switchTab({
-      url: '/pages/product/index',
+      url: '/pages/course/index',
     })
   },
 
-  // 转产品返现详情
-  toProductReward: function () {
+  toUpgrade: function () {
     wx.navigateTo({
-      url: "/pages/product/reward"
+      url: "/pages/user/upgrade/index"
     });
   },
+
+  wxViewCourse: function () {
+    const textMetaArray = this.data.textMetaArray;
+    wx.navigateTo({
+      url: '/pages/course/video?id=' + this.data.groupOrder.product.productId + '&title=' + (textMetaArray ? textMetaArray.text_watch_meta.textMeta : null),
+    })
+  },
   
-  // 单独购买提醒弹窗
-  wxShowModal: function (e) {
-    bottom.showModal(this)
-  },
-  wxHideModal: function (e) {
-    bottom.hideModal(this)
-  },
   // 单独购买
   wxCreateOrder: function (e) {
     bottom.createOrder(this, app.globalData.baseUrl + '/groupUserOrder/create', this.data.groupOrder.product.id)

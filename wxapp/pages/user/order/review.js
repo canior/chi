@@ -23,6 +23,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     app.buriedPoint(options)
     this.getGroupUserOrder(options.id);
   },
@@ -214,6 +215,10 @@ Page({
       stackIndex: this.data.stackIndex - 1
     })
     console.log(stack, this.data)
+  },
+
+  formSubmit: function (e) {
+    this.submit();
   },
 
   /**

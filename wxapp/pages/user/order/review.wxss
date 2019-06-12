@@ -1,7 +1,7 @@
 /* pages/user/order/review.wxss */
 .row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding: 20rpx 0;
 }
 .row .left {
@@ -123,6 +123,6 @@
   font-size: 30rpx;
   color: #000;
   background-color: #ffdf00;
-  padding: 30rpx;
+  padding: 20rpx;
 }
 

@@ -1,5 +1,6 @@
 // pages/user/index.js
 const app = getApp()
+const util = require('../../utils/util.js');
 Page({
 
   /**
@@ -8,20 +9,22 @@ Page({
   data: {
     isLogin: null,
     user: null,
+    textMeta: null
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     app.buriedPoint(options)
   },
 
-  // 转我的拼团
-  toUserGroup: function () {
+  // 转个人信息
+  toUserInfo: function () {
     if (this.data.isLogin) {
       wx.navigateTo({
-        url: '/pages/user/group/index',
+        url: '/pages/user/info/index',
       })
     } else {
       wx.navigateTo({
@@ -30,12 +33,11 @@ Page({
     }
   },
 
-  // 转我的订单
-  toUserOrder: function (e) {
-    var status = e.currentTarget.dataset.status
+  // 转我的账户
+  toMyAccount: function () {
     if (this.data.isLogin) {
       wx.navigateTo({
-        url: '/pages/user/order/index?status=' + status,
+        url: '/pages/user/account/index',
       })
     } else {
       wx.navigateTo({
@@ -44,7 +46,83 @@ Page({
     }
   },
 
-  // 转地址管理
+  // 转我的推荐
+  toReferral: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/referral/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },
+
+  // 转我的名额
+  toQuota: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/quota/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },
+
+  // 转我的课程
+  toMyCourse: function () {
+    wx.switchTab({
+      url: '/pages/user/course/index',
+    })
+  },  
+
+  // 转我的学员
+  toMyStudent: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/student/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },
+
+  toLogin: function () {
+    wx.navigateTo({
+      url: '/pages/user/login',
+    })
+  },
+
+  toUpgrade: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/upgrade/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },
+
+  toInvite: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/upgrade/invite',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },  
+
+  // 转我的地址
   toUserAddress: function () {
     if (this.data.isLogin) {
       wx.navigateTo({
@@ -57,11 +135,84 @@ Page({
     }
   },
 
-  // 转我的收益
-  toUserReward: function () {
-    wx.switchTab({
-      url: '/pages/user/reward/index',
+  // 转我的集Call
+  toMyCall: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/call/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },
+
+  // 转我的订单
+  toMyOrder: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/order/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },
+
+  toMySales: function () {
+    if (this.data.isLogin) {
+      wx.navigateTo({
+        url: '/pages/user/sales/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/user/login',
+      })
+    }
+  },  
+
+  // 报到或签到
+  createCourseStudent: function (courseId, status) {
+    const that = this;
+    wx.request({
+      url: app.globalData.baseUrl + '/user/signInCourse',
+      data: {
+        thirdSession: wx.getStorageSync('thirdSession'),
+        courseId: courseId,
+        courseStudentStatus: status
+      },
+      method: 'POST',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          wx.navigateTo({
+            url: '/pages/user/course/log?id=' + courseId
+          });
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
     })
+  },  
+
+  // 扫一扫
+  toScan: function () {
+    wx.scanCode({
+      onlyFromCamera: true,
+      success: (res) => {
+        console.log(res)
+        var courseId = util.getQueryVariable(res.result, 'courseId');
+        var status = util.getQueryVariable(res.result, 'status');
+        wx.navigateTo({
+          url: '/pages/user/offlineCourse/log?courseId=' + courseId + '&status=' + status,
+        })
+      }
+    });
   },
 
   /**
@@ -75,10 +226,15 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.setData({
-      isLogin: app.globalData.isLogin,
-      user: app.globalData.user
-    })
+    const that = this
+    app.userActivityCallback = res => {
+      that.setData({
+        isLogin: app.globalData.isLogin,
+        user: app.globalData.user,
+        textMeta: app.globalData.textMeta
+      })
+    }
+    app.getUserInfo();
   },
 
   /**

@@ -1,12 +1,15 @@
 var __data = {
   productReviews: [],  
   page: 1,
-  limit: 5,
+  limit: 20,
   hasMore: false,
   url: ''
 }
 
 function init(that, url) {
+  __data.productReviews = [];
+  __data.page = 1;
+  __data.hasMore = false;
   __data.url = url;
   that.setData({
     productReviewData: __data

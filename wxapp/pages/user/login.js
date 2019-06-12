@@ -6,6 +6,9 @@ Page({
    * 页面的初始数据
    */
   data: {
+    bannerMeta: null,
+    retUrl: null,
+    imgUrlPrefix: app.globalData.imgUrlPrefix,
     canIUse: wx.canIUse('button.open-type.getUserInfo')
   },
 
@@ -13,20 +16,56 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
+    this.getBanner()
     app.buriedPoint(options)
+    this.setData({
+      retUrl: options.retUrl ? decodeURIComponent(options.retUrl) : null
+    })
   },
 
+  // 获取banner
+  getBanner: function () {
+    const that = this;
+    wx.request({
+      url: app.globalData.baseUrl + '/user/preLogin',
+      success: (res) => {
+        if (res.statusCode == 200 && res.data.code == 200) {
+          console.log(res.data.data)
+          that.setData({
+            bannerMeta: res.data.data
+          })
+        } else {
+          console.log('wx.request return error', res.statusCode);
+        }
+      },
+      fail(e) {
+      },
+      complete(e) { }
+    })
+  },
+
+  // Banner跳转
+  redirect: function (e) {
+    if (e.currentTarget.dataset.url) {
+      wx.reLaunch({
+        url: e.currentTarget.dataset.url,
+      })
+    }
+  },
+  
   // bindgetuserinfo: 授权并登录
   getUserInfo: function (e) {
+    const that = this;
     let userInfo = e.detail.userInfo
     if (userInfo) {// 用户接受授权
       //console.log('login', e.detail.userInfo)
       app.globalData.userInfo = e.detail.userInfo;
       if (app.globalData.isLogin) {// 有thirdSession,登录成功
-        wx.navigateBack()
+        that.back()
       } else {// 无thirdSession,继续登录
         app.login(userInfo, function () {
-          wx.navigateBack()
+          that.back()
         });
       }
     } else {// 用户拒绝授权
@@ -61,39 +100,20 @@ Page({
     })
   },
 
-  // 手机登录
-  tapMobileLogin: function (e) {
-    let userInfo = e.detail.userInfo
-    if (userInfo) {// 用户接受授权
-      //console.log('login', e.detail.userInfo)
-      app.globalData.userInfo = e.detail.userInfo;
-      const pages = getCurrentPages();
-      const prevPageUrl = '/' + pages[pages.length - 2].route;
-      console.log('prevPageUrl', prevPageUrl)
-      if (app.globalData.isLogin) {// 有thirdSession,登录成功
-        //wx.navigateBack()
-        wx.navigateTo({
-          url: '/pages/user/mobile/login?retUrl=' + prevPageUrl,
-        })
-      } else {// 无thirdSession,继续登录
-        app.login(userInfo, function () {
-          //wx.navigateBack()
-          wx.navigateTo({
-            url: '/pages/user/mobile/login?retUrl=' + prevPageUrl,
-          })          
-        });
-      }
-    } else {// 用户拒绝授权
-      //console.log('login', '授权被拒绝');
-      wx.showModal({
-        title: '用户未授权',
-        content: '如需使用全部功能，请重新登录',
-        showCancel: false,
-        success: function (res) {
-          if (res.confirm) {
-          }
-        }
-      })
+  // 返回首页
+  toHome: function () {
+    wx.switchTab({
+      url: '/pages/course/index',
+    })
+  },
+
+  // 返回前页
+  back: function () {
+    const retUrl = this.data.retUrl;
+    if (retUrl) {
+      wx.redirectTo({ url: retUrl, })
+    } else {
+      wx.navigateBack()
     }
   },
 

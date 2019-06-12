@@ -8,7 +8,6 @@ Page({
   data: {
     menu: [
       { name: '全部', status: null },
-      { name: '待成团', status: 'created' },
       { name: '待发货', status: 'pending' },
       { name: '已发货', status: 'shipping' },
       { name: '已收货', status: 'delivered' }
@@ -22,6 +21,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     app.buriedPoint(options)
     this.setData({
         curStatus: options.status ? options.status : null
@@ -34,7 +34,8 @@ Page({
       url: app.globalData.baseUrl + '/user/groupUserOrders/',
       data: {
         thirdSession: wx.getStorageSync('thirdSession'),
-        groupUserOrderStatus: status
+        groupUserOrderStatus: status,
+        productType: 'product'
       },
       method: 'POST',
       success: (res) => {

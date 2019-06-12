@@ -16,6 +16,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     const orderId = options.orderId
     console.log('groupUserOrderId=' + orderId);
     this.getGroupUserOrder(orderId)
@@ -126,16 +127,11 @@ Page({
                 success: (res) => {
                   if (res.statusCode == 200 && res.data.code == 200) {
                     console.log(res.data.data)
-                    const groupOrderId = res.data.data.groupUserOrder.groupOrderId
-                    if (groupOrderId) {//转开团成功页
-                      wx.redirectTo({
-                        url: '/pages/group/index?id=' + groupOrderId,
-                      })
-                    } else {//转订单详情页
-                      wx.redirectTo({
-                        url: '/pages/user/order/detail?id=' + groupUserOrderId,
-                      })
-                    }
+                    //更新user
+                    app.getUserInfo();
+                    wx.redirectTo({
+                      url: '/pages/user/order/detail?id=' + groupUserOrderId,
+                    })
                   } else {
                     console.log('wx.request return error', res.statusCode);
                   }

@@ -8,7 +8,7 @@
 <view class="split-brand"/>
 
 <block wx:for="{{groupUserOrders}}" wx:key="index">
-  <view class="section" bindtap="toProductDetail" data-id="{{item.product.id}}">
+  <view class="section">
     <view class="row">
       <view class="left">订单编号：{{item.id}}</view>
       <view class="right">{{item.createdAt}}</view>
@@ -26,7 +26,7 @@
       <view class="left status">{{item.statusText}}</view>
       <view class="right">
         <button open-type="contact">客服咨询</button>
-        <button bindtap="toUserOrderDetail" data-id="{{item.id}}">订单详情</button>
+        <button catchtap="toUserOrderDetail" data-id="{{item.id}}">订单详情</button>
       </view>
     </view>
   </view>

@@ -1,27 +1,49 @@
 {
-  "pages":[
-    "pages/product/index",
-    "pages/product/detail",
-    "pages/product/reward",
+  "pages": [
+    "pages/course/index",
+    "pages/course/detail",
+    "pages/course/video",
+    "pages/course/pay",
     "pages/group/index",
     "pages/group/pay",
     "pages/user/index",
-    "pages/user/login",
-    "pages/user/mobile/login",
+    "pages/user/info/index",
+    "pages/user/info/update",
+    "pages/user/account/index",
+    "pages/user/account/cashout",
+    "pages/user/account/bank",
     "pages/user/address/index",
     "pages/user/address/edit",
-    "pages/user/group/index",
+    "pages/user/upgrade/index",
+    "pages/user/upgrade/detail",
+    "pages/user/upgrade/invite",
+    "pages/user/referral/index",
+    "pages/user/quota/index",
+    "pages/user/course/index",
+    "pages/user/course/review",
+    "pages/user/student/index",
+    "pages/user/student/list",
+    "pages/user/login",
+    "pages/user/mobile/login",
+    "pages/share/moment",
+    "pages/user/call/index",
     "pages/user/order/index",
     "pages/user/order/detail",
     "pages/user/order/review",
-    "pages/user/reward/index",
-    "pages/share/moment"
+    "pages/user/sales/index",
+    "pages/user/sales/detail",
+    "pages/offlineCourse/index",
+    "pages/offlineCourse/detail",
+    "pages/offlineCourse/pay",
+    "pages/user/offlineCourse/index",
+    "pages/user/offlineCourse/log",
+    "pages/user/offlineCourse/review"
   ],
-  "window":{
-    "backgroundTextStyle":"light",
+  "window": {
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle":"black"
+    "navigationBarTextStyle": "black"
   },
   "tabBar": {
     "borderStyle": "black",
@@ -31,23 +53,30 @@
     "backgroundColor": "#fff",
     "list": [
       {
-        "pagePath": "pages/product/index",
+        "pagePath": "pages/course/index",
         "text": "首页",
-        "iconPath": "images/home.png",
-        "selectedIconPath": "images/home-active.png"
+        "iconPath": "images/new-home.png",
+        "selectedIconPath": "images/new-home-active.png"
       },
       {
-        "pagePath": "pages/user/reward/index",
-        "text": "收益",
-        "iconPath": "images/reward.png",
-        "selectedIconPath": "images/reward-active.png"
+        "pagePath": "pages/offlineCourse/index",
+        "text": "线下活动",
+        "iconPath": "images/new-offline.png",
+        "selectedIconPath": "images/new-offline-active.png"
+      },
+      {
+        "pagePath": "pages/user/course/index",
+        "text": "我的课程",
+        "iconPath": "images/new-course.png",
+        "selectedIconPath": "images/new-course-active.png"
       },
       {
         "pagePath": "pages/user/index",
-        "text": "我的",
-        "iconPath": "images/mine.png",
-        "selectedIconPath": "images/mine-active.png"
+        "text": "个人中心",
+        "iconPath": "images/new-mine.png",
+        "selectedIconPath": "images/new-mine-active.png"
       }
     ]
-  }  
+  },
+  "sitemapLocation": "sitemap.json"
 }

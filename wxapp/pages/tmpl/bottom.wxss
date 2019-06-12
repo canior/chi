@@ -22,9 +22,9 @@
   align-items: center;
   line-height: 40rpx;
 }.chi-bottom .item.home, .chi-bottom .item.service {
-  width: 15%;
+  width: 25%;
 }.chi-bottom .item.btn {
-  width: 35%;
+  width: 60%;
 }
 .chi-bottom .home {
   font-size: 24rpx;
@@ -46,6 +46,12 @@
   background-color: #434343;
 }.chi-bottom .btn.group {
   background-color: #ffdf00;
+}.chi-bottom .btn.other {
+  color: #fff;
+  background-color: #434343;
+}.chi-bottom .btn.gray {
+  color: #fff;
+  background-color: gray;
 }
 .chi-bottom .btn-clear {
   background-color: transparent;

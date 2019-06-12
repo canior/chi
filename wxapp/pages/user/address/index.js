@@ -17,6 +17,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     app.buriedPoint(options)
     if (options.orderId) {//从支付页因选地址而转来
       this.setData({
@@ -58,8 +59,8 @@ Page({
     })
   },
 
-  // 新建地址
-  addAddress: function(e) {
+  // 新建或编辑地址
+  updateAddress: function(e) {
     const id = e.currentTarget.dataset.id ? e.currentTarget.dataset.id : '';
     wx.navigateTo({
       url: '/pages/user/address/edit?id=' + id,

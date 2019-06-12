@@ -64,6 +64,7 @@ App({
               wx.setStorageSync('thirdSession', thirdSession);
               that.globalData.isLogin = that.isLogin();
               that.globalData.user = res.data.data.user;
+              that.globalData.textMeta = res.data.data.textMetaArray;
               if (thirdSession && callback) {
                 callback()
               }
@@ -152,14 +153,38 @@ App({
       },
       success: function (res) {
         if (res.statusCode == 200 && res.data.code == 200) {
+          //options.scene = encodeURIComponent('ss=123&p=456');
+          //console.log('buriedPoint => addShareSource: ', options)
           if (options && options.shareSourceId) {
             that.addShareSource(options.shareSourceId)
+          } else if (options) {
+            let shareSourceId = that.parseScene(options, 'ss')
+            if (shareSourceId) that.addShareSource(shareSourceId)
           }
         }
       },
       fail(e) {},
       complete(e) {}
     });
+  },
+
+  // 解析scene
+  parseScene(options, search) {
+    let result = null;
+    if (options && options.scene) {
+      var scene = decodeURIComponent(options.scene);
+      if (scene) {
+        let params = [];
+        params = scene.split('&');
+        //console.log('params=', params)
+        params.find(item => {
+          let param = item.split('=');
+          if (param[0] == search) { result = param[1]; return }
+        })
+        console.log(search, result)
+      }
+    }
+    return result
   },
 
   // 记录用户来源
@@ -216,12 +241,15 @@ App({
   },
 
   globalData: {
-    appName: '食咖',
-    baseUrl: 'https://laowantong.yunlishuju.com/wxapi',
-    imgUrlPrefix: 'https://laowantong.yunlishuju.com/image/preview',
+    appName: '金秋课堂',
+    baseUrl: 'https://jinqiu.yunlishuju.com/wxapi',
+    imgUrlPrefix: 'https://jinqiu.yunlishuju.com/image/preview',
+    //baseUrl: 'https://laowantong.yunlishuju.com/wxapi',
+    //imgUrlPrefix: 'https://laowantong.yunlishuju.com/image/preview',
     isLogin: false,   //是否授权并登录
     userInfo: null,   //授权后获取的用户信息, 如昵称头像
     user: null,       //用户信息:userId,nickName,...
     addressInfo: null,//微信通讯地址
+    textMeta: null
   }
 })
