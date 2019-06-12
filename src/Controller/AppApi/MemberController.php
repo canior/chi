@@ -598,12 +598,15 @@ class MemberController extends AppApiBaseController
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
             $product = $groupUserOrder->getProduct();
+            $courseCategory = $groupUserOrder->getCourse()->getCourseCategory()?$groupUserOrder->getCourse()->getCourseCategory()->getId():'';
             if ($productType == 'product' and !$product->isCourseProduct() and $product->getProductCategory() == Product::CATEGORY_PRODUCT) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            } else if ($productType == 'onlineCourse' and $product->isCourseProduct() and $product->getCourse()->isOnline() and $product->getProductCategory() == Product::CATEGORY_ONLINE) {
+            } else if ($productType == 'onlineCourse' and $product->isCourseProduct() and $product->getCourse()->isOnline() and $courseCategory == Product::CATEGORY_ONLINE) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            } else if ($productType == 'offlineCourse' and $product->isCourseProduct() and !$product->getCourse()->isOnline() and $product->getProductCategory() == Product::CATEGORY_OFFLINE) {
+            } else if ($productType == 'offlineCourse' and $product->isCourseProduct() and !$product->getCourse()->isOnline() and $courseCategory == Product::CATEGORY_OFFLINE) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
+            }else{
+
             }
         }
 
@@ -653,7 +656,7 @@ class MemberController extends AppApiBaseController
             'shareSourceUsersTotal' => $totalShareSourceUsers,
             'shareSourceUsers' => $shareSourceUserArray,
             'shareSources' => $this->createUserShareSource($user, $url),
-            'bannerMetaArray' => $this->createMySharePageProjectBannerMetas($projectBannerMetaRepository)
+            // 'bannerMetaArray' => $this->createMySharePageProjectBannerMetas($projectBannerMetaRepository)
         ] )->toJsonResponse();
     }
 
