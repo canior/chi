@@ -97,7 +97,7 @@ class CourseController extends AppApiBaseController
 
     /**
      * 获取分类列表
-     * @Route("/course/list")
+     * @Route("/course/list", name="appCourseList", methods= "POST")
      * @param Request $request
      * @param CategoryRepository $categoryRepository
      * @return \Symfony\Component\HttpFoundation\JsonResponse
