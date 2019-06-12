@@ -88,12 +88,12 @@ class AppApiBaseController extends BaseController
 
     /**
      * 异步发送短信
-     * @param $phone
-     * @param $msgData
-     * @param $msgTemplateId
+     * @param string $phone
+     * @param array $msgData   如 ['code' => '678599'] 数组字段和模板ID对应
+     * @param string $msgTemplateId  SMS_47485035 测试模板ID
      * @author zxqc2018
      */
-    public function sendMsg($phone, $msgData, $msgTemplateId)
+    public function sendSmsMsg($phone, array $msgData, string $msgTemplateId)
     {
         $command = new SendMsgCommand($phone, $msgData, $msgTemplateId);
         $qCommand = new EnqueueCommand($command);
