@@ -36,7 +36,7 @@ class CategoryController extends BackendController
                 'page' => $request->query->getInt('page', 1)
             ]
         ];
-        $data['data'] = $categoryRepository->findCategoryListQuery(null, $data['form']['name']);
+        $data['data'] = $categoryRepository->findCategoryListQuery(0, $data['form']['name']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
 
         return $this->render('backend/category/index.html.twig', $data);
