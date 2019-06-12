@@ -9,6 +9,7 @@
 namespace App\Entity;
 
 use App\Entity\Traits\IdTrait;
+use App\Service\Util\CommonUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -707,9 +708,9 @@ class Course implements Dao
     /**
      * @return int
      */
-    public function getLookNum(): int
+    public function getLookNum(): ?int
     {
-        return $this->lookNum;
+        return $this->lookNum ?? 0;
     }
 
     /**
@@ -803,6 +804,8 @@ class Course implements Dao
             'eligibleViewer' => $this->getEligibleViewerUserLevels(),
             'aliyunVideoId' => $this->getAliyunVideoId(),
             'requiredGroupUserOrders' => $this->getTotalGroupUserOrdersRequired(),
+            'topCategoryName' => CommonUtil::getInsideValue($this, 'getCourseActualCategory.getParentCategory.getName', ''),
+            'courseCategoryName' => CommonUtil::getInsideValue($this, 'getCourseCategory.getName', ''),
         ];
     }
 }

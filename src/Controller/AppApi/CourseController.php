@@ -43,7 +43,7 @@ class CourseController extends AppApiBaseController
             'freeZoneBanner' => $this->createHomeFreeZoneBannerMetas($projectBannerMetaRepository),
             'recommendProducts' => $recommendProductsArray,
             'newestProducts' => $newestProductsArray,
-            'category' => CommonUtil::entityArray2DataArray($category),
+            'category' => CommonUtil::entityArray2DataArray($category, 'simpleArray'),
         ];
 
         return CommonUtil::resultData($data)->toJsonResponse();

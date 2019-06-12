@@ -35,38 +35,76 @@ class CommonUtil
     /**
      * entity对象数组转换成entity数据数组
      * @param $entityArray
+     * @param string $keyOrMethodStr
      * @return array
      * @author zxqc2018
      */
-    public static function entityArray2DataArray($entityArray)
+    public static function entityArray2DataArray($entityArray, $keyOrMethodStr = 'array')
     {
         $res = [];
         foreach ($entityArray as $entity) {
-            $res[] = self::obj2Array($entity);
+            $res[] = self::getInsideValue($entity, $keyOrMethodStr);
         }
 
         return $res;
     }
 
-
     /**
-     * 调用对象方法
-     * @param $obj
+     * 查询数组或者对象的值,支持3层嵌套
+     * @param mixed $variable ['a' => 'aa' => 'aaa' => 123]
+     * @param string $keyOrMethodStr a.aa.aaa  假如对象取得属性 如 对象属性[name]  name|getName 属性名(自动拼接get方法)|对象方法名
      * @param mixed $defaultValue 默认值
-     * @param string $method 对象方法
      * @return mixed
      * @author zxqc2018
      */
-    public static function invokingObjMethod($obj, $defaultValue = [], $method = 'getArray')
+    public static function getInsideValue($variable, $keyOrMethodStr = 'array', $defaultValue = [])
     {
         $res = $defaultValue;
 
-        if (empty($obj)) {
+        if (is_null($variable)) {
             return $res;
         }
 
-        if (method_exists($obj, $method)) {
-            $res = $obj->$method();
+        $isObj = is_object($variable);
+        $isArray = is_array($variable);
+
+        if (!$isObj && !$isArray) {
+            return $res;
+        }
+
+        //简单获取一级数组或对象值
+        $singleGetVal = function ($val, $key) use ($defaultValue){
+            $res = $val;
+            if (is_null($val)) {
+                $res = $defaultValue;
+            } else if (is_array($val)) {
+                $res = $val[$key] ?? $defaultValue;
+            } else if (is_object($val)){
+                if (method_exists($val, $key)) {
+                    $res = $val->$key();
+                } else {
+                    $key = 'get' . ucfirst($key);
+                    if (method_exists($val, $key)) {
+                        $res = $val->$key();
+                    } else {
+                        $res = $defaultValue;
+                    }
+                }
+            }
+
+            return $res;
+        };
+
+        $parts = self::myExplode($keyOrMethodStr, '.');
+        switch (count($parts)) {
+            case 1:
+                $res = $singleGetVal($variable, $parts[0]);
+                break;
+            case 2:
+                $res = $singleGetVal($singleGetVal($variable, $parts[0]), $parts[1]);
+                break;
+            default:
+                $res = $singleGetVal($singleGetVal($singleGetVal($variable, $parts[0]), $parts[1]), $parts[2]);
         }
 
         return $res;
@@ -82,7 +120,7 @@ class CommonUtil
      */
     public static function obj2Array($obj, $defaultValue = [], $toArrayMethod = 'getArray')
     {
-        return self::invokingObjMethod($obj, $defaultValue, $toArrayMethod);
+        return self::getInsideValue($obj, $toArrayMethod, $defaultValue);
     }
 
 
@@ -96,7 +134,7 @@ class CommonUtil
      */
     public static function obj2Id($obj, $defaultValue = 0, $toIdMethod = 'getId')
     {
-        return self::invokingObjMethod($obj, $defaultValue, $toIdMethod);
+        return self::getInsideValue($obj, $toIdMethod, $defaultValue);
     }
 
     /**

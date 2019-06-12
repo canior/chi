@@ -9,6 +9,8 @@
 namespace App\Entity;
 
 use App\Entity\Traits\IdTrait;
+use App\Service\Util\CommonUtil;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -101,6 +103,13 @@ class Category implements Dao
      * @var integer
      */
     private $priority;
+
+    /**
+     * @var Course[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Course", mappedBy="courseActualCategory")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $courses;
 
     public function __construct()
     {
@@ -348,15 +357,69 @@ class Category implements Dao
     {
         return $this->getName();
     }
+
+    /**
+     * @return Course[]|ArrayCollection
+     */
+    public function getCourses()
+    {
+        return $this->courses;
+    }
+
+    /**
+     * @param Course[]|ArrayCollection $courses
+     */
+    public function setCourses($courses): void
+    {
+        $this->courses = $courses;
+    }
+
+    /**
+     * @return int
+     * @author zxqc2018
+     */
+    public function getCategoryLookNum()
+    {
+        $res = 0;
+        foreach ($this->getCourses() as $course) {
+            $res += $course->getLookNum();
+        }
+        return $res;
+    }
+
     /**
      * @return array
      */
     public function getArray()
     {
+        /**
+         * @var Course $firstCourse
+         */
+        $firstCourse = CommonUtil::getInsideValue($this, 'courses.first');
+
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'parentCategoryId' => CommonUtil::getInsideValue($this, 'getParentCategory.getId', 0),
+            'iconFileId' => CommonUtil::getInsideValue($this, 'getIconFile.id', 0),
+            'teacher' => CommonUtil::getInsideValue($firstCourse, 'getTeacher.array', []),
+            'mainImageId' => CommonUtil::getInsideValue($firstCourse, 'getCourseImages.first.getId', 0),
+            'lookNum' => $this->getCategoryLookNum(),
+            'courseNum' => $this->getCourses()->count(),
+        ];
+    }
+
+    /**
+     * 取得简单数组列表
+     * @return array
+     */
+    public function getSimpleArray()
+    {
         return [
             'id' => $this->getId(),
             'name' => $this->getName(),
             'parentCategoryId' => $this->getParentCategory() == null ? 0 : $this->getParentCategory()->getId(),
+            'iconFileId' => CommonUtil::obj2Id($this->getIconFile()),
         ];
     }
 }
