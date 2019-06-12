@@ -179,13 +179,66 @@ class MemberController extends AppApiBaseController
         return CommonUtil::resultData($user->getArray())->toJsonResponse();
     }
 
+    /**
+     * @Route("/sendCode", name="sendCode",  methods={"POST"})
+     * @param Request $request
+     * @param EncoderFactoryInterface $encoderFactory
+     * @param UserManagerInterface $userManager
+     * @return @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function sendCode(Request $request)
+    {
+        $data = json_decode($request->getContent(), true );
+
+        // 请求参数验证
+        $validator = Validation::createValidator(['allowExtraFields'=>true]);
+        $constraint = new Assert\Collection(
+            [
+                'phone' => [
+                    new Assert\Length(['min' => 11,'minMessage'=>'不能低于{{ limit }}个字符'])
+                ],
+            ]
+        );
+        $violations = $validator->validate($data, $constraint);  
+        if ($violations->count() > 0) {
+            $message = [];
+            foreach ($violations as $violation) {
+                $message[] = $violation->getMessage();
+            }
+            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, implode(',', $message))->toJsonResponse();
+        }
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        //生产验证码
+        $phone = isset($data['phone']) ? $data['phone'] : null;
+        $code = rand(1000, 9999);
+        $messageCode = new MessageCode();
+        $messageCode->setPhone($phone);
+        $messageCode->setCode($code);
+        $messageCode->settype(MessageCode::UPDATE_INFO);
+        $this->getEntityManager()->persist($messageCode);
+        $this->getEntityManager()->flush();
+
+        // 发送验证码
+        $msgTemplateId = "SMS_47485035";
+        $msgData = ['code'=>$code];
+        $this->sendSmsMsg($phone, $msgData, $msgTemplateId);
+
+        // 返回
+        return CommonUtil::resultData([])->toJsonResponse();
+    }
 
     /**
      * @Route("/updateUserInfo", name="updateUserInfo",  methods={"POST"})
      * @param Request $request
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function updateUserInfo(Request $request, UserManagerInterface $userManager)
+    public function updateUserInfo(Request $request, UserManagerInterface $userManager, MessageCodeRepository $messageCodeRepository)
     {
         $data = json_decode($request->getContent(), true );
 
@@ -203,6 +256,13 @@ class MemberController extends AppApiBaseController
         $company = isset($data['company']) ? $data['company'] : null;
         $wechat = isset($data['wechat']) ? $data['wechat'] : null;
         $recommanderName = isset($data['recommanderName']) ? $data['recommanderName'] : null;
+
+
+        // 验证Code
+        $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::UPDATE_INFO ]);
+        if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
+        }
 
         // 更新资料
         if($name){
