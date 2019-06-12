@@ -58,7 +58,7 @@ class AliCommon
      * @author zxqc2018
      * @return \App\Service\ResultData
      */
-    public function sendMsg($phone, $tempData, $templateId, $signName = '别吵网')
+    public function sendMsg($phone, $tempData, $templateId, $signName = '佐商学社')
     {
         $res = CommonUtil::resultData();
         try {
