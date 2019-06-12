@@ -237,7 +237,7 @@ class ApiAuthController extends AppApiBaseController
     }
 
     /**
-     * @Route("/image/preview/{fileId}", name="imagePreview",  methods={"GET"})
+     * @Route("/image/preview/{fileId}", name="appImagePreview",  methods={"GET"})
      * @param int $fileId
      * @return Response
      * @throws
