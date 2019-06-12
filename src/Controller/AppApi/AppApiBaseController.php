@@ -99,7 +99,7 @@ class AppApiBaseController extends BaseController
         $qCommand = new EnqueueCommand($command);
         try {
             $this->getCommandBus()->handle($qCommand);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             CommonUtil::resultData()->throwErrorException(ErrorCode::ERROR_SMS_SEND_RESPONSE, [], 'can not add SendMsgCommand into EnqueueCommand: ' . $e->getMessage());
         }
     }
