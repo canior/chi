@@ -898,7 +898,8 @@ class MemberController extends AppApiBaseController
         $followArray = $followRepository->findMyFollow($user->getId(),$type,$page,self::PAGE_LIMIT);
         foreach ($followArray as $k => $v) {
             switch ($v['type']) {
-                case Follow::COURSE:
+                case Follow::OFFLINE_COURSE:
+                case Follow::ONLINE_COURSE:
                     $course = $courseRepository->find( $v['dataId'] );
                     if($course){
                         $followArray[$k]['course'] = $course->getArray();
