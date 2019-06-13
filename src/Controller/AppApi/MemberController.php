@@ -1042,6 +1042,7 @@ class MemberController extends AppApiBaseController
 
         $data = json_decode($request->getContent(), true);
         $page = isset($data['page']) ? $data['page'] : 1;
+        $isRead = isset($data['isRead']) ? $data['isRead'] : '';
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -1049,12 +1050,16 @@ class MemberController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        $messageQuery = $messageRepository->findMessageQuery($user->getId());
-        $messageArray = $this->getPaginator()->paginate($messageQuery, $page, self::PAGE_LIMIT);
+        $messageQuery = $messageRepository->findMessageQuery($user->getId(),$isRead);
+        $messageArrays = $this->getPaginator()->paginate($messageQuery, $page, self::PAGE_LIMIT);
 
+        $courseArray = [];
+        foreach ($messageArrays as $messageArray) {
+            $courseArray[] = $messageArray->getArray();
+        }
 
         // 返回
-        return CommonUtil::resultData(  ['messageArray'=>$messageArray] )->toJsonResponse();
+        return CommonUtil::resultData(  ['messageArray'=>$courseArray] )->toJsonResponse();
     }
 
 

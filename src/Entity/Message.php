@@ -97,4 +97,14 @@ class Message implements Dao
     {
         $this->user = $user;
     }
+
+    public function getArray() : array {
+        return [
+            'id' => $this->getId(),
+            'isRead' => $this->getIsRead(),
+            'title' => $this->getTitle(),
+            'content' => $this->getContent(),
+            'user' => $this->getUser()->getArray(),
+        ];
+    }
 }
