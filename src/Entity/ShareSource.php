@@ -225,13 +225,15 @@ class ShareSource implements Dao
         return $this;
     }
 
+    public function getContenTypeTexts()
+    {
+        return self::$contentTypes[$this->getContenType()] ?? '';
+    }
+
     public function getPage(): ?string
     {
         return $this->page;
     }
-
-
-
 
     public function getAppRemark(): ?string
     {
@@ -384,6 +386,8 @@ class ShareSource implements Dao
             'title' => $this->title,
             'bannerFileId' => $this->getBannerFile() ? $this->getBannerFile()->getId() : null,
             'page' => $this->getPage(),
+            'course' => $this->getProduct()?$this->getProduct()->getCourse()->getArray():null,
+            'contentTypeText'=>$this->getContenTypeTexts(),
             'remark'=>$this->getAppRemark()
         ];
     }
