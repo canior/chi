@@ -426,6 +426,7 @@ class Category implements Dao
             'isSingleCourse' => $this->isSingleCourse(),
             'courses' => $courses,
             'mainCourseCreateDate' => CommonUtil::getInsideValue($firstCourse, 'getProduct.getCreatedAtFormattedLineDate', ''),
+            'topCategoryName' => CommonUtil::getInsideValue($this, 'getParentCategory.getName', ''),
         ];
     }
 
