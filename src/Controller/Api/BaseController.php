@@ -17,6 +17,7 @@ use App\Entity\User;
 use App\Repository\ProjectBannerMetaRepository;
 use App\Repository\ProjectTextMetaRepository;
 use App\Repository\UserRepository;
+use App\Service\Util\CommonUtil;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Entity\File;
@@ -96,12 +97,16 @@ class BaseController extends DefaultController
      * @return array
      */
     protected function createHomePageProjectBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
-        return [
-            'banner_home_1' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_1])->getArray(),
-            'banner_home_2' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_2])->getArray(),
-            'banner_home_3' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_3])->getArray(),
-            'banner_home_4' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_4])->getArray(),
+
+        $where = [
+            ProjectBannerMeta::BANNER_HOME_1,
+            ProjectBannerMeta::BANNER_HOME_2,
+            ProjectBannerMeta::BANNER_HOME_3,
+            ProjectBannerMeta::BANNER_HOME_4,
         ];
+        $banners = CommonUtil::entityArray2DataArray($projectBannerMetaRepository->findBy(['metaKey' => $where]));
+
+        return $banners;
     }
 
     /**
