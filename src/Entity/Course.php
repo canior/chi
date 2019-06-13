@@ -867,6 +867,7 @@ class Course implements Dao
             'courseImages' => $courseImageArray,
             'courseSpecImages' => $courseSpecImagesArray,
             'reviewsNum' => $this->getProduct()->getTotalActiveReviews(),
+            'lookNum' => $this->getLookNum(),
             'courseVideos' => $courseVideosArray,
             'shareImageFileId' => $this->getShareImageFile() ? $this->getShareImageFile()->getId() : null,
             'totalStudents' => $this->getTotalStudentUsers(),
