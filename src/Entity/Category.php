@@ -356,7 +356,7 @@ class Category implements Dao
     /**
      * @param File $iconFile
      */
-    public function setIconFile(File $iconFile): void
+    public function setIconFile(?File $iconFile): void
     {
         $this->iconFile = $iconFile;
     }
