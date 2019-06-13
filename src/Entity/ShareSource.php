@@ -195,6 +195,24 @@ class ShareSource implements Dao
         return $this->page;
     }
 
+    public function getRemark(): ?string
+    {
+        switch ($this->getType()) {
+            case self::REFER_GROUP_ORDER:
+                return "分享了拼团：".$this->getGroupOrder()->getTitle();
+                break;
+            case self::REFER_PRODUCT:
+                return "分享了产品：".$this->getProduct()->getTitle();
+                break;
+            case self::REFER_USER:
+                return "分享了用户：".$this->getUser()->getName();
+                break;
+            default:
+                return "分享了";
+                break;
+        }
+    }
+
     /**
      * 如果是raw，则生成shareSourceId
      * @param string|null $page
@@ -305,6 +323,7 @@ class ShareSource implements Dao
             'title' => $this->title,
             'bannerFileId' => $this->getBannerFile() ? $this->getBannerFile()->getId() : null,
             'page' => $this->getPage(),
+            'remark'=>$this->getRemark()
         ];
     }
 
