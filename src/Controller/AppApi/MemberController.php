@@ -697,7 +697,7 @@ class MemberController extends AppApiBaseController
         }
         
         $totalShareSourceUsers = $userRepository->findTotalShareUsers($user->getId(), null);
-        $totalValidShareSourceUsers = $user->getSubUsers()->count();
+        // $totalValidShareSourceUsers = $user->getSubUsers()->count();
 
         /* 临时更改 我的分享列出来全部用户头像， 需要加入下拉更新  */
         $shareSourceUsers = $userRepository->findShareUsers($user->getId(), null, $page, null);
@@ -713,11 +713,11 @@ class MemberController extends AppApiBaseController
 
         // 返回
         return CommonUtil::resultData( [
-            'validShareSourceUsersTotal' => $totalValidShareSourceUsers,
+            // 'validShareSourceUsersTotal' => $totalValidShareSourceUsers,
             'shareSourceUsersTotal' => $totalShareSourceUsers,
             'shareSourceUsers' => $shareSourceUserArray,
-            'shareSources' => $this->createUserShareSource($user, $url),
-            // 'bannerMetaArray' => $this->createMySharePageProjectBannerMetas($projectBannerMetaRepository)
+            // 'shareSources' => $this->createUserShareSource($user, $url),
+            'bannerMetaArray' => $this->createMySharePageProjectBannerMetas($projectBannerMetaRepository)
         ] )->toJsonResponse();
     }
 
