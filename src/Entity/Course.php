@@ -800,6 +800,14 @@ class Course implements Dao
      */
     public function getUnlockType(): ?string
     {
+        //老数据
+        if (empty($this->unlockType)) {
+            if (empty($this->getPrice())) {
+                $this->setUnlockType(self::UNLOCK_TYPE_FOUR);
+            } else {
+                $this->setUnlockType(self::UNLOCK_TYPE_ONE);
+            }
+        }
         return $this->unlockType;
     }
 
@@ -817,14 +825,6 @@ class Course implements Dao
      */
     public function getUnlockTypeText()
     {
-        //老数据
-        if (empty($this->getUnlockType())) {
-            if (empty($this->getPrice())) {
-                $this->setUnlockType(self::UNLOCK_TYPE_FOUR);
-            } else {
-                $this->setUnlockType(self::UNLOCK_TYPE_ONE);
-            }
-        }
         return self::$unlockTypeTexts[$this->getUnlockType()] ?? '';
     }
 
@@ -879,6 +879,8 @@ class Course implements Dao
             'requiredGroupUserOrders' => $this->getTotalGroupUserOrdersRequired(),
             'topCategoryName' => CommonUtil::getInsideValue($this, 'getCourseActualCategory.getParentCategory.getName', ''),
             'courseCategoryName' => CommonUtil::getInsideValue($this, 'getCourseCategory.getName', ''),
+            'unlockType' => $this->getUnlockType(),
+            'unlockTypeText' => $this->getUnlockTypeText(),
         ];
     }
 }
