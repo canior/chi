@@ -20,6 +20,18 @@ use Doctrine\Common\Collections\Criteria;
  */
 class Course implements Dao
 {
+    const UNLOCK_TYPE_ONE = 'buy_type_one';
+    const UNLOCK_TYPE_TWO = 'buy_type_two';
+    const UNLOCK_TYPE_THREE = 'buy_type_three';
+    const UNLOCK_TYPE_FOUR = 'buy_type_four';
+
+    public static $unlockTypeTexts = [
+        self::UNLOCK_TYPE_ONE => '需要拼团,有价格',
+        self::UNLOCK_TYPE_TWO => '需要拼团,无价格',
+        self::UNLOCK_TYPE_THREE => '不需要拼团,有价格',
+        self::UNLOCK_TYPE_FOUR => '不需要拼团,无价格',
+    ];
+
     use IdTrait;
 
     /**
@@ -122,6 +134,12 @@ class Course implements Dao
      * })
      */
     private $courseActualCategory;
+
+    /**
+     * @var string
+     * @ORM\Column(name="unlock_type", type="string", length=20, nullable=true)
+     */
+    private $unlockType;
 
     public function __construct() {
         $product = new Product();
@@ -764,6 +782,55 @@ class Course implements Dao
     /**
      * @return array
      */
+    public static function getUnlockTypeTexts(): array
+    {
+        return self::$unlockTypeTexts;
+    }
+
+    /**
+     * @param array $unlockTypeTexts
+     */
+    public static function setUnlockTypeTexts(array $unlockTypeTexts): void
+    {
+        self::$unlockTypeTexts = $unlockTypeTexts;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnlockType(): ?string
+    {
+        return $this->unlockType;
+    }
+
+    /**
+     * @param string $unlockType
+     */
+    public function setUnlockType(string $unlockType): void
+    {
+        $this->unlockType = $unlockType;
+    }
+
+    /**
+     * @return mixed|string
+     * @author zxqc2018
+     */
+    public function getUnlockTypeText()
+    {
+        //老数据
+        if (empty($this->getUnlockType())) {
+            if (empty($this->getPrice())) {
+                $this->setUnlockType(self::UNLOCK_TYPE_FOUR);
+            } else {
+                $this->setUnlockType(self::UNLOCK_TYPE_ONE);
+            }
+        }
+        return self::$unlockTypeTexts[$this->getUnlockType()] ?? '';
+    }
+
+    /**
+     * @return array
+     */
     public function getArray() : array {
         $courseImageArray = [];
         foreach ($this->getProduct()->getProductImages() as $productImage) {
@@ -780,6 +847,12 @@ class Course implements Dao
             $courseVideosArray[] = $productVideo->getArray();
         }
 
+        /**
+         * isCall: true,      // 是否集Call
+        isAloneBuy: true,     // 是否单买
+        isPermission: false,  //有无权限
+        timeOutCall: true,    // 集Call是否过时
+         */
         return [
             'id' => $this->getId(),
             'productId' => $this->getProduct()->getId(),

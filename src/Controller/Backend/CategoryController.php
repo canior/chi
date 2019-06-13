@@ -85,10 +85,9 @@ class CategoryController extends BackendController
             $iconFile = null;
             if (!empty($iconFileId)) {
                 $iconFile = $fileRepository->find($iconFileId);
-            }
-
-            if (empty($iconFile)) {
-                return new Response('页面错误', 500);
+                if (empty($iconFile)) {
+                    return new Response('页面错误', 500);
+                }
             }
 
             if (!empty($parentId)) {
@@ -159,10 +158,9 @@ class CategoryController extends BackendController
                  * @var File $iconFile
                  */
                 $iconFile = $fileRepository->find($iconFileId);
-            }
-
-            if (empty($iconFile)) {
-                return new Response('页面错误', 500);
+                if (empty($iconFile)) {
+                    return new Response('页面错误', 500);
+                }
             }
 
             $category->setIconFile($iconFile);

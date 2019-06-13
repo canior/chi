@@ -322,6 +322,14 @@ class Category implements Dao
     }
 
     /**
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isDeleted()
+    {
+        return !empty($this->isDeleted);
+    }
+    /**
      * @return int
      */
     public function getPriority(): int
@@ -348,7 +356,7 @@ class Category implements Dao
     /**
      * @param File $iconFile
      */
-    public function setIconFile(File $iconFile): void
+    public function setIconFile(?File $iconFile): void
     {
         $this->iconFile = $iconFile;
     }
@@ -397,6 +405,15 @@ class Category implements Dao
          */
         $firstCourse = CommonUtil::getInsideValue($this, 'courses.first');
 
+        $courses = [];
+        $sort = [];
+        foreach ($this->getCourses() as $key => $course) {
+            $sort[$key] = $course->getProduct()->getPriority();
+            $tmpArr = $course->getArray();
+            $tmpArr['priority'] = $course->getProduct()->getPriority();
+            $courses[] = $tmpArr;
+        }
+        array_multisort($sort, SORT_DESC, $courses);
         return [
             'id' => $this->getId(),
             'name' => $this->getName(),
@@ -406,6 +423,8 @@ class Category implements Dao
             'mainImageId' => CommonUtil::getInsideValue($firstCourse, 'getCourseImages.first.getId', 0),
             'lookNum' => $this->getCategoryLookNum(),
             'courseNum' => $this->getCourses()->count(),
+            'isSingleCourse' => $this->isSingleCourse(),
+            'courses' => $courses,
             'mainCourseCreateDate' => CommonUtil::getInsideValue($firstCourse, 'getProduct.getCreatedAtFormattedLineDate', ''),
         ];
     }

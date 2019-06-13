@@ -13,6 +13,7 @@ use App\Entity\ProjectBannerMeta;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProjectBannerMetaRepository;
+use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -97,24 +98,56 @@ class CourseController extends AppApiBaseController
 
     /**
      * 获取分类列表
-     * @Route("/course/list", name="appCourseList", methods= "POST")
+     * @Route("/category/list", name="appGategoryList", methods= "POST")
      * @param Request $request
      * @param CategoryRepository $categoryRepository
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      * @author zxqc2018
      */
-    public function categoryCoursesAction(Request $request, CategoryRepository $categoryRepository)
+    public function categoryListAction(Request $request, CategoryRepository $categoryRepository)
     {
         $requestProcess = $this->processRequest($request, [
             'cateId', 'page', 'pageNum'
         ], ['cateId']);
         $user = $this->getAppUser();
 
-        $categoryQuery = $categoryRepository->findCategoryListQuery($requestProcess['cateId']);
+        $parentCategory = $categoryRepository->find($requestProcess['cateId']);
+
+        if (empty($parentCategory)) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_CATEGORY_NOT_EXISTS, []);
+        }
+        $categoryQuery = $categoryRepository->findCategoryListQuery($requestProcess['cateId'], '', null);
         $categoryList = $this->getPaginator()->paginate($categoryQuery, $requestProcess['page'], $requestProcess['pageNum']);
 
         return $requestProcess->toJsonResponse([
             'categoryList' => CommonUtil::entityArray2DataArray($categoryList),
+            'user' => CommonUtil::getInsideValue($user, 'array')
+        ]);
+    }
+
+    /**
+     * 获取分类详情
+     * @Route("/category/detail", name="appCategoryDetail", methods= "POST")
+     * @param Request $request
+     * @param CategoryRepository $categoryRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @author zxqc2018
+     */
+    public function categoryDetailAction(Request $request, CategoryRepository $categoryRepository)
+    {
+        $requestProcess = $this->processRequest($request, [
+            'cateId'
+        ], ['cateId']);
+        $user = $this->getAppUser();
+
+        $parentCategory = $categoryRepository->find($requestProcess['cateId']);
+
+        if (empty($parentCategory)) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_CATEGORY_NOT_EXISTS, []);
+        }
+
+        return $requestProcess->toJsonResponse([
+            'category' => $parentCategory->getArray(),
             'user' => CommonUtil::getInsideValue($user, 'array')
         ]);
     }

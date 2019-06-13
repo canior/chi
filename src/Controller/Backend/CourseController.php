@@ -65,8 +65,10 @@ class CourseController extends BackendController
 
             $status = $request->request->get('course')['status'];
             $subject = $request->request->get('course')['subject'];
+            $unlockType = $request->request->get('course')['unlockType'];
             $course->setStatus($status);
             $course->setSubject($subject);
+            $course->setUnlockType($unlockType);
 
             //假如选择一级分类默认创建一个二级的单课类别
             if (empty($course->getCourseCategory()->getParentCategory())) {
@@ -143,6 +145,7 @@ class CourseController extends BackendController
         $form = $this->createForm(CourseType::class, $course);
         $form->get('status')->setData(array_search($course->getProduct()->getStatusText(), Product::$statuses));
         $form->get('subject')->setData(array_search($course->getSubjectText(), Subject::$subjectTextArray));
+        $form->get('unlockType')->setData(array_search($course->getUnlockTypeText(), Course::$unlockTypeTexts));
 
         /**
          * @var Category $originCourseCategory
@@ -201,6 +204,7 @@ class CourseController extends BackendController
         if ($form->isSubmitted() && $form->isValid()) {
             $status = $request->request->get('course')['status'];
             $subject = $request->request->get('course')['subject'];
+            $unlockType = $request->request->get('course')['unlockType'];
 
             //假如课程有改动
             if ($originCourseCategory !== $course->getCourseCategory()) {
@@ -240,6 +244,7 @@ class CourseController extends BackendController
 
             $course->setStatus($status);
             $course->setSubject($subject);
+            $course->setUnlockType($unlockType);
             $this->getEntityManager()->persist($course);
 
             try {
