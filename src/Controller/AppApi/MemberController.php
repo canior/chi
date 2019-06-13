@@ -676,6 +676,50 @@ class MemberController extends AppApiBaseController
     }
 
     /**
+     * 我的拼团列表
+     * @Route("/groupOrders", name="groupOrders", methods="POST")
+     * @param Request $request
+     * @param GroupOrderRepository $groupOrderRepository
+     * @return Response
+     */
+    public function groupOrdersAction(Request $request, GroupOrderRepository $groupOrderRepository) {
+
+        $data = json_decode($request->getContent(), true);
+        $page = isset($data['page']) ? $data['page'] : 1;
+
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        /**
+         * @var string $groupOrderStatus pending, completed, expired
+         */
+        $groupOrderStatus = isset($data['groupOrderStatus']) ? $data['groupOrderStatus'] : null;
+        $groupOrderStatusArray = [];
+        if ($groupOrderStatus != null) {
+            $groupOrderStatusArray[] = $groupOrderStatus;
+        }
+
+
+        $groupOrdersArray = [];
+
+        $groupOrdersQuery = $groupOrderRepository->findGroupOrdersForUserQuery($user->getId(), $groupOrderStatusArray);
+        /**
+         * @var GroupUserOrder[] $groupOrders
+         */
+        $groupOrders = $this->getPaginator()->paginate($groupOrdersQuery, $page,self::PAGE_LIMIT);
+        foreach ($groupOrders as $groupOrder) {
+            $groupOrdersArray[] = $groupOrder->getArray();
+        }
+
+        // 返回
+        return CommonUtil::resultData( ['groupOrders' => $groupOrdersArray ] )->toJsonResponse();
+    }
+
+    /**
      * 查看用户最近的分享记录
      *
      * @Route("/shareList", name="shareList", methods="POST")
