@@ -1147,6 +1147,7 @@ class GroupUserOrder implements Dao
             'carrierName' => $this->getCarrierName(),
             'trackingNo' => $this->getTrackingNo(),
             'timeLine' =>$this->getTimeLine(),
+            'checkStatus' =>$this->getCheckStatus(),
         ];
     }
 
