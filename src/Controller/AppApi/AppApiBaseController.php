@@ -58,12 +58,25 @@ class AppApiBaseController extends BaseController
     {
         $res = CommonUtil::resultData();
 
-        $data = json_decode($request->getContent(), true);
-
+        //默认参数定义
         $isDefaultConvert = $extensionParam['isDefaultConvert'] ?? true;
         $paramKeysDefault = $extensionParam['paramKeysDefault'] ?? [];
         $paginatorAutoProcess = $extensionParam['paginatorAutoProcess'] ?? true;
-        //取得登陆用户
+        $requestDataFrom = $extensionParam['requestDataFrom'] ?? 'ALL';
+
+        switch (strtoupper($requestDataFrom)) {
+            case 'GET':
+                $data = $request->query->all();
+                break;
+            case 'POST':
+                $data = $request->request->all();
+                break;
+            case 'POST_JSON':
+                $data = CommonUtil::mixedTwoWayOpt($request->getContent());
+                break;
+            default:
+                $data = array_merge($request->query->all(), $request->request->all(), CommonUtil::mixedTwoWayOpt($request->getContent()));
+        }
 
         //默认需要转换int 的 key
         $defaultIntKeyArr = [

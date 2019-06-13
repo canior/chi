@@ -8,7 +8,9 @@
 
 namespace App\Service\Util;
 
+use App\Service\ErrorCode;
 use App\Service\ResultData;
+use Throwable;
 
 /**
  * 常用方法
@@ -215,5 +217,55 @@ class CommonUtil
     {
         $env = $_SERVER['APP_ENV'] ?? $_ENV['APP_ENV'] ?? 'dev';
         return (bool) ($_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? ('prod' !== $env));
+    }
+
+    /**
+     * 混合双向操作方法
+     * @param mixed $data 处理的数据
+     * @param int $optType 操作类型 1 序列化 2 json
+     * @param bool $isForward 是否正操作
+     * @param bool $isGrace 是否优雅处理[捕获异常]
+     * @param array $extraData 额外数据
+     * @return mixed
+     * @author zxqc2018
+     */
+    public static function mixedTwoWayOpt($data, $optType = 2, $isForward = false, $isGrace = true, $extraData = [])
+    {
+        $defaultVal = $extraData['defaultVal'] ?? [];
+        $res = $data;
+
+        try {
+            switch ($optType) {
+                case 1:
+                    if (!$isForward) {
+                        //替换转义后的双引号
+                        $data = str_replace("&quot;", '"', $data);
+                        $res  = unserialize($data);
+                    } else {
+                        $res = serialize($data);
+                    }
+                    break;
+                case 2:
+                    if (!$isForward) {
+                        $res = json_decode($data, true);
+                    } else {
+                        $res = json_encode($data, JSON_UNESCAPED_UNICODE);
+                    }
+                    break;
+            }
+        } catch (Throwable $e) {
+            if ($isGrace) {
+                $res = $defaultVal;
+            } else {
+                CommonUtil::resultData()->throwErrorException(ErrorCode::ERROR_COMMON_UNKNOWN_ERROR, []);
+            }
+        }
+
+        //返回默认值
+        if ($isGrace && is_null($res)) {
+            $res = $defaultVal;
+        }
+
+        return $res;
     }
 }

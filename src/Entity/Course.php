@@ -828,6 +828,11 @@ class Course implements Dao
         return self::$unlockTypeTexts[$this->getUnlockType()] ?? '';
     }
 
+    public function isPermission(User $user)
+    {
+
+    }
+
     /**
      * @return array
      */
@@ -847,12 +852,6 @@ class Course implements Dao
             $courseVideosArray[] = $productVideo->getArray();
         }
 
-        /**
-         * isCall: true,      // 是否集Call
-        isAloneBuy: true,     // 是否单买
-        isPermission: false,  //有无权限
-        timeOutCall: true,    // 集Call是否过时
-         */
         return [
             'id' => $this->getId(),
             'productId' => $this->getProduct()->getId(),

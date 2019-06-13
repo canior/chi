@@ -9,16 +9,17 @@
 namespace App\Controller\AppApi;
 
 
-use App\Entity\ProjectBannerMeta;
+use App\Entity\Product;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProjectBannerMetaRepository;
 use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class CourseController extends AppApiBaseController
+class CourseController extends ProductController
 {
     /**
      * 首页
@@ -51,28 +52,6 @@ class CourseController extends AppApiBaseController
     }
 
     /**
-     * 首页轮播banner
-     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
-     * @return array
-     */
-    protected function createProductBanners(ProjectBannerMetaRepository $projectBannerMetaRepository)
-    {
-        $bannersArray = $this->createHomePageProjectBannerMetas($projectBannerMetaRepository);
-        return $bannersArray;
-    }
-
-    /**
-     * 首页免费专区banner
-     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
-     * @return array
-     */
-    protected function createHomeFreeZoneBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
-        return [
-            ProjectBannerMeta::BANNER_HOME_FREE_ZONE => CommonUtil::obj2Array($projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_HOME_FREE_ZONE])),
-        ];
-    }
-
-    /**
      * 首页推荐课程
      * @param CategoryRepository $categoryRepository
      * @return array
@@ -81,19 +60,6 @@ class CourseController extends AppApiBaseController
     protected function findHomeRecommendProducts(CategoryRepository $categoryRepository)
     {
         return CommonUtil::entityArray2DataArray($categoryRepository->findRecommendCategory()->getQuery()->getResult());
-    }
-
-    /**
-     * 首页最新课程
-     * @param ProductRepository $productRepository
-     * @author zxqc2018
-     * @return array
-     */
-    protected function findHomeNewestProducts(ProductRepository $productRepository)
-    {
-        return CommonUtil::entityArray2DataArray($productRepository->findRecommendProductsQueryBuilder(true, [
-            'p.id' => 'desc',
-        ], 6)->getQuery()->getResult());
     }
 
     /**
@@ -150,5 +116,17 @@ class CourseController extends AppApiBaseController
             'category' => $parentCategory->getArray(),
             'user' => CommonUtil::getInsideValue($user, 'array')
         ]);
+    }
+
+    /**
+     * 获取课程详情
+     *
+     * @Route("/auth/courses/{id}", name="courseDetail", methods="GET")
+     * @param Request $request
+     * @param Product $product
+     * @return JsonResponse
+     */
+    public function detailAction(Request $request, Product $product): JsonResponse {
+        return parent::detailAction($request, $product);
     }
 }
