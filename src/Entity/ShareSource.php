@@ -62,9 +62,22 @@ class ShareSource implements Dao
      */
     private $groupOrder;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $contentType;
+
+    // 分享
     const REFER = 'refer';
     const QUAN = 'quan';
+    const APP = 'app';
 
+    // 分享内容的类型
+    const GROUP_ORDER = 'group_order';
+    const PRODUCT = 'product';
+    const USER = 'user';
+
+    // 以下类型为兼容老数据------------------------
     const REFER_GROUP_ORDER = 'referGroupOrder';
     const REFER_PRODUCT = 'referProduct';
     const REFER_USER = 'referUser';
@@ -72,11 +85,14 @@ class ShareSource implements Dao
     const QUAN_GROUP_ORDER = 'quanGroupOrder';
     const QUAN_PRODUCT = 'quanProduct';
     const QUAN_USER = 'quanUser';
+    // 以上类型为兼容老数据------------------------
 
     public static $types = [
         self::REFER => '小程序',
         self::QUAN => '朋友圈',
+        self::APP => '客户端',
 
+        // 以下类型为兼容老数据------------------------
         self::REFER_GROUP_ORDER => '小程序拼团分享',
         self::REFER_PRODUCT => '小程序产品分享',
         self::REFER_USER => '小程序用户分享',
@@ -84,6 +100,13 @@ class ShareSource implements Dao
         self::QUAN_GROUP_ORDER => '朋友圈拼团分享',
         self::QUAN_PRODUCT => '朋友圈产品分享',
         self::QUAN_USER => '朋友圈用户分享',
+        // 以上类型为兼容老数据------------------------
+    ];
+
+    public static $contentTypes = [
+        self::GROUP_ORDER => '拼团',
+        self::PRODUCT => '产品',
+        self::USER => '用户',
     ];
 
     /**
@@ -190,27 +213,64 @@ class ShareSource implements Dao
         return $this;
     }
 
+    public function getContenType(): ?string
+    {
+        return $this->contentType;
+    }
+
+    public function setContenType(string $contentType): self
+    {
+        $this->contentType = $contentType;
+
+        return $this;
+    }
+
     public function getPage(): ?string
     {
         return $this->page;
     }
 
-    public function getRemark(): ?string
+
+
+
+    public function getAppRemark(): ?string
     {
-        switch ($this->getType()) {
+        $remark = null;
+        switch ( $this->getType() ) {
+            case self::APP:
+                switch ( $this->getContenType() ) {
+                    case self::GROUP_ORDER:
+                        $remark = $this->getGroupOrder()?$this->getGroupOrder()->getId():'';
+                        break;
+                    case self::PRODUCT:
+                        $remark = $this->getProduct()?$this->getProduct()->getTitle():'';
+                        break;
+                    case self::USER:
+                        $remark = $this->getUser()?$this->getUser()->getNickname():'';
+                        break;
+                    default:
+                        $remark = '';
+                        break;
+                }
+                break;
+            // 兼容老数据
+            case self::QUAN_GROUP_ORDER:
             case self::REFER_GROUP_ORDER:
-                return "分享了拼团：".$this->getGroupOrder()->getTitle();
+                $remark = $this->getGroupOrder()?$this->getGroupOrder()->getId():'';
                 break;
+            case self::QUAN_PRODUCT:
             case self::REFER_PRODUCT:
-                return "分享了产品：".$this->getProduct()->getTitle();
+                $remark = $this->getProduct()?$this->getProduct()->getTitle():'';
                 break;
+            case self::QUAN_USER:
             case self::REFER_USER:
-                return "分享了用户：".$this->getUser()->getName();
+                $remark = $this->getUser()?$this->getUser()->getNickname():'';
                 break;
             default:
-                return "分享了";
+                $remark = '';
                 break;
         }
+        return $remark;
     }
 
     /**
@@ -320,10 +380,11 @@ class ShareSource implements Dao
             'userId' => $this->getUser() ? $this->getUser()->getId() : null,
             'type' => $this->type,
             'typeText' => $this->getTypeText(),
+            'contentType' => $this->getContenType(),
             'title' => $this->title,
             'bannerFileId' => $this->getBannerFile() ? $this->getBannerFile()->getId() : null,
             'page' => $this->getPage(),
-            'remark'=>$this->getRemark()
+            'remark'=>$this->getAppRemark()
         ];
     }
 
