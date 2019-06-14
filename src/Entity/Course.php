@@ -828,11 +828,55 @@ class Course implements Dao
         return self::$unlockTypeTexts[$this->getUnlockType()] ?? '';
     }
 
+    /**
+     * 判断用户是否有查看权限
+     * @param User $user
+     * @author zxqc2018
+     * @return bool
+     */
     public function isPermission(User $user)
     {
+        $res = false;
 
+        //检查用户等级权限
+        $eligibleViewer = $this->getEligibleViewerUserLevels();
+        foreach ($eligibleViewer as $viewer) {
+
+            if ($viewer == $user->getUserLevel()) {
+
+                //高级VIP 特权VIP 需要判断解锁 系列
+                if (in_array($viewer, [UserLevel::ADVANCED, UserLevel::ADVANCED2])) {
+                    if (!empty($this->getCourseActualCategory()) && $user->getMyUnlockCategory()->contains($this->getCourseActualCategory())) {
+                        $res = true;
+                        break;
+                    }
+                } else {
+                    $res = true;
+                    break;
+                }
+            }
+        }
+
+        if (!empty($res)) {
+            return $res;
+        }
+
+        $newGroupUserOrder = $user->getNewestGroupUserOrder($this->getProduct());
+
+        //判断是否购买
+        if (!empty($newGroupUserOrder) && $newGroupUserOrder->isPaid()) {
+            $res = true;
+        } else if ($this->isFreeNoCall()) {
+            $res = true;
+        }
+
+        return $res;
     }
 
+    public function isFreeNoCall()
+    {
+        return self::UNLOCK_TYPE_FOUR == $this->getUnlockType();
+    }
     /**
      * @return array
      */

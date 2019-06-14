@@ -204,6 +204,15 @@ class GroupUserOrder implements Dao
      */
     private $tableNo;
 
+    /**
+     * @var Category
+     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="unlock_category_id", referencedColumnName="id")
+     * })
+     */
+    private $unlockCategory;
+
     public function __construct() {
         $this->upgradeUserOrders = new ArrayCollection();
         $this->upgradeOrderCoupons = new ArrayCollection();
@@ -1147,7 +1156,7 @@ class GroupUserOrder implements Dao
             'address' => $this->getUserAddress() == null ? null : $this->getUserAddress()->getArray(),
             'carrierName' => $this->getCarrierName(),
             'trackingNo' => $this->getTrackingNo(),
-            'timeLine' =>$this->getTimeLine(),
+//            'timeLine' =>$this->getTimeLine(),
             'checkStatus' =>$this->getCheckStatus(),
             'appStatus'=>$appStatus['appStatus'],
             'appStatusText'=>$appStatus['appStatusText'],
@@ -1160,6 +1169,22 @@ class GroupUserOrder implements Dao
             . ' 金额：￥' . $this->getTotal()
             . ' 状态：' . $this->getStatusText()
             . ' 支付状态 ' . $this->getPaymentStatusText();
+    }
+
+    /**
+     * @return Category
+     */
+    public function getUnlockCategory(): ?Category
+    {
+        return $this->unlockCategory;
+    }
+
+    /**
+     * @param Category $unlockCategory
+     */
+    public function setUnlockCategory(Category $unlockCategory): void
+    {
+        $this->unlockCategory = $unlockCategory;
     }
 
     /**

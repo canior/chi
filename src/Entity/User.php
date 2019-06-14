@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\UpdatedAtTrait;
+use App\Service\Util\CommonUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Model\User as BaseUser;
@@ -1978,6 +1979,58 @@ class User extends BaseUser implements Dao
             return true;
         }
         return false;
+    }
+
+    /**
+     * 获取解锁系列
+     * @return ArrayCollection|Collection
+     * @author zxqc2018
+     */
+    public function getMyUnlockCategory()
+    {
+        $criteria = Criteria::create()
+            ->orderBy(array("id" => Criteria::DESC));
+
+        $groupUserOrders = $this->groupUserOrders->matching($criteria);
+
+        $filteredGroupUserOrders = $groupUserOrders->filter(function (GroupUserOrder $groupUserOrder) {
+            return !empty($groupUserOrder->getUnlockCategory()) && $groupUserOrder->isPaid();
+        });
+        return $filteredGroupUserOrders;
+    }
+
+    /**
+     * 取得课程最新的一张集call订单
+     * @param Product $product
+     * @param bool $isCallOrder
+     * @return GroupUserOrder|null
+     * @author zxqc2018
+     */
+    public function getNewestGroupUserOrder(Product $product, $isCallOrder = null)
+    {
+        $res = null;
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('product', $product))
+            ->orderBy(array("id" => Criteria::DESC));
+
+        $groupUserOrders = $this->groupUserOrders->matching($criteria);
+
+
+        if (!is_null($isCallOrder)) {
+            $filteredGroupUserOrders = $groupUserOrders->filter(function (GroupUserOrder $groupUserOrder) use ($isCallOrder) {
+                return $isCallOrder ? $groupUserOrder->isGroupOrder() : !$groupUserOrder->isGroupOrder();
+            });
+        } else {
+            $filteredGroupUserOrders = $groupUserOrders;
+        }
+
+        if (!$filteredGroupUserOrders->isEmpty()) {
+            /**
+             * @var GroupUserOrder $res;
+             */
+            $res = $filteredGroupUserOrders->first();
+        }
+        return $res;
     }
 
     /**

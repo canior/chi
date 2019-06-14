@@ -52,13 +52,6 @@ class ProductController extends AppApiBaseController
             $requestProcess->throwErrorException(ErrorCode::ERROR_PRODUCT_NOT_EXISTS);
         }
 
-        /**
-         * @var GroupUserOrder $groupUserOrder
-         */
-        $groupUserOrder = $this->findGroupUserOrder($user, $product);
-
-        $groupUserOrderArray = CommonUtil::getInsideValue($groupUserOrder, 'array');
-
         $shareSources = $this->createProductShareSource($user, $product, $url);
 
         /**
@@ -68,15 +61,19 @@ class ProductController extends AppApiBaseController
 
         $data = [
             'product' => $product->getArray(),
-            'groupUserOrder' => $groupUserOrderArray,
             'shareSources' => $shareSources,
             'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
         ];
 
+
         //课程加上对应的权限以及
         if ($product->isCourseProduct()) {
-            $data['callStatus'] = CommonUtil::getInsideValue($groupUserOrder, 'getGroupOrder.getStatus', '');
-            $data['isPermission'] = $product->getCourse()->isExpired();
+            $data['product']['isPermission'] = $product->getCourse()->isPermission($user);
+            $data['product']['callStatus'] = '';
+            if (empty($data['product']['isPermission'])) {
+                $newGroupOrder = $user->getNewestGroupUserOrder($product, true);
+                $data['product']['callStatus'] = CommonUtil::getInsideValue($newGroupOrder, 'getStatus', '');
+            }
         }
         return $requestProcess->toJsonResponse($data);
     }
