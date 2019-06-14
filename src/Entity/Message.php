@@ -38,6 +38,36 @@ class Message implements Dao
      */
     private $user;
 
+
+
+    const TYPE_GROUP_USER_ORDER = 'group_user_order';
+    const TYPE_USER = 'user';
+    const TYPE_FOLLOW = 'follow';
+
+    public static $dateTypes = [
+        self::TYPE_GROUP_USER_ORDER => '订单类消息',
+        self::TYPE_USER => '用户类消息',
+        self::TYPE_FOLLOW => '关注类消息',
+    ];
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var string|null
+     */
+    private $dataType;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $dataId;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=1000, nullable=true)
+     */
+    private $expansionData;
+
     /**
      * GroupUserOrderRewards constructor.
      */
@@ -93,10 +123,59 @@ class Message implements Dao
     /**
      * @param User|null $user
      */
-    public function setUser(?User $user): void
+    public function setUser(string $user): void
     {
         $this->user = $user;
     }
+
+    /**
+     * @return User|null
+     */
+    public function getDataType()
+    {
+        return $this->dataType;
+    }
+
+    /**
+     * @param DataType|null $dataType
+     */
+    public function setDataType(string $dataType): void
+    {
+        $this->dataType = $dataType;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getDataId()
+    {
+        return $this->dataId;
+    }
+
+    /**
+     * @param DataId|null $dataId
+     */
+    public function setDataId(string $dataId): void
+    {
+        $this->dataId = $dataId;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getExpansionData()
+    {
+        return $this->expansionData;
+    }
+
+    /**
+     * @param ExpansionData|null $expansionData
+     */
+    public function setExpansionData(string $expansionData): void
+    {
+        $this->expansionData = $expansionData;
+    }
+
 
     public function getArray() : array {
         return [
@@ -104,6 +183,10 @@ class Message implements Dao
             'isRead' => $this->getIsRead(),
             'title' => $this->getTitle(),
             'content' => $this->getContent(),
+            'user' => $this->getUser()->getArray(),
+            'dataType' => $this->getDataType(),
+            'dataId' => $this->getDataId(),
+            'expansionData' => $this->getExpansionData(),
             'user' => $this->getUser()->getArray(),
         ];
     }

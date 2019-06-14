@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Message;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use App\Entity\GroupUserOrder;
 
 /**
  * @method Message|null find($id, $lockMode = null, $lockVersion = null)
@@ -25,17 +26,20 @@ class MessageRepository extends ServiceEntityRepository
      * @param bool $isOnline
      * @return QueryBuilder
      */
-    public function findMessageQuery($userId,$isRead)
+    public function findOrderMessageQuery($userId,$checkStatus,$dataType)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
             ->select('ms')
             ->from(Message::class, 'ms')
-            ->where('ms.user = :userId')
+            ->leftJoin(GroupUserOrder::class, 'guo', 'ms.dataId = guo.id')
+            ->where('ms.dataType = :dataType')
+            ->andWhere('guo.checkStatus = :checkStatus')
+            ->andWhere('ms.user = :userId')
+            ->setParameter('dataType',$dataType)
+            ->setParameter('checkStatus',$checkStatus==1?GroupUserOrder::CHECK_PASS:GroupUserOrder::CHECK_REJECT)
             ->setParameter('userId', $userId);
 
-        $query->andWhere('ms.isRead = :isRead')->setParameter('isRead', $isRead);
         $query->orderBy('ms.id', 'DESC');
-
         return $query;
     }
 }
