@@ -9,13 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Follow implements Dao
 {
-    const OFFLINE_COURSE = 'offlineCourse';
-    const ONLINE_COURSE = 'onlineCourse';
+    const COURSE = 'course';
     const TEACHER = 'teacher';
 
     public static $types = [
-        self::OFFLINE_COURSE => '线下课程',
-        self::ONLINE_COURSE => '线上课程',
+        self::COURSE => '课程',
         self::TEACHER => '讲师'
     ];
 
