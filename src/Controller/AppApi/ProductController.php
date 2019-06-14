@@ -9,12 +9,15 @@
 namespace App\Controller\AppApi;
 
 
+use App\Entity\Course;
+use App\Entity\Follow;
 use App\Entity\GroupUserOrder;
 use App\Entity\Product;
 use App\Entity\ProjectBannerMeta;
 use App\Entity\ProjectTextMeta;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
+use App\Repository\FollowRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProjectBannerMetaRepository;
 use App\Repository\ProjectTextMetaRepository;
@@ -33,20 +36,22 @@ class ProductController extends AppApiBaseController
 {
     /**
      * 获取产品详情
-     * @Route("/auth/products/{id}", name="appProductDetail", methods="GET")
+     * @Route("/auth/product/detial", name="appProductDetail", methods="POST")
      * @param Request $request
-     * @param Product $product
+     * @param ProductRepository $productRepository
      * @return JsonResponse
      */
-    public function detailAction(Request $request, Product $product): JsonResponse
+    public function detailAction(Request $request, ProductRepository $productRepository): JsonResponse
     {
         $requestProcess = $this->processRequest($request, [
-            'url'
-        ]);
+            'url', 'productId'
+        ], ['productId']);
 
         $user = $this->getAppUser();
-
+        $productId = $requestProcess['productId'];
         $url = $requestProcess['url'];
+
+        $product = $productRepository->find($productId);
 
         if (empty($product)) {
             $requestProcess->throwErrorException(ErrorCode::ERROR_PRODUCT_NOT_EXISTS);
@@ -74,6 +79,7 @@ class ProductController extends AppApiBaseController
                 $newGroupOrder = $user->getNewestGroupUserOrder($product, true);
                 $data['product']['callStatus'] = CommonUtil::getInsideValue($newGroupOrder, 'getStatus', '');
             }
+            $data['product']['isFollow'] = !empty($this->followCourseInfo($user, $product->getCourse()));
         }
         return $requestProcess->toJsonResponse($data);
     }
@@ -148,5 +154,22 @@ class ProductController extends AppApiBaseController
         return array_chunk(CommonUtil::entityArray2DataArray($productRepository->findRecommendProductsQueryBuilder(true, [
             'p.id' => 'desc',
         ], 6)->getQuery()->getResult()), 2);
+    }
+
+    /**
+     * 取得关注课程信息
+     * @param User $user
+     * @param Course $course
+     * @return Follow
+     * @author zxqc2018
+     */
+    protected function followCourseInfo(User $user, Course $course)
+    {
+        $followRepository = $this->getEntityManager()->getRepository(Follow::class);
+        /**
+         * @var Follow $follow
+         */
+        $follow = $followRepository->findOneBy(['dataId' => $course->getId(), 'user' => $user, 'type' => Follow::COURSE]);
+        return $follow;
     }
 }

@@ -118,13 +118,13 @@ class CourseController extends ProductController
     /**
      * 获取课程详情
      *
-     * @Route("/auth/courses/{id}", name="courseDetail", methods="GET")
+     * @Route("/auth/course/detail", name="appCourseDetail", methods="POST")
      * @param Request $request
-     * @param Product $product
+     * @param ProductRepository $productRepository
      * @return JsonResponse
      */
-    public function detailAction(Request $request, Product $product): JsonResponse {
-        return parent::detailAction($request, $product);
+    public function detailAction(Request $request, ProductRepository $productRepository): JsonResponse {
+        return parent::detailAction($request, $productRepository);
     }
 
     /**
