@@ -12,6 +12,7 @@ namespace App\Controller\AppApi;
 use App\Command\EnqueueCommand;
 use App\Command\Sms\SendMsgCommand;
 use App\Controller\Api\BaseController;
+use App\Entity\Category;
 use App\Entity\User;
 use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
@@ -129,5 +130,30 @@ class AppApiBaseController extends BaseController
         } catch (\Throwable $e) {
             CommonUtil::resultData()->throwErrorException(ErrorCode::ERROR_SMS_SEND_RESPONSE, [], 'can not add SendMsgCommand into EnqueueCommand: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * 获取类别视频数组
+     * @param Category $category
+     * @return array
+     * @author zxqc2018
+     */
+    public function getCategoryVideoArray(Category $category)
+    {
+        $res = $category->getArray();
+        $res['aliyunVideoUrl'] = '';
+        $res['aliyunVideoImageUrl'] = '';
+
+        $refreshStatus = $category->refreshAliyunVideo();
+
+        if ($refreshStatus) {
+            $res['aliyunVideoUrl'] = $category->getAliyunVideoUrl();
+            $res['aliyunVideoImageUrl'] = $category->getAliyunVideoImageUrl();
+            if ($refreshStatus == 2) {
+                $this->entityPersist($category);
+            }
+        }
+
+        return $res;
     }
 }

@@ -9,6 +9,8 @@
 namespace App\Entity;
 
 use App\Entity\Traits\IdTrait;
+use App\Service\Ali\AliCommon;
+use App\Service\Ali\AliVod;
 use App\Service\Util\CommonUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -427,7 +429,6 @@ class Category implements Dao
             'courses' => $courses,
             'mainCourseCreateDate' => CommonUtil::getInsideValue($firstCourse, 'getProduct.getCreatedAtFormattedLineDate', ''),
             'topCategoryName' => CommonUtil::getInsideValue($this, 'getParentCategory.getName', ''),
-            'aliyun_video_url' => $this->getAliyunVideoUrl(),
         ];
     }
 
@@ -443,5 +444,47 @@ class Category implements Dao
             'parentCategoryId' => $this->getParentCategory() == null ? 0 : $this->getParentCategory()->getId(),
             'iconFileId' => CommonUtil::obj2Id($this->getIconFile()),
         ];
+    }
+
+
+    /**
+     * 视频是否过期
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isAliyunVideoExpired() {
+        return time() + 600 > $this->getAliyunVideoExpiresAt();
+    }
+
+    /**
+     * 刷新阿里云视频地址
+     * @return int
+     */
+    public function refreshAliyunVideo()
+    {
+        if (empty($this->getAliyunVideoId())) {
+            return 0;
+        }
+
+        if (!$this->isAliyunVideoExpired()) {
+            return 1;
+        }
+
+        try {
+            $ali = new AliCommon();
+            $playInfo = $ali->getPlayInfo($this->getAliyunVideoId(), AliCommon::VIDEO_FORMAT_M3U8);
+
+            $aliyunVideoUrl = AliVod::getVideoUrl($playInfo);
+            $aliyunVideoImageUrl = AliVod::getVideoImageUrl($playInfo);
+            $aliyunVideoExpiresAt = AliVod::getVideoExpiresAt($playInfo);
+
+            $this->setAliyunVideoUrl($aliyunVideoUrl);
+            $this->setAliyunVideoImageUrl($aliyunVideoImageUrl);
+            $this->setAliyunVideoExpiresAt($aliyunVideoExpiresAt);
+
+            return 2;
+        } catch (\Throwable $e) {
+            return 0;
+        }
     }
 }

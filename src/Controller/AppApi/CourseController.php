@@ -74,9 +74,16 @@ class CourseController extends ProductController
         $categoryQuery = $categoryRepository->findCategoryListQuery($requestProcess['cateId'], '', null);
         $categoryList = $this->getPaginator()->paginate($categoryQuery, $requestProcess['page'], $requestProcess['pageNum']);
 
+
+        //刷新视频
+        $refreshStatus = $parentCategory->refreshAliyunVideo();
+
+        if ($refreshStatus == 2) {
+            $this->entityPersist($parentCategory);
+        }
         return $requestProcess->toJsonResponse([
             'categoryList' => CommonUtil::entityArray2DataArray($categoryList),
-            'category' => $parentCategory->getArray(),
+            'category' => $this->getCategoryVideoArray($parentCategory),
             'user' => CommonUtil::getInsideValue($user, 'array')
         ]);
     }
@@ -103,7 +110,7 @@ class CourseController extends ProductController
         }
 
         return $requestProcess->toJsonResponse([
-            'category' => $parentCategory->getArray(),
+            'category' => $this->getCategoryVideoArray($parentCategory),
             'user' => CommonUtil::getInsideValue($user, 'array')
         ]);
     }
@@ -133,7 +140,10 @@ class CourseController extends ProductController
         $requestProcess = $this->processRequest($request);
         return $requestProcess->toJsonResponse([
             'freeCategoryList' => $this->findHomeFreeZoneProducts($categoryRepository),
-            'freeVideoUrl' => '',
+            'freeVideoInfo' => [
+                'aliyunVideoUrl' => '',
+                'aliyunVideoImageUrl' => '',
+            ]
         ]);
     }
 }
