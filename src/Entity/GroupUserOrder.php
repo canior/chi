@@ -1126,6 +1126,7 @@ class GroupUserOrder implements Dao
         foreach ($this->getProductReviews() as $productReview) {
             $productReviewsArray[] = $productReview->getArray();
         }
+        $appStatus = $this->getAppStatus();
 
         return [
             'id' => $this->getId(),
@@ -1148,6 +1149,8 @@ class GroupUserOrder implements Dao
             'trackingNo' => $this->getTrackingNo(),
             'timeLine' =>$this->getTimeLine(),
             'checkStatus' =>$this->getCheckStatus(),
+            'appStatus'=>$appStatus['appStatus'],
+            'appStatusText'=>$appStatus['appStatusText'],
         ];
     }
 
@@ -1169,6 +1172,68 @@ class GroupUserOrder implements Dao
         $typeStr = GroupUserOrder::$paymentTraceNoTypes[$this->getPaymentChannel()] ?? '';
         $tradeNoLen = CommonUtil::isDebug() ? 10: 16;
         return 'jq' . $typeStr . sprintf("%0{$tradeNoLen}d", $this->getId());
+    }
+
+
+
+    // APP订单状态显示
+    public function getAppStatus(){
+        $appStatus = 0;// 0.缺省 1.通过 2.不通过 3.待审核
+        $product = $this->getProduct();
+        $courseCategory = $this->getCourse()->getCourseCategory()?$this->getCourse()->getCourseCategory()->getId():'';
+
+        if( $product->isCourseProduct() and $this->getCourse()->isOnline() and $courseCategory == Product::CATEGORY_ONLINE ){
+            // onlineCourse
+            $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
+        }else if( $product->isCourseProduct() and !$this->getCourse()->isOnline() and $courseCategory == Product::CATEGORY_OFFLINE ){
+            // offlineCourse
+            if( $this->getCourse()->getSubject() == Subject::THINKING || $this->getCourse()->getSubject() == Subject::TRADING ){
+                // 思维课
+                $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
+            }else if( $this->getCourse()->getSubject() == Subject::SYSTEM_1 || $this->getCourse()->getSubject() == Subject::SYSTEM_2 ){
+                // 系统课
+                switch ($this->getUser()->getUserLevel()) {
+                    case BianxianUserLevel::VISITOR:
+                    case BianxianUserLevel::THINKING:
+                        if( $this->getCheckStatus() == self::CHECK_PASS ){
+                            $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
+                        }else if( $this->getCheckStatus() == self::CHECK_REJECT ) {
+                            $appStatus = 2;
+                        }else{
+                            $appStatus = $this->getPaymentStatus()==self::PAID?3:2;
+                        }
+                        break;
+                    case BianxianUserLevel::ADVANCED:
+                    case BianxianUserLevel::PARTNER:
+                    case BianxianUserLevel::DISTRIBUTOR:
+                        $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        //文字Lable
+        $appStatusText = null;
+        switch ($appStatus) {
+            case 0:
+                $appStatusText = '';
+                break;
+            case 1:
+                $appStatusText = '报名通过';
+                break;
+            case 2:
+                $appStatusText = '报名不通过';
+                break;
+            case 3:
+                $appStatusText = '待审核';
+                break;
+            default:
+                break;
+        }
+
+        return ['appStatus'=>$appStatus,'appStatusText'=>$appStatusText];
     }
 
     public function getTimeLine(){
