@@ -25,7 +25,7 @@ class MessageRepository extends ServiceEntityRepository
      * @param bool $isOnline
      * @return QueryBuilder
      */
-    public function findMessageQuery($userId,$isRead = '')
+    public function findMessageQuery($userId,$isRead)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
             ->select('ms')
@@ -33,10 +33,7 @@ class MessageRepository extends ServiceEntityRepository
             ->where('ms.user = :userId')
             ->setParameter('userId', $userId);
 
-        if( $isRead ){
-            $query->andWhere('ms.isRead = :isRead')->setParameter('isRead', $isRead);
-        }
-        
+        $query->andWhere('ms.isRead = :isRead')->setParameter('isRead', $isRead);
         $query->orderBy('ms.id', 'DESC');
 
         return $query;

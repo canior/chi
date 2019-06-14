@@ -1042,7 +1042,7 @@ class MemberController extends AppApiBaseController
 
         $data = json_decode($request->getContent(), true);
         $page = isset($data['page']) ? $data['page'] : 1;
-        $isRead = isset($data['isRead']) ? $data['isRead'] : '';
+        $isRead = $data['isRead'];
 
         // 查询匹配用户
         $user =  $this->getAppUser();
