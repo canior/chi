@@ -122,7 +122,7 @@ class CourseController extends ProductController
 
     /**
      * 免费专区
-     * @Route("/freeZone", name="appFreeZone")
+     * @Route("/freeZone", name="appFreeZone", methods={"POST"})
      * @param Request $request
      * @param CategoryRepository $categoryRepository
      * @return JsonResponse
@@ -133,6 +133,7 @@ class CourseController extends ProductController
         $requestProcess = $this->processRequest($request);
         return $requestProcess->toJsonResponse([
             'freeCategoryList' => $this->findHomeFreeZoneProducts($categoryRepository),
+            'freeVideoUrl' => '',
         ]);
     }
 }
