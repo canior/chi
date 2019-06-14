@@ -52,17 +52,6 @@ class CourseController extends ProductController
     }
 
     /**
-     * 首页推荐课程
-     * @param CategoryRepository $categoryRepository
-     * @return array
-     * @author zxqc2018
-     */
-    protected function findHomeRecommendProducts(CategoryRepository $categoryRepository)
-    {
-        return CommonUtil::entityArray2DataArray($categoryRepository->findRecommendCategory()->getQuery()->getResult());
-    }
-
-    /**
      * 获取分类列表
      * @Route("/category/list", name="appGategoryList", methods= "POST")
      * @param Request $request
@@ -87,6 +76,7 @@ class CourseController extends ProductController
 
         return $requestProcess->toJsonResponse([
             'categoryList' => CommonUtil::entityArray2DataArray($categoryList),
+            'category' => $parentCategory->getArray(),
             'user' => CommonUtil::getInsideValue($user, 'array')
         ]);
     }
@@ -128,5 +118,21 @@ class CourseController extends ProductController
      */
     public function detailAction(Request $request, Product $product): JsonResponse {
         return parent::detailAction($request, $product);
+    }
+
+    /**
+     * 免费专区
+     * @Route("/freeZone", name="appFreeZone")
+     * @param Request $request
+     * @param CategoryRepository $categoryRepository
+     * @return JsonResponse
+     * @author zxqc2018
+     */
+    public function freeZoneAction(Request $request, CategoryRepository $categoryRepository)
+    {
+        $requestProcess = $this->processRequest($request);
+        return $requestProcess->toJsonResponse([
+            'freeCategoryList' => $this->findHomeFreeZoneProducts($categoryRepository),
+        ]);
     }
 }

@@ -427,6 +427,7 @@ class Category implements Dao
             'courses' => $courses,
             'mainCourseCreateDate' => CommonUtil::getInsideValue($firstCourse, 'getProduct.getCreatedAtFormattedLineDate', ''),
             'topCategoryName' => CommonUtil::getInsideValue($this, 'getParentCategory.getName', ''),
+            'aliyun_video_url' => $this->getAliyunVideoUrl(),
         ];
     }
 

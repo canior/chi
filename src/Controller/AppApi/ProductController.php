@@ -125,6 +125,18 @@ class ProductController extends AppApiBaseController
         return CommonUtil::entityArray2DataArray($categoryRepository->findRecommendCategory()->getQuery()->getResult());
     }
 
+
+    /**
+     * 首页免费专区课程
+     * @param CategoryRepository $categoryRepository
+     * @return array
+     * @author zxqc2018
+     */
+    protected function findHomeFreeZoneProducts(CategoryRepository $categoryRepository)
+    {
+        return CommonUtil::entityArray2DataArray($categoryRepository->findFreeCategory()->getQuery()->getResult());
+    }
+
     /**
      * 首页最新课程
      * @param ProductRepository $productRepository
