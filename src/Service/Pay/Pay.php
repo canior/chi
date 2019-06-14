@@ -110,7 +110,7 @@ class Pay
             // 支付宝支付参数
             'alipay' => [
                 // 沙箱模式
-                'debug'       => true,
+                'debug'       => false,
                 // 应用ID
                 'app_id'      => '2016092900621247',
                 // 支付宝公钥(1行填写)

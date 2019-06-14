@@ -1081,7 +1081,7 @@ class GroupUserOrder implements Dao
     /**
      * @return string
      */
-    public function getTableNo(): string
+    public function getTableNo(): ?string
     {
         return $this->tableNo;
     }
