@@ -113,6 +113,12 @@ class Category implements Dao
      */
     private $courses;
 
+    /**
+     * @var string
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $shortDescription;
+
     public function __construct()
     {
         $this->setShowFreeZone(0);
@@ -398,6 +404,22 @@ class Category implements Dao
     }
 
     /**
+     * @return string
+     */
+    public function getShortDescription(): ?string
+    {
+        return $this->shortDescription;
+    }
+
+    /**
+     * @param string $shortDescription
+     */
+    public function setShortDescription(string $shortDescription): void
+    {
+        $this->shortDescription = $shortDescription;
+    }
+
+    /**
      * @return array
      */
     public function getArray()
@@ -429,6 +451,7 @@ class Category implements Dao
             'courses' => $courses,
             'mainCourseCreateDate' => CommonUtil::getInsideValue($firstCourse, 'getProduct.getCreatedAtFormattedLineDate', ''),
             'topCategoryName' => CommonUtil::getInsideValue($this, 'getParentCategory.getName', ''),
+            'shortDescription' => $this->getShortDescription() ?? '',
         ];
     }
 
