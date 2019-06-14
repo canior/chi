@@ -114,7 +114,7 @@ class GroupUserOrderController extends AppApiBaseController
     {
         $requestProcess = $this->processRequest($request, [
             'productId', 'unlockCategoryId'
-        ], ['productId']);
+        ], ['productId', 'unlockCategoryId']);
 
         $productId = $requestProcess['productId'];
         $unlockCategoryId = $requestProcess['unlockCategoryId'];
