@@ -922,6 +922,7 @@ class Course implements Dao
             'aliyunVideoId' => $this->getAliyunVideoId(),
             'requiredGroupUserOrders' => $this->getTotalGroupUserOrdersRequired(),
             'topCategoryName' => CommonUtil::getInsideValue($this, 'getCourseActualCategory.getParentCategory.getName', ''),
+            'topCateIdentityId' => CommonUtil::getInsideValue($this, 'getCourseActualCategory.getParentCategory.getCateIdentityId', null),
             'courseCategoryName' => CommonUtil::getInsideValue($this, 'getCourseCategory.getName', ''),
             'unlockType' => $this->getUnlockType(),
             'unlockTypeText' => $this->getUnlockTypeText(),

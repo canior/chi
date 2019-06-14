@@ -119,6 +119,12 @@ class Category implements Dao
      */
     private $shortDescription;
 
+    /**
+     * @var integer
+     * @ORM\Column(name="cate_identity_id", type="integer", nullable=true)
+     */
+    private $cateIdentityId;
+
     public function __construct()
     {
         $this->setShowFreeZone(0);
@@ -126,6 +132,7 @@ class Category implements Dao
         $this->setSingleCourse(0);
         $this->setIsDeleted(0);
         $this->setPriority(0);
+        $this->setShortDescription('');
     }
 
     /**
@@ -420,6 +427,22 @@ class Category implements Dao
     }
 
     /**
+     * @return int
+     */
+    public function getCateIdentityId(): ?int
+    {
+        return $this->cateIdentityId;
+    }
+
+    /**
+     * @param int $cateIdentityId
+     */
+    public function setCateIdentityId(int $cateIdentityId): void
+    {
+        $this->cateIdentityId = $cateIdentityId;
+    }
+
+    /**
      * @return array
      */
     public function getArray()
@@ -438,6 +461,11 @@ class Category implements Dao
             $courses[] = $tmpArr;
         }
         array_multisort($sort, SORT_DESC, $courses);
+
+        $topCateIdentityId = CommonUtil::getInsideValue($this, 'getParentCategory.getCateIdentityId', null);
+        if (empty($this->getParentCategory())) {
+            $topCateIdentityId = $this->getCateIdentityId();
+        }
         return [
             'id' => $this->getId(),
             'name' => $this->getName(),
@@ -451,6 +479,7 @@ class Category implements Dao
             'courses' => $courses,
             'mainCourseCreateDate' => CommonUtil::getInsideValue($firstCourse, 'getProduct.getCreatedAtFormattedLineDate', ''),
             'topCategoryName' => CommonUtil::getInsideValue($this, 'getParentCategory.getName', ''),
+            'topCateIdentityId' => $topCateIdentityId,
             'shortDescription' => $this->getShortDescription() ?? '',
         ];
     }
