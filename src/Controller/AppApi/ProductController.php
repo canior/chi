@@ -17,7 +17,6 @@ use App\Entity\ProjectBannerMeta;
 use App\Entity\ProjectTextMeta;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
-use App\Repository\FollowRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProjectBannerMetaRepository;
 use App\Repository\ProjectTextMetaRepository;
@@ -36,7 +35,7 @@ class ProductController extends AppApiBaseController
 {
     /**
      * 获取产品详情
-     * @Route("/auth/product/detial", name="appProductDetail", methods="POST")
+     * @Route("/auth/product/detail", name="appProductDetail", methods="POST")
      * @param Request $request
      * @param ProductRepository $productRepository
      * @return JsonResponse

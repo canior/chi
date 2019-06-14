@@ -8,6 +8,11 @@
 
 namespace App\Controller\AppApi;
 
+use App\Entity\ProductReview;
+use App\Entity\ProductReviewImage;
+use App\Repository\FileRepository;
+use App\Repository\ProductRepository;
+use App\Repository\ProductReviewRepository;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -1226,5 +1231,75 @@ class MemberController extends AppApiBaseController
         // }
 
         return ['succes'=>true,'msg'=>'操作成功'];
+    }
+
+    /**
+     * 添加或修改评论
+     * @Route("/groupUserOrder/review", name="appUpdateProductReview", methods="POST")
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @param ProductReviewRepository $productReviewRepository
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @param FileRepository $fileRepository
+     * @return JsonResponse
+     */
+    public function updateProductReviewAction(Request $request, ProductRepository $productRepository, ProductReviewRepository $productReviewRepository, GroupUserOrderRepository $groupUserOrderRepository, FileRepository $fileRepository) : JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $productReviewId = isset($data['productReviewId']) ? $data['productReviewId'] : null;
+        $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
+        $productId = isset($data['productId']) ? $data['productId'] : null;
+        $rate = isset($data['rate']) ? $data['rate'] : null;
+        $review = isset($data['review']) ? $data['review'] : null;
+        $reviewImageFileIds = isset($data['imageIds']) ? $data['imageIds'] : [];
+        $user = $this->getAppUser();
+
+        $productReview = null;
+        if ($productReviewId) {
+            $productReview = $productReviewRepository->find($productReviewId);
+        }
+
+        if ($productReview == null) {
+            $productReview = new ProductReview();
+        }
+
+        $groupUserOrder = null;
+        if ($groupUserOrderId) {
+            $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+            $productReview->setGroupUserOrder($groupUserOrder);
+            $productReview->setProduct($groupUserOrder->getProduct());
+            $user = $groupUserOrder->getUser();
+        } else {
+            /**
+             * @var Product $product
+             */
+            $product = $productRepository->find($productId);
+            $productReview->setProduct($product);
+        }
+
+        $productReview->setRate($rate);
+        $productReview->setReview($review);
+        $productReview->setUser($user);
+
+        foreach ($reviewImageFileIds as $fileId) {
+            $file = $fileRepository->find($fileId);
+            $productReviewImage = new ProductReviewImage();
+            $productReviewImage->setImageFile($file);
+            $productReviewImage->setProductReview($productReview);
+            $productReview->addProductReviewImage($productReviewImage);
+        }
+
+        $this->getEntityManager()->persist($productReview);
+
+        if ($groupUserOrder) {
+            $groupUserOrder->addProductReview($productReview);
+            $this->getEntityManager()->persist($groupUserOrder);
+        }
+
+        $this->getEntityManager()->flush();
+
+        return CommonUtil::resultData()->toJsonResponse([
+            'productReview' => $productReview->getArray()
+        ]);
     }
 }

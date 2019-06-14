@@ -56,6 +56,7 @@ class ErrorCode
     const ERROR_PAY_CHANNEL_NO_EXISTS = 16010;
     const ERROR_PAY_NOTIFY = 16011;
     const ERROR_PAY_ORDER_ALREADY_WAIT = 16012;
+    const ERROR_UNLOCK_CATEGORY_NOT_PRIVILEGE = 16013;
     /**
      * 错误消息集合
      * @return array
@@ -95,6 +96,7 @@ class ErrorCode
             self::ERROR_SMS_CLIENT_INIT => '短信客户端初始化失败',
             self::ERROR_SMS_SEND_RESPONSE => '短信发送失败',
             self::ERROR_CATEGORY_NOT_EXISTS => '课程类别不存在',
+            self::ERROR_UNLOCK_CATEGORY_NOT_PRIVILEGE => '无权限解锁该系列',
         ];
     }
 

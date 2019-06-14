@@ -11,6 +11,7 @@ namespace App\Controller\AppApi;
 use App\Entity\CourseOrder;
 use App\Entity\CourseStudent;
 use App\Entity\GroupUserOrder;
+use App\Repository\CategoryRepository;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserAddressRepository;
@@ -62,7 +63,7 @@ class GroupUserOrderController extends AppApiBaseController
         $data = [
             'groupUserOrder' => $groupUserOrder->getArray(),
             'courseStudents' => $courseStudentArray,
-            'shareSources' => $this->createProductShareSource($user, $groupUserOrder->getProduct(), $url)
+            'shareSources' => $this->createProductShareSource($user, $groupUserOrder->getProduct(), $url),
         ];
 
         return CommonUtil::resultData()->toJsonResponse($data);
@@ -106,15 +107,17 @@ class GroupUserOrderController extends AppApiBaseController
      * @Route("/groupUserOrder/create", name="appCreateGroupUserOrder", methods="POST")
      * @param Request $request
      * @param ProductRepository $productRepository
+     * @param CategoryRepository $categoryRepository
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function createAction(Request $request, ProductRepository $productRepository)
+    public function createAction(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository)
     {
         $requestProcess = $this->processRequest($request, [
-            'productId'
+            'productId', 'unlockCategoryId'
         ], ['productId']);
 
         $productId = $requestProcess['productId'];
+        $unlockCategoryId = $requestProcess['unlockCategoryId'];
         $user = $this->getAppUser();
         $product = $productRepository->find($productId);
 
@@ -124,6 +127,14 @@ class GroupUserOrderController extends AppApiBaseController
 
         $groupUserOrder = GroupUserOrder::factory($user, $product);
 
+        //解锁系列课
+        if (!empty($unlockCategoryId)) {
+            $unlockCategory = $categoryRepository->find($unlockCategoryId);
+            if (empty($unlockCategory->getParentCategory()) || $unlockCategory->isSingleCourse()) {
+                $requestProcess->throwErrorException(ErrorCode::ERROR_UNLOCK_CATEGORY_NOT_PRIVILEGE, []);
+            }
+            $groupUserOrder->setUnlockCategory($unlockCategory);
+        }
         $this->entityPersist($groupUserOrder);
 
         return $requestProcess->toJsonResponse([
