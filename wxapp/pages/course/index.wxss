@@ -3,10 +3,33 @@
   text-align: center;
 }
 .banner swiper {
-  height: 340rpx;
+  height: 190px;
 }
 .banner swiper image {
-  width: 100%;
-  /*width: 690rpx;*/
-  height: 340rpx;
+  width: 343px;
+  height: 150px;
+  border-radius: 20rpx;
+}
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 10rpx;
+}
+.cx-item {
+  display: flex;
+  flex-direction: column;
+  width: 164px;
+  padding: 20rpx 0;
+}
+.cx-item .up image {
+  width: 164px;
+  height: 108px;
+  border-radius: 10rpx;
+}
+.cx-item .down {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  line-height: 16px;
 }

@@ -5,8 +5,11 @@
       <view class="user">
         <view class="avatar"><image src="{{courseReview.user.avatarUrl}}"/></view>
         <view class="info">
-          <view class="rate-small-container">
+          <view class="info-line">
             <view class="nickname">{{courseReview.user.nickname}}</view>
+            <view class="date">{{courseReview.createdAt}}</view>
+          </view>
+          <view class="rate-small-container">
             <image wx:if="{{courseReview.rate < 1}}" src="/images/star.png"/>
             <image wx:if="{{courseReview.rate > 0}}" src="/images/star-selected.png"/>
             <image wx:if="{{courseReview.rate < 2}}" src="/images/star.png"/>
@@ -18,7 +21,6 @@
             <image wx:if="{{courseReview.rate < 5}}" src="/images/star.png"/>
             <image wx:if="{{courseReview.rate > 4}}" src="/images/star-selected.png"/>
           </view>
-          <view class="date">{{courseReview.createdAt}}</view>
         </view>
       </view>
       <view class="review-text">{{courseReview.review}}</view>

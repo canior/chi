@@ -8,7 +8,7 @@
   <view class="course">
     <view class="left">
       <view class="line name">{{course.title}}</view>
-      <view class="line desc-box">{{course.shortDescription}}</view>
+      <view class="line desc">{{course.shortDescription}}</view>
     </view>
   </view>
 
@@ -18,9 +18,9 @@
       <view class="right">
         <view class="line title">{{course.teacher.name}}</view>
         <view class="line sub-title">{{course.teacher.title}}</view>
-        <view class="line desc">{{course.teacher.description}}</view>
       </view>
     </view>
+    <view class="desc">{{course.teacher.description}}</view>
   </view>
 </view>
 <view class="split-line"/>

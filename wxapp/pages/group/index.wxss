@@ -329,8 +329,8 @@
   height: 110rpx;
 }
 .bottom-join image {
-  width: 41rpx;
-  height: 41rpx;
+  width: 42rpx;
+  height: 42rpx;
   margin-bottom: 6rpx;
 }
 .bottom-join .home, .bottom-join .service {

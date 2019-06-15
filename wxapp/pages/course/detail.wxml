@@ -6,7 +6,7 @@
   <view class="banner">
     <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
       <swiper-item wx:for="{{course.courseImages}}" wx:key="id" wx:for-item="courseImage">
-        <image mode="widthFix" src="{{imgUrlPrefix + '/' + courseImage.fileId}}" />
+        <image mode="aspectFill" src="{{imgUrlPrefix + '/' + courseImage.fileId}}" />
       </swiper-item>
     </swiper>
   </view>
@@ -22,9 +22,9 @@
       <view class="right">
         <view class="line title">{{course.teacher.name}}</view>
         <view class="line sub-title">{{course.teacher.title}}</view>
-        <view class="line desc">{{course.teacher.description}}</view>
       </view>
     </view>
+    <view class="desc">{{course.teacher.description}}</view>
   </view>
 </view>
 <view class="split-line"/>

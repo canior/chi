@@ -111,7 +111,7 @@
   <block wx:else><!--其他人准备参团-->
     <view class="bottom-join">
       <view class="home" bindtap="wxHome">
-        <image src="/images/home2.png"/>
+        <image src="/images/back-home.png"/>
         <text>首页</text>
       </view>  
       <view class="home" bindtap="wxShowShareModal">

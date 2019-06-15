@@ -9,10 +9,11 @@
   background-color: #fff;
   border-top: 1px solid #e8e8e8;
   height: 110rpx;
+  padding: 0 20rpx;
 }
 .chi-bottom image {
-  width: 41rpx;
-  height: 41rpx;
+  width: 42rpx;
+  height: 42rpx;
   margin-bottom: 6rpx;
 }
 .chi-bottom .item {
@@ -22,14 +23,14 @@
   align-items: center;
   line-height: 40rpx;
 }.chi-bottom .item.home, .chi-bottom .item.service {
-  width: 25%;
+  width: 20%;
 }.chi-bottom .item.btn {
   width: 60%;
 }
 .chi-bottom .home {
   font-size: 24rpx;
   color: #353535;
-  border-right: 1px solid #e8e8e8;  
+  border-right: 1px solid #e8e8e8;
 }
 .chi-bottom .service {
   font-size: 24rpx;
@@ -39,19 +40,20 @@
   font-size: 30rpx;
   font-weight: bold;
   text-align: center;
-  height: 110rpx;
+  height: 80rpx;
   border-radius: 0;
 }.chi-bottom .btn.order {
   color: #fff;
   background-color: #434343;
 }.chi-bottom .btn.group {
-  background-color: #ffdf00;
+  color: #fff;
+  background-color: #ff6c00;
 }.chi-bottom .btn.other {
   color: #fff;
   background-color: #434343;
 }.chi-bottom .btn.gray {
   color: #fff;
-  background-color: gray;
+  background-color: #1AAA92;
 }
 .chi-bottom .btn-clear {
   background-color: transparent;

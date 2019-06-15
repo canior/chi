@@ -241,7 +241,7 @@ App({
   },
 
   globalData: {
-    appName: '金秋课堂',
+    appName: '诚信理财',
     baseUrl: 'https://jinqiu.yunlishuju.com/wxapi',
     imgUrlPrefix: 'https://jinqiu.yunlishuju.com/image/preview',
     //baseUrl: 'https://laowantong.yunlishuju.com/wxapi',

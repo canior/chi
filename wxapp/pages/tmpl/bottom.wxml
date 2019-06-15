@@ -2,7 +2,7 @@
 <template name="bottom">
   <view class="chi-bottom">
       <view class="item home" bindtap="wxHome">
-        <image src="/images/home2.png"/>
+        <image src="/images/back-home.png"/>
         <text>首页</text>
       </view>
       <view class="item service" bindtap="wxShowShareModal">
