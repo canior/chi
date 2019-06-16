@@ -3,9 +3,8 @@
 <view class="container">
   <form bindsubmit="formSubmit">
     <view class="line">
-      <input placeholder="输入升级码" value="{{code}}" bindinput="inputCode" type="digit"/>
+      <input placeholder="请输入升级码" value="{{code}}" bindinput="inputCode" type="digit"/>
     </view>
-    <view class="split-line"/>
     <button class="bottom" formType="submit" disabled="{{btnDisabled}}">提交</button>
   </form>
 </view>

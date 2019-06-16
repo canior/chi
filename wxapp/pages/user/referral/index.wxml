@@ -4,9 +4,9 @@
   <view class="top">
     <view class="total">{{shareUser.shareSourceUsersTotal}}</view>
     <view class="navbar">
-      <view class="nav">有效分享:{{shareUser.validShareSourceUsersTotal}}</view>
+      <view class="nav">有效分享: {{shareUser.validShareSourceUsersTotal}}</view>
       <view class="bar"/>
-      <view class="nav">无效分享:{{shareUser.shareSourceUsersTotal - shareUser.validShareSourceUsersTotal}}</view>
+      <view class="nav">无效分享: {{shareUser.shareSourceUsersTotal - shareUser.validShareSourceUsersTotal}}</view>
     </view>
   </view>
   <view class="banner" bindtap="redirect" data-url="{{shareUser.bannerMetaArray.banner_my_share.redirectUrl}}">

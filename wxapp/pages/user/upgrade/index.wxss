@@ -1,4 +1,4 @@
-/* pages/course/index.wxss */
+/* pages/upgrade/index.wxss */
 .banner {
   text-align: center;
 }
@@ -9,4 +9,28 @@
   width: 100%;
   /*width: 690rpx;*/
   height: 340rpx;
+}
+.container {
+  padding: 32rpx;
+}
+.row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 40rpx;
+}
+.row image {
+  width: 686rpx;
+  height: 306rpx;
+  border: 1px solid #f2f6f9
+}
+.row .line {
+  display: flex;
+  justify-content: space-between;
+  padding: 20rpx 0;
+}.row .line .title {
+  font-size: 30rpx;
+  color: #333;
+}.row .line .price {
+  font-size: 30rpx;
+  color: #FF6C00;
 }

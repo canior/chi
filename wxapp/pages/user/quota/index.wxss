@@ -1,97 +1,55 @@
 /* pages/user/quota/index.wxss */
 @import "/pages/tmpl/share.wxss";
-.top-container {
-  padding: 20rpx;
-  background-color: #f5f5f5;
+page {
+  height: 100%;
+}
+.container {
+  padding: 32rpx;
+  background-color: #f2f6f9;
+  height: 100%;
 }
 .top {
-  background-color: #ffdf00;
+  background-color: #fff;
   text-align: center;
   border-radius: 30rpx;
-}
-.top .tip {
-  width: 0;
-  height: 0;
-  border-left: 100px solid transparent;
-  border-right: 100px solid transparent;
-  border-bottom: 20px solid #ffee94;
-  margin-left: 155rpx;
+  height: 282rpx;
 }
 .top .title {
-  font-size: 24rpx;
-  color: #7e5924;
-  padding-top: 60rpx;
+  font-size: 28rpx;
+  color: #333;
+  padding-top: 30rpx;
 }
 .top .total {
   font-size: 72rpx;
   font-weight: bold;
-  padding: 10rpx 0;
-}
-.top .btn text {
-  font-size: 24rpx;
-  border: 1px solid #000;
-  border-radius: 30rpx;
-  padding: 8rpx 30rpx;
-}
-.top .btn {
-  margin-bottom: 40rpx;
+  color: #333;
+  /*padding: 10rpx 0 30rpx;*/
 }
 .navbar {
   display: flex;
   justify-content: center;
-  border-top: 1px solid #ececec;
-  padding: 20rpx 40rpx;
 }
 .nav {
   font-size: 30rpx;
-  margin: 0 40rpx;
-}.nav.active {
-  border-bottom: 3px solid #ffdf00;
-}
-.row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20rpx 40rpx;
-  border-bottom: 1px solid #ececec;
-}.row:last-child {
-  border: none;
-}
-.row .left {
-  font-size: 30rpx;
-  color: #000;
-  display: flex;
-  align-items: center;
-}
-.row .left image {
-  width: 88rpx;
-  height: 88rpx;
-  margin-right: 20rpx;
-}
-.row .right {
-  font-size: 30rpx;
-}.row .right.active {
-  color: #ffc018;
-}
-.row .line {
-  font-size: 24rpx;
-  color: #888;
-  line-height: 30rpx;
-}
-.row .right .reward {
-  font-size: 48rpx;
-  color: #ff4d42;
-}
-.row .right .btn {
-  font-size: 24rpx;
-  color: #ff4d42;
-  text-align: center;
-  border: 1px solid #ff4d42;
-  border-radius: 20rpx;
-  margin: 0 10rpx;
+  color: #333;
+}.nav::before {
+	content:"";
+	display: inline-block;
+	width: 12rpx;
+	height: 12rpx;
+  vertical-align: middle;
+  background-color: #FF6C00;
+  border-radius: 50%;
+  margin-right: 10rpx;
+}.nav:last-child::before {
+  background-color: #1AAA92;
+}.bar {
+  margin: auto 50rpx;
+  width: 2rpx;
+  height: 30rpx;
+  background-color: #ccc;
 }
 .bottom-container {
-  background-color: #fff;
   height: 80px;
   position: fixed;
   bottom: 0;
@@ -100,74 +58,18 @@
 }
 .bottom {
   font-size: 30rpx;
+  font-weight: bold;
+  color: #fff;
   text-align: center;
-  background-color: #ffdf00;
+  background-color: #1AAA92;
   margin: 40rpx 70rpx;
   padding: 20rpx 0;
   border-radius: 40rpx;
 }
-.rule {
-  padding: 40rpx 0;
-}
-.rule .title {
-  font-size: 30rpx;
-  color: #ffc018;
-  padding-bottom: 30rpx;
-  text-align: center;
-  position: relative;
-  width: 180px;
-  margin: 0 auto;
-}.rule .title:before, .rule .title:after {
-  content: ' ';
-  background-color: #ffc018;
-  height: 1px;
-  width: 100rpx;
-  position: absolute;
-  top: 30%;
-}.rule .title:before {
-  left: 0;
-}.rule .title:after {
-  right: 0;
-}
-.rule .flow {
-  font-size: 24rpx;
-  display: flex;
-  justify-content: center;
-  align-items: center;  
-}
-.rule .flow .step {
-  width: 120rpx;
-  height: 120rpx;
-  border: 1px solid #000;
-  border-radius: 50%;
-  text-align: center;
-  line-height: 30rpx;
-  display: flex;
-  justify-content: center;
-  align-items: center;  
-}
-.rule .flow .arrow-right {
-  border-top: 2px solid #000;
-  border-right: 2px solid #000;
-  width: 20rpx;
-  height: 20rpx;
-  transform: rotate(45deg);
-  margin: 0 20rpx 0 10rpx;
-}
-.rank .title {
-  font-size: 30rpx;
-  color: #353535;
-  text-align: center;
-  padding: 20rpx 0;
-}
-.rank .title image {
-  width: 27rpx;
-  height: 31rpx;
-  margin-right: 10rpx;
-  vertical-align: text-top;
-}
-.table {
-  margin-bottom: 100rpx;
+.rank {
+  background-color: #fff;
+  margin: 32rpx 0;
+  border-radius: 30rpx;
 }
 .table .tr {
   display: flex;
@@ -186,13 +88,13 @@
   width: 60%;
 }
 .table .th {
-  font-size: 24rpx;
-  color: #888;
-  background-color: #f5f5f5;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #666;
 }
 .table .td {
-  font-size: 30rpx;
-  color: #888;
+  font-size: 32rpx;
+  color: #666;
 }
 .table .tr .td.idx image {
   width: 38rpx;

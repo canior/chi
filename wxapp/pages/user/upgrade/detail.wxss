@@ -6,7 +6,7 @@
   position: relative;
 }
 .banner swiper {
-  height: 720rpx;
+  height: 414rpx;
 }
 .banner swiper image {
   width: 100%;
@@ -16,18 +16,16 @@
   justify-content: space-between;
   align-items: baseline;
 }
-.line .sold {
-  font-size: 20rpx;
-  color: #353535;
-}
 .name {
   font-size: 30rpx;
   font-weight: bold;
   color: #333;
+  padding: 20rpx 0 10rpx;
 }
 .desc {
-  font-size: 24rpx;
-  color: #b2b2b2;
+  font-size: 28rpx;
+  color: #666;
+  padding: 20rpx 0;
 }
 .chi-reward-container {
   margin-bottom: 20rpx;
@@ -36,7 +34,7 @@
 .specs .title {
   font-size: 30rpx;
   font-weight: bold;
-  color: #353535;
+  color: #333;
   margin: 20rpx 0;
 }
 .specs .img {

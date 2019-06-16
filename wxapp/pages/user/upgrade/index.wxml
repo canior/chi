@@ -1,26 +1,20 @@
-<!--pages/course/index.wxml-->
-<view class="container">
-  
-  <view class="banner">
-    <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
-      <swiper-item wx:for="{{banners}}" wx:key="index" wx:for-item="banner" bindtap="redirect" data-url="{{banner.redirectUrl}}">
-        <image mode="widthFix" src="{{imgUrlPrefix + '/' + banner.bannerFileId}}" />
-      </swiper-item>
-    </swiper>
-  </view>
-  
+<!--pages/upgrade/index.wxml-->
+<view class="banner">
+  <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
+    <swiper-item wx:for="{{banners}}" wx:key="index" wx:for-item="banner" bindtap="redirect" data-url="{{banner.redirectUrl}}">
+      <image mode="widthFix" src="{{imgUrlPrefix + '/' + banner.bannerFileId}}" />
+    </swiper-item>
+  </swiper>
+</view>
+
+<view class="container">  
   <block wx:for="{{products}}" wx:for-item="product" wx:key="index">
-    <view class="chi-item" bindtap="toProdcutDetail" data-id="{{product.id}}">
-      <view class="left"><image mode="widthFix" src="{{imgUrlPrefix + '/' + product.productImages[0].fileId}}"/></view>
-      <view class="right">
-        <view class="line title">{{product.title}}</view>
-        <view class="line desc">{{product.shortDescription}}</view>
-        <view class="right-append">
-          <view class="price">￥{{product.price}}</view>
-        </view> 
+    <view class="row" bindtap="toProdcutDetail" data-id="{{product.id}}">
+      <image mode="aspectFill" src="{{imgUrlPrefix + '/' + product.productImages[0].fileId}}"/>
+      <view class="line">
+        <view class="title">{{product.title}}</view>
+        <view class="price">￥{{product.price}}</view>
       </view>
     </view>
-    <view class="split-line"/>
   </block>
-
 </view>

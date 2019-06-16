@@ -3,16 +3,19 @@
   display: flex;
   padding: 40rpx 0;
 }.line text {
-  font-size: 36rpx;
+  font-size: 30rpx;
 }.line input {
-  border: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
   padding: 10rpx;
   width: 100%;
 }
 .bottom {
   font-size: 30rpx;
+  font-weight: bold;
   text-align: center;
-  background-color: #ffdf00;
+  color: #fff;
+  background-color: #1AAA92;
   margin: 50rpx 70rpx;
+  padding: 5rpx 0;
   border-radius: 40rpx;
 }

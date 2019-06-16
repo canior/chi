@@ -1,77 +1,89 @@
 /* pages/user/call/index.wxss */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  border-top: 1px solid #ececec;
-  padding: 20rpx 40rpx;
+page {
+  height: 100%;
 }
-.nav {
-  font-size: 30rpx;
-}.nav.active {
-  border-bottom: 3px solid #ffdf00;
+.container {
+  padding: 32rpx;
+  background-color: #f2f6f9;
+  height: 100%;
+}
+.section {
+  background-color: #fff;
+  border-radius: 30rpx;
 }
 .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20rpx 40rpx;
+  padding: 20rpx;
   border-bottom: 1px solid #ececec;
 }.row:last-child {
   border: none;
 }
-.row .left {
+.row.header {
   font-size: 24rpx;
-  color: #888;
+  color: #666;
+}
+.row .left {
   display: flex;
   align-items: center;
 }.row .left.status {
-  color: #ffc018;
+  font-size: 30rpx;
+  color: #FF6C00;
 }
 .row .left image {
-  width: 145rpx;
-  height: 145rpx;
-  margin-right: 20rpx;
+  width: 200rpx;
+  height: 200rpx;
+  margin-right: 15rpx;
   border: 1px solid #e5e5e5;
+  border-radius: 20rpx;
 }
-.row .right {
-  font-size: 24rpx;
-  color: #888;  
+.row.body .right {
   display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 200rpx;
 }
-.row .line {
+.row.body .line {
   display: flex;
+  line-height: 30rpx;
 }
-.row .line.title {
+.row.body .line.title {
   font-size: 30rpx;
   font-weight: bold;
   color: #333;
   line-height: 50rpx;
 }
-.row .line.sub-title {
-  font-size: 26rpx;
-  color: #333;
-}
-.row .line.desc {
+.row.body .line.sub-title {
   font-size: 24rpx;
-  color: #b2b2b2;
+  color: #666;
+  position: absolute;
+  bottom: 0;
 }
-.row .line.desc-box {
+.row.body .line.desc-box {
   font-size: 24rpx;
-  color: #b2b2b2;
-  width: 260px;
-  line-height: 30rpx;
+  color: #666;
+  width: 205px;
+  line-height: 40rpx;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;  
+  -webkit-box-orient: vertical;
+  margin-top: 10rpx;
 }
-.row .right button {
-  font-size: 24rpx;
+.row.footer .right {
+  display: flex;
+  justify-content: flex-end;
+}
+.row.footer .right button {
+  font-size: 30rpx;
+  color: #999;
   background-color: #fff;
-}.row .right button::after {
-  border-color: #000;
-}.row .right button:first-child {
+  line-height: 60rpx;
+}.row.footer .right button::after {
+  border-color: #999;
+}.row.footer .right button:first-child {
   margin-right: 20rpx;
 }
 .none {
@@ -82,8 +94,10 @@
 }
 .bottom {
   font-size: 30rpx;
+  font-weight: bold;
   text-align: center;
-  background-color: #ffdf00;
+  color: #fff;
+  background-color: #1AAA92;
   margin: 50rpx 70rpx;
   padding: 20rpx 0;
   border-radius: 40rpx;

@@ -41,7 +41,7 @@
   font-weight: bold;
   text-align: center;
   height: 80rpx;
-  border-radius: 0;
+  border-radius: 40rpx;
 }.chi-bottom .btn.order {
   color: #fff;
   background-color: #434343;

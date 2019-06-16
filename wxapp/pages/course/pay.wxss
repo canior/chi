@@ -10,28 +10,31 @@ page {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 30rpx;
-  color: #888;
   background-color: #fff;
   border-top: 1px solid #e8e8e8;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 110rpx;
+  height: 100rpx;
 }
 .bottom view {
+  font-size: 28rpx;
   padding: 30rpx;
-  width: 60%;
 }
 .bottom text {
-  font-size: 32rpx;
-  color: #ff4d42;  
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #FF6C00;  
 }
 .bottom .btn {
-  background-color: #ffdf00;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #fff;
+  background-color: #FF6C00;
   text-align: center;
-  width: 40%;
-  height: 110rpx;
-  line-height: 110rpx;
+  width: 322rpx;
+  height: 68rpx;
+  line-height: 68rpx;
+  border-radius: 40rpx;
 }

@@ -3,26 +3,26 @@
 <import src="/pages/tmpl/productReview.wxml"/>
 <import src="/pages/tmpl/share.wxml"/>
 <import src="/pages/tmpl/bottom.wxml"/>
-<view class="container">
 
-  <view class="banner">
-    <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
-      <swiper-item wx:for="{{product.productImages}}" wx:key="id" wx:for-item="productImage">
-        <image mode="widthFix" src="{{imgUrlPrefix + '/' + productImage.fileId}}" />
-      </swiper-item>
-    </swiper>
-  </view>
+<view class="banner">
+  <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" circular="true">
+    <swiper-item wx:for="{{product.productImages}}" wx:key="id" wx:for-item="productImage">
+      <image mode="widthFix" src="{{imgUrlPrefix + '/' + productImage.fileId}}" />
+    </swiper-item>
+  </swiper>
+</view>
+
+<view class="container">
+  <view class="name">{{product.title}}</view>
 
   <view class="line">
     <template is="price" data="{{product}}"/>
   </view>
 
-  <view class="name">{{product.title}}</view>
-
   <view class="desc">{{product.shortDescription}}</view>
 
 </view>
-<view class="split-line"/>
+<view class="split-brand"/>
 
 <view class="container">
   <view class="specs">
@@ -35,7 +35,7 @@
     </block>
   </view>
 </view>
-<view class="split-line"/>
+<view class="split-brand"/>
 
 <view class="container">
   <template is="productReview" data="{{...productReviewData, imgUrlPrefix, product}}"/>

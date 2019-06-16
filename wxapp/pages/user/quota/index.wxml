@@ -1,20 +1,16 @@
 <!--pages/user/quota/index.wxml-->
 <import src="/pages/tmpl/share.wxml"/>
-<view class="top-container">
+<view class="container">
   <view class="top">
     <view class="title">剩余名额</view>
     <view class="total">{{quota.recommandStock ? quota.recommandStock : 0}}</view>
-    <view class="tip"/>
+    <view class="navbar">
+      <view class="nav">已用名额: {{quota.usedStock}}</view>
+      <view class="bar"/>
+      <view class="nav">名额总数: {{quota.totalStock}}</view>
+    </view>
   </view>
-</view>
-<view class="navbar">
-  <view class="nav">已用名额：{{quota.usedStock}}</view>
-  <view class="nav">名额总数：{{quota.totalStock}}</view>
-</view>
-<view class="split-brand"/>
-
-<!--列表-->
-<view class="container">
+  <!--列表-->
   <view class="rank">
     <view class="table">
     <view class="tr">
@@ -34,11 +30,10 @@
         </view>
       </view>      
     </view>
-  </view>
-</view><!--列表-->
-<view class="split-brand"/>
+  </view><!--列表-->
 
-<view class="bottom-container">
-  <view class="bottom" bindtap="wxShowShareModal">邀请好友</view>
+  <view class="bottom-container">
+    <view class="bottom" bindtap="wxShowShareModal">邀请好友</view>
+  </view>
 </view>
 <template is="share" data="{{...shareData}}"/>

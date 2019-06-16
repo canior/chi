@@ -139,22 +139,22 @@
   align-items: baseline !important;
 }
 .chi-price-container .price {
-  font-size: 24rpx;
+  font-size: 28rpx;
   font-weight: bold;
-  color: #ff4d42;
+  color: #FF6C00;
 }
 .chi-price-container .price text {
   font-size: 36rpx;
   font-weight: bold;
 }
 .chi-price-container .freight {
-  font-size: 24rpx;
+  font-size: 28rpx;
   font-weight: bold;
-  color: #ff4d42;
+  color: #999;
   margin-left: 20rpx;
 }
 .chi-price-container .ori-price {
-  font-size: 24rpx;
+  font-size: 28rpx;
   color: #888;
   text-decoration: line-through;
   margin-left: 20rpx;

@@ -25,6 +25,6 @@
 </view>
 
 <view class="bottom">
-  <view>实付：<text>￥{{groupUserOrder.product.price}}</text></view>
+  <view>实付:<text>￥{{groupUserOrder.product.price}}</text></view>
   <button class="btn" bindtap="tapPay" disabled="{{btnDisabled}}">支付</button>
 </view>
