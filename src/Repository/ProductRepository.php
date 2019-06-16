@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\DataAccess\DataAccess;
 use App\Entity\Product;
+use App\Entity\Subject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -76,19 +77,46 @@ class ProductRepository extends ServiceEntityRepository
 
     /**
      * @param bool $isCourse
-     * @param array $orderBy
-     * @param int $limit
+     * @param null $isOnline
+     * @param array $extension
      * @return \Doctrine\ORM\QueryBuilder
      * @author zxqc2018
      */
-    public function findRecommendProductsQueryBuilder($isCourse = false, $orderBy = [], $limit = null)
+    public function findAppProductsQueryBuilder($isCourse = false, $isOnline = null, $extension = [])
     {
         $query = $this->createQueryBuilder('p')
         ->where('p.status = :status')
         ->setParameter('status', Product::ACTIVE);
 
+        $orderBy = $extension['orderBy'] ?? [];
+        $limit = $extension['limit'] ?? null;
+        $offlineCourseType = $extension['offlineCourseType'] ?? null;
+
         if ($isCourse) {
-            $query->andWhere('p.course is not null');
+            if(is_null($isOnline)) {
+                $query->andWhere('p.course is not null');
+            } else {
+                $query->join('p.course', 'c')
+                    ->andWhere('c.isOnline = :isOnline')
+                    ->setParameter('isOnline', $isOnline);
+
+                //线下课程类型
+                if (!is_null($offlineCourseType)) {
+                    $subjects = [];
+                    if ($offlineCourseType == 'THINKING') {
+                        $subjects[] = Subject::THINKING;
+                    } else if ($offlineCourseType == 'SYSTEM') {
+                        $subjects[] = Subject::TRADING;
+                        $subjects[] = Subject::SYSTEM_1;
+                        $subjects[] = Subject::SYSTEM_2;
+                    }
+
+                    if (!empty($subjects)) {
+                        $query->andWhere('c.subject  in (:subjects)')
+                            ->setParameter('subjects', $subjects);
+                    }
+                }
+            }
         } else {
             $query->andWhere('p.course is null');
         }

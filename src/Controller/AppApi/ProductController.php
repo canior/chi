@@ -150,9 +150,9 @@ class ProductController extends AppApiBaseController
      */
     protected function findHomeNewestProducts(ProductRepository $productRepository)
     {
-        return array_chunk(CommonUtil::entityArray2DataArray($productRepository->findRecommendProductsQueryBuilder(true, [
-            'p.id' => 'desc',
-        ], 6)->getQuery()->getResult()), 2);
+        return array_chunk(CommonUtil::entityArray2DataArray($productRepository->findAppProductsQueryBuilder(true, null, [
+            'orderBy' => ['p.id' => 'desc'], 'limit' => 6
+        ])->getQuery()->getResult()), 2);
     }
 
     /**
