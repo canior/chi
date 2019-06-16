@@ -25,6 +25,8 @@ class ErrorCode
     const ERROR_PARAM_NOT_ALL_EXISTS = 11003;
     const ERROR_SMS_CLIENT_INIT = 11004;
     const ERROR_SMS_SEND_RESPONSE = 11005;
+    const ERROR_COMMON_WECHAT_ERROR = 11006;
+    const ERROR_COMMON_NETWORK_ERROR = 11007;
     //-------认证---------------------------------------
     const ERROR_TOKEN_INVALID = 12001;
     const ERROR_TOKEN_AUTH_FAILURE = 12002;
@@ -37,6 +39,7 @@ class ErrorCode
     const ERROR_HAD_FOLLOW = 12009;
     const ERROR_FOLLOW_NOTFIND = 12010;
     const ERROR_MESSAGE_NOT_FIND = 12011;
+    const ERROR_WX_OPENID_LOGIN = 12012;
     //-------课程---------------------------------------
     const ERROR_CATEGORY_NOT_EXISTS = 13001;
     //-------产品---------------------------------------
@@ -97,6 +100,9 @@ class ErrorCode
             self::ERROR_SMS_SEND_RESPONSE => '短信发送失败',
             self::ERROR_CATEGORY_NOT_EXISTS => '课程类别不存在',
             self::ERROR_UNLOCK_CATEGORY_NOT_PRIVILEGE => '无权限解锁该系列',
+            self::ERROR_COMMON_WECHAT_ERROR => '微信端错误',
+            self::ERROR_COMMON_NETWORK_ERROR => '网络请求错误',
+            self::ERROR_WX_OPENID_LOGIN => '微信登陆失败',
         ];
     }
 

@@ -8,6 +8,8 @@ parameters:
   #签到二维码
   qrcode_uri: 'http://127.0.0.1/backend/wx'
   qrcode_path: '%kernel.project_dir%/public/upload/qrcode'
+  jinqiu_app_wx_id: '%env(JINQIU_APP_WX_ID)%'
+  jinqiu_app_wx_secret: '%env(JINQIU_APP_WX_SECRET)%'
 
 
 

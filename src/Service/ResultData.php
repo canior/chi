@@ -207,6 +207,16 @@ class ResultData implements \ArrayAccess
         $this->data = array_merge($this->data, $data);
         return $this;
     }
+
+    /**
+     * 是否成功返回
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isSuccess()
+    {
+        return empty($this->getCode());
+    }
     /**
      * 返回数组形式
      * @return array

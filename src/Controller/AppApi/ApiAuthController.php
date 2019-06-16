@@ -8,6 +8,8 @@
 
 namespace App\Controller\AppApi;
 
+use App\Entity\UserStatistics;
+use App\Service\Document\WeChatDocument;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -315,5 +317,72 @@ class ApiAuthController extends AppApiBaseController
             exit;
 
         }
+    }
+
+    /**
+     * @Route("/login/wx", name="apiAuthloginWx",  methods={"POST"})
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param JWTTokenManagerInterface $JWTTokenManager
+     * @return JsonResponse
+     */
+    public function wxLogin(Request $request, UserRepository $userRepository,JWTTokenManagerInterface $JWTTokenManager)
+    {
+        $requestProcess = $this->processRequest($request, [
+            'code'
+        ], ['code']);
+
+        $defaultNickname = '未知用户';
+        $defaultAvatarUrl = null;
+        $code = $requestProcess['code'];
+        $this->getLog()->info("wx user code = " . $code);
+
+        $wechat = new WeChatDocument([
+            'appid' => $this->getParameter('jinqiu_app_wx_id'),
+            'secret' => $this->getParameter('jinqiu_app_wx_secret'),
+        ]);
+
+        $openIdInfo = $wechat->getOpenidByCode($code);
+
+        $this->getLog()->info ("get wx user response for code [" . $code . "]: ", $openIdInfo->getData());
+
+        if (!$openIdInfo->isSuccess()) {
+            $openIdInfo->throwErrorException(ErrorCode::ERROR_WX_OPENID_LOGIN, []);
+        }
+        $accessToken = $openIdInfo['access_token'];
+        $openId = $openIdInfo['openid'];
+        $unionId = $openIdInfo['unionid'];
+
+        $user = $userRepository->findOneBy(['wxUnionId' => $unionId]);
+        $this->getLog()->info("found user " . $user == null ? 'true' : 'false');
+        if ($user == null) {
+            $this->getLog()->info("creating user for unionid" . $unionId);
+            $user = new User();
+            $user->setUsername($openId);
+            $user->setUsernameCanonical($openId);
+            $user->setEmail($openId . '@qq.com');
+            $user->setEmailCanonical($openId . '@qq.com');
+            $user->setPassword("IamCustomer");
+            $user->setWxOpenId($openId);
+            $user->setWxUnionId($unionId);
+            $user->setLastLoginTimestamp(time());
+
+            $userStatistics = new UserStatistics($user);
+            $user->addUserStatistic($userStatistics);
+            $user->info('created user ' . $user);
+        }
+
+        if ($user->getAvatarUrl() == null) {
+            $wxUserInfo = $wechat->getWeChatUserInfoByToken($accessToken, $openId);
+            $nickName = isset($wxUserInfo['nickname']) ? $wxUserInfo['nickname'] : $defaultNickname; //TODO 这里要添加文案
+            $avatarUrl = isset($wxUserInfo['headimgurl']) ? $wxUserInfo['headimgurl'] : null; //需要一张默认的用户头像
+            $user->setNickname($nickName);
+            $user->setAvatarUrl($avatarUrl);
+            $user->info("update user nickname to " . $nickName . " and avatar url");
+        }
+
+        $this->entityPersist($user);
+
+        return $requestProcess->toJsonResponse(['user' => $user->getArray(),'token' => $JWTTokenManager->create($user)]);
     }
 }
