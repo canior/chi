@@ -1,23 +1,27 @@
 /* pages/user/course/index.wxss */
+page {
+  background-color: #ececec;
+}
 .tab-bar {
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 100rpx;
-  line-height:100rpx;
-  font-size: 34rpx;
+  height: 60rpx;
+  line-height:60rpx;
+  font-size: 30rpx;
   text-align: center;
-  margin-top: 20rpx;
+  background-color: #fff;
 }
 .tab-bar .default {
-  color: #353535;
-  background-color: #ececec;    
+  color: #999;
   flex:1;
 }
 .tab-bar .active {
-  color: #000;
-  background-color: #ffdf00;    
+  color: #333;
   flex:1;
+}.tab-bar .active text {
+  padding: 10rpx 0;
+  border-bottom: 2px solid #1AAA92;
 }
 .tab-content {
   margin: 20rpx 0;
@@ -28,55 +32,31 @@
 .tab-content.hidden {
   display: none;
 }
-/*.tab-content .body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}*/
-
-/*.navbar {
-  display: flex;
-  border-top: 1px solid #ececec;
-}
-.nav {
-  flex: 1;
-  text-align: center;
-  font-size: 30rpx;
-  color: #353535;
-  background-color: #ececec;
-  padding: 20rpx 0;
-}.nav.active {
-  color:#000;
-  background-color: #ffdf00;
-}*/
-
+/*在线课程*/
 .row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 25rpx;
-  border-bottom: 1px solid #ececec;
-}.row:last-child {
-  border: none;
+  border-radius: 30rpx;
+  background-color: #fff;
+  margin: 30rpx;
 }
 .row .left {
   font-size: 24rpx;
-  color: #888;
+  color: #333;
   display: flex;
-  align-items: flex-start;
 }
 .row .left image {
-  width: 145rpx;
-  height: 145rpx;
+  width: 200rpx;
+  height: 200rpx;
   margin-right: 20rpx;
   border: 1px solid #e5e5e5;
 }
 .row .right {
-  font-size: 26rpx;
-  text-align: center;
-}.row .right.pending {
-  color: #888;
+  height: 200rpx;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 .row .line {
   font-size: 24rpx;
@@ -90,36 +70,97 @@
   line-height: 50rpx;
 }
 .row .line.sub-title {
-  font-size: 26rpx;
-  color: #333;
-}
-.row .line.desc {
   font-size: 24rpx;
-  color: #b2b2b2;
+  color: #666;
+  position: absolute;
+  bottom: 0;
 }
 .row .line.desc-box {
   font-size: 24rpx;
-  color: #b2b2b2;
-  width: 260px;
-  line-height: 30rpx;
+  color: #666;
+  width: 205px;
+  line-height: 40rpx;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;  
+  -webkit-box-orient: vertical;
+  margin-top: 10rpx;
 }
-.row .right .reward {
+/*线下活动*/
+.row-offline {
+  border-radius: 30rpx;
+  background-color: #fff;
+  margin: 30rpx;
+}
+.row-offline .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 20rpx 10rpx;
+}.row-offline .body {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 20rpx 40rpx;
+}
+.row-offline .left {
+  font-size: 24rpx;
+  color: #333;
+  display: flex;
+}
+.row-offline .left image {
+  width: 81px;
+  height: 81px;
+  margin-right: 20rpx;
+  border: 1px solid #e5e5e5;
+}
+.row-offline .right {
+  height: 81px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+}
+.row-offline .line {
+  font-size: 24rpx;
+  color: #888;
+  line-height: 30rpx;
+}
+.row-offline .line.title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  line-height: 50rpx;
+}
+.row-offline .line.sub-title {
+  font-size: 24rpx;
+  color: #666;
+  position: absolute;
+  bottom: 0;
+}
+.row-offline .line.desc {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+}
+.row-offline .line.desc .reward {
   font-size: 36rpx;
   color: #ff4d42;
+  position: absolute;
+  right: 0rpx;
 }
-.row button.btn {
-  font-size: 24rpx;
+.row-offline button.btn {
+  font-size: 28rpx;
+  color: #1AAA92;
   background-color: #fff;
   text-align: right;
-}.row button.btn::after {
-  border-color: #000;
-}.row button.btn:first-child {
-  margin-right: 20rpx;
+  border: 1px solid #1AAA92;
+  padding: 0 5rpx;
+  height: 50rpx;
+  line-height: 50rpx;
 }
 .none {
   display: flex;
@@ -130,7 +171,8 @@
 .bottom {
   font-size: 30rpx;
   text-align: center;
-  background-color: #ffdf00;
+  color: #fff;
+  background-color: #1AAA92;
   margin: 50rpx 70rpx;
   padding: 20rpx 0;
   border-radius: 40rpx;

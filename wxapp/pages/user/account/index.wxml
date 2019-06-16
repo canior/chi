@@ -1,18 +1,14 @@
 <!--pages/user/account/index.wxml-->
-<view class="top-container">
-  <view class="top">
-    <view class="title">账户余额(元)</view>
-    <view class="total">￥{{userAccount.balance ? userAccount.balance : 0}}</view>
-    <view class="tip"/>
-  </view>
-</view>
-<view class="navbar">
-  <view class="nav">已提现：￥{{userAccount.withdrawedTotal}}</view>
-  <view class="nav">提现中：￥{{userAccount.withdrawingTotal}}</view>
-</view>
-
-<!--列表-->
 <view class="container">
+  <view class="top">
+    <view class="total">￥{{userAccount.balance ? userAccount.balance : 0}}</view>
+    <view class="navbar">
+      <view class="nav">已提现:￥{{userAccount.withdrawedTotal}}</view>
+      <view class="bar"/>
+      <view class="nav">提现中:￥{{userAccount.withdrawingTotal}}</view>
+    </view>
+  </view>
+  <!--列表-->
   <view class="rank">
     <view class="table">
       <view class="tr">
@@ -26,9 +22,8 @@
         <view class="td">{{item.amount}}</view>
       </view>
     </view>
+  </view><!--列表-->
+  <view class="bottom-container">
+    <view class="bottom" bindtap="toCashOut">提现</view>
   </view>
-</view><!--列表-->
-<view class="split-brand"/>
-<view class="bottom-container">
-  <view class="bottom" bindtap="toCashOut">我要提现</view>
 </view>

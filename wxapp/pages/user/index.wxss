@@ -1,4 +1,11 @@
 /* pages/user/index.wxss */
+.wrap {
+  position: relative;
+}
+.container {
+  background-color: #F2F6F9;
+  padding-top: 42px;
+}
 .top {
   font-size: 30rpx;
   display: flex;
@@ -6,23 +13,38 @@
   align-items: center;
   border: 1px solid #ededed;
   padding: 20rpx;
-  background-color: #ffee94;
+  background: linear-gradient(#30CAB0,#30CAB0);
+  height: 177px;
 }
 .top .left {
   display: flex;
   align-items: center;
 }
 .top .left .avatar {
-  width: 126rpx;
-  height: 126rpx;
+  width: 77px;
+  height: 77px;
   border: 1px solid #ededed;
   border-radius: 50%;
   margin-right: 20rpx
 }
 .top .left image {
-  width: 126rpx;
-  height: 126rpx;
+  width: 77px;
+  height: 77px;
   border-radius: 50%;
+}
+.top .left .info .nickname {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #fff;
+  padding-bottom: 20rpx;
+}
+.top .left .info .userlevel {
+  font-size: 26rpx;
+  color: #fff;
+}.top .left .info .userlevel text {
+  border: 1px solid #fff;
+  padding: 5rpx;
+  margin-right: 10rpx;
 }
 .top .right {
   display: flex;
@@ -47,55 +69,67 @@
   border-radius: 40rpx;
   padding: 10rpx 30rpx;
 }
+.row-float {
+  display: flex;
+  align-items: center;
+  padding: 30rpx 0;
+  width: 342px;
+  background-color: #fff;
+  margin: 0 auto;
+  position: absolute;
+  top: 155px;
+  left: 0;
+  right: 0;
+  border-radius: 25rpx 25rpx 0 0;
+}
 .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30rpx 0;
+  padding: 30rpx;
+  width: 312px;
+  background-color: #fff;
+  margin: 0 auto;
+  border-bottom: 1px solid #f2f6f9;
 }
 .row .left {
   font-size: 30rpx;
-  font-weight: bold;
+  color: #333;
   display: flex;
   align-items: center;
 }.row .left image {
-  width: 40rpx;
-  height: 40rpx;
+  width: 42rpx;
+  height: 42rpx;
   margin-right: 20rpx;
 }
 .row .right {
-  font-size: 24rpx;
-  color: #888;
+  font-size: 28rpx;
+  color: #333;
   display: flex;
   align-items: center;
-  padding: 0 20rpx;
 }
 .arrow-right {
-  border-top: 2px solid #888;
-  border-right: 2px solid #888;
+  border-top: 2px solid #ccc;
+  border-right: 2px solid #ccc;
   width: 18rpx;
   height: 18rpx;
   transform: rotate(45deg);
 }
-.row .step {
+.row-float .step {
   font-size: 30rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-}.row .step:first-child {
-  padding-left: 40rpx;
-}
-.row .step:last-child {
-  padding-right: 40rpx;
-}
-.row .step image {
-  width: 57rpx;
-  height: 47rpx;
-  margin-bottom: 20rpx;
+  flex: 1;
+}.row-float .step text {
+  font-size: 30rpx;
+  color: #333;
 }
 .btn-clear {
-  background-color: transparent;
-  width: 100%;
+  /*background-color: transparent;*/
+  /*width: 100%;*/
+  width: 342px;
+  border: 0;
 }.btn-clear::after {
   border: 0;
 }

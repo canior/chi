@@ -1,89 +1,81 @@
 <!--pages/user/index.wxml-->
-<view class="container">
+<view class="wrap">
   <view class="top" bindtap="toUserInfo">
     <view class="left">
       <view class="avatar">
         <image src="{{user.avatarUrl}}" wx:if="{{isLogin}}"/>
       </view>
       <view class="info">
-        <view class="line">{{isLogin ? user.nickname : '未登录'}}</view>
-        <view class="line" wx:if="{{isLogin}}">{{user.userLevelText}} | {{user.bianxianUserLevelText}}</view>
+        <view class="nickname">{{isLogin ? user.nickname : '未登录'}}</view>
+        <view class="userlevel" wx:if="{{isLogin}}"><text>{{user.userLevelText}}</text><text>{{user.bianxianUserLevelText}}</text></view>
       </view>
     </view>
     <view class="right" wx:if="{{isLogin}}">
       <image src="/images/qrcode.png"/>
-      <view class="arrow-right"/>
+      <!--view class="arrow-right"/-->
     </view>
     <view class="right" wx:if="{{!isLogin}}">
       <view class="login" catchtap="toLogin">请登录</view>
     </view>    
   </view>
-  <view class="row" wx:if="{{isLogin}}">
+  <view class="row-float" wx:if="{{isLogin}}">
     <view class="step" bindtap="toMyAccount" data-status="created">
-      <text>我的账户</text><text>￥{{user.userAccountTotal ? user.userAccountTotal : 0}}</text>
+      <text>￥{{user.userAccountTotal ? user.userAccountTotal : 0}}</text>
+      <text>我的账户</text>
     </view>
     <view class="step" bindtap="toReferral" data-status="pending">
-      <text>我的分享</text><text>{{user.totalShares ? user.totalShares : 0}}人</text>
+      <text>{{user.totalShares ? user.totalShares : 0}}人</text>
+      <text>我的分享</text>
     </view>
     <view class="step" bindtap="toQuota" data-status="shipping">
-      <text>我的名额</text><text>{{user.userRecommandStock ? user.userRecommandStock : 0}}</text>
+      <text>{{user.userRecommandStock ? user.userRecommandStock : 0}}</text>
+      <text>我的名额</text>
     </view>
   </view>
 </view>
-<view class="split-brand"/>
 <view class="container">
   <block wx:if="{{isLogin}}">
-    <view class="split-line"/>
     <view class="row" bindtap="toScan">
       <view class="left"><image src="/images/scan.png"/>扫一扫</view>
       <view class="right"><view class="arrow-right"/></view>
     </view>
   </block>
   <block>
-    <view class="split-line"/>
     <view class="row" bindtap="toUpgrade">
       <view class="left"><image src="/images/upgrade.png"/>{{textMeta ? textMeta.text_upgrade_meta.textMeta : ''}}</view>
       <view class="right"><view class="arrow-right"/></view>
     </view>
-    <view class="split-line"/>
     <view class="row" bindtap="toInvite">
       <view class="left"><image src="/images/invite-code.png"/>输入升级码</view>
       <view class="right"><view class="arrow-right"/></view>
     </view>
   </block>
   <block wx:if="{{isLogin}}">
-    <view class="split-line"/>
     <view class="row" bindtap="toUserAddress">
       <view class="left"><image src="/images/my-addr.png"/>我的地址</view>
       <view class="right"><view class="arrow-right"/></view>
     </view>
-    <view class="split-line"/>
     <view class="row" bindtap="toMyOrder">
       <view class="left"><image src="/images/my-order.png"/>我的订单</view>
       <view class="right"><view class="arrow-right"/></view>
     </view>
-    <view class="split-line"/>
     <view class="row" bindtap="toMySales">
       <view class="left"><image src="/images/my-sales.png"/>我的销售</view>
       <view class="right"><view class="arrow-right"/></view>
-    </view>    
-    <view class="split-line"/>
+    </view>
     <view class="row" bindtap="toMyCall">
       <view class="left"><image src="/images/my-call.png"/>我的集Call</view>
       <view class="right"><view class="arrow-right"/></view>
     </view>
   </block>
   <block wx:if="{{isLogin && user.totalStudents > 0}}">
-    <view class="split-line"/>
     <view class="row" bindtap="toMyStudent">
       <view class="left"><image src="/images/my-student.png"/>我的学员</view>
       <view class="right">{{user.totalStudents}}人<view class="arrow-right"/></view>
     </view>
   </block>
-  <view class="split-line"/>
   <button class="row btn-clear" open-type='contact'>
     <view class="left"><image src="/images/server.png"/>客服咨询</view>
     <view class="right"><view class="arrow-right"/></view>
   </button>
-  <view class="split-line"/>
 </view>
