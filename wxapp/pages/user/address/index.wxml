@@ -5,6 +5,7 @@
     <view class="top" bindtouchstart="{{groupUserOrderId ? '' : 'touchS'}}" bindtouchmove="{{groupUserOrderId ? '' : 'touchM'}}" bindtouchend="{{groupUserOrderId ? '' : 'touchE'}}" style="{{item.txtStyle}}" data-index="{{index}}">
       <view class="left" bindtap="{{groupUserOrderId ? 'confirmAddress' : ''}}" data-index="{{index}}">
         <view class="line">
+          <image src="/images/my-addr.png"/>
           <view class="name">{{item.name}}</view>
           <view class="phone">{{item.phone}}</view>
           <!--<view class="default"><text wx:if="{{item.isDefault}}" decode="true">&nbsp;默认&nbsp;</text></view>-->
@@ -14,7 +15,7 @@
         </view>
       </view>
       <view class="right" bindtap="updateAddress" data-id="{{item.id}}">
-        <image src="/images/edit.png"/>
+        <!--image src="/images/edit.png"/--><text>编辑</text>
       </view>
     </view>
     <view class="del" bindtap="delAddress" data-id="{{item.id}}">删除</view>
@@ -22,6 +23,7 @@
 </view>
 
 <view class="bottom">
-  <view class="left" bindtap="updateAddress">＋新建地址</view>
-  <view class="right" bindtap="import"><image src="/images/wx.png"/>微信导入地址</view>
+  <!--view class="left" bindtap="updateAddress">＋新建地址</view>
+  <view class="right" bindtap="import"><image src="/images/wx.png"/>微信导入地址</view-->
+  <view class="btn" bindtap="updateAddress">＋新建地址</view>
 </view>

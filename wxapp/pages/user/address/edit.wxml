@@ -1,18 +1,22 @@
 <!--pages/user/address/edit.wxml-->
 <view class="container">
   <view class="row">
-    <input placeholder="姓名" value="{{address.name}}" bindblur="inputName"/>
+    <text>收货人</text>
+    <input placeholder="请填写收货人姓名" value="{{address.name}}" bindblur="inputName"/>
   </view>
   <view class="row">
-    <input placeholder="手机号码" value="{{address.phone}}" bindblur="inputPhone"/>
+    <text>联系电话</text>
+    <input placeholder="请填写收货人的手机号" value="{{address.phone}}" bindblur="inputPhone"/>
   </view>
   <view class="row">
+    <text>所在地区</text>
     <picker mode="region" bindchange="bindRegionChange" value="{{address.region}}" custom-item="{{address.customItem}}">
       <input placeholder="省市、区县" value="{{address.regionText}}" disabled="true"/>
     </picker>
   </view>
   <view class="row">
-    <input placeholder="详细地址" value="{{address.address}}" bindblur="inputAddress"/>
+    <text>详细地址</text>
+    <input placeholder="街道/乡镇、楼牌号等" value="{{address.address}}" bindblur="inputAddress"/>
   </view>
   <!--<view class="row" wx:if="{{!address.isDefault}}">
     <checkbox-group bindchange="setDefault" data-setdefault="{{address.setDefault}}">
@@ -25,6 +29,7 @@
   <view class="btn">保存</view>
 </view>
 <view class="bottom">
-  <view class="left" bindtap="save">保存地址</view>
-  <view class="right" bindtap="import"><image src="/images/wx.png"/>微信导入地址</view>
+  <!--view class="left" bindtap="save">保存地址</view>
+  <view class="right" bindtap="import"><image src="/images/wx.png"/>微信导入地址</view-->
+  <view class="btn" bindtap="save">保存地址</view>
 </view>

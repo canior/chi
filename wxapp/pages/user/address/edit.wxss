@@ -1,15 +1,19 @@
 /* pages/user/address/edit.wxss */
-.row {
+.container {
   border-top: 1px solid #eee;
-  padding: 30rpx 0;
+}
+.row {
+  display: flex;
   font-size: 30rpx;
   color: #353535;
-}.row:last-child{
+  padding: 30rpx 0;
   border-bottom: 1px solid #eee;
+}.row text {
+  width: 150rpx;
 }
 .bottom {
-  display: flex;
-  align-items: center;
+  /*display: flex;
+  align-items: center;*/
   position: fixed;
   left: 0;
   right: 0;
@@ -34,4 +38,14 @@
 }
 .bottom .right {
   background-color: #ffdf00;
+}
+.bottom .btn {
+  font-size: 30rpx;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  background-color: #1AAA92;
+  margin: 40rpx 70rpx;
+  padding: 20rpx 0;
+  border-radius: 40rpx;
 }
