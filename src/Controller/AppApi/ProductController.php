@@ -13,6 +13,7 @@ use App\Entity\Course;
 use App\Entity\Follow;
 use App\Entity\GroupUserOrder;
 use App\Entity\Product;
+use App\Entity\ProductReview;
 use App\Entity\ProjectBannerMeta;
 use App\Entity\ProjectTextMeta;
 use App\Entity\User;
@@ -178,5 +179,31 @@ class ProductController extends AppApiBaseController
          */
         $follow = $followRepository->findOneBy(['dataId' => $course->getId(), 'user' => $user, 'type' => Follow::COURSE]);
         return $follow;
+    }
+
+    /**
+     * 获取指定产品的评价，评价条数限制limit
+     * @Route("/product/reviews", name="appProductReviews", methods="POST")
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @return JsonResponse
+     */
+    public function productReviewIndexAction(Request $request, ProductRepository $productRepository): JsonResponse
+    {
+        $requestProcess = $this->processRequest($request, [
+            'productId', 'page', 'pageNum'
+        ], ['productId']);
+
+        $product = $productRepository->find($requestProcess['productId']);
+
+        if (empty($product)) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_PRODUCT_NOT_EXISTS, []);
+        }
+        /**
+         * @var ProductReview[] $productReviews
+         */
+        $productReviews = $this->getPaginator()->paginate($product->getActiveReviews(), $requestProcess['page'], $requestProcess['pageNum']);
+
+        return $requestProcess->toJsonResponse(CommonUtil::entityArray2DataArray($productReviews));
     }
 }

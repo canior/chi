@@ -61,6 +61,7 @@ class ErrorCode
     const ERROR_PAY_NOTIFY = 16011;
     const ERROR_PAY_ORDER_ALREADY_WAIT = 16012;
     const ERROR_UNLOCK_CATEGORY_NOT_PRIVILEGE = 16013;
+    const ERROR_ORDER_ALREADY_PAY = 16014;
     /**
      * 错误消息集合
      * @return array
