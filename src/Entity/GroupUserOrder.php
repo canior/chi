@@ -1229,9 +1229,7 @@ class GroupUserOrder implements Dao
      */
     public function makeTraceNo()
     {
-        $typeStr = GroupUserOrder::$paymentTraceNoTypes[$this->getPaymentChannel()] ?? '';
-        $tradeNoLen = CommonUtil::isDebug() ? 10: 16;
-        return 'jq' . $typeStr . sprintf("%0{$tradeNoLen}d", $this->getId());
+        return 'jq' . date('YmdHis') . $this->getId() . mt_rand(1000, 9999);
     }
 
     // APP订单状态显示

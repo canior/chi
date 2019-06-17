@@ -52,8 +52,8 @@ class PayController extends AppApiBaseController
             $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS);
         }
 
-        if ($groupUserOrder->isWaitingPayWithApp()) {
-            $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ALREADY_WAIT, []);
+        if ($groupUserOrder->isPaid()) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_ORDER_ALREADY_PAY, []);
         }
 
         $body = $groupUserOrder->getProduct()->getTitle();
@@ -61,7 +61,7 @@ class PayController extends AppApiBaseController
             $body .= ': ￥490 + 咨询费: ￥1510';
         }
 
-        $groupUserOrder->setPaymentStatus($requestProcess['type']);
+        $groupUserOrder->setPaymentChannel($requestProcess['type']);
         $outTradeNo = $groupUserOrder->makeTraceNo();
         $prePayInfo = [];
 
@@ -150,6 +150,7 @@ class PayController extends AppApiBaseController
             $user->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($groupUserOrder->getId()));
         }
 
+        $groupUserOrder->setPaymentTime(time());
         $this->getEntityManager()->flush();
 
         $data = [

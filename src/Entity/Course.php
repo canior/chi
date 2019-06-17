@@ -34,6 +34,16 @@ class Course implements Dao
 
     use IdTrait;
 
+    const COURSE_SHOW_TYPE_APP = 'app';
+    const COURSE_SHOW_TYPE_MINI = 'mini';
+    const COURSE_SHOW_TYPE_ALL = 'all';
+
+    public static $courseShowTypeTexts = [
+        self::COURSE_SHOW_TYPE_APP => 'APP',
+        self::COURSE_SHOW_TYPE_MINI => '小程序',
+        self::COURSE_SHOW_TYPE_ALL => '所有',
+    ];
+
     /**
      * @var Product
      * @ORM\OneToOne(targetEntity="App\Entity\Product", mappedBy="course", cascade={"persist"})
@@ -140,6 +150,12 @@ class Course implements Dao
      * @ORM\Column(name="unlock_type", type="string", length=20, nullable=true)
      */
     private $unlockType;
+
+    /**
+     * @var string
+     * @ORM\Column(name="course_show_type", type="string", length=20, nullable=true)
+     */
+    private $courseShowType;
 
     public function __construct() {
         $product = new Product();
@@ -758,7 +774,7 @@ class Course implements Dao
     /**
      * @param Category $courseCategory
      */
-    public function setCourseCategory(Category $courseCategory): void
+    public function setCourseCategory(?Category $courseCategory): void
     {
         $this->courseCategory = $courseCategory;
     }
@@ -774,7 +790,7 @@ class Course implements Dao
     /**
      * @param Category $courseActualCategory
      */
-    public function setCourseActualCategory(Category $courseActualCategory): void
+    public function setCourseActualCategory(?Category $courseActualCategory): void
     {
         $this->courseActualCategory = $courseActualCategory;
     }
@@ -873,9 +889,39 @@ class Course implements Dao
         return $res;
     }
 
+    /**
+     * 是否免费课程
+     * @return bool
+     * @author zxqc2018
+     */
     public function isFreeNoCall()
     {
         return self::UNLOCK_TYPE_FOUR == $this->getUnlockType();
+    }
+
+    /**
+     * @return string
+     */
+    public function getCourseShowType(): ?string
+    {
+        return $this->courseShowType;
+    }
+
+    /**
+     * @param string $courseShowType
+     */
+    public function setCourseShowType(string $courseShowType): void
+    {
+        $this->courseShowType = $courseShowType;
+    }
+
+    /**
+     * @return mixed|string
+     * @author zxqc2018
+     */
+    public function getCourseShowTypeText()
+    {
+        return self::$courseShowTypeTexts[$this->getCourseShowType()] ?? '';
     }
     /**
      * @return array

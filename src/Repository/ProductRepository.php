@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\DataAccess\DataAccess;
+use App\Entity\Course;
 use App\Entity\Product;
 use App\Entity\Subject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -24,9 +25,10 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * @param bool $isCourse
      * @param bool $isOnlineCourse
+     * @param null $courseShowType
      * @return \Doctrine\ORM\Query
      */
-    public function findActiveProductsQuery($isCourse = false, $isOnlineCourse = true)
+    public function findActiveProductsQuery($isCourse = false, $isOnlineCourse = true, $courseShowType = null)
     {
         $query = $this->createQueryBuilder('p')
             ->where('p.status = :status')
@@ -36,10 +38,17 @@ class ProductRepository extends ServiceEntityRepository
                 ->andWhere('c.isOnline = :isOnline')
                 ->setParameter('isOnline', $isOnlineCourse);
 
+
+            //课程显示设备处理
+            if ($isOnlineCourse) {
+                if (!is_null($courseShowType)) {
+                    $query->andWhere('c.courseShowType in (:courseShowType)')
+                        ->setParameter('courseShowType', array_unique([$courseShowType, Course::COURSE_SHOW_TYPE_ALL]));
+                }
+            }
         } else {
             $query->andWhere('p.course is null');
         }
-
         return $query->orderBy('p.priority', 'DESC')->addOrderBy('p.id', 'DESC')->getQuery();
     }
 
@@ -91,6 +100,7 @@ class ProductRepository extends ServiceEntityRepository
         $orderBy = $extension['orderBy'] ?? [];
         $limit = $extension['limit'] ?? null;
         $offlineCourseType = $extension['offlineCourseType'] ?? null;
+        $courseShowType = $extension['courseShowType'] ?? Course::COURSE_SHOW_TYPE_APP;
 
         if ($isCourse) {
             if(is_null($isOnline)) {
@@ -114,6 +124,14 @@ class ProductRepository extends ServiceEntityRepository
                     if (!empty($subjects)) {
                         $query->andWhere('c.subject  in (:subjects)')
                             ->setParameter('subjects', $subjects);
+                    }
+                }
+
+                if ($isOnline) {
+                    //课程显示设备处理
+                    if (!is_null($courseShowType)) {
+                        $query->andWhere('c.courseShowType')
+                            ->setParameter('courseShowType', array_unique([$courseShowType, Course::COURSE_SHOW_TYPE_ALL]));
                     }
                 }
             }

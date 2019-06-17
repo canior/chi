@@ -66,19 +66,23 @@ class CourseController extends BackendController
             $status = $request->request->get('course')['status'];
             $subject = $request->request->get('course')['subject'];
             $unlockType = $request->request->get('course')['unlockType'];
+            $courseShowType = $request->request->get('course')['courseShowType'];
             $course->setStatus($status);
             $course->setSubject($subject);
             $course->setUnlockType($unlockType);
+            $course->setCourseShowType($courseShowType);
 
             //假如选择一级分类默认创建一个二级的单课类别
-            if (empty($course->getCourseCategory()->getParentCategory())) {
-                $categoryActual = Category::factory($course->getTitle(), $course->getCourseCategory());
-                $categoryActual->setSingleCourse(1);
-                $categoryActual->setPriority($course->getPriority());
-                $this->entityPersist($categoryActual, false);
-                $course->setCourseActualCategory($categoryActual);
-            } else {
-                $course->setCourseActualCategory($course->getCourseCategory());
+            if (!empty($course->getCourseCategory())) {
+                if (empty($course->getCourseCategory()->getParentCategory())) {
+                    $categoryActual = Category::factory($course->getTitle(), $course->getCourseCategory());
+                    $categoryActual->setSingleCourse(1);
+                    $categoryActual->setPriority($course->getPriority());
+                    $this->entityPersist($categoryActual, false);
+                    $course->setCourseActualCategory($categoryActual);
+                } else {
+                    $course->setCourseActualCategory($course->getCourseCategory());
+                }
             }
 
             $this->entityPersist($course);
@@ -146,6 +150,7 @@ class CourseController extends BackendController
         $form->get('status')->setData(array_search($course->getProduct()->getStatusText(), Product::$statuses));
         $form->get('subject')->setData(array_search($course->getSubjectText(), Subject::$subjectTextArray));
         $form->get('unlockType')->setData(array_search($course->getUnlockTypeText(), Course::$unlockTypeTexts));
+        $form->get('courseShowType')->setData(array_search($course->getCourseShowTypeText(), Course::$courseShowTypeTexts));
 
         /**
          * @var Category $originCourseCategory
@@ -205,11 +210,12 @@ class CourseController extends BackendController
             $status = $request->request->get('course')['status'];
             $subject = $request->request->get('course')['subject'];
             $unlockType = $request->request->get('course')['unlockType'];
+            $courseShowType = $request->request->get('course')['courseShowType'];
 
             //假如课程有改动
             if ($originCourseCategory !== $course->getCourseCategory()) {
                 //假如选择一级分类默认创建一个二级的单课类别
-                if (empty($course->getCourseCategory()->getParentCategory())) {
+                if (!empty($course->getCourseCategory()) && empty($course->getCourseCategory()->getParentCategory())) {
                     //假如原类是单课程类去除 类别表中的category
                     if (!empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
                         $course->getCourseActualCategory()->setName($course->getTitle());
@@ -245,6 +251,7 @@ class CourseController extends BackendController
             $course->setStatus($status);
             $course->setSubject($subject);
             $course->setUnlockType($unlockType);
+            $course->setCourseShowType($courseShowType);
             $this->getEntityManager()->persist($course);
 
             try {

@@ -246,6 +246,7 @@ class GroupUserOrderController extends BaseController
             $user->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($groupUserOrder->getId()));
         }
 
+        $groupUserOrder->setPaymentTime(time());
         $this->getEntityManager()->flush();
 
         $data = [

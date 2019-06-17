@@ -60,6 +60,7 @@ class ErrorCode
     const ERROR_PAY_NOTIFY = 16011;
     const ERROR_PAY_ORDER_ALREADY_WAIT = 16012;
     const ERROR_UNLOCK_CATEGORY_NOT_PRIVILEGE = 16013;
+    const ERROR_ORDER_ALREADY_PAY = 16014;
     /**
      * 错误消息集合
      * @return array
@@ -103,6 +104,7 @@ class ErrorCode
             self::ERROR_COMMON_WECHAT_ERROR => '微信端错误',
             self::ERROR_COMMON_NETWORK_ERROR => '网络请求错误',
             self::ERROR_WX_OPENID_LOGIN => '微信登陆失败',
+            self::ERROR_ORDER_ALREADY_PAY => '订单已经支付',
         ];
     }
 

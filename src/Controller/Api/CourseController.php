@@ -8,6 +8,7 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Course;
 use App\Entity\GroupOrder;
 use App\Entity\GroupUserOrder;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,7 +52,7 @@ class CourseController extends ProductController
      * @return \Doctrine\ORM\Query
      */
     protected function findActiveProducts(ProductRepository $productRepository) {
-        return $productRepository->findActiveProductsQuery(true);
+        return $productRepository->findActiveProductsQuery(true, true, Course::COURSE_SHOW_TYPE_MINI);
     }
 
     /**

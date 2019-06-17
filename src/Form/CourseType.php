@@ -44,7 +44,7 @@ class CourseType extends AbstractType
                 'placeholder' => '选择课程分类',
                 'attr' => ['class' => 'form-control chosen'],
                 'class' => Category::class,
-                'required' => true,
+                'required' => false,
                 'choice_label' => function (Category $category) {
                      if (!empty($category->getParentCategory())) {
                          return $category->getParentCategory()->__toString() .'-'.$category->__toString();
@@ -90,6 +90,12 @@ class CourseType extends AbstractType
                 'mapped' => false,
                 'required' => true,
                 'choices' => array_flip(Course::$unlockTypeTexts)
+            ])
+            ->add('courseShowType', ChoiceType::class, [
+                'label' => '显示设备',
+                'mapped' => false,
+                'required' => true,
+                'choices' => array_flip(Course::$courseShowTypeTexts)
             ])
             ->add('shortDescription', TextareaType::class, [
                 'label' => '课程描述',
