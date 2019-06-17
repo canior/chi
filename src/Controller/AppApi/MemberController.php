@@ -383,6 +383,7 @@ class MemberController extends AppApiBaseController
         $city = isset($data['city']) ? $data['city'] : null;
         $county = isset($data['county']) ? $data['county'] : null;
         $address = isset($data['address']) ? $data['address'] : null;
+        $isDefault = isset($data['isDefault']) ? $data['isDefault'] : null;
 
         // 查询或新建region
         $provinceDao = $regionRepository->findOneBy(['name' => $province, 'parentRegion' => null]);
@@ -419,7 +420,7 @@ class MemberController extends AppApiBaseController
         }
 
 
-        $userAddress->setName($name)->setPhone($phone)->setRegion($countyDao)->setAddress($address)->setUpdatedAt(time());
+        $userAddress->setName($name)->setPhone($phone)->setIsDefault($isDefault)->setRegion($countyDao)->setAddress($address)->setUpdatedAt(time());
         $this->getEntityManager()->persist($userAddress);
         $this->getEntityManager()->flush();
 

@@ -1127,6 +1127,15 @@ class GroupUserOrder implements Dao
     }
 
     /**
+     * @return mixed|string
+     * @author zxqc2018
+     */
+    public function getPaymentChannelText()
+    {
+        return self::$paymentChannelTexts[$this->getPaymentChannel()] ?? '';
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {
@@ -1145,6 +1154,7 @@ class GroupUserOrder implements Dao
             'statusText' => $this->isCourseOrder() ? $this->getCourseStatusText() : $this->getStatusText(),
             'paymentStatus' => $this->getPaymentStatus(),
             'paymentStatusText' => $this->getPaymentStatusText(),
+            'paymentChannelText' => $this->getPaymentChannelText(),
             'product' => $this->getProduct()->getArray(),
             'rewards' => $this->getOrderRewards(),
             'isMasterOrder'=> $this->isMasterOrder(),
