@@ -130,7 +130,7 @@ class ProductRepository extends ServiceEntityRepository
                 if ($isOnline) {
                     //课程显示设备处理
                     if (!is_null($courseShowType)) {
-                        $query->andWhere('c.courseShowType')
+                        $query->andWhere('c.courseShowType  in (:courseShowType)')
                             ->setParameter('courseShowType', array_unique([$courseShowType, Course::COURSE_SHOW_TYPE_ALL]));
                     }
                 }
