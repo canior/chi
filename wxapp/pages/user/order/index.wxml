@@ -2,33 +2,34 @@
 <import src="/pages/tmpl/price.wxml"/>
 <view class="navbar">
   <block wx:for="{{menu}}" wx:key="index">
-    <view class="nav{{curStatus==item.status ? ' active' : ''}}" data-status="{{item.status}}" bindtap="tapMenu">{{item.name}}</view>
+    <view class="nav{{curStatus==item.status ? ' active' : ''}}" data-status="{{item.status}}" bindtap="tapMenu"><text>{{item.name}}</text></view>
   </block>
 </view>
-<view class="split-brand"/>
-
-<block wx:for="{{groupUserOrders}}" wx:key="index">
-  <view class="section">
-    <view class="row">
-      <view class="left">订单编号：{{item.id}}</view>
-      <view class="right">{{item.createdAt}}</view>
-    </view>
-    <view class="row">
-      <view class="left">
-        <image src="{{imgUrlPrefix + '/' + item.product.productImages[0].fileId}}"/>
-        <view>
-          <view class="line name">{{item.product.title}}</view>
-          <template is="price" data="{{...item}}"/>
+<view class="container">
+  <block wx:for="{{groupUserOrders}}" wx:key="index">
+    <view class="section" bindtap="toUserOrderDetail" data-id="{{item.id}}">
+      <view class="row-header">
+        <view class="left">订单编号: {{item.id}}</view>
+        <view class="right">{{item.statusText}}</view>
+      </view>
+      <view class="row">
+        <view class="left">
+          <image src="{{imgUrlPrefix + '/' + item.product.productImages[0].fileId}}"/>
+        </view>
+        <view class="right">
+            <view class="line name">{{item.product.title}}</view>
+            <!--template is="price" data="{{...item}}"/-->
+            <view class="line price">{{item.product.price}}<text>x1</text></view>
+        </view>
+      </view>
+      <view class="row-footer">
+        <view class="left"></view>
+        <view class="right">
+          <!--button open-type="contact">客服咨询</button>
+          <button catchtap="toUserOrderDetail" data-id="{{item.id}}">订单详情</button-->
+          共1件商品 合计:<text>¥{{item.paymentTotal}}</text>
         </view>
       </view>
     </view>
-    <view class="row">
-      <view class="left status">{{item.statusText}}</view>
-      <view class="right">
-        <button open-type="contact">客服咨询</button>
-        <button catchtap="toUserOrderDetail" data-id="{{item.id}}">订单详情</button>
-      </view>
-    </view>
-  </view>
-  <view class="split-brand"/>
-</block>
+  </block>
+</view>
