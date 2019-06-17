@@ -163,6 +163,7 @@ class ApiAuthController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
+        // 暂时不验证code，用于测试 TODO
         // 验证Code
         // $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ]);
         // if( $messageCode == null || $messageCode->getCode() != $data['code'] ){

@@ -939,19 +939,29 @@ class MemberController extends AppApiBaseController
         $page = isset($data['page']) ? $data['page'] : 1;
 
         // 查询匹配用户
+        $dateType = null;
+        if( $type == 'onlineCourse' || $type == 'offlineCourse' ){
+            $dateType = Follow::COURSE;
+        }
         $user =  $this->getAppUser();
         if ($user == null) {
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        $followArray = $followRepository->findMyFollow($user->getId(),$type,$page,self::PAGE_LIMIT);
+
+        $followArray = $followRepository->findMyFollow($user->getId(),$dateType,$page,self::PAGE_LIMIT);
         foreach ($followArray as $k => $v) {
             switch ($v['type']) {
-                case Follow::OFFLINE_COURSE:
-                case Follow::ONLINE_COURSE:
+                case Follow::COURSE:
                     $course = $courseRepository->find( $v['dataId'] );
                     if($course){
-                        $followArray[$k]['course'] = $course->getArray();
+                        if ( $type == 'onlineCourse' && $course->isOnline() ) {
+                            $followArray[$k]['course'] = $course->getArray();
+                        }else if ( $type == 'offlineCourse' && !$course->isOnline() ) {
+                            $followArray[$k]['course'] = $course->getArray();
+                        }else{
+                            unset($followArray[$k]);
+                        }
                     }
                     break;
                 case Follow::TEACHER:
@@ -966,7 +976,7 @@ class MemberController extends AppApiBaseController
         }
 
         // 返回
-        return CommonUtil::resultData(  $followArray )->toJsonResponse();
+        return CommonUtil::resultData(  ['follow'=>$followArray] )->toJsonResponse();
     }
 
 
