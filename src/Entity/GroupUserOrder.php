@@ -1200,42 +1200,42 @@ class GroupUserOrder implements Dao
         return 'jq' . $typeStr . sprintf("%0{$tradeNoLen}d", $this->getId());
     }
 
-
-
     // APP订单状态显示
     public function getAppStatus(){
         $appStatus = 0;// 0.缺省 1.通过 2.不通过 3.待审核
         $product = $this->getProduct();
-        $courseCategory = $this->getCourse()->getCourseCategory()?$this->getCourse()->getCourseCategory()->getId():'';
 
-        if( $product->isCourseProduct() and $this->getCourse()->isOnline() and $courseCategory == Product::CATEGORY_ONLINE ){
-            // onlineCourse
-            $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
-        }else if( $product->isCourseProduct() and !$this->getCourse()->isOnline() and $courseCategory == Product::CATEGORY_OFFLINE ){
-            // offlineCourse
-            if( $this->getCourse()->getSubject() == Subject::THINKING || $this->getCourse()->getSubject() == Subject::TRADING ){
-                // 思维课
+        if ($product->isCourseProduct()) {
+            $course = $product->getCourse();
+            if ($course->isOnline()) {
+                // onlineCourse
                 $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
-            }else if( $this->getCourse()->getSubject() == Subject::SYSTEM_1 || $this->getCourse()->getSubject() == Subject::SYSTEM_2 ){
-                // 系统课
-                switch ($this->getUser()->getUserLevel()) {
-                    case BianxianUserLevel::VISITOR:
-                    case BianxianUserLevel::THINKING:
-                        if( $this->getCheckStatus() == self::CHECK_PASS ){
+            } else {
+                // offlineCourse
+                if( $course->getSubject() == Subject::THINKING || $course->getSubject() == Subject::TRADING ){
+                    // 思维课
+                    $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
+                }else if( $course->getSubject() == Subject::SYSTEM_1 || $course->getSubject() == Subject::SYSTEM_2 ){
+                    // 系统课
+                    switch ($this->getUser()->getBianxianUserLevel()) {
+                        case BianxianUserLevel::VISITOR:
+                        case BianxianUserLevel::THINKING:
+                            if( $this->getCheckStatus() == self::CHECK_PASS ){
+                                $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
+                            }else if( $this->getCheckStatus() == self::CHECK_REJECT ) {
+                                $appStatus = 2;
+                            }else{
+                                $appStatus = $this->getPaymentStatus()==self::PAID?3:2;
+                            }
+                            break;
+                        case BianxianUserLevel::ADVANCED:
+                        case BianxianUserLevel::PARTNER:
+                        case BianxianUserLevel::DISTRIBUTOR:
                             $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
-                        }else if( $this->getCheckStatus() == self::CHECK_REJECT ) {
-                            $appStatus = 2;
-                        }else{
-                            $appStatus = $this->getPaymentStatus()==self::PAID?3:2;
-                        }
-                        break;
-                    case BianxianUserLevel::ADVANCED:
-                    case BianxianUserLevel::PARTNER:
-                    case BianxianUserLevel::DISTRIBUTOR:
-                        $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
-                        break;
-                    default:
-                        break;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }

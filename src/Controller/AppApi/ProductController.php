@@ -72,13 +72,21 @@ class ProductController extends AppApiBaseController
 
         //课程加上对应的权限以及
         if ($product->isCourseProduct()) {
-            $data['product']['isPermission'] = $product->getCourse()->isPermission($user);
-            $data['product']['callStatus'] = '';
-            if (empty($data['product']['isPermission'])) {
-                $newGroupOrder = $user->getNewestGroupUserOrder($product, true);
-                $data['product']['callStatus'] = CommonUtil::getInsideValue($newGroupOrder, 'getStatus', '');
+            if ($product->getCourse()->isOnline()) {
+                $data['product']['isPermission'] = $product->getCourse()->isPermission($user);
+                $data['product']['callStatus'] = '';
+                if (empty($data['product']['isPermission'])) {
+                    $newGroupOrder = $user->getNewestGroupUserOrder($product, true);
+                    $data['product']['callStatus'] = CommonUtil::getInsideValue($newGroupOrder, 'getStatus', '');
+                }
+                $data['product']['isFollow'] = !empty($this->followCourseInfo($user, $product->getCourse()));
+            } else {
+                /**
+                 * @var GroupUserOrder $groupUserOrder
+                 */
+                $groupUserOrder = $this->findGroupUserOrder($user, $product);
+                $data['groupUserOrder'] = CommonUtil::getInsideValue($groupUserOrder);
             }
-            $data['product']['isFollow'] = !empty($this->followCourseInfo($user, $product->getCourse()));
         }
         return $requestProcess->toJsonResponse($data);
     }
