@@ -204,6 +204,13 @@ class GroupUserOrder implements Dao
      */
     private $tableNo;
 
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @var int|null
+     */
+    private $paymentTime;
+
     /**
      * @var Category
      * @ORM\ManyToOne(targetEntity="Category")
@@ -1136,6 +1143,22 @@ class GroupUserOrder implements Dao
     }
 
     /**
+     * @return string
+     */
+    public function getPaymentTime()
+    {
+        return $this->paymentTime;
+    }
+
+    /**
+     * @param string $paymentTime
+     */
+    public function setPaymentTime(int $paymentTime)
+    {
+        $this->paymentTime = $paymentTime;
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {
@@ -1155,6 +1178,7 @@ class GroupUserOrder implements Dao
             'paymentStatus' => $this->getPaymentStatus(),
             'paymentStatusText' => $this->getPaymentStatusText(),
             'paymentChannelText' => $this->getPaymentChannelText(),
+            'paymentTime' => $this->getPaymentTime(),
             'product' => $this->getProduct()->getArray(),
             'rewards' => $this->getOrderRewards(),
             'isMasterOrder'=> $this->isMasterOrder(),
