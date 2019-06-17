@@ -1085,6 +1085,36 @@ class MemberController extends AppApiBaseController
         return CommonUtil::resultData(  ['messageArray'=>$courseArray] )->toJsonResponse();
     }
 
+    /**
+     * 修改审核状态
+     * @Route("/updateEditStatus", name="updateEditStatus", methods="POST")
+     * @param Request $request
+     * @param MessageRepository $messageRepository
+     * @return Response
+     */
+    public function updateEditStatusAction(Request $request,GroupUserOrderRepository $groupUserOrderRepository) {
+
+        $data = json_decode($request->getContent(), true);
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $groupOrdersId = isset($data['groupOrdersId']) ? $data['groupOrdersId'] : null;
+        $checkStatus = isset($data['checkStatus']) ? $data['checkStatus'] : null;
+
+        // 持久化
+        $groupOrder = $groupUserOrderRepository->find( $groupOrdersId );
+        $groupOrder->setCheckStatus($checkStatus);
+        $this->getEntityManager()->persist($groupOrder);
+        $this->getEntityManager()->flush();
+
+        // 返回
+        return CommonUtil::resultData( ['groupOrder' => $groupOrder->getArray() ] )->toJsonResponse();
+    }
+
 
     /**
      * 已读 消息 

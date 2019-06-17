@@ -46,6 +46,8 @@ class ErrorCode
     const ERROR_PRODUCT_NOT_EXISTS = 14001;
     //-------订单---------------------------------------
     const ERROR_ORDER_TABLE_CREATE_FAIL = 15001;
+    const ERROR_ORDER_ALREADY_PAY = 16014;
+
 
     //-------支付---------------------------------------
     const ERROR_PAY_COMMON = 16001;
