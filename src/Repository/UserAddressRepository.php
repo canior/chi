@@ -36,15 +36,15 @@ class UserAddressRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?UserAddress
+    
+    public function setOthersNotDefault($userId,$userAddressId)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $q = $this->_em->createQueryBuilder('u')
+            ->update(UserAddress::class, 'u')
+            ->set('u.isDefault', '0')
+            ->where('u.id != :userAddressId')
+            ->setParameter('userAddressId', $userAddressId);
+        return $q->getQuery()->execute();
     }
-    */
+
 }

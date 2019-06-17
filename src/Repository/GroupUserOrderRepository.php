@@ -173,11 +173,11 @@ class GroupUserOrderRepository extends ServiceEntityRepository
     public function getTableUserCount($productId,$table) {
         $query = $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('guo')
+            ->select('count(guo)')
             ->from(GroupUserOrder::class, 'guo')
             ->innerJoin('guo.product', 'p')
             ->where('guo.product = :product')
-            ->andWhere('guo.table = :table')
+            ->andWhere('guo.tableNo = :table')
             ->setParameter('product',$productId)
             ->setParameter('table', $table);
         return $query->orderBy('guo.id', 'DESC')->getQuery()->getResult();

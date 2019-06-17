@@ -328,7 +328,7 @@ class MemberController extends AppApiBaseController
         }
 
         // 返回
-        return CommonUtil::resultData($userAddressesArray)->toJsonResponse();
+        return CommonUtil::resultData(['address'=>$userAddressesArray])->toJsonResponse();
     }
 
     /**
@@ -383,7 +383,7 @@ class MemberController extends AppApiBaseController
         $city = isset($data['city']) ? $data['city'] : null;
         $county = isset($data['county']) ? $data['county'] : null;
         $address = isset($data['address']) ? $data['address'] : null;
-        $isDefault = isset($data['isDefault']) ? $data['isDefault'] : null;
+        $isDefault = isset($data['isDefault']) ? $data['isDefault'] : 0;
 
         // 查询或新建region
         $provinceDao = $regionRepository->findOneBy(['name' => $province, 'parentRegion' => null]);
@@ -423,6 +423,11 @@ class MemberController extends AppApiBaseController
         $userAddress->setName($name)->setPhone($phone)->setIsDefault($isDefault)->setRegion($countyDao)->setAddress($address)->setUpdatedAt(time());
         $this->getEntityManager()->persist($userAddress);
         $this->getEntityManager()->flush();
+
+        // 初始化其他默认地址  
+        if( $userAddress->getIsDefault() ){
+            $userAddressRepository->setOthersNotDefault($user->getId(),$userAddressId);
+        }
 
 
         // 返回
@@ -1218,17 +1223,40 @@ class MemberController extends AppApiBaseController
         return $user_table;
     }
 
-    public function createUserTable($user,$groupUserOrder,$groupUserOrderRepository){
+    /**
+     * 生产桌号 测试方法
+     * @Route("/createUserTable", name="createUserTable", methods="POST")
+     * @param Request $request
+     * @param MessageRepository $messageRepository
+     * @return Response
+     */
+    public function createUserTableAction(Request $request,GroupUserOrderRepository $groupUserOrderRepository){
 
+        $data = json_decode($request->getContent(), true);
+        $groupUserOrder = $groupUserOrderRepository->find('400024939');
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        // 生成桌号
         $user_table = $this->getUserTable($groupUserOrder,$groupUserOrderRepository,$user);
         if( !$user_table ){
-            return ['succes'=>false,'msg'=>'桌数为空'];
+            return CommonUtil::resultData( [], ErrorCode::ERROR_ORDER_TABLE_CREATE_FAIL )->toJsonResponse();
         }
+
+
+        // 保存桌号
+        $groupUserOrder->setTableNo($user_table);
+        $this->getEntityManager()->persist($groupUserOrder);
+        $this->getEntityManager()->flush();
 
 
         //创建供应商消息
         $msg = new Message();
-        $msg->setTitle('报名消息确认')->setContent('名称为'.$user->getParentUser()->getName().'的用户，报名了线下系统课程课程的并线上支付了'.$groupUserOrder->getTotal().'元的会务费，请确认其是否完成系统学员身份的升级')->setUser($user->getParentUser());
+        $msg->setTitle('报名消息确认')->setContent('名称为'.$user->getNickname().'的用户，报名了线下系统课程课程的并线上支付了'.$groupUserOrder->getTotal().'元的会务费，请确认其是否完成系统学员身份的升级')->setUser($user->getParentUser());
         $this->getEntityManager()->persist($msg);
         $this->getEntityManager()->flush();
 
@@ -1241,7 +1269,8 @@ class MemberController extends AppApiBaseController
         //     return $res;
         // }
 
-        return ['succes'=>true,'msg'=>'操作成功'];
+        // 返回
+        return CommonUtil::resultData(  ['groupUserOrder'=>$groupUserOrder->getArray()] )->toJsonResponse();
     }
 
     /**

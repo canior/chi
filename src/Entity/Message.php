@@ -123,7 +123,7 @@ class Message implements Dao
     /**
      * @param User|null $user
      */
-    public function setUser(string $user): void
+    public function setUser($user): void
     {
         $this->user = $user;
     }
