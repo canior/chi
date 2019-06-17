@@ -164,10 +164,10 @@ class ApiAuthController extends AppApiBaseController
         }
 
         // 验证Code
-        $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ]);
-        if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
-            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
-        }
+        // $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ]);
+        // if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
+        //     return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
+        // }
 
         // 返回
         return CommonUtil::resultData(['user'=>$user->getArray(),'token' => $JWTTokenManager->create($user)])->toJsonResponse();
