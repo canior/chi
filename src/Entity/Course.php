@@ -706,6 +706,20 @@ class Course implements Dao
     }
 
     /**
+     * @return bool
+     */
+    public function isThinkingSubject() {
+        return Subject::THINKING == $this->getSubject();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTradingSubject() {
+        return Subject::TRADING == $this->getSubject();
+    }
+
+    /**
      * @return array
      */
     public function getEligibleViewerUserLevels() {

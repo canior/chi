@@ -1969,6 +1969,15 @@ class User extends BaseUser implements Dao
         return UserLevel::$userLevelPriorityArray[$this->getUserLevel()] >= UserLevel::$userLevelPriorityArray[UserLevel::ADVANCED];
     }
 
+    /**
+     * 是否有上系统课权限
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isSystemSubjectPrivilege()
+    {
+        return in_array($this->bianxianUserLevel, [BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR]) || $this->isBianxianAdvancedUser() && $this->isCompletedPersonalInfo();
+    }
     /*
      * 成为系统学院时间
      * @return bool

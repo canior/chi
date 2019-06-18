@@ -136,6 +136,10 @@ class PayController extends AppApiBaseController
             $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS);
         }
 
+        if ($groupUserOrder->isPaid()) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_ORDER_ALREADY_PAY, []);
+        }
+
         $groupUserOrder->setPending();
 
         if ($groupUserOrder instanceof  CourseOrder) {
@@ -151,12 +155,54 @@ class PayController extends AppApiBaseController
         }
 
         $groupUserOrder->setPaymentTime(time());
-        $this->getEntityManager()->flush();
 
-        $data = [
-            'groupUserOrder' => $groupUserOrder->getArray()
-        ];
-        return $this->responseJson('success', 200, $data);
+        $data = [];
+        //系统课报名处理
+        $product = $groupUserOrder->getProduct();
+        if ($product->isCourseProduct() && !$product->getCourse()->isOnline()) {
+            $course = $product->getCourse();
+            if ($course->isSystemSubject()) {
+                if ($user->isSystemSubjectPrivilege()) {
+                    $groupUserOrder->setTableNo((int)$this->getUserTable($groupUserOrder));
+                    $groupUserOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
+                    $groupUserOrder->setCheckAt(time());
+                    //todo sms通知
+                    $data['nextPageType'] = 4;
+                } else {
+                    $data['nextPageType'] = 3;
+                }
+            } else if ($course->isThinkingSubject()) {
+                if ($course->getPrice() > 1) {
+                    $groupUserOrder->setTableNo((int)$this->getUserTable($groupUserOrder));
+                    $data['nextPageType'] = 2;
+                } else {
+                    //todo sms通知
+                    $data['nextPageType'] = 1;
+                }
+            } else if ($course->isTradingSubject() && $user->isCompletedPersonalInfo()) {
+                //是否有报名了但是没有分配桌号的
+                $notDistributeOrders = $groupUserOrderRepository->findBy(['user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
+                if (!empty($notDistributeOrders)) {
+                    foreach ($notDistributeOrders as $notDistributeOrder) {
+                        if (!empty($notDistributeOrder->getPaymentTime()) && $notDistributeOrder->getProduct()->isCourseProduct() &&
+                            !$notDistributeOrder->getProduct()->getCourse()->isOnline() && $notDistributeOrder->getProduct()->getCourse()->isSystemSubject() &&
+                            empty($notDistributeOrder->getTableNo())) {
+                            $notDistributeOrder->setTableNo((int)$this->getUserTable($notDistributeOrder));
+                            $notDistributeOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
+                            $notDistributeOrder->setCheckAt(time());
+                            $this->entityPersist($notDistributeOrder);
+                            //todo sms通知
+                            if ($groupUserOrder->getTotal() == 12000) {
+                                $data['nextPageType'] = 4;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
+        $this->entityPersist($groupUserOrder);
+        $data['groupUserOrder'] = $groupUserOrder->getArray();
+        return $requestProcess->toJsonResponse($data);
     }
 }

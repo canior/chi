@@ -1327,6 +1327,9 @@ class GroupUserOrder implements Dao
 
     public function getTimeLine(){
         $log = [];
+        if (!$this->getProduct()->isCourseProduct() || $this->getProduct()->getCourse()->isOnline()) {
+            return $log;
+        }
         switch ( $this->getUser()->getBianxianUserLevel() ){
             case BianxianUserLevel::VISITOR;
             case BianxianUserLevel::THINKING;
