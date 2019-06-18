@@ -1118,7 +1118,10 @@ class MemberController extends AppApiBaseController
 
         // 持久化
         $groupOrder = $groupUserOrderRepository->find( $groupOrdersId );
-        $groupOrder->setCheckStatus($checkStatus)->setReason($reason);
+        $groupOrder->setCheckStatus($checkStatus);
+        if($reason){
+            $groupOrder->setReason($reason);
+        }
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 

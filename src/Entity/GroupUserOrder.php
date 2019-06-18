@@ -1183,7 +1183,7 @@ class GroupUserOrder implements Dao
     /**
      * @param string $reason
      */
-    public function setReason(int $reason)
+    public function setReason($reason)
     {
         $this->reason = $reason;
     }
