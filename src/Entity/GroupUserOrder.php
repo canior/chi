@@ -220,6 +220,11 @@ class GroupUserOrder implements Dao
      */
     private $unlockCategory;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $reason;
+
     public function __construct() {
         $this->upgradeUserOrders = new ArrayCollection();
         $this->upgradeOrderCoupons = new ArrayCollection();
@@ -1165,6 +1170,22 @@ class GroupUserOrder implements Dao
     public function setPaymentTime(int $paymentTime)
     {
         $this->paymentTime = $paymentTime;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReason()
+    {
+        return $this->reason;
+    }
+
+    /**
+     * @param string $reason
+     */
+    public function setReason(int $reason)
+    {
+        $this->reason = $reason;
     }
 
     /**

@@ -1087,12 +1087,12 @@ class MemberController extends AppApiBaseController
 
     /**
      * 修改审核状态
-     * @Route("/updateEditStatus", name="updateEditStatus", methods="POST")
+     * @Route("/updateStatus", name="updateStatus", methods="POST")
      * @param Request $request
      * @param MessageRepository $messageRepository
      * @return Response
      */
-    public function updateEditStatusAction(Request $request,GroupUserOrderRepository $groupUserOrderRepository) {
+    public function updateStatusAction(Request $request,GroupUserOrderRepository $groupUserOrderRepository) {
 
         $data = json_decode($request->getContent(), true);
 
@@ -1104,10 +1104,11 @@ class MemberController extends AppApiBaseController
 
         $groupOrdersId = isset($data['groupOrdersId']) ? $data['groupOrdersId'] : null;
         $checkStatus = isset($data['checkStatus']) ? $data['checkStatus'] : null;
+        $reason = isset($data['reason']) ? $data['reason'] : null;
 
         // 持久化
         $groupOrder = $groupUserOrderRepository->find( $groupOrdersId );
-        $groupOrder->setCheckStatus($checkStatus);
+        $groupOrder->setCheckStatus($checkStatus)->setReason($reason);
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
