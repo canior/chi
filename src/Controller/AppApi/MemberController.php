@@ -869,28 +869,16 @@ class MemberController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        $childrenArray = [];
+        // 获取用户
         $userStockOrders = $user->getUserRecommandStockOrders();
+
+        $childrenArray = [];
         foreach ($userStockOrders as $userStockOrder) {
-            switch ( $userStockOrder->getUser()->getBianxianUserLevel() ) {
-                case 'PARTNER':
-                    # 合伙人
-                    $childrenArray['PARTNER'][] = $userStockOrder->getArray();
-                    break;
-                case 'DISTRIBUTOR':
-                    # 分院(分合伙入 学员)
-                    break;
-                    $childrenArray['DISTRIBUTOR'][] = $userStockOrder->getArray();
-                default:
-                    break;
-            }
+            $childrenArray[] = $userStockOrder->getArray();
         }
 
         // 返回
         return CommonUtil::resultData( [
-            'recommandStock' => $user->getRecommandStock(),
-            'usedStock' => $user->getUserAccountOrdersAsRecommander()->count(),
-            'totalStock' => $user->getTotalRecommandStock(),
             'children' => $childrenArray,
         ] )->toJsonResponse();
     }
