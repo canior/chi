@@ -26,17 +26,15 @@ class MessageRepository extends ServiceEntityRepository
      * @param bool $isOnline
      * @return QueryBuilder
      */
-    public function findOrderMessageQuery($userId,$checkStatus,$dataType)
+    public function findOrderMessageQuery($userId,$dataType)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
             ->select('ms')
             ->from(Message::class, 'ms')
             ->leftJoin(GroupUserOrder::class, 'guo', 'ms.dataId = guo.id')
             ->where('ms.dataType = :dataType')
-            ->andWhere('guo.checkStatus = :checkStatus')
             ->andWhere('ms.user = :userId')
             ->setParameter('dataType',$dataType)
-            ->setParameter('checkStatus',$checkStatus==1?GroupUserOrder::CHECK_PASS:GroupUserOrder::CHECK_REJECT)
             ->setParameter('userId', $userId);
 
         $query->orderBy('ms.id', 'DESC');

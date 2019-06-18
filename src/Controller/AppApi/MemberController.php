@@ -1063,7 +1063,7 @@ class MemberController extends AppApiBaseController
 
         $data = json_decode($request->getContent(), true);
         $page = isset($data['page']) ? $data['page'] : 1;
-        $checkStatus = isset($data['checkStatus']) ? $data['checkStatus'] : 1;
+        $checkStatus = isset($data['checkStatus']) ? $data['checkStatus'] : '';
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -1071,14 +1071,24 @@ class MemberController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        $messageQuery = $messageRepository->findOrderMessageQuery($user->getId(),$checkStatus,Message::TYPE_GROUP_USER_ORDER);
+        $messageQuery = $messageRepository->findOrderMessageQuery($user->getId(),Message::TYPE_GROUP_USER_ORDER);
         $messageArrays = $this->getPaginator()->paginate($messageQuery, $page, self::PAGE_LIMIT);
 
         $courseArray = [];
         foreach ($messageArrays as $messageArray) {
+            //
             $item = $messageArray->getArray();
-            $item['groupUserOrder'] = $groupUserOrderRepository->find( $messageArray->getDataId() )->getArray();
-            $courseArray[] = $item;
+            $groupUserOrder = $groupUserOrderRepository->find( $messageArray->getDataId() );
+            $item['groupUserOrder'] = $groupUserOrder->getArray();
+            if( $checkStatus ){
+                if(  $groupUserOrder->getCheckStatus() ){
+                    $courseArray[] = $item;
+                }
+            }else{
+                if(  !$groupUserOrder->getCheckStatus() ){
+                    $courseArray[] = $item;
+                }
+            }
         }
 
         // 返回
