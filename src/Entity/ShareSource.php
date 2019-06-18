@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TypeTrait;
+use App\Service\Util\CommonUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Id\UuidGenerator;
@@ -386,7 +387,7 @@ class ShareSource implements Dao
             'title' => $this->title,
             'bannerFileId' => $this->getBannerFile() ? $this->getBannerFile()->getId() : null,
             'page' => $this->getPage(),
-            'course' => $this->getProduct()?$this->getProduct()->getCourse()->getArray():null,
+            'course' => $this->getProduct()? CommonUtil::getInsideValue($this, 'getProduct.getCourse.getArray', []):null,
             'contentTypeText'=>$this->getContenTypeTexts(),
             'remark'=>$this->getAppRemark()
         ];

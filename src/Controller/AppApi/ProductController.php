@@ -57,7 +57,7 @@ class ProductController extends AppApiBaseController
             $requestProcess->throwErrorException(ErrorCode::ERROR_PRODUCT_NOT_EXISTS);
         }
 
-//        $shareSources = $this->createProductShareSource($user, $product, $url);
+        //todo 分享
 
         /**
          * @var ProjectTextMetaRepository $projectTextMetaRepository
