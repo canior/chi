@@ -1143,6 +1143,15 @@ class GroupUserOrder implements Dao
     }
 
     /**
+     * @return mixed|string
+     * @author zxqc2018
+     */
+    public function getOrderStatusText()
+    {
+        return self::$statuses[$this->getStatus()] ?? '';
+    }
+
+    /**
      * @return string
      */
     public function getPaymentTime()
@@ -1175,6 +1184,7 @@ class GroupUserOrder implements Dao
             'groupOrderStatus' => $this->isGroupOrder() ? $this->getGroupOrder()->getStatus() : null,
             'status' => $this->getStatus(),
             'statusText' => $this->isCourseOrder() ? $this->getCourseStatusText() : $this->getStatusText(),
+            'orderStatusText' => $this->getOrderStatusText(),
             'paymentStatus' => $this->getPaymentStatus(),
             'paymentStatusText' => $this->getPaymentStatusText(),
             'paymentChannelText' => $this->getPaymentChannelText(),
