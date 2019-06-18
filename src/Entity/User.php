@@ -1969,6 +1969,20 @@ class User extends BaseUser implements Dao
         return UserLevel::$userLevelPriorityArray[$this->getUserLevel()] >= UserLevel::$userLevelPriorityArray[UserLevel::ADVANCED];
     }
 
+    /*
+     * 成为系统学院时间
+     * @return bool
+     */
+    public function getAdvancedTime() {
+        $advancedTime = '';
+        foreach ($this->getUpgradeUserOrders() as $upgradeUserOrder) {
+            if( $upgradeUserOrder->getUserLevel() == BianxianUserLevel::ADVANCED ){
+                $advancedTime = $upgradeUserOrder->getCreatedAt();
+            }
+        }
+        return $advancedTime;
+    }
+
     /**
      * 是否实名认证
      * 姓名、手机号、身份证号、推荐人
@@ -2082,6 +2096,7 @@ class User extends BaseUser implements Dao
             'isCertification' => $this->isCertification(),
             'recommandNameEditable' => $this->getParentUser() == null ? true : false,
             'isAdvancedPlus' => $this->isAdavancePlusUserLevel(),
+            'advancedTime' => $this->getAdvancedTime(),
         ];
     }
 }
