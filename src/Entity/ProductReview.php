@@ -6,6 +6,7 @@ use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\StatusTrait;
 use App\Entity\Traits\UpdatedAtTrait;
+use App\Service\Util\CommonUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -209,6 +210,8 @@ class ProductReview implements Dao
         return [
             'id' => $this->getId(),
             'groupUserOrderId' => $this->getGroupUserOrder() ? $this->getGroupUserOrder()->getId() : null,
+            'productId' => CommonUtil::getInsideValue($this, 'getProduct.getId', ''),
+            'productName' => CommonUtil::getInsideValue($this, 'getProduct.getTitle', ''),
             'user' => $this->getUser()->getArray(),
             'rate' => $this->getRate(),
             'review' => $this->getReview(),
