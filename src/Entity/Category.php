@@ -454,11 +454,13 @@ class Category implements Dao
 
         $courses = [];
         $sort = [];
+        $categoryTags = [];
         foreach ($this->getCourses() as $key => $course) {
             $sort[$key] = $course->getProduct()->getPriority();
             $tmpArr = $course->getArray();
             $tmpArr['priority'] = $course->getProduct()->getPriority();
             $courses[] = $tmpArr;
+            $categoryTags = array_merge($categoryTags, CommonUtil::getInsideValue($course, 'getCourseTagArr'));
         }
         array_multisort($sort, SORT_DESC, $courses);
 
@@ -481,6 +483,7 @@ class Category implements Dao
             'topCategoryName' => CommonUtil::getInsideValue($this, 'getParentCategory.getName', ''),
             'topCateIdentityId' => $topCateIdentityId,
             'shortDescription' => $this->getShortDescription() ?? '',
+            'categoryTags' => array_unique($categoryTags),
         ];
     }
 

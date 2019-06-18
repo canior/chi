@@ -157,6 +157,12 @@ class Course implements Dao
      */
     private $courseShowType;
 
+    /**
+     * @var string
+     * @ORM\Column(name="course_tag", type="string", length=100, nullable=true)
+     */
+    private $courseTag;
+
     public function __construct() {
         $product = new Product();
         $product->setCourse($this);
@@ -164,6 +170,7 @@ class Course implements Dao
         $this->courseStudents = new ArrayCollection();
         $this->setOnline();
         $this->setLookNum(0);
+        $this->setCourseTag('');
     }
 
     /**
@@ -923,6 +930,33 @@ class Course implements Dao
     {
         return self::$courseShowTypeTexts[$this->getCourseShowType()] ?? '';
     }
+
+    /**
+     * @return string
+     */
+    public function getCourseTag(): ?string
+    {
+        return $this->courseTag ?? '';
+    }
+
+    /**
+     * @param string $courseTag
+     */
+    public function setCourseTag(?string $courseTag): void
+    {
+        $this->courseTag = $courseTag;
+    }
+
+    /**
+     * @return array
+     * @author zxqc2018
+     */
+    public function getCourseTagArr()
+    {
+        $courseTag = str_replace(['，'], [','], $this->getCourseTag());
+        return array_map('trim', array_filter(CommonUtil::myExplode($courseTag)));
+    }
+
     /**
      * @return array
      */
@@ -972,6 +1006,7 @@ class Course implements Dao
             'courseCategoryName' => CommonUtil::getInsideValue($this, 'getCourseCategory.getName', ''),
             'unlockType' => $this->getUnlockType(),
             'unlockTypeText' => $this->getUnlockTypeText(),
+            'courseTags' => $this->getCourseTagArr(),
         ];
     }
 }

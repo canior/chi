@@ -85,6 +85,10 @@ class CourseType extends AbstractType
                 'label' => '集call开启课程订单量',
                 'required' => true
             ])
+            ->add('courseTag', TextType::class, [
+                'label' => '标签 (多个可以逗号拼接)',
+                'required' => true
+            ])
             ->add('unlockType', ChoiceType::class, [
                 'label' => '解锁方式',
                 'mapped' => false,
