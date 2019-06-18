@@ -44,7 +44,7 @@ class ProductController extends AppApiBaseController
     public function detailAction(Request $request, ProductRepository $productRepository): JsonResponse
     {
         $requestProcess = $this->processRequest($request, [
-            'url', 'productId'
+            'url', 'productId', 'page', 'pageNum'
         ], ['productId']);
 
         $user = $this->getAppUser();
@@ -88,6 +88,7 @@ class ProductController extends AppApiBaseController
                 $groupUserOrder = $this->findGroupUserOrder($user, $product);
                 $data['groupUserOrder'] = CommonUtil::getInsideValue($groupUserOrder);
             }
+            $data['productReviews'] = CommonUtil::entityArray2DataArray($this->getPaginator()->paginate($product->getActiveReviews(), $requestProcess['page'], $requestProcess['pageNum']));
         }
         return $requestProcess->toJsonResponse($data);
     }
