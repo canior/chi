@@ -206,4 +206,35 @@ class ProductController extends AppApiBaseController
 
         return $requestProcess->toJsonResponse(CommonUtil::entityArray2DataArray($productReviews));
     }
+
+    /**
+     * 查看用户升级需要购买产品列表
+     *
+     * @Route("/upgradeUserOrder/view", name="appViewUpgradeUserOrder", methods="POST")
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @param ProjectTextMetaRepository $projectTextMetaRepository
+     * @return JsonResponse
+     */
+    public function viewUpgradeUserOrderAction(Request $request, ProductRepository $productRepository, ProjectBannerMetaRepository $projectBannerMetaRepository, ProjectTextMetaRepository $projectTextMetaRepository) : JsonResponse
+    {
+        $requestProcess = $this->processRequest($request, [
+            'page', 'pageNum'
+        ]);
+
+        $bannersArray = $this->createProductPageProjectBannerMetas($projectBannerMetaRepository);
+
+        $productsQuery = $productRepository->findActiveProductsQuery(false);
+
+        $products = $this->getPaginator()->paginate($productsQuery, $requestProcess['page'], $requestProcess['pageNum']);
+
+        $data = [
+            'banners' => $bannersArray,
+            'products' => CommonUtil::entityArray2DataArray($products),
+            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
+        ];
+
+        return $requestProcess->toJsonResponse($data);
+    }
 }
