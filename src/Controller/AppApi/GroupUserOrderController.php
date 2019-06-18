@@ -39,15 +39,22 @@ class GroupUserOrderController extends AppApiBaseController
      */
     public function viewAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository)
     {
-        $data = json_decode($request->getContent(), true);
-        $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
-        $url = isset($data['url']) ? $data['url'] : null;
-
+        $requestProcess = $this->processRequest($request, [
+            'url', 'groupUserOrderId',
+        ], ['groupUserOrderId']);
+        $groupUserOrderId = $requestProcess['groupUserOrderId'];
+        $url = $requestProcess['url'];
         /**
          * @var GroupUserOrder $groupUserOrder
          */
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
-        $user = $groupUserOrder->getUser();
+
+
+        $user = $this->getAppUser();
+
+        if (empty($groupUserOrder) || $user !== $groupUserOrder->getUser()) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS, []);
+        }
 
         $courseStudentArray = [];
         if ($groupUserOrder->getProduct()->isCourseProduct()) {
@@ -79,21 +86,32 @@ class GroupUserOrderController extends AppApiBaseController
      */
     public function confirmAddressAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository, UserAddressRepository $userAddressRepository)
     {
-        $data = json_decode($request->getContent(), true);
-        $addressId = isset($data['addressId']) ? $data['addressId'] : null;
-        $groupUserOrderId = isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
+        $requestProcess = $this->processRequest($request, [
+            'addressId', 'groupUserOrderId',
+        ], ['groupUserOrderId', 'addressId']);
+
+
+        $addressId = $requestProcess['addressId'];
+        $groupUserOrderId = $requestProcess['groupUserOrderId'];
 
         $user = $this->getAppUser();
         $userAddress = $userAddressRepository->find($addressId);
 
-        //每次订单的地址自动成为用户默认地址
-        $user->setDefaultAddress($userAddress);
-        $this->getEntityManager()->persist($user);
+        if (empty($userAddress) || $userAddress->getUser() !== $user) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_ADDRESS_NOT_EXISTS, []);
+        }
 
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+        if (empty($groupUserOrder) || $user !== $groupUserOrder->getUser()) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS, []);
+        }
+
+        //每次订单的地址自动成为用户默认地址
+        $user->setDefaultAddress($userAddress);
+        $this->entityPersist($user, false);
+
         $groupUserOrder->setUserAddress($userAddress);
-        $this->getEntityManager()->persist($groupUserOrder);
-        $this->getEntityManager()->flush();
+        $this->entityPersist($groupUserOrder);
 
         return CommonUtil::resultData()->toJsonResponse([
             'groupUserOrder' => $groupUserOrder->getArray()
@@ -126,6 +144,12 @@ class GroupUserOrderController extends AppApiBaseController
         }
 
         $groupUserOrder = GroupUserOrder::factory($user, $product);
+
+        $userDefaultAddress = $user->getDefaultUserAddress();
+
+        if (!empty($userDefaultAddress)) {
+            $groupUserOrder->setUserAddress($userDefaultAddress);
+        }
 
         //解锁系列课
         if (!empty($unlockCategoryId)) {

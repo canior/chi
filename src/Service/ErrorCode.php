@@ -46,6 +46,7 @@ class ErrorCode
     const ERROR_PRODUCT_NOT_EXISTS = 14001;
     //-------订单---------------------------------------
     const ERROR_ORDER_TABLE_CREATE_FAIL = 15001;
+    const ERROR_ADDRESS_NOT_EXISTS = 15002;
 
 
     //-------支付---------------------------------------
@@ -108,6 +109,7 @@ class ErrorCode
             self::ERROR_WX_OPENID_LOGIN => '微信登陆失败',
             self::ERROR_ORDER_ALREADY_PAY => '订单已经支付',
             self::ERROR_ORDER_TABLE_CREATE_FAIL => '桌号生成失败',
+            self::ERROR_ADDRESS_NOT_EXISTS => '收获地址不存在',
         ];
     }
 
