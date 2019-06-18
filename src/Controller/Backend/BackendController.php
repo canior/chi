@@ -340,6 +340,16 @@ class BackendController extends DefaultController
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
+                [
+                    'path' => [
+                        'project_video_meta_index',
+                        'project_video_meta_edit',
+                    ],
+                    'name' => '视频配置',
+                    'icon' => 'fa fa-video-camera',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
             ]
         ],
     ];

@@ -13,7 +13,9 @@ use App\Command\EnqueueCommand;
 use App\Command\Sms\SendMsgCommand;
 use App\Controller\Api\BaseController;
 use App\Entity\Category;
+use App\Entity\ProjectVideoMeta;
 use App\Entity\User;
+use App\Repository\ProjectVideoMetaRepository;
 use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
 use Symfony\Component\HttpFoundation\Request;
@@ -155,5 +157,37 @@ class AppApiBaseController extends BaseController
         }
 
         return $res;
+    }
+
+    /**
+     * 获取配置视频信息
+     * @param string $type
+     * @return array|mixed
+     * @author zxqc2018
+     */
+    public function getProjectVideoMeta($type)
+    {
+        $res = [];
+        /**
+         * @var ProjectVideoMetaRepository $projectVideoMetaRepository
+         */
+        $projectVideoMetaRepository = $this->getEntityManager()->getRepository(ProjectVideoMeta::class);
+        $projectVideoMeta = $projectVideoMetaRepository->findOneBy(['metaKey' => $type]);
+
+        if (empty($projectVideoMeta)) {
+            return $res;
+        }
+
+        //刷新视频地址
+        $refreshStatus = $projectVideoMeta->refreshAliyunVideo();
+
+        if ($refreshStatus) {
+            $res['aliyunVideoUrl'] = $projectVideoMeta->getAliyunVideoUrl();
+            $res['aliyunVideoImageUrl'] = $projectVideoMeta->getAliyunVideoImageUrl();
+            if ($refreshStatus == 2) {
+                $this->entityPersist($projectVideoMeta);
+            }
+        }
+        return CommonUtil::getInsideValue($projectVideoMeta);
     }
 }

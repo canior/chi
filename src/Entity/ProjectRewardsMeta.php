@@ -42,6 +42,10 @@ class ProjectRewardsMeta extends ProjectMeta
         return true;
     }
 
+    public function isVideoMeta()
+    {
+        return false;
+    }
     /**
      * @param $groupOrderRewardsRate
      * @param $groupOrderUserRewardsRate
@@ -107,5 +111,4 @@ class ProjectRewardsMeta extends ProjectMeta
             'regularOrderUserRewardsRate' => $this->getRegularOrderUserRewardsRate(),
         ];
     }
-
 }

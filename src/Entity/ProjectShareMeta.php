@@ -42,6 +42,10 @@ class ProjectShareMeta extends ProjectMeta
         return false;
     }
 
+    public function isVideoMeta()
+    {
+        return false;
+    }
     /**
      * @param string $scene 分享的场景
      * @param string $type quan 或者 refer

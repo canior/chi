@@ -1,0 +1,11 @@
+{{ form_start(form) }}
+<div class="row col-sm-12 col-md-12">
+    <div class="form-group">
+        <label class="control-label">KEY</label>
+        <div>{{ project_video_metum.metaKey }}</div>
+    </div>
+    {{ form_widget(form) }}
+    <a class="btn btn-danger" href="{{ path('project_banner_meta_index') }}">{{ '返回视频配置'|trans }}</a>
+    <button class="btn btn-primary">{{ button_label|default('提交') }}</button>
+</div>
+{{ form_end(form) }}

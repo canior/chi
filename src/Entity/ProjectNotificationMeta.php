@@ -41,7 +41,10 @@ class ProjectNotificationMeta extends ProjectMeta
         return false;
     }
 
-
+    public function isVideoMeta()
+    {
+        return false;
+    }
     /**
      * @return array
      */

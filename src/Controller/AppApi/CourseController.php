@@ -10,6 +10,7 @@ namespace App\Controller\AppApi;
 
 
 use App\Entity\Product;
+use App\Entity\ProjectVideoMeta;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProjectBannerMetaRepository;
@@ -140,10 +141,7 @@ class CourseController extends ProductController
         $requestProcess = $this->processRequest($request);
         return $requestProcess->toJsonResponse([
             'freeCategoryList' => $this->findHomeFreeZoneProducts($categoryRepository),
-            'freeVideoInfo' => [
-                'aliyunVideoUrl' => '',
-                'aliyunVideoImageUrl' => '',
-            ]
+            'freeVideoInfo' => $this->getProjectVideoMeta(ProjectVideoMeta::VIDEO_FREE_ZONE)
         ]);
     }
 }
