@@ -1375,4 +1375,50 @@ class MemberController extends AppApiBaseController
             'productReview' => $productReview->getArray()
         ]);
     }
+
+    /**
+     * 获取我的评论列表
+     * @Route("/reviews", name="my_product_reviews", methods={"POST"})
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @param ProductReviewRepository $productReviewRepository
+     * @author zxqc2018
+     * @return JsonResponse
+     */
+    public function getMyAllProductReviews(Request $request, ProductRepository $productRepository, ProductReviewRepository $productReviewRepository)
+    {
+        $requestProcess = $this->processRequest($request, [
+            'productId', 'type'
+        ]);
+        $user = $this->getAppUser();
+        $product = null;
+        if (!empty($requestProcess['productId'])) {
+            $product = $productRepository->find($requestProcess['productId']);
+
+            if (empty($product)) {
+                $requestProcess->throwErrorException(ErrorCode::ERROR_PRODUCT_NOT_EXISTS, []);
+            }
+        }
+
+        $where = [
+            'user' => $user,
+        ];
+
+        if (!empty($product)) {
+            $where['product'] = $product;
+        }
+
+        if (!empty($requestProcess['type'])) {
+            if (!in_array($requestProcess['type'], array_keys(ProductReview::$statuses))) {
+                $requestProcess->throwErrorException(ErrorCode::ERROR_PARAM_NOT_ALL_EXISTS, []);
+            }
+            $where['status'] = $requestProcess['type'];
+        }
+
+        $productReviews = $productReviewRepository->findBy($where);
+
+        return $requestProcess->toJsonResponse([
+            'myProductReviews' => CommonUtil::entityArray2DataArray($productReviews)
+        ]);
+    }
 }

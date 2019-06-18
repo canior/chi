@@ -574,6 +574,23 @@ class Product implements Dao
         return $this->productReviews->matching($criteria);
     }
 
+    /**
+     * @param User $user
+     * @return ArrayCollection|Collection
+     * @author zxqc2018
+     */
+    public function getMyReview(User $user)
+    {
+        $criteria = Criteria::create();
+        $criteria->where($criteria::expr()->eq('user', $user));
+        $previews = $this->productReviews->matching($criteria);
+
+        if ($previews->isEmpty()) {
+            return null;
+        }
+        return $previews->first();
+    }
+
     public function addProductReview(ProductReview $productReview): self
     {
         if (!$this->productReviews->contains($productReview)) {

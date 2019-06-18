@@ -88,6 +88,14 @@ class ProductController extends AppApiBaseController
                 $groupUserOrder = $this->findGroupUserOrder($user, $product);
                 $data['groupUserOrder'] = CommonUtil::getInsideValue($groupUserOrder);
             }
+            $productRateSum = 0;
+            if (!$product->getActiveReviews()->isEmpty()) {
+                foreach ($product->getActiveReviews() as $review) {
+                    $productRateSum += $review->getRate();
+                }
+            }
+            $data['product']['myReview'] = CommonUtil::getInsideValue($product->getMyReview($user), 'array', null);
+            $data['product']['rate'] = !empty($productRateSum) ? number_format($productRateSum / $product->getActiveReviews()->count(), 2, '.', '') : 0;
             $data['productReviews'] = CommonUtil::entityArray2DataArray($this->getPaginator()->paginate($product->getActiveReviews(), $requestProcess['page'], $requestProcess['pageNum']));
         }
         return $requestProcess->toJsonResponse($data);
