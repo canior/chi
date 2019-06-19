@@ -75,6 +75,49 @@ Page({
     })
   },
 
+  // 确认收货
+  deliver: function (e) {
+    const orderId = e.currentTarget.dataset.id;
+    const that = this;
+    wx.showModal({
+      title: '提示',
+      content: '您是否确认已收货',
+      confirmText: '是',
+      cancelText: '否',
+      success: function (res) {
+        if (res.confirm) {
+          wx.request({
+            url: app.globalData.baseUrl + '/user/groupUserOrder/post',
+            data: {
+              thirdSession: wx.getStorageSync('thirdSession'),
+              groupUserOrderId: orderId
+            },
+            method: 'POST',
+            success: (res) => {
+              if (res.statusCode == 200 && res.data.code == 200) {
+                console.log(res.data.data)
+                that.getGroupUserOrders(that.data.curStatus)
+              } else {
+                console.log('wx.request return error', res.statusCode);
+              }
+            },
+            fail(e) {
+            },
+            complete(e) { }
+          })
+        }
+      }
+    })
+  },
+
+  // 商品评价
+  toUserComment: function (e) {
+    const orderId = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: '/pages/user/order/review?id=' + orderId,
+    })
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

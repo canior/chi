@@ -1,11 +1,7 @@
 /* pages/user/account/index.wxss */
-page {
-  height: 100%;
-}
 .container {
   padding: 32rpx;
   background-color: #f2f6f9;
-  height: 100%;
 }
 .top {
   background-color: #fff;

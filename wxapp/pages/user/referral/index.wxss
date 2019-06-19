@@ -1,12 +1,8 @@
 /* pages/user/referral/index.wxss */
 @import "/pages/tmpl/share.wxss";
-page {
-  height: 100%;
-}
 .container {
   padding: 32rpx;
   background-color: #f2f6f9;
-  height: 100%;
 }
 .top {
   background-color: #fff;

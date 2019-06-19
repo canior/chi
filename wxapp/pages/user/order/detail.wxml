@@ -23,7 +23,7 @@
     </view>
   </view>
   <view class="row">
-    <block wx:if="{{groupUserOrder.status != 'delivered'}}">
+    <block wx:if="{{groupUserOrder.status == 'delivered'}}">
       <button bindtap="toUserComment" wx:if="{{groupUserOrder.productReviews.length == 0}}">商品评价</button>
       <button bindtap="toUserComment" wx:if="{{groupUserOrder.productReviews.length > 0}}">查看评价</button>
     </block>

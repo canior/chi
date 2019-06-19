@@ -7,12 +7,12 @@
 </view>
 <view class="container">
   <block wx:for="{{groupUserOrders}}" wx:key="index">
-    <view class="section" bindtap="toUserOrderDetail" data-id="{{item.id}}">
+    <view class="section">
       <view class="row-header">
         <view class="left">订单编号: {{item.id}}</view>
         <view class="right">{{item.statusText}}</view>
       </view>
-      <view class="row">
+      <view class="row" bindtap="toUserOrderDetail" data-id="{{item.id}}">
         <view class="left">
           <image src="{{imgUrlPrefix + '/' + item.product.productImages[0].fileId}}"/>
         </view>
@@ -25,10 +25,22 @@
       <view class="row-footer">
         <view class="left"></view>
         <view class="right">
-          <!--button open-type="contact">客服咨询</button>
-          <button catchtap="toUserOrderDetail" data-id="{{item.id}}">订单详情</button-->
           共1件商品 合计:<text>¥{{item.paymentTotal}}</text>
         </view>
+      </view>
+      <view class="row-footer" wx:if="{{item.status == 'shipping'}}">
+        <view class="left"></view>
+        <view class="right">
+          <button class="view">查看物流</button>
+          <button class="ship" bindtap="deliver" data-id="{{item.id}}">确认收货</button>
+       </view>
+      </view>
+      <view class="row-footer" wx:if="{{item.status == 'delivered'}}">
+        <view class="left"></view>
+        <view class="right">
+          <button class="view" bindtap="toUserComment" data-id="{{item.id}}" wx:if="{{item.productReviews.length > 0}}">查看评价</button>
+          <button class="comment" bindtap="toUserComment"  data-id="{{item.id}}" wx:if="{{item.productReviews.length == 0}}" bindtap="deliver">商品评价</button>
+       </view>
       </view>
     </view>
   </block>
