@@ -86,7 +86,7 @@ class CourseController extends ProductController
         return $requestProcess->toJsonResponse([
             'categoryList' => CommonUtil::entityArray2DataArray($categoryList),
             'category' => $this->getCategoryVideoArray($parentCategory),
-            'user' => CommonUtil::getInsideValue($user, 'array')
+            'user' => CommonUtil::obj2Array($user)
         ]);
     }
 
@@ -113,7 +113,7 @@ class CourseController extends ProductController
 
         return $requestProcess->toJsonResponse([
             'category' => $this->getCategoryVideoArray($category),
-            'user' => CommonUtil::getInsideValue($user, 'array')
+            'user' => CommonUtil::obj2Array($user),
         ]);
     }
 

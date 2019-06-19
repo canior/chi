@@ -86,7 +86,7 @@ class ProductController extends AppApiBaseController
                  * @var GroupUserOrder $groupUserOrder
                  */
                 $groupUserOrder = $this->findGroupUserOrder($user, $product);
-                $data['groupUserOrder'] = CommonUtil::getInsideValue($groupUserOrder);
+                $data['groupUserOrder'] = CommonUtil::obj2Array($groupUserOrder);
             }
             $productRateSum = 0;
             if (!$product->getActiveReviews()->isEmpty()) {
@@ -94,7 +94,7 @@ class ProductController extends AppApiBaseController
                     $productRateSum += $review->getRate();
                 }
             }
-            $data['product']['myReview'] = CommonUtil::getInsideValue($product->getMyReview($user), 'array', null);
+            $data['product']['myReview'] = CommonUtil::obj2Array($product->getMyReview($user));
             $data['product']['rate'] = !empty($productRateSum) ? number_format($productRateSum / $product->getActiveReviews()->count(), 2, '.', '') : 0;
             $data['productReviews'] = CommonUtil::entityArray2DataArray($this->getPaginator()->paginate($product->getActiveReviews(), $requestProcess['page'], $requestProcess['pageNum']));
         }

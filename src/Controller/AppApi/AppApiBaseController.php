@@ -55,6 +55,12 @@ class AppApiBaseController extends BaseController
     protected function getAppUser()
     {
         $res = null;
+
+        //只判断jwt登陆的url验证token,与后台登陆区分
+        if (!CommonUtil::requestUrlStartsWith($this->appRequest, 'appApi/auth')) {
+            return $res;
+        }
+
         /**
          * @var TokenStorage $tokenStorage
          */

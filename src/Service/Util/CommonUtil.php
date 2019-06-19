@@ -10,6 +10,7 @@ namespace App\Service\Util;
 
 use App\Service\ErrorCode;
 use App\Service\ResultData;
+use Symfony\Component\HttpFoundation\Request;
 use Throwable;
 
 /**
@@ -120,7 +121,7 @@ class CommonUtil
      * @return array|null
      * @author zxqc2018
      */
-    public static function obj2Array($obj, $defaultValue = [], $toArrayMethod = 'getArray')
+    public static function obj2Array($obj, $defaultValue = null, $toArrayMethod = 'getArray')
     {
         return self::getInsideValue($obj, $toArrayMethod, $defaultValue);
     }
@@ -266,6 +267,23 @@ class CommonUtil
             $res = $defaultVal;
         }
 
+        return $res;
+    }
+
+    /**
+     * 请求URL是否开始于xxx
+     * @param Request $request
+     * @param string $prefix
+     * @return bool
+     * @author zxqc2018
+     */
+    public static function requestUrlStartsWith(Request $request, $prefix)
+    {
+        $res = false;
+
+        if (!empty($request->getRequestUri()) && strpos($request->getRequestUri(), '/' . ltrim($prefix, '/')) === 0) {
+            $res = true;
+        }
         return $res;
     }
 }
