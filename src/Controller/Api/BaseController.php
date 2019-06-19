@@ -330,6 +330,30 @@ class BaseController extends DefaultController
         return $shareSources;
     }
 
+    // 二维数组排序
+    protected function sortArrByManyField() {
+        $args = func_get_args();
+        if (empty($args)) {
+            return null;
+        } 
+        $arr = array_shift($args);
+        if (!is_array($arr)) {
+            throw new Exception("第一个参数不为数组");
+        } 
+        foreach($args as $key => $field) {
+            if (is_string($field)) {
+                $temp = array();
+                foreach($arr as $index => $val) {
+                    $temp[$index] = $val[$field];
+                } 
+                $args[$key] = $temp;
+            } 
+        } 
+        $args[] = &$arr; //引用值
+        call_user_func_array('array_multisort', $args);
+        return array_pop($args);
+    }
+
     //根据订单号获取桌号
     protected function getUserTable(GroupUserOrder $groupUserOrder)
     {
@@ -338,77 +362,77 @@ class BaseController extends DefaultController
             return false;
         }
 
+        // 用户
         $user = $groupUserOrder->getUser();
+        $userPid = $user->getParentUser()?$user->getParentUser()->getId():0;
 
-        /**
-         * @var GroupUserOrderRepository $groupUserOrderRepository
-         */
-        $groupUserOrderRepository = $this->getEntityManager()->getRepository(GroupUserOrder::class);
 
-        // 默认按订单号取余
-        // 如果共一个推荐人，分配到不同桌号
+        // 查询有多少桌
         $table_num = (int)$groupUserOrder->getProduct()->getCourse()->getTableCount();
-        if( !$table_num ){
+
+
+        // 每桌人数
+        $table_user_count = (int)$groupUserOrder->getProduct()->getCourse()->getTableUserCount();
+        
+        if( !$table_num || !$table_user_count ){
             return false;
         }
 
-        // 取余
-        $user_table = (int)$groupUserOrder->getId()%$table_num;
+        // 目前人员情况
+        $groupUserOrderRepository = $this->getEntityManager()->getRepository(GroupUserOrder::class);
+        $productUserOrderBy = $groupUserOrderRepository->findUserOrderByProduct( $groupUserOrder->getProduct()->getId() );
 
-
-        // 如果该用户没有推荐用户
-        if( !$user->getParentUser() && $groupUserOrderRepository->getTableUserCount($groupUserOrder->getProduct()->getId(),$user_table)){
-            return $user_table;
-        }
-
-        // 本产品下所有订单
-        $table = [];
-        $count_arr = $groupUserOrderRepository->findOrdersUsers( $groupUserOrder->getProduct()->getId() );
-        if( count($count_arr) > 0 ){
-            foreach ($count_arr as $v) {
-                $t = $v->getUser()->getParentUser()?$v->getUser()->getParentUser()->getId():0;
-                if( $t == $user->getParentUser()->getId() ){
-                    $table[$v->getTable()][] = $t;
-                }
-            }
-        }
-
-
-        // 取余桌没有同级推荐人
-        $table_count = [];
-        foreach ($table as $k => $v) {
-            $table_count[$k] = count($v);
-        }
-        if( !isset($table_count[$user_table])  && $groupUserOrderRepository->getTableUserCount($groupUserOrder->getProduct()->getId(),$user_table) ){
-            return $user_table;
-        }
-
-        // 取余桌有同级推荐人，相近的没有同推荐人用户的桌子
-        for ( $i = $user_table+1; $i <= $table_num+$user_table-1; $i++) {
-            if( $i > $table_num ){
-                $j = $i-$table_num;
-                if( !isset($table_count[$j]) && $groupUserOrderRepository->getTableUserCount($groupUserOrder->getProduct()->getId(),$j) ){
-                    return $j;
-                }
+        // 同推荐人分布情况
+        $tablesUsers = [];
+        $tablesParent = [];
+        foreach ($productUserOrderBy as $k => $v) {
+            
+            // 人数
+            if( isset($tablesUsers[$v->getTableNo()]) ){
+                $tablesUsers[$v->getTableNo()]++;
             }else{
-                if( !isset($table_count[$i]) && $groupUserOrderRepository->getTableUserCount($groupUserOrder->getProduct()->getId(),$i) ){
-                    return $i;
+                $tablesUsers[$v->getTableNo()] = 1;
+            }
+
+            // 同推荐人
+            if( $v->getUser()->getParentUser() && $v->getUser()->getParentUser()->getId() != 0 && $v->getUser()->getParentUser()->getId() == $userPid ){
+                if( isset($tablesParent[$v->getTableNo()]) ){
+                    $tablesParent[$v->getTableNo()]++;
+                }else{
+                    $tablesParent[$v->getTableNo()] = 1;
                 }
             }
         }
 
-        // 每桌都有同推荐人用户，哪一个桌子的同推荐人用户最少
-        $table_count = [];
-        foreach ($table as $k => $v) {
-            $table_count[$k] = count($v);
+        // 桌子情况
+        $table = [];
+        for ($i=1; $i <= $table_num; $i++) {
+            $table[] = [
+                'no'=>$i,
+                'max'=>$table_user_count,
+                'user'=>isset($tablesUsers[$i])?$tablesUsers[$i]:0,
+                'puser'=>isset($tablesParent[$i])?$tablesParent[$i]:0,
+            ];
         }
-        asort($table_count);
-        $user_table = array_keys($table_count)[0];
+
+        // 去掉坐满了
+        foreach ($table as  $k=>$v) {
+            if( $v['user'] >= $table_user_count  ){
+                unset($table[$k]);
+            }
+        }
 
         // 桌子都满了
-        if(  $groupUserOrderRepository->getTableUserCount($groupUserOrder->getProduct()->getId(),$user_table) ){
+        if( count($table) == 0 ){
             return false;
         }
+
+        // 可以坐的桌子按最少同推荐人排序
+        $arr = $this->sortArrByManyField($table, 'puser', SORT_ASC, 'user', SORT_ASC, 'no', SORT_ASC);
+
+
+        // 取最少推荐人 人数最少的桌子
+        $table_num = $table[0]['no'];
 
         return $user_table;
     }
