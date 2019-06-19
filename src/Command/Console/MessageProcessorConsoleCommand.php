@@ -120,7 +120,7 @@ class MessageProcessorConsoleCommand extends ContainerAwareCommand
                     $this->em->remove($q);
                     $this->em->flush();
 
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $this->log->error('Exception Message: ' . $e->getMessage());
                     $this->log->error('Exception: ' . $e->getTraceAsString());
 
