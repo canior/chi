@@ -1993,18 +1993,6 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * 是否实名认证
-     * 姓名、手机号、身份证号、推荐人
-     * @return bool
-     */
-    public function isCertification() {
-        if( $this->getName() && $this->getPhone() && $this->getIdNum() && $this->getRecommanderName() ){
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * 获取解锁系列
      * @return ArrayCollection|Collection
      * @author zxqc2018
@@ -2102,7 +2090,6 @@ class User extends BaseUser implements Dao
             'bankAccountName' => $this->getBankAccountName(),
             'isSupplier' => !$this->getSupplierProducts()->isEmpty(),
             'isPartner' => $this->getUserLevel()== UserLevel::PARTNER?true:false,
-            'isCertification' => $this->isCertification(),
             'recommandNameEditable' => $this->getParentUser() == null ? true : false,
             'isAdvancedPlus' => $this->isAdavancePlusUserLevel(),
             'advancedTime' => $this->getAdvancedTime(),

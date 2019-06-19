@@ -982,7 +982,7 @@ class MemberController extends AppApiBaseController
      * @param FollowRepository $followRepository
      * @return Response
      */
-    public function postFollowAction(Request $request, FollowRepository $followRepository) {
+    public function postFollowAction(Request $request, FollowRepository $followRepository,CourseRepository $courseRepository) {
 
         $data = json_decode($request->getContent(), true);
 
@@ -1007,8 +1007,20 @@ class MemberController extends AppApiBaseController
         $this->getEntityManager()->persist($follow);
         $this->getEntityManager()->flush();
 
+        // 返回数据
+        $followArray = $followRepository->find($follow->getId());
+        $course = null;
+        switch ($type) {
+            case Follow::COURSE:
+                $course = $courseRepository->find( $dataId );
+                $course = $course->getArray();
+                break;
+            default:
+                break;
+        }
+
         // 返回
-        return CommonUtil::resultData( ['follow_id' => $follow->getId() ] )->toJsonResponse();
+        return CommonUtil::resultData( ['follow_id' => $follow->getId(),'course'=>$course ] )->toJsonResponse();
     }
 
     /**
