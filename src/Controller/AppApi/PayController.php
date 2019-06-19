@@ -157,6 +157,8 @@ class PayController extends AppApiBaseController
         $groupUserOrder->setPaymentTime(time());
 
         $data = [];
+
+        $isFlushGroupUserOrder = false;
         //系统课报名处理
         $product = $groupUserOrder->getProduct();
         if ($product->isCourseProduct() && !$product->getCourse()->isOnline()) {
@@ -180,28 +182,19 @@ class PayController extends AppApiBaseController
                     $data['nextPageType'] = 1;
                 }
             } else if ($course->isTradingSubject() && $user->isCompletedPersonalInfo()) {
+                $this->entityPersist($groupUserOrder);
+                $isFlushGroupUserOrder = true;
                 //是否有报名了但是没有分配桌号的
-                $notDistributeOrders = $groupUserOrderRepository->findBy(['user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
-                if (!empty($notDistributeOrders)) {
-                    foreach ($notDistributeOrders as $notDistributeOrder) {
-                        if (!empty($notDistributeOrder->getPaymentTime()) && $notDistributeOrder->getProduct()->isCourseProduct() &&
-                            !$notDistributeOrder->getProduct()->getCourse()->isOnline() && $notDistributeOrder->getProduct()->getCourse()->isSystemSubject() &&
-                            empty($notDistributeOrder->getTableNo())) {
-                            $notDistributeOrder->setTableNo((int)$this->getUserTable($notDistributeOrder));
-                            $notDistributeOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
-                            $notDistributeOrder->setCheckAt(time());
-                            $this->entityPersist($notDistributeOrder);
-                            //todo sms通知
-                            if ($groupUserOrder->getTotal() == 12000) {
-                                $data['nextPageType'] = 4;
-                            }
-                        }
-                    }
+                $isSupplyTableNo = $this->supplySystemTableNo($groupUserOrder->getUser());
+                if ($isSupplyTableNo && $groupUserOrder->getTotal() == 12000) {
+                    $data['nextPageType'] = 4;
                 }
             }
         }
 
-        $this->entityPersist($groupUserOrder);
+        if (!$isFlushGroupUserOrder) {
+            $this->entityPersist($groupUserOrder);
+        }
         $data['groupUserOrder'] = $groupUserOrder->getArray();
         return $requestProcess->toJsonResponse($data);
     }

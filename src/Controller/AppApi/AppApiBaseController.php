@@ -186,12 +186,13 @@ class AppApiBaseController extends BaseController
     /**
      * 获取类别视频数组
      * @param Category $category
+     * @param User|null $user
      * @return array
      * @author zxqc2018
      */
-    public function getCategoryVideoArray(Category $category)
+    public function getCategoryVideoArray(Category $category, ?User $user = null)
     {
-        $res = $category->getArray();
+        $res = $category->getComplexArray($user);
         $res['aliyunVideoUrl'] = '';
         $res['aliyunVideoImageUrl'] = '';
 

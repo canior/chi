@@ -105,14 +105,14 @@ class CourseController extends ProductController
         ], ['cateId']);
         $user = $this->getAppUser();
 
-        $parentCategory = $categoryRepository->find($requestProcess['cateId']);
+        $category = $categoryRepository->find($requestProcess['cateId']);
 
-        if (empty($parentCategory)) {
+        if (empty($category) || $category->isSingleCourse()) {
             $requestProcess->throwErrorException(ErrorCode::ERROR_CATEGORY_NOT_EXISTS, []);
         }
 
         return $requestProcess->toJsonResponse([
-            'category' => $this->getCategoryVideoArray($parentCategory),
+            'category' => $this->getCategoryVideoArray($category),
             'user' => CommonUtil::getInsideValue($user, 'array')
         ]);
     }

@@ -412,4 +412,40 @@ class BaseController extends DefaultController
 
         return $user_table;
     }
+
+    /**
+     * 补发用户的桌号
+     * @param User $user
+     * @return bool
+     * @author zxqc2018
+     */
+    protected function supplySystemTableNo(User $user)
+    {
+        $res = false;
+
+        if ($user->isSystemSubjectPrivilege()) {
+            /**
+             * @var GroupUserOrderRepository $groupUserOrderRepository
+             */
+            $groupUserOrderRepository = $this->getEntityManager()->getRepository(GroupUserOrder::class);
+            //是否有报名了但是没有分配桌号的
+            $notDistributeOrders = $groupUserOrderRepository->findBy(['user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
+            if (!empty($notDistributeOrders)) {
+                foreach ($notDistributeOrders as $notDistributeOrder) {
+                    if (!empty($notDistributeOrder->getPaymentTime()) && $notDistributeOrder->getProduct()->isCourseProduct() &&
+                        !$notDistributeOrder->getProduct()->getCourse()->isOnline() && $notDistributeOrder->getProduct()->getCourse()->isSystemSubject() &&
+                        empty($notDistributeOrder->getTableNo())) {
+                        $notDistributeOrder->setTableNo((int)$this->getUserTable($notDistributeOrder));
+                        $notDistributeOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
+                        $notDistributeOrder->setCheckAt(time());
+                        $this->entityPersist($notDistributeOrder);
+                        //todo sms通知
+                        $res = true;
+                    }
+                }
+            }
+        }
+
+        return $res;
+    }
 }

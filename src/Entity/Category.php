@@ -442,10 +442,7 @@ class Category implements Dao
         $this->cateIdentityId = $cateIdentityId;
     }
 
-    /**
-     * @return array
-     */
-    public function getArray()
+    public function getComplexArray(?User $lookUser = null)
     {
         /**
          * @var Course $firstCourse
@@ -459,6 +456,9 @@ class Category implements Dao
             $sort[$key] = $course->getProduct()->getPriority();
             $tmpArr = $course->getArray();
             $tmpArr['priority'] = $course->getProduct()->getPriority();
+            if (!empty($lookUser)) {
+                $tmpArr['isPermission'] = $course->isPermission($lookUser);
+            }
             $courses[] = $tmpArr;
             $categoryTags = array_merge($categoryTags, CommonUtil::getInsideValue($course, 'getCourseTagArr'));
         }
@@ -485,6 +485,14 @@ class Category implements Dao
             'shortDescription' => $this->getShortDescription() ?? '',
             'categoryTags' => array_unique($categoryTags),
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getArray()
+    {
+        return $this->getComplexArray();
     }
 
     /**

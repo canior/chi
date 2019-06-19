@@ -299,6 +299,8 @@ class MemberController extends AppApiBaseController
             return new JsonResponse(["error" => $e->getMessage()], 500);
         }
 
+        //实名并且是系统学院需要生成桌号
+        $this->supplySystemTableNo($user);
         // 返回
         return CommonUtil::resultData($user->getArray())->toJsonResponse();
     }
