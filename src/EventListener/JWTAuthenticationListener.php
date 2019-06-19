@@ -9,11 +9,13 @@
 namespace App\EventListener;
 
 
+use App\Entity\User;
 use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
 use FOS\UserBundle\Model\UserInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
+use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTInvalidEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTNotFoundEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,6 +27,21 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  */
 class JWTAuthenticationListener
 {
+    /**
+     * @param JWTCreatedEvent $event
+     * @author zxqc2018
+     */
+    public function onJWTCreated(JWTCreatedEvent $event)
+    {
+        $payload = $event->getData();
+        /**
+         * @var User $user
+         */
+        $user = $event->getUser();
+        $payload['userId'] = !empty($user) ? $user->getId() : 0;
+        $event->setData($payload);
+    }
+
     /**
      * @param AuthenticationSuccessEvent $event
      */

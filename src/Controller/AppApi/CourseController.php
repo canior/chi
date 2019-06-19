@@ -47,6 +47,7 @@ class CourseController extends ProductController
             'recommendCategoryList' => $recommendProductsArray,
             'newestCategoryList' => $newestProductsArray,
             'category' => CommonUtil::entityArray2DataArray($category, 'simpleArray'),
+            'userId' => $this->getAppUserId(),
         ];
 
         return CommonUtil::resultData($data)->toJsonResponse();

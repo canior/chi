@@ -12,17 +12,42 @@ namespace App\Controller\AppApi;
 use App\Command\EnqueueCommand;
 use App\Command\Sms\SendMsgCommand;
 use App\Controller\Api\BaseController;
+use App\DataAccess\DataAccess;
 use App\Entity\Category;
 use App\Entity\ProjectVideoMeta;
 use App\Entity\User;
 use App\Repository\ProjectVideoMetaRepository;
 use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
+use League\Tactician\CommandBus;
+use Lexik\Bundle\JWTAuthenticationBundle\Security\Authentication\Token\JWTUserToken;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\AuthorizationHeaderTokenExtractor;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class AppApiBaseController extends BaseController
 {
+    private $jwtTokenManage;
+
+    private $appRequest;
+
+    /**
+     * AppApiBaseController constructor.
+     * @param LoggerInterface $logger
+     * @param CommandBus $commandBus
+     * @param DataAccess $dataAccess
+     * @param JWTTokenManagerInterface $jwtTokenManage
+     * @param RequestStack $requestStack
+     */
+    public function __construct(LoggerInterface $logger, CommandBus $commandBus, DataAccess $dataAccess, JWTTokenManagerInterface $jwtTokenManage, RequestStack $requestStack)
+    {
+        parent::__construct($logger, $commandBus, $dataAccess);
+        $this->jwtTokenManage = $jwtTokenManage;
+        $this->appRequest = $requestStack->getCurrentRequest();
+    }
     /**
      * 获取app登陆用户
      * @return User|object|string|null
@@ -44,6 +69,25 @@ class AppApiBaseController extends BaseController
         }
 
         return $tokenStorage->getToken()->getUser();
+    }
+
+    /**
+     * 获取用户ID只要头有传token就解析[用于非登陆api中获取登陆用户信息]
+     * @return int
+     * @author zxqc2018
+     */
+    public function getAppUserId()
+    {
+        try {
+            $authorizationHeaderTokenExtractor = new AuthorizationHeaderTokenExtractor('Bearer', 'authorization');
+            $token = new JWTUserToken();
+            $token->setRawToken($authorizationHeaderTokenExtractor->extract($this->appRequest));
+            $tokenInfo = $this->jwtTokenManage->decode($token);
+        } catch (\Throwable $e) {
+
+        }
+
+        return $tokenInfo['userId'] ?? 0;
     }
 
     /**
