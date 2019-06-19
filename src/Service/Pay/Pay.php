@@ -103,7 +103,7 @@ class Pay
                 // 缓存目录配置
                 'cache_path' => '',
                 // 支付成功通知地址
-                'notify_url' => '',
+                'notify_url' => 'https://laowantong.yunlishuju.com/appApi/notify/sign',
                 // 网页支付回跳地址
                 'return_url' => '',
             ],
@@ -120,7 +120,7 @@ class Pay
                 // 缓存目录配置
                 'cache_path'  => '',
                 // 支付成功通知地址
-                'notify_url'  => 'https://laowantong.yunlishuju.com/pay/notify',
+                'notify_url'  => 'https://laowantong.yunlishuju.com/appApi/notify/sign',
                 // 网页支付回跳地址
                 'return_url'  => '',
             ],
