@@ -78,11 +78,16 @@ class AppApiBaseController extends BaseController
      */
     public function getAppUserId()
     {
+        $tokenInfo = [];
         try {
             $authorizationHeaderTokenExtractor = new AuthorizationHeaderTokenExtractor('Bearer', 'authorization');
-            $token = new JWTUserToken();
-            $token->setRawToken($authorizationHeaderTokenExtractor->extract($this->appRequest));
-            $tokenInfo = $this->jwtTokenManage->decode($token);
+
+            $rawToken = $authorizationHeaderTokenExtractor->extract($this->appRequest);
+            if (!empty($rawToken)) {
+                $token = new JWTUserToken();
+                $token->setRawToken($rawToken);
+                $tokenInfo = $this->jwtTokenManage->decode($token);
+            }
         } catch (\Throwable $e) {
 
         }
