@@ -40,6 +40,8 @@ class ErrorCode
     const ERROR_FOLLOW_NOTFIND = 12010;
     const ERROR_MESSAGE_NOT_FIND = 12011;
     const ERROR_WX_OPENID_LOGIN = 12012;
+    const ERROR_LOGIN_CODE_TIMEOUT = 12013;
+
     //-------课程---------------------------------------
     const ERROR_CATEGORY_NOT_EXISTS = 13001;
     //-------产品---------------------------------------
@@ -110,6 +112,7 @@ class ErrorCode
             self::ERROR_ORDER_ALREADY_PAY => '订单已经支付',
             self::ERROR_ORDER_TABLE_CREATE_FAIL => '桌号生成失败',
             self::ERROR_ADDRESS_NOT_EXISTS => '收获地址不存在',
+            self::ERROR_LOGIN_CODE_TIMEOUT => '短信验证码已过期',
         ];
     }
 

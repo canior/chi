@@ -230,7 +230,7 @@ class MemberController extends AppApiBaseController
         $this->getEntityManager()->flush();
 
         // 发送验证码
-        $msgTemplateId = "SMS_167760193";
+        $msgTemplateId = "SMS_168345248";
         $msgData = ['code'=>$code];
         $this->sendSmsMsg($phone, $msgData, $msgTemplateId);
 
@@ -268,6 +268,11 @@ class MemberController extends AppApiBaseController
         $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::UPDATE_INFO ]);
         if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
+        }
+
+        // 验证过期
+        if( $messageCode->getCreatedAt(false)+20*60 < time() ){
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
         }
 
         // 更新资料
