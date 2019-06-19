@@ -155,7 +155,7 @@ class GroupUserOrderRepository extends ServiceEntityRepository
      * @param null $productId
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findOrdersUsers($productId) {
+    public function findUserOrderByProduct($productId) {
         $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('guo')
@@ -173,13 +173,13 @@ class GroupUserOrderRepository extends ServiceEntityRepository
     public function getTableUserCount($productId,$table) {
         $query = $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('count(guo)')
+            ->select('count(guo) as count')
             ->from(GroupUserOrder::class, 'guo')
             ->innerJoin('guo.product', 'p')
             ->where('guo.product = :product')
             ->andWhere('guo.tableNo = :table')
             ->setParameter('product',$productId)
             ->setParameter('table', $table);
-        return $query->orderBy('guo.id', 'DESC')->getQuery()->getResult();
+        return $query->orderBy('guo.id', 'DESC')->getQuery()->getSingleResult()['count'];
     }
 }
