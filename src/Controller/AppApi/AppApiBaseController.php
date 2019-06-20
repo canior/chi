@@ -17,6 +17,7 @@ use App\Entity\Category;
 use App\Entity\ProjectVideoMeta;
 use App\Entity\User;
 use App\Repository\ProjectVideoMetaRepository;
+use App\Service\Config\DependencyInjectionSingletonConfig;
 use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
 use League\Tactician\CommandBus;
@@ -24,6 +25,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Security\Authentication\Token\JWTUserTo
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\AuthorizationHeaderTokenExtractor;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -32,7 +34,7 @@ class AppApiBaseController extends BaseController
 {
     private $jwtTokenManage;
 
-    private $appRequest;
+    protected $appRequest;
 
     /**
      * AppApiBaseController constructor.
@@ -42,11 +44,11 @@ class AppApiBaseController extends BaseController
      * @param JWTTokenManagerInterface $jwtTokenManage
      * @param RequestStack $requestStack
      */
-    public function __construct(LoggerInterface $logger, CommandBus $commandBus, DataAccess $dataAccess, JWTTokenManagerInterface $jwtTokenManage, RequestStack $requestStack)
+    public function __construct(LoggerInterface $logger, CommandBus $commandBus, DataAccess $dataAccess, JWTTokenManagerInterface $jwtTokenManage, RequestStack $requestStack, ContainerInterface $container)
     {
-        parent::__construct($logger, $commandBus, $dataAccess);
+        parent::__construct($logger, $commandBus, $dataAccess, $requestStack, $container);
         $this->jwtTokenManage = $jwtTokenManage;
-        $this->appRequest = $requestStack->getCurrentRequest();
+        $this->appRequest = DependencyInjectionSingletonConfig::getInstance()->getRequest();
     }
     /**
      * 获取app登陆用户

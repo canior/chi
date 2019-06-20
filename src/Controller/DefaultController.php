@@ -10,12 +10,15 @@ namespace App\Controller;
 
 use App\Command\CommandInterface;
 use App\DataAccess\DataAccess;
+use App\Service\Config\DependencyInjectionSingletonConfig;
 use Doctrine\Common\Persistence\ObjectManagerDecorator;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Knp\Component\Pager\Paginator;
 use League\Tactician\CommandBus;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -42,11 +45,14 @@ class DefaultController extends Controller
     /**
      * DefaultController constructor.
      */
-    public function __construct(LoggerInterface $logger, CommandBus $commandBus, DataAccess $dataAccess)
+    public function __construct(LoggerInterface $logger, CommandBus $commandBus, DataAccess $dataAccess, RequestStack $requestStack, ContainerInterface $container)
     {
         $this->logger = $logger;
         $this->commandBus = $commandBus;
         $this->dataAccess = $dataAccess;
+        //container request 对象存入单例对象中
+        DependencyInjectionSingletonConfig::getInstance()->setContainer($container);
+        DependencyInjectionSingletonConfig::getInstance()->setRequest($requestStack->getCurrentRequest());
     }
 
     /**
