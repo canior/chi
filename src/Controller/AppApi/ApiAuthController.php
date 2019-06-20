@@ -9,6 +9,7 @@
 namespace App\Controller\AppApi;
 
 use App\Entity\UserStatistics;
+use App\Service\Config\ConfigParams;
 use App\Service\Document\WeChatDocument;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -339,8 +340,8 @@ class ApiAuthController extends AppApiBaseController
         $this->getLog()->info("wx user code = " . $code);
 
         $wechat = new WeChatDocument([
-            'appid' => $this->getParameter('jinqiu_app_wx_id'),
-            'secret' => $this->getParameter('jinqiu_app_wx_secret'),
+            'appid' => ConfigParams::getParamWithController(ConfigParams::JQ_APP_WX_ID),
+            'secret' => ConfigParams::getParamWithController(ConfigParams::JQ_APP_WX_SECRET),
         ]);
 
         $openIdInfo = $wechat->getOpenidByCode($code);
