@@ -145,8 +145,8 @@ class ApiAuthController extends AppApiBaseController
         // 请求参数验证
         $validator = Validation::createValidator();
         $constraint = new Assert\Collection([
-            'phone' => new Assert\Length(['min' => 6, 'max' => 30]),
-            'code' => new Assert\Length(['min' => 6, 'max' => 30]),
+            'phone' => new Assert\Length(['min' => 11, 'max' => 30]),
+            'code' => new Assert\Length(['min' => 4, 'max' => 30]),
         ]);
         $violations = $validator->validate($data, $constraint);
         if ($violations->count() > 0) {
