@@ -432,7 +432,7 @@ class BaseController extends DefaultController
 
 
         // 取最少推荐人 人数最少的桌子
-        $table_num = $table[0]['no'];
+        $table_num = $table[0]['no'] ??  0;
 
         return $table_num;
     }
