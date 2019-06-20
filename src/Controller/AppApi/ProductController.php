@@ -80,7 +80,6 @@ class ProductController extends AppApiBaseController
                     $newGroupOrder = $user->getNewestGroupUserOrder($product, true);
                     $data['product']['callStatus'] = CommonUtil::getInsideValue($newGroupOrder, 'getStatus', '');
                 }
-                $data['product']['isFollow'] = !empty($this->followCourseInfo($user, $product->getCourse()));
             } else {
                 /**
                  * @var GroupUserOrder $groupUserOrder
@@ -94,6 +93,7 @@ class ProductController extends AppApiBaseController
                     $productRateSum += $review->getRate();
                 }
             }
+            $data['product']['followId'] = CommonUtil::obj2Id($this->followCourseInfo($user, $product->getCourse()));
             $data['product']['myReview'] = CommonUtil::obj2Array($product->getMyReview($user));
             $data['product']['rate'] = !empty($productRateSum) ? number_format($productRateSum / $product->getActiveReviews()->count(), 2, '.', '') : 0;
             $data['productReviews'] = CommonUtil::entityArray2DataArray($this->getPaginator()->paginate($product->getActiveReviews(), $requestProcess['page'], $requestProcess['pageNum']));

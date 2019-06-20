@@ -68,6 +68,13 @@ class OfflineCourseType extends AbstractType
                 'label' => '开课地址 (必填)',
                 'required' => true
             ])
+            ->add('addressImageFile', DropzoneType::class, [
+                'label' => '地址定位 (请把定位置于图片中间)',
+                'maxFiles' => 1,
+                'priority' => true,
+                'data_class' => null,
+                'mapped' => false,
+            ])
             ->add('teacher', EntityType::class, [
                 'label' => '讲师',
                 'attr' => ['class' => 'form-control chosen'],

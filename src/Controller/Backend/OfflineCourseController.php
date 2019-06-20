@@ -87,6 +87,42 @@ class OfflineCourseController extends BackendController
                 return new Response('页面错误', 500);
             }
 
+            try {
+                $specImages = isset($request->request->get('offline_course')['specImages']) ? $request->request->get('offline_course')['specImages'] : [];
+                $specImagesCommand = new CreateOrUpdateProductSpecImagesCommand($course->getProduct()->getId(), $specImages);
+                $this->getCommandBus()->handle($specImagesCommand);
+            } catch (\Exception $e) {
+                $this->getLog()->error('can not run CreateOrUpdateProductSpecImagesCommand because of' . $e->getMessage());
+                if ($this->isDev()) {
+                    dump($e->getFile());
+                    dump($e->getMessage());
+                    die;
+                }
+                return new Response('页面错误', 500);
+            }
+
+            //add share image
+            $shareImageFileId = isset($request->request->get('offline_course')['shareImageFile']) ? $request->request->get('offline_course')['shareImageFile'] : null;
+            if ($shareImageFileId) {
+                /**
+                 * @var File $shareImageFile
+                 */
+                $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
+                $course->getProduct()->setShareImageFile($shareImageFile);
+                $this->getEntityManager()->persist($course->getProduct());
+                $this->getEntityManager()->flush();
+            }
+            //add address image
+            $addressImageFileId = isset($request->request->get('offline_course')['addressImageFile']) ? $request->request->get('offline_course')['addressImageFile'] : null;
+            if ($addressImageFileId) {
+                /**
+                 * @var File $addressImageFile
+                 */
+                $addressImageFile = $this->getEntityManager()->getRepository(File::class)->find($addressImageFileId);
+                $course->setAddressImageFile($addressImageFile);
+                $this->getEntityManager()->persist($course->getProduct());
+                $this->getEntityManager()->flush();
+            }
             $this->addFlash('notice', '创建成功');
             return $this->redirectToRoute('offline_course_index');
         }
@@ -153,6 +189,18 @@ class OfflineCourseController extends BackendController
             $form->get('shareImageFile')->setData($fileArray);
         }
 
+        $addressImageFile = $course->getAddressImageFile();
+        if ($addressImageFile) {
+            $addressImageArray[$addressImageFile->getId()] = [
+                'id' => $addressImageFile->getId(),
+                'fileId' => $addressImageFile->getId(),
+                'priority' => 0,
+                'name' => $addressImageFile->getName(),
+                'size' => $addressImageFile->getSize()
+            ];
+            $form->get('addressImageFile')->setData($addressImageArray);
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -201,6 +249,19 @@ class OfflineCourseController extends BackendController
 
             } else {
                 $course->setShareImageFile(null);
+            }
+
+            //update share image
+            $addressImageFileId = isset($request->request->get('offline_course')['addressImageFile']) ? $request->request->get('offline_course')['addressImageFile'] : [];
+            if ($addressImageFileId) {
+                /**
+                 * @var File $addressImageFile
+                 */
+                $addressImageFile = $this->getEntityManager()->getRepository(File::class)->find($addressImageFileId);
+                $course->setAddressImageFile($addressImageFile);
+
+            } else {
+                $course->setAddressImageFile(null);
             }
 
             $this->getDoctrine()->getManager()->flush();

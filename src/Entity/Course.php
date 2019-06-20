@@ -163,6 +163,13 @@ class Course implements Dao
      */
     private $courseTag;
 
+    /**
+     * @var File | null
+     * @ORM\ManyToOne(targetEntity="App\Entity\File", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $addressImageFile;
+
     public function __construct() {
         $product = new Product();
         $product->setCourse($this);
@@ -969,6 +976,22 @@ class Course implements Dao
     {
         $courseTag = str_replace(['，'], [','], $this->getCourseTag());
         return array_map('trim', array_filter(CommonUtil::myExplode($courseTag)));
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getAddressImageFile(): ?File
+    {
+        return $this->addressImageFile;
+    }
+
+    /**
+     * @param File|null $addressImageFile
+     */
+    public function setAddressImageFile(?File $addressImageFile): void
+    {
+        $this->addressImageFile = $addressImageFile;
     }
 
     /**
