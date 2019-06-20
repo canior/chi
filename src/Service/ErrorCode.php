@@ -80,7 +80,7 @@ class ErrorCode
             self::ERROR_TOKEN_INVALID => 'token无效',
             self::ERROR_TOKEN_AUTH_FAILURE => 'token认证失败',
             self::ERROR_TOKEN_AUTH_NOT_FOUND => 'token不存在',
-            self::ERROR_LOGIN_USER_NOT_FIND => '用户不存在',
+            self::ERROR_LOGIN_USER_NOT_FIND => '用户不存在,请使用微信登陆',
             self::ERROR_LOGIN_USERNAME_OR_PASSWORD_ERROR => '用户名或密码不不正确',
             self::ERROR_LOGIN_PHONE_OR_CODE_ERROR => '手机号或动态码不不正确',
             self::ERROR_GREATER_THEN_ACCOUNT => '提现金额大于余额',
