@@ -111,7 +111,7 @@ class Pay
             // 支付宝支付参数
             'alipay' => [
                 // 沙箱模式
-                'debug'       => true,
+                'debug'       => false,
                 // 应用ID
                 'app_id'      => ConfigParams::getParamWithController(ConfigParams::JQ_APP_ALIPAY_ID),
                 // 支付宝公钥(1行填写)

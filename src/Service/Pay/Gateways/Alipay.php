@@ -48,7 +48,7 @@ abstract class Alipay extends GatewayInterface
             'method'      => '',
             'format'      => 'JSON',
             'charset'     => 'utf-8',
-            'sign_type'   => 'RSA',
+            'sign_type'   => 'RSA2',
             'version'     => '1.0',
 //            'return_url'  => $this->userConfig->get('return_url', ''),
             'notify_url'  => $this->userConfig->get('notify_url', ''),
