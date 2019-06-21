@@ -484,6 +484,7 @@ class Category implements Dao
             'topCateIdentityId' => $topCateIdentityId,
             'shortDescription' => $this->getShortDescription() ?? '',
             'categoryTags' => array_unique($categoryTags),
+            'isPermission' => true,
         ];
     }
 
