@@ -94,7 +94,7 @@ class PayController extends AppApiBaseController
                 ];
 
                 $prePayInfo = FactoryUtil::wxPayDriver(Pay::APP_GATEWAY)->apply($options);
-                ConfigParams::getLogger()->info('wxPay', $prePayInfo);
+
                 if (empty($prePayInfo['prepayid'])) {
                     $requestProcess->throwErrorException(ErrorCode::ERROR_WX_PAY_PREPAY_ID, []);
                 }

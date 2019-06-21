@@ -38,7 +38,7 @@ class WechatNotify extends AbstractWechatNotify
     {
         $res = CommonUtil::resultData();
         $data = $this->verify($notifyRaw);
-        ConfigParams::getLogger()->info('wxPay', $data);
+
         if (empty($data)) {
             $res->throwErrorException(ErrorCode::ERROR_NOTIFY_VERIFY_SIGN, []);
         }

@@ -41,7 +41,7 @@ class AlipayNotify extends AbstractAlipayNotify
         $tmpData = [];
         parse_str($notifyRaw, $tmpData);
         $data = $this->verify($tmpData, $tmpData['sign']);
-        ConfigParams::getLogger()->info('wxPay', $data);
+
         if (empty($data)) {
             $res->throwErrorException(ErrorCode::ERROR_NOTIFY_VERIFY_SIGN, []);
         }
