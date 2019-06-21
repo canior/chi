@@ -205,6 +205,12 @@ class PayController extends AppApiBaseController
      */
     public function notifyPaymentAsyncAction() : Response
     {
+        $data = [
+            'request' =>$_REQUEST,
+            'raw' => file_get_contents('php://input')
+        ];
+
+        $this->getLog()->info('notify test', $data);
         return FactoryUtil::notifyProcess(file_get_contents('php://input'))->process()->toResponse();
     }
 }
