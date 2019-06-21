@@ -895,7 +895,7 @@ class Course implements Dao
                         break;
                     }
                 } else {
-                    $res = true;
+                    //$res = true;
                     break;
                 }
             }
