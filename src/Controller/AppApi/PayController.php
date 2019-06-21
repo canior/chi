@@ -60,7 +60,7 @@ class PayController extends AppApiBaseController
         $paidGroupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $groupUserOrder->getUser(), 'user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
 
         if (!empty($paidGroupUserOrder)) {
-            $requestProcess->throwErrorException(ErrorCode::ERROR_ORDER_ALREADY_PAY, []);
+            $requestProcess->throwErrorException(ErrorCode::ERROR_COURSE_ALREADY_PAY, []);
         }
 
         $body = $groupUserOrder->getProduct()->getTitle();
