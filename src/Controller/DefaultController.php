@@ -53,6 +53,7 @@ class DefaultController extends Controller
         //container request 对象存入单例对象中
         DependencyInjectionSingletonConfig::getInstance()->setContainer($container);
         DependencyInjectionSingletonConfig::getInstance()->setRequest($requestStack->getCurrentRequest());
+        DependencyInjectionSingletonConfig::getInstance()->setLogger($logger);
     }
 
     /**
