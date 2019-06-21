@@ -9,6 +9,7 @@
 namespace App\Service\Pay\Notify;
 
 
+use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\ResultData;
 use App\Service\Util\CommonUtil;
@@ -40,6 +41,7 @@ class AlipayNotify extends AbstractAlipayNotify
         $tmpData = [];
         parse_str($notifyRaw, $tmpData);
         $data = $this->verify($tmpData, $tmpData['sign']);
+        ConfigParams::getLogger()->info('wxPay', $data);
         if (empty($data)) {
             $res->throwErrorException(ErrorCode::ERROR_NOTIFY_VERIFY_SIGN, []);
         }

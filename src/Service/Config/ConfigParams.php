@@ -9,7 +9,6 @@
 namespace App\Service\Config;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\Mapping\Entity;
 
 /**
  * 配置参数获取 config/parameters.yaml
@@ -85,5 +84,14 @@ class ConfigParams
     public static function getRepositoryManager()
     {
         return self::getDoctrine()->getManager();
+    }
+
+    /**
+     * @return \Psr\Log\LoggerInterface
+     * @author zxqc2018
+     */
+    public static function getLogger()
+    {
+        return $container = DependencyInjectionSingletonConfig::getInstance()->getLogger();
     }
 }

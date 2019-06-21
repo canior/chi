@@ -10,6 +10,7 @@ namespace App\Service\Config;
 
 
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -32,6 +33,11 @@ class DependencyInjectionSingletonConfig
      * @var Request $request
      */
     private $request;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     public static function getInstance()
     {
@@ -72,5 +78,21 @@ class DependencyInjectionSingletonConfig
     public function setRequest(Request $request): void
     {
         $this->request = $request;
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }

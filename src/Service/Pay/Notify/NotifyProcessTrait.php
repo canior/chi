@@ -43,7 +43,7 @@ trait NotifyProcessTrait
                     if (!empty($notDistributeOrder->getPaymentTime()) && $notDistributeOrder->getProduct()->isCourseProduct() &&
                         !$notDistributeOrder->getProduct()->getCourse()->isOnline() && $notDistributeOrder->getProduct()->getCourse()->isSystemSubject() &&
                         empty($notDistributeOrder->getTableNo())) {
-                        $notDistributeOrder->setTableNo((int)$this->getUserTable($notDistributeOrder));
+                        $notDistributeOrder->setTableNo((int)OfflineTableNo::getUserTable($notDistributeOrder));
                         $notDistributeOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
                         $notDistributeOrder->setCheckAt(time());
                         CommonUtil::entityPersist($notDistributeOrder);
@@ -66,6 +66,10 @@ trait NotifyProcessTrait
     {
         $requestProcess = CommonUtil::resultData();
         $groupUserOrder = $this->getOrderInfo($outTradeNo);
+
+        if (empty($groupUserOrder)) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS, []);
+        }
 
         if ($groupUserOrder->isPaid()) {
             $requestProcess->throwErrorException(ErrorCode::ERROR_ORDER_ALREADY_PAY, []);

@@ -12,6 +12,7 @@ use App\Entity\CommandMessage;
 use App\Entity\CourseOrder;
 use App\Entity\GroupUserOrder;
 use App\Repository\GroupUserOrderRepository;
+use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\Pay\Pay;
 use App\Service\Util\CommonUtil;
@@ -87,11 +88,11 @@ class PayController extends AppApiBaseController
                 ];
 
                 $prePayInfo = FactoryUtil::wxPayDriver(Pay::APP_GATEWAY)->apply($options);
-
-                if (empty($prePayInfo['partnerid'])) {
+                ConfigParams::getLogger()->info('wxPay', $prePayInfo);
+                if (empty($prePayInfo['prepayid'])) {
                     $requestProcess->throwErrorException(ErrorCode::ERROR_WX_PAY_PREPAY_ID, []);
                 }
-                $prePayId = $prePayInfo['partnerid'];
+                $prePayId = $prePayInfo['prepayid'];
                 $groupUserOrder->setPrePayId($prePayId);
                 break;
         }
