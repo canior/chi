@@ -248,20 +248,4 @@ class ProductController extends AppApiBaseController
 
         return $requestProcess->toJsonResponse($data);
     }
-
-
-    /**
-     * @Route("/notify/sign", name="appNotifyTest")
-     * @author zxqc2018
-     */
-    public function notifySignTest()
-    {
-        $data = [
-            'request' =>$_REQUEST,
-            'raw' => file_get_contents('php://input')
-        ];
-
-        $this->getLog()->info('notify test', $data);
-        return CommonUtil::resultData()->toJsonResponse($data);
-    }
 }

@@ -11,6 +11,7 @@ use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\Pay\Contracts\Config;
 use App\Service\Pay\Contracts\GatewayInterface;
+use App\Service\Pay\Contracts\NotifyInterface;
 use App\Service\Util\CommonUtil;
 
 
@@ -49,7 +50,7 @@ class Pay
     private $drivers;
 
     /**
-     * @var string
+     * @var GatewayInterface $gateways
      */
     private $gateways;
 
@@ -155,6 +156,18 @@ class Pay
     }
 
     /**
+     * 指定操作通知类
+     * @return NotifyInterface|GatewayInterface
+     */
+    public function notify()
+    {
+        if (!isset($this->drivers)) {
+            CommonUtil::resultData([], ErrorCode::ERROR_PAY_COMMON, 'Driver is not defined.')->throwErrorException();
+        }
+        return $this->createNotify();
+    }
+
+    /**
      * 创建操作网关
      * @param string $gateway
      * @return GatewayInterface
@@ -175,4 +188,22 @@ class Pay
         return $gatewayInstance;
     }
 
+    /**
+     * 创建异步通知对象
+     */
+    protected function createNotify()
+    {
+        if (!file_exists(__DIR__ . '/Notify/' . ucfirst($this->drivers) . 'Notify.php')) {
+            CommonUtil::resultData()->throwErrorException(ErrorCode::ERROR_PAY_COMMON, [], "Notify [{$this->drivers}] is not supported.");
+        }
+
+        $notify = __NAMESPACE__ . '\\Notify\\' . ucfirst($this->drivers) . 'Notify';
+
+        /**
+         * @var  NotifyInterface|GatewayInterface $notifyInstance
+         */
+        $notifyInstance =  new $notify();
+        $notifyInstance->init($this->config->get($this->drivers));
+        return $notifyInstance;
+    }
 }

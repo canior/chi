@@ -22,7 +22,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class PayController
- * @Route("/auth")
  * @package App\Controller\AppApi
  * @author zxqc2018
  */
@@ -30,7 +29,7 @@ class PayController extends AppApiBaseController
 {
     /**
      * 支付订单
-     * @Route("/groupUserOrder/pay", name="appPayGroupUserOrder", methods="POST")
+     * @Route("/auth/groupUserOrder/pay", name="appPayGroupUserOrder", methods="POST")
      * @param Request $request
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return \Symfony\Component\HttpFoundation\JsonResponse
@@ -113,7 +112,7 @@ class PayController extends AppApiBaseController
      * 支付普通订单成功
      * 1. 微信支付通知
      * 2. 普通购买完成
-     * @Route("/groupUserOrder/notifyPayment", name="appNotifyGroupUserOrderPayment", methods="POST")
+     * @Route("/auth/groupUserOrder/notifyPayment", name="appNotifyGroupUserOrderPayment", methods="POST")
      * @param Request $request
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
@@ -197,5 +196,15 @@ class PayController extends AppApiBaseController
         }
         $data['groupUserOrder'] = $groupUserOrder->getArray();
         return $requestProcess->toJsonResponse($data);
+    }
+
+    /**
+     * 支付后异步订单通知
+     * @Route("/notify/order/async", name="appNotifyAsyncGroupUserOrderPayment")
+     * @return Response
+     */
+    public function notifyPaymentAsyncAction() : Response
+    {
+        return FactoryUtil::notifyProcess(file_get_contents('php://input'))->process()->toResponse();
     }
 }

@@ -141,6 +141,16 @@ class ResultData implements \ArrayAccess
     }
 
     /**
+     * @param string $msg
+     * @return $this
+     * @author zxqc2018
+     */
+    public function forceSetMsg(string  $msg) :self
+    {
+        $this->msg = $msg;
+        return $this;
+    }
+    /**
      * @return int
      */
     public function getOriginStatusCode(): int
@@ -289,6 +299,24 @@ class ResultData implements \ArrayAccess
             throw $apiHttpException;
         }
         return $this;
+    }
+
+    /**
+     * 普通Response
+     * @param null $content
+     * @param int $statusCode
+     * @param array $headers
+     * @return Response
+     * @author zxqc2018
+     */
+    public function toResponse($content = null, $statusCode = Response::HTTP_OK, $headers = [])
+    {
+        if (!is_null($content)) {
+            $this->setOriginMsg('');
+            $this->setMsg($content);
+        }
+
+        return new Response($this->getMsg(), $statusCode, $headers);
     }
     /**
      * Whether a offset exists

@@ -9,6 +9,7 @@
 namespace App\Service\Config;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Mapping\Entity;
 
 /**
  * 配置参数获取 config/parameters.yaml
@@ -75,5 +76,14 @@ class ConfigParams
         }
 
         return $container->get('doctrine');
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager
+     * @author zxqc2018
+     */
+    public static function getRepositoryManager()
+    {
+        return self::getDoctrine()->getManager();
     }
 }

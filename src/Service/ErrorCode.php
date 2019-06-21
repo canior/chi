@@ -66,6 +66,8 @@ class ErrorCode
     const ERROR_PAY_ORDER_ALREADY_WAIT = 16012;
     const ERROR_UNLOCK_CATEGORY_NOT_PRIVILEGE = 16013;
     const ERROR_ORDER_ALREADY_PAY = 16014;
+    const ERROR_NOTIFY_RAW_NOT_ALLOW = 16015;
+    const ERROR_NOTIFY_VERIFY_SIGN = 16016;
     /**
      * 错误消息集合
      * @return array
@@ -113,6 +115,8 @@ class ErrorCode
             self::ERROR_ORDER_TABLE_CREATE_FAIL => '桌号生成失败',
             self::ERROR_ADDRESS_NOT_EXISTS => '收获地址不存在',
             self::ERROR_LOGIN_CODE_TIMEOUT => '短信验证码已过期',
+            self::ERROR_NOTIFY_RAW_NOT_ALLOW => '异步通知消息不合法',
+            self::ERROR_NOTIFY_VERIFY_SIGN => '异步通知验签失败',
         ];
     }
 
