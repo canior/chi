@@ -139,9 +139,6 @@ class PayController extends AppApiBaseController
             $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS);
         }
 
-        if ($groupUserOrder->isPaid()) {
-            $requestProcess->throwErrorException(ErrorCode::ERROR_ORDER_ALREADY_PAY, []);
-        }
         $data = [
             'nextPageType' => 3,
         ];
