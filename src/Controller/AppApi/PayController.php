@@ -132,7 +132,7 @@ class PayController extends AppApiBaseController
             'raw' => file_get_contents('php://input')
         ];
 
-        $this->getLog()->info('notifyTest', $data);
+        $this->getLog()->info('notifyTest||' . $data['raw'], []);
         return FactoryUtil::notifyProcess(file_get_contents('php://input'))->process()->toResponse();
     }
 }
