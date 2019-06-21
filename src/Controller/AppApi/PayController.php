@@ -119,7 +119,6 @@ class PayController extends AppApiBaseController
     public function notifyPaymentAction() : JsonResponse
     {
         $res = CommonUtil::resultData();
-        $res->throwErrorException(ErrorCode::ERROR_NOTIFY_TYPE, []);
         return $res->toJsonResponse();
     }
 
