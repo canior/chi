@@ -72,7 +72,6 @@ class PayController extends AppApiBaseController
                     'out_trade_no' => $outTradeNo, // 商户订单号
                     'total_amount' => $groupUserOrder->getTotal(), // 支付金额
                     'subject'      => $body, // 支付订单描述
-                    'notify_url'   => 'https://laowantong.yunlishuju.com/appApi/notify/sign', // 定义通知URL
                 ];
 
                 $result = FactoryUtil::aliPayDriver(Pay::APP_GATEWAY)->apply($options);
@@ -85,7 +84,6 @@ class PayController extends AppApiBaseController
                     'total_fee'        => $groupUserOrder->getTotal() * 100, // 订单金额，**单位：分**
                     'body'             => $body, // 订单描述
                     'spbill_create_ip' => CommonUtil::getUserIp(), // 支付人的 IP
-                    'notify_url'       => 'https://laowantong.yunlishuju.com/appApi/notify/sign', // 定义通知URL
                 ];
 
                 $prePayInfo = FactoryUtil::wxPayDriver(Pay::APP_GATEWAY)->apply($options);
