@@ -164,12 +164,11 @@ class ApiAuthController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        // 暂时不验证code，用于测试 TODO
         // 验证Code
-        // $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ]);
-        // if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
-        //     return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
-        // }
+        $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ]);
+        if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
+        }
 
         // 返回
         return CommonUtil::resultData(['user'=>$user->getArray(),'token' => $JWTTokenManager->create($user)])->toJsonResponse();
@@ -419,11 +418,13 @@ class ApiAuthController extends AppApiBaseController
 
         //生产验证码
         $phone = isset($data['phone']) ? $data['phone'] : null;
+        $codeType = isset($data['codeType']) ? $data['codeType'] : null;
+
         $code = rand(1000, 9999);
         $messageCode = new MessageCode();
         $messageCode->setPhone($phone);
         $messageCode->setCode($code);
-        $messageCode->settype(MessageCode::UPDATE_INFO);
+        $messageCode->setType($codeType);
         $this->getEntityManager()->persist($messageCode);
         $this->getEntityManager()->flush();
 
