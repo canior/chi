@@ -1104,7 +1104,7 @@ class Product implements Dao
 
         try {
             $ali = new AliCommon();
-            $playInfo = $ali->getPlayInfo($this->getAliyunVideoId(), AliCommon::VIDEO_FORMAT_M3U8);
+            $playInfo = $ali->getPlayInfo($this->getAliyunVideoId());
 
             $aliyunVideoUrl = AliVod::getVideoUrl($playInfo);
             $aliyunVideoImageUrl = AliVod::getVideoImageUrl($playInfo);
