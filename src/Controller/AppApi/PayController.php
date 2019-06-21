@@ -153,7 +153,7 @@ class PayController extends AppApiBaseController
                     $data['nextPageType'] = 4;
                 }
             } else if ($course->isThinkingSubject()) {
-                if ($course->getPrice() > 1) {
+                if ($course->getPrice() > 0.01) {
                     $data['nextPageType'] = 2;
                 } else {
                     //todo sms通知
