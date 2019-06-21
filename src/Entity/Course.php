@@ -1046,4 +1046,31 @@ class Course implements Dao
             'courseTags' => $this->getCourseTagArr(),
         ];
     }
+
+    /**
+     * 获取课程视频数组
+     * @return array
+     * @author zxqc2018
+     */
+    public function getCourseVideoArray()
+    {
+        $res = $this->getArray();
+        $res['aliyunVideoUrl'] = '';
+        $res['aliyunVideoImageUrl'] = '';
+
+        if ( $this->isOnline() && !empty($this->getProduct())) {
+            $refreshStatus = $this->getProduct()->refreshAliyunVideo();
+
+            if ($refreshStatus) {
+                $res['aliyunVideoUrl'] = $this->getProduct()->getAliyunVideoUrl();
+                $res['aliyunVideoImageUrl'] = $this->getProduct()->getAliyunVideoImageUrl();
+                if ($refreshStatus == 2) {
+
+                    CommonUtil::entityPersist($this->getProduct());
+                }
+            }
+        }
+
+        return $res;
+    }
 }

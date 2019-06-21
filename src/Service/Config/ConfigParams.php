@@ -8,6 +8,8 @@
 
 namespace App\Service\Config;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
+
 /**
  * 配置参数获取 config/parameters.yaml
  * Class ConfigParams
@@ -56,5 +58,22 @@ class ConfigParams
         }
 
         return $container->getParameter($key);
+    }
+
+    /**
+     * Shortcut to return the Doctrine Registry service.
+     *
+     * @throws \LogicException If DoctrineBundle is not available
+     *
+     * @final
+     */
+    public static function getDoctrine(): ManagerRegistry
+    {
+        $container = DependencyInjectionSingletonConfig::getInstance()->getContainer();
+        if (!$container->has('doctrine')) {
+            throw new \LogicException('The DoctrineBundle is not registered in your application. Try running "composer require symfony/orm-pack".');
+        }
+
+        return $container->get('doctrine');
     }
 }

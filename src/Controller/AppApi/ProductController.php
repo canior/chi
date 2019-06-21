@@ -64,8 +64,9 @@ class ProductController extends AppApiBaseController
          */
         $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
 
+        $productArray = $product->isCourseProduct() ? $product->getCourse()->getCourseVideoArray() : $product->getArray();
         $data = [
-            'product' => $product->getArray(),
+            'product' => $productArray,
             'shareSources' => [],
             'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
         ];

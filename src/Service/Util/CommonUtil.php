@@ -8,6 +8,7 @@
 
 namespace App\Service\Util;
 
+use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\ResultData;
 use Symfony\Component\HttpFoundation\Request;
@@ -285,5 +286,20 @@ class CommonUtil
             $res = true;
         }
         return $res;
+    }
+
+    /**
+     * 持久entity
+     * @param $entity
+     * @param bool $isFlush 是否需要flush
+     * @author zxqc2018
+     */
+    public static function entityPersist($entity, $isFlush = true)
+    {
+        $em = ConfigParams::getDoctrine()->getManager();
+        $em->persist($entity);
+        if ($isFlush) {
+            $em->flush();
+        }
     }
 }

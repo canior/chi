@@ -6,6 +6,8 @@ use App\Entity\Traits\CreatedAtTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\StatusTrait;
 use App\Entity\Traits\UpdatedAtTrait;
+use App\Service\Ali\AliCommon;
+use App\Service\Ali\AliVod;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -1086,4 +1088,35 @@ class Product implements Dao
 
     }
 
+    /**
+     * 刷新阿里云视频地址
+     * @return int
+     */
+    public function refreshAliyunVideo()
+    {
+        if (empty($this->getAliyunVideoId())) {
+            return 0;
+        }
+
+        if (!$this->isAliyunVideoExpired()) {
+            return 1;
+        }
+
+        try {
+            $ali = new AliCommon();
+            $playInfo = $ali->getPlayInfo($this->getAliyunVideoId(), AliCommon::VIDEO_FORMAT_M3U8);
+
+            $aliyunVideoUrl = AliVod::getVideoUrl($playInfo);
+            $aliyunVideoImageUrl = AliVod::getVideoImageUrl($playInfo);
+            $aliyunVideoExpiresAt = AliVod::getVideoExpiresAt($playInfo);
+
+            $this->setAliyunVideoUrl($aliyunVideoUrl);
+            $this->setAliyunVideoImageUrl($aliyunVideoImageUrl);
+            $this->setAliyunVideoExpiresAt($aliyunVideoExpiresAt);
+
+            return 2;
+        } catch (\Throwable $e) {
+            return 0;
+        }
+    }
 }
