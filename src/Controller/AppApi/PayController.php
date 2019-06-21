@@ -57,6 +57,12 @@ class PayController extends AppApiBaseController
             $requestProcess->throwErrorException(ErrorCode::ERROR_ORDER_ALREADY_PAY, []);
         }
 
+        $paidGroupUserOrder = $groupUserOrderRepository->findOneBy(['product' => $groupUserOrder->getUser(), 'user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
+
+        if (!empty($paidGroupUserOrder)) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_ORDER_ALREADY_PAY, []);
+        }
+
         $body = $groupUserOrder->getProduct()->getTitle();
         if (!$groupUserOrder->getProduct()->isCourseProduct()) {
             $body .= ': ￥490 + 咨询费: ￥1510';
