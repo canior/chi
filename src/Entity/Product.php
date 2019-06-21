@@ -173,7 +173,7 @@ class Product implements Dao
 
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @var int|null
+     * @var string|null
      */
     private $aliyunVideoExpiresAt;
 
@@ -955,17 +955,17 @@ class Product implements Dao
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
-    public function getAliyunVideoExpiresAt(): ?int
+    public function getAliyunVideoExpiresAt(): ?string
     {
         return $this->aliyunVideoExpiresAt;
     }
 
     /**
-     * @param int|null $aliyunVideoExpiresAt
+     * @param string|null $aliyunVideoExpiresAt
      */
-    public function setAliyunVideoExpiresAt(?int $aliyunVideoExpiresAt): void
+    public function setAliyunVideoExpiresAt(?string $aliyunVideoExpiresAt): void
     {
         $this->aliyunVideoExpiresAt = $aliyunVideoExpiresAt;
     }
