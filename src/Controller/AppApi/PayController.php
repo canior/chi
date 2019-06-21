@@ -109,16 +109,63 @@ class PayController extends AppApiBaseController
     }
 
     /**
-     * 支付普通订单成功
-     * 1. 微信支付通知
-     * 2. 普通购买完成
+     * 支付同步通知
      * @Route("/auth/groupUserOrder/notifyPayment", name="appNotifyGroupUserOrderPayment", methods="POST")
+     * @param Request $request
+     * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return JsonResponse
      */
-    public function notifyPaymentAction() : JsonResponse
+    public function notifyPaymentAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) : JsonResponse
     {
-        $res = CommonUtil::resultData();
-        return $res->toJsonResponse();
+        $requestProcess = $this->processRequest($request, [
+            'groupUserOrderId', 'isPaid'
+        ], ['groupUserOrderId']);
+
+        $user = $this->getAppUser();
+
+        if (empty($requestProcess['isPaid'])) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_NOTIFY, [], 'group_order_created_fail');
+        }
+
+        $groupUserOrder = $groupUserOrderRepository->find($requestProcess['groupUserOrderId']);
+
+        if (empty($groupUserOrder) || $user !== $groupUserOrder->getUser()) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS);
+        }
+
+        if ($groupUserOrder->isPaid()) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_ORDER_ALREADY_PAY, []);
+        }
+        $data = [
+            'nextPageType' => 3,
+        ];
+
+        //系统课报名处理
+        $product = $groupUserOrder->getProduct();
+        if ($product->isCourseProduct() && !$product->getCourse()->isOnline()) {
+            $course = $product->getCourse();
+            if ($course->isSystemSubject()) {
+                if ($user->isSystemSubjectPrivilege()) {
+                    //todo sms通知
+                    $data['nextPageType'] = 4;
+                }
+            } else if ($course->isThinkingSubject()) {
+                if ($course->getPrice() > 1) {
+                    $data['nextPageType'] = 2;
+                } else {
+                    //todo sms通知
+                    $data['nextPageType'] = 1;
+                }
+            } else if ($course->isTradingSubject()) {
+                //是否有报名了但是没有分配桌号的
+                if ($user->isCompletedPersonalInfo() && $groupUserOrder->getTotal() == 12000) {
+                    $data['nextPageType'] = 4;
+                }
+            }
+        }
+
+        $data['groupUserOrder'] = $groupUserOrder->getArray();
+        return $requestProcess->toJsonResponse($data);
     }
 
     /**
