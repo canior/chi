@@ -16,6 +16,7 @@ use App\Service\ErrorCode;
 use App\Service\Pay\Pay;
 use App\Service\Util\CommonUtil;
 use App\Service\Util\FactoryUtil;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -113,89 +114,13 @@ class PayController extends AppApiBaseController
      * 1. 微信支付通知
      * 2. 普通购买完成
      * @Route("/auth/groupUserOrder/notifyPayment", name="appNotifyGroupUserOrderPayment", methods="POST")
-     * @param Request $request
-     * @param GroupUserOrderRepository $groupUserOrderRepository
-     * @return Response
+     * @return JsonResponse
      */
-    public function notifyPaymentAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) : Response
+    public function notifyPaymentAction() : JsonResponse
     {
-        $requestProcess = $this->processRequest($request, [
-            'groupUserOrderId', 'isPaid'
-        ], ['groupUserOrderId']);
-
-        $user = $this->getAppUser();
-
-        if (empty($requestProcess['isPaid'])) {
-            $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_NOTIFY, [], 'group_order_created_fail');
-        }
-
-        $groupUserOrder = $groupUserOrderRepository->find($requestProcess['groupUserOrderId']);
-
-        if (empty($groupUserOrder) || $user !== $groupUserOrder->getUser()) {
-            $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS);
-        }
-
-        if ($groupUserOrder->isPaid()) {
-            $requestProcess->throwErrorException(ErrorCode::ERROR_ORDER_ALREADY_PAY, []);
-        }
-
-        $groupUserOrder->setPending();
-
-        if ($groupUserOrder instanceof  CourseOrder) {
-            $groupUserOrder->setRegistered();
-        } else {
-            $groupUserOrder->setPaid();
-        }
-
-        $this->getEntityManager()->persist($groupUserOrder);
-
-        if ($groupUserOrder->getProduct()->isHasCoupon()) {
-            $user->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($groupUserOrder->getId()));
-        }
-
-        $groupUserOrder->setPaymentTime(time());
-
-        $data = [];
-
-        $isFlushGroupUserOrder = false;
-        //系统课报名处理
-        $product = $groupUserOrder->getProduct();
-        if ($product->isCourseProduct() && !$product->getCourse()->isOnline()) {
-            $course = $product->getCourse();
-            if ($course->isSystemSubject()) {
-                if ($user->isSystemSubjectPrivilege()) {
-                    $groupUserOrder->setTableNo((int)$this->getUserTable($groupUserOrder));
-                    $groupUserOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
-                    $groupUserOrder->setCheckAt(time());
-                    //todo sms通知
-                    $data['nextPageType'] = 4;
-                } else {
-                    $data['nextPageType'] = 3;
-                }
-            } else if ($course->isThinkingSubject()) {
-                if ($course->getPrice() > 1) {
-                    $groupUserOrder->setTableNo((int)$this->getUserTable($groupUserOrder));
-                    $data['nextPageType'] = 2;
-                } else {
-                    //todo sms通知
-                    $data['nextPageType'] = 1;
-                }
-            } else if ($course->isTradingSubject() && $user->isCompletedPersonalInfo()) {
-                $this->entityPersist($groupUserOrder);
-                $isFlushGroupUserOrder = true;
-                //是否有报名了但是没有分配桌号的
-                $isSupplyTableNo = $this->supplySystemTableNo($groupUserOrder->getUser());
-                if ($isSupplyTableNo && $groupUserOrder->getTotal() == 12000) {
-                    $data['nextPageType'] = 4;
-                }
-            }
-        }
-
-        if (!$isFlushGroupUserOrder) {
-            $this->entityPersist($groupUserOrder);
-        }
-        $data['groupUserOrder'] = $groupUserOrder->getArray();
-        return $requestProcess->toJsonResponse($data);
+        $res = CommonUtil::resultData();
+        $res->throwErrorException(ErrorCode::ERROR_NOTIFY_TYPE, []);
+        return $res->toJsonResponse();
     }
 
     /**

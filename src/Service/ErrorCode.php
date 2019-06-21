@@ -68,6 +68,7 @@ class ErrorCode
     const ERROR_ORDER_ALREADY_PAY = 16014;
     const ERROR_NOTIFY_RAW_NOT_ALLOW = 16015;
     const ERROR_NOTIFY_VERIFY_SIGN = 16016;
+    const ERROR_NOTIFY_TYPE = 16017;
     /**
      * 错误消息集合
      * @return array
@@ -117,6 +118,7 @@ class ErrorCode
             self::ERROR_LOGIN_CODE_TIMEOUT => '短信验证码已过期',
             self::ERROR_NOTIFY_RAW_NOT_ALLOW => '异步通知消息不合法',
             self::ERROR_NOTIFY_VERIFY_SIGN => '异步通知验签失败',
+            self::ERROR_NOTIFY_TYPE => '通知方式不支持',
         ];
     }
 
