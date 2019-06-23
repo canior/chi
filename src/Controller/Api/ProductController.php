@@ -31,6 +31,7 @@ use App\Service\Wx\WxCommon;
 use App\Entity\User;
 use App\Service\ImageGenerator;
 use App\Entity\GroupUserOrder;
+use App\Service\Youtube;
 
 /**
  * @Route("/wxapi")
@@ -194,7 +195,7 @@ class ProductController extends BaseController
         $product = $productRepository->find($productId);
 
         if ($product->isAliyunVideoExpired()) {
-            $ali = new AliCommon();
+            /*$ali = new AliCommon();
             $playInfo = $ali->getPlayInfo($product->getAliyunVideoId());
 
             $aliyunVideoUrl = AliVod::getVideoUrl($playInfo);
@@ -205,7 +206,17 @@ class ProductController extends BaseController
             $product->setAliyunVideoImageUrl($aliyunVideoImageUrl);
             $product->setAliyunVideoExpiresAt($aliyunVideoExpiresAt);
             $this->getEntityManager()->persist($product);
-            $this->getEntityManager()->flush();
+            $this->getEntityManager()->flush();*/
+
+            // 根据YouTube视频id, 获取其视频文件url
+            $youtube = new Youtube();
+            //$aliyunVideoUrl = $youtube->getVideoUrl($product->getAliyunVideoId());
+            //$aliyunVideoImageUrl = $youtube->getVideoImageUrl($product->getAliyunVideoId());
+            //$aliyunVideoExpiresAt = $youtube->getExpiredAt($aliyunVideoUrl);
+
+            //以下2行代码为临时测试
+            $aliyunVideoUrl = $youtube->getVideoUrl('_7wsatiZ3Gs');
+            $product->setAliyunVideoUrl($aliyunVideoUrl);
         }
 
         return $this->responseJson('success', 200, [

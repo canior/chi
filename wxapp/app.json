@@ -30,6 +30,7 @@
     "pages/user/order/index",
     "pages/user/order/detail",
     "pages/user/order/review",
+    "pages/user/order/tracking",
     "pages/user/sales/index",
     "pages/user/sales/detail",
     "pages/offlineCourse/index",
