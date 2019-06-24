@@ -9,7 +9,18 @@
 namespace App\Service\Util;
 
 
-use App\Service\Order\OfflineTableNo;
+use App\Entity\Category;
+use App\Entity\Course;
+use App\Entity\GroupUserOrder;
+use App\Entity\Product;
+use App\Entity\ProductReview;
+use App\Entity\UserAccountOrder;
+use App\Repository\CategoryRepository;
+use App\Repository\CourseRepository;
+use App\Repository\GroupUserOrderRepository;
+use App\Repository\ProductRepository;
+use App\Repository\ProductReviewRepository;
+use App\Repository\UserAccountOrderRepository;
 use App\Service\Pay\Contracts\GatewayInterface;
 use App\Service\Pay\Contracts\NotifyInterface;
 use App\Service\Pay\NotifyProcess;
@@ -81,5 +92,86 @@ class FactoryUtil
     {
         $notifyProcess = new NotifyProcess($notifyRaw);
         return $notifyProcess;
+    }
+
+    /**
+     * @return CourseRepository
+     * @author zxqc2018
+     */
+    public static function courseRepository()
+    {
+        /**
+         * @var CourseRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(Course::class);
+        return $repository;
+    }
+
+    /**
+     * @return ProductRepository
+     * @author zxqc2018
+     */
+    public static function productRepository()
+    {
+        /**
+         * @var ProductRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(Product::class);
+        return $repository;
+    }
+
+    /**
+     * @return CategoryRepository
+     * @author zxqc2018
+     */
+    public static function categoryRepository()
+    {
+        /**
+         * @var CategoryRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(Category::class);
+        return $repository;
+    }
+
+
+    /**
+     * @return GroupUserOrderRepository
+     * @author zxqc2018
+     */
+    public static function groupUserOrderRepository()
+    {
+        /**
+         * @var GroupUserOrderRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(GroupUserOrder::class);
+        return $repository;
+    }
+
+
+    /**
+     * @return ProductReviewRepository
+     * @author zxqc2018
+     */
+    public static function productReviewRepository()
+    {
+        /**
+         * @var ProductReviewRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(ProductReview::class);
+        return $repository;
+    }
+
+
+    /**
+     * @return UserAccountOrderRepository
+     * @author zxqc2018
+     */
+    public static function userAccountOrderRepository()
+    {
+        /**
+         * @var UserAccountOrderRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(UserAccountOrder::class);
+        return $repository;
     }
 }

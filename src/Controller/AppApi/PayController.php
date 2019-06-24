@@ -8,11 +8,8 @@
 namespace App\Controller\AppApi;
 
 
-use App\Entity\CommandMessage;
-use App\Entity\CourseOrder;
 use App\Entity\GroupUserOrder;
 use App\Repository\GroupUserOrderRepository;
-use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\Pay\Pay;
 use App\Service\Util\CommonUtil;
@@ -129,10 +126,6 @@ class PayController extends AppApiBaseController
 
         $user = $this->getAppUser();
 
-        if (empty($requestProcess['isPaid'])) {
-            $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_NOTIFY, [], 'group_order_created_fail');
-        }
-
         $groupUserOrder = $groupUserOrderRepository->find($requestProcess['groupUserOrderId']);
 
         if (empty($groupUserOrder) || $user !== $groupUserOrder->getUser()) {
@@ -141,6 +134,7 @@ class PayController extends AppApiBaseController
 
         $data = [
             'nextPageType' => 3,
+            'tradingProductId' => 0,
         ];
 
         //系统课报名处理
@@ -167,6 +161,13 @@ class PayController extends AppApiBaseController
             }
         }
 
+        if ($data['nextPageType'] == 3) {
+            //查找直通车课程id
+            $tradingCourse = FactoryUtil::courseRepository()->findSpecTradingCourse();
+            if (!empty($tradingCourse)) {
+                $data['tradingProductId'] = $tradingCourse->getProduct()->getId();
+            }
+        }
         $data['groupUserOrder'] = $groupUserOrder->getArray();
         return $requestProcess->toJsonResponse($data);
     }

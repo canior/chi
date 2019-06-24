@@ -329,4 +329,14 @@ class CommonUtil
         call_user_func_array('array_multisort', $args);
         return array_pop($args);
     }
+
+    /**
+     * @param $className
+     * @return \Doctrine\Common\Persistence\ObjectRepository
+     * @author zxqc2018
+     */
+    public static function getRepository($className)
+    {
+        return ConfigParams::getRepositoryManager()->getRepository($className);
+    }
 }
