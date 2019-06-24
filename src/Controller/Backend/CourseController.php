@@ -5,18 +5,14 @@ namespace App\Controller\Backend;
 use App\Entity\Category;
 use App\Entity\Course;
 use App\Entity\File;
-use App\Entity\ProductImage;
-use App\Entity\ProductVideo;
 use App\Entity\Subject;
 use App\Form\CourseType;
 use App\Repository\CourseRepository;
-use App\Repository\ProductVideoRepository;
 use App\Repository\TeacherRepository;
-use Doctrine\Common\Collections\ArrayCollection;
+use App\Service\Util\FactoryUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\Collection;
 use App\Command\Product\Image\CreateOrUpdateProductImagesCommand;
 use App\Entity\Product;
 use App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommand;
@@ -38,11 +34,16 @@ class CourseController extends BackendController
             'title' => '课程管理',
             'form' => [
                 'subject' => $request->query->get('subject', null),
+                'courseShowType' => $request->query->get('courseShowType', null),
+                'oneCategory' => $request->query->get('oneCategory', null),
+                'twoCategory' => $request->query->get('twoCategory', null),
                 'page' => $request->query->getInt('page', 1)
-            ]
+            ],
+            'courseShowTypes' => Course::$courseShowTypeTexts,
+            'oneCategoryList' => json_encode(FactoryUtil::categoryRepository()->getCategoryTree(0, true)),
         ];
 
-        $data['data'] = $courseRepository->findBy(['isOnline' => true]);
+        $data['data'] = $courseRepository->findCourseQueryBuild(true, $data['form']['courseShowType'], $data['form']['oneCategory'], $data['form']['twoCategory']);
 
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/course/index.html.twig', $data);

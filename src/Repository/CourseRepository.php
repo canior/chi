@@ -39,4 +39,41 @@ class CourseRepository extends ServiceEntityRepository
 
         return $result[0] ?? null;
     }
+
+    /**
+     * 查询课程列表
+     * @param bool $online
+     * @param null $courseShowType
+     * @param null $oneCategory
+     * @param null $twoCategory
+     * @return \Doctrine\ORM\QueryBuilder
+     * @author zxqc2018
+     */
+    public function findCourseQueryBuild($online = true, $courseShowType = null, $oneCategory = null, $twoCategory = null)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->where('c.isOnline =:online')
+            ->setParameter('online', $online);
+
+        if (!is_null($courseShowType) && $courseShowType != Course::COURSE_SHOW_TYPE_ALL) {
+            $query->andWhere('c.courseShowType in (:courseShowType)')
+                ->setParameter('courseShowType', array_unique([$courseShowType, Course::COURSE_SHOW_TYPE_ALL]));
+        }
+
+        //分类查询
+        if (!empty($oneCategory) || !empty($twoCategory)) {
+            $query->innerJoin('c.courseActualCategory', 'cac');
+            if (!empty($oneCategory)) {
+                $query->andWhere('cac.parentCategory =:oneCategory')
+                    ->setParameter('oneCategory', $oneCategory);
+            }
+
+            if (!empty($twoCategory)) {
+                $query->andWhere('cac.id =:twoCategory')
+                    ->setParameter('twoCategory', $twoCategory);
+            }
+        }
+
+        return $query;
+    }
 }

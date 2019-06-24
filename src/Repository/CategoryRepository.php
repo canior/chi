@@ -28,21 +28,25 @@ class CategoryRepository extends ServiceEntityRepository
     /**
      * 查询分类树[只支持一二级]
      * @param int|null $cid
+     * @param bool $isSimpleSelector 是否只取得生成联动字段
      * @return array
      * @author zxqc2018
      */
-    public function getCategoryTree($cid)
+    public function getCategoryTree($cid, $isSimpleSelector = false)
     {
         $res = [];
-        $where = [];
+        $where = [
+            'isDeleted' => false
+        ];
         //子类和父类关系数组
         $sonRefParentArr = [];
 
+        $arrayMethod = $isSimpleSelector ? 'getSimpleArray' : 'getArray';
         $list = $this->findBy($where);
         if (!empty($list)) {
             foreach ($list as $row) {
                 if (is_null($row->getParentCategory())) {
-                    $res[$row->getId()] = $row->getArray();
+                    $res[$row->getId()] = $row->$arrayMethod();
                 } else {
                     $sonRefParentArr[$row->getId()] = $row->getParentCategory()->getId();
                 }
@@ -50,7 +54,9 @@ class CategoryRepository extends ServiceEntityRepository
 
             foreach ($list as $row) {
                 if (!is_null($row->getParentCategory()) && isset($res[$row->getParentCategory()->getId()])) {
-                    $res[$row->getParentCategory()->getId()]['subCategoryList'][] = $row->getArray();
+                    if (!$row->isSingleCourse()) {
+                        $res[$row->getParentCategory()->getId()]['children'][] = $row->$arrayMethod();
+                    }
                 }
             }
         }

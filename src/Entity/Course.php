@@ -39,9 +39,9 @@ class Course implements Dao
     const COURSE_SHOW_TYPE_ALL = 'all';
 
     public static $courseShowTypeTexts = [
+        self::COURSE_SHOW_TYPE_ALL => '所有',
         self::COURSE_SHOW_TYPE_APP => 'APP',
         self::COURSE_SHOW_TYPE_MINI => '小程序',
-        self::COURSE_SHOW_TYPE_ALL => '所有',
     ];
 
     /**
