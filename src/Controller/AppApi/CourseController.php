@@ -103,7 +103,7 @@ class CourseController extends ProductController
         $requestProcess = $this->processRequest($request, [
             'cateId'
         ], ['cateId']);
-        $user = $this->getAppUser();
+        $user = $this->getAppUser(true);
 
         $category = $categoryRepository->find($requestProcess['cateId']);
 
@@ -112,7 +112,7 @@ class CourseController extends ProductController
         }
 
         return $requestProcess->toJsonResponse([
-            'category' => $this->getCategoryVideoArray($category),
+            'category' => $this->getCategoryVideoArray($category, $user),
             'user' => CommonUtil::obj2Array($user),
         ]);
     }

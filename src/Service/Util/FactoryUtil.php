@@ -14,6 +14,7 @@ use App\Entity\Course;
 use App\Entity\GroupUserOrder;
 use App\Entity\Product;
 use App\Entity\ProductReview;
+use App\Entity\User;
 use App\Entity\UserAccountOrder;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
@@ -21,6 +22,7 @@ use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
 use App\Repository\UserAccountOrderRepository;
+use App\Repository\UserRepository;
 use App\Service\Pay\Contracts\GatewayInterface;
 use App\Service\Pay\Contracts\NotifyInterface;
 use App\Service\Pay\NotifyProcess;
@@ -172,6 +174,19 @@ class FactoryUtil
          * @var UserAccountOrderRepository $repository
          */
         $repository =  CommonUtil::getRepository(UserAccountOrder::class);
+        return $repository;
+    }
+
+    /**
+     * @return UserRepository
+     * @author zxqc2018
+     */
+    public static function userRepository()
+    {
+        /**
+         * @var UserRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(User::class);
         return $repository;
     }
 }

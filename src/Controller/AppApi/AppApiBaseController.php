@@ -20,6 +20,7 @@ use App\Repository\ProjectVideoMetaRepository;
 use App\Service\Config\DependencyInjectionSingletonConfig;
 use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
+use App\Service\Util\FactoryUtil;
 use League\Tactician\CommandBus;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Authentication\Token\JWTUserToken;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -50,16 +51,25 @@ class AppApiBaseController extends BaseController
         $this->jwtTokenManage = $jwtTokenManage;
         $this->appRequest = DependencyInjectionSingletonConfig::getInstance()->getRequest();
     }
+
     /**
      * 获取app登陆用户
+     * @param bool $force 是否强制获取  非登陆接口也获取
      * @return User|object|string|null
      */
-    protected function getAppUser()
+    protected function getAppUser($force = false)
     {
         $res = null;
 
         //只判断jwt登陆的url验证token,与后台登陆区分
         if (!CommonUtil::requestUrlStartsWith($this->appRequest, 'appApi/auth')) {
+            if ($force && ($userIdInToken = $this->getAppUserId())) {
+                $user = FactoryUtil::userRepository()->find($userIdInToken);
+                if (!empty($user)) {
+                    return $user;
+                }
+            }
+
             return $res;
         }
 
