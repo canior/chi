@@ -1165,6 +1165,14 @@ class GroupUserOrder implements Dao
     }
 
     /**
+     * @return string
+     */
+    public function getPaymentTimeText()
+    {
+        return $this->paymentTime?date('Y-m-d H:i:s',$this->paymentTime):null;
+    }
+
+    /**
      * @param string $paymentTime
      */
     public function setPaymentTime(int $paymentTime)
@@ -1209,7 +1217,7 @@ class GroupUserOrder implements Dao
             'paymentStatus' => $this->getPaymentStatus(),
             'paymentStatusText' => $this->getPaymentStatusText(),
             'paymentChannelText' => $this->getPaymentChannelText(),
-            'paymentTime' => $this->getPaymentTime(),
+            'paymentTime' => $this->getPaymentTimeText(),
             'product' => $this->getProduct()->getArray(),
             'rewards' => $this->getOrderRewards(),
             'isMasterOrder'=> $this->isMasterOrder(),
