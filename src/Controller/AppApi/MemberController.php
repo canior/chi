@@ -46,6 +46,8 @@ use App\Entity\Message;
 use App\Entity\Product;
 use App\Repository\MessageRepository;
 use App\Repository\UserAccountOrderRepository;
+use App\Service\Config\ConfigParams;
+use App\Service\Document\WeChatDocument;
 
 /**
  * @Route("/auth/member")
@@ -252,6 +254,70 @@ class MemberController extends AppApiBaseController
 
         //实名并且是系统学院需要生成桌号
         $this->supplySystemTableNo($user);
+        // 返回
+        return CommonUtil::resultData($user->getArray())->toJsonResponse();
+    }
+
+    /**
+     * @Route("/updateUserWx", name="updateUserWx",  methods={"POST"})
+     * @param Request $request
+     * @param MessageCodeRepository $messageCodeRepository
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function updateUserWx(Request $request, UserManagerInterface $userManager, UserRepository $userRepository)
+    {
+        $data = json_decode($request->getContent(), true );
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        // 如果传了微信code
+        $wxcode = isset($data['wxcode']) ? $data['wxcode'] : null;
+        $this->getLog()->info("wx user wxcode = " . $wxcode);
+        $wechatModel = new WeChatDocument([
+            'appid' => ConfigParams::getParamWithController(ConfigParams::JQ_APP_WX_ID),
+            'secret' => ConfigParams::getParamWithController(ConfigParams::JQ_APP_WX_SECRET),
+        ]);
+
+        // 获取微信用户信息
+        $openIdInfo = $wechatModel->getOpenidByCode($wxcode);
+        $this->getLog()->info ("get wx user response for wxcode [" . $wxcode . "]: ", $openIdInfo->getData());
+        if (!$openIdInfo->isSuccess()) {
+            $openIdInfo->throwErrorException(ErrorCode::ERROR_WX_OPENID_LOGIN, []);
+        }
+        $accessToken = $openIdInfo['access_token'];
+        $openId = $openIdInfo['openid'];
+        $unionId = $openIdInfo['unionid'];
+
+
+        $this->getLog()->info("creating user for unionid" . $unionId);
+
+        $user->setUsername($openId);
+        $user->setUsernameCanonical($openId);
+        $user->setEmail($openId . '@qq.com');
+        $user->setEmailCanonical($openId . '@qq.com');
+        $user->setPassword("IamCustomer");
+        $user->setWxOpenId($openId);
+        $user->setWxUnionId($unionId);
+        $user->setLastLoginTimestamp(time());
+
+        if ($user->getAvatarUrl() == null) {
+            $wxUserInfo = $wechatModel->getWeChatUserInfoByToken($accessToken, $openId);
+            $nickName = isset($wxUserInfo['nickname']) ? $wxUserInfo['nickname'] : $defaultNickname; //TODO 这里要添加文案
+            $avatarUrl = isset($wxUserInfo['headimgurl']) ? $wxUserInfo['headimgurl'] : null; //需要一张默认的用户头像
+            $user->setNickname($nickName);
+            $user->setAvatarUrl($avatarUrl);
+            $user->info("update user nickname to " . $nickName . " and avatar url");
+        }
+        $this->entityPersist($user);
+
+
+        //实名并且是系统学院需要生成桌号
+        $this->supplySystemTableNo($user);
+
         // 返回
         return CommonUtil::resultData($user->getArray())->toJsonResponse();
     }
