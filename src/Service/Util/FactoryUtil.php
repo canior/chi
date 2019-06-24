@@ -11,6 +11,7 @@ namespace App\Service\Util;
 
 use App\Entity\Category;
 use App\Entity\Course;
+use App\Entity\File;
 use App\Entity\GroupUserOrder;
 use App\Entity\Product;
 use App\Entity\ProductReview;
@@ -18,6 +19,7 @@ use App\Entity\User;
 use App\Entity\UserAccountOrder;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
+use App\Repository\FileRepository;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
@@ -187,6 +189,19 @@ class FactoryUtil
          * @var UserRepository $repository
          */
         $repository =  CommonUtil::getRepository(User::class);
+        return $repository;
+    }
+
+    /**
+     * @return FileRepository
+     * @author zxqc2018
+     */
+    public static function fileRepository()
+    {
+        /**
+         * @var FileRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(File::class);
         return $repository;
     }
 }
