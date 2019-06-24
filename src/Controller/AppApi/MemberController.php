@@ -87,7 +87,7 @@ class MemberController extends AppApiBaseController
         }
 
         // 验证Code
-        $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::FORGET ]);
+        $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::FORGET ],['createdAt'=>'DESC']);
         if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
         }
@@ -211,7 +211,7 @@ class MemberController extends AppApiBaseController
 
 
         // 验证Code
-        $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::UPDATE_INFO ]);
+        $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::UPDATE_INFO ],['createdAt'=>'DESC']);
         if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
         }
