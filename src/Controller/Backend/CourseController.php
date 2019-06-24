@@ -324,4 +324,61 @@ class CourseController extends BackendController
         return $this->redirectToRoute('course_index');
     }
 
+    /**
+     * 推荐免费专区
+     * @param Request $request
+     * @param Course $course
+     * @return Response
+     * @Route("/course/recommend/free/{id}", name="recommendFreeZone", methods="POST")
+     * @author zxqc2018
+     */
+    public function recommendFreeZone(Request $request, Course $course): Response
+    {
+        if ($course->getCourseActualCategory()->isShowFreeZone()) {
+            $course->getCourseActualCategory()->setShowFreeZone(0);
+            $noticeStr = '下免费专区成功';
+        } else {
+            $course->getCourseActualCategory()->setShowFreeZone(1);
+            $noticeStr = '上免费专区成功';
+        }
+
+        $this->entityPersist($course->getCourseActualCategory());
+        $this->addFlash('notice', $noticeStr);
+        $formData = [
+            'courseShowType' => $request->request->get('courseShowType', null),
+            'oneCategory' => $request->request->get('oneCategory', null),
+            'twoCategory' => $request->request->get('twoCategory', null),
+            'page' => $request->request->getInt('page', 1)
+        ];
+        return $this->redirectToRoute('course_index', $formData);
+    }
+
+    /**
+     * 推荐首页
+     * @param Request $request
+     * @param Course $course
+     * @return Response
+     * @Route("/course/recommend/home/{id}", name="recommendHomeZone", methods="POST")
+     * @author zxqc2018
+     */
+    public function recommendHomeZone(Request $request, Course $course): Response
+    {
+        if ($course->getCourseActualCategory()->isShowRecommendZone()) {
+            $course->getCourseActualCategory()->setShowRecommendZone(0);
+            $noticeStr = '下推荐专区成功';
+        } else {
+            $course->getCourseActualCategory()->setShowRecommendZone(1);
+            $noticeStr = '上推荐专区成功';
+        }
+
+        $this->entityPersist($course->getCourseActualCategory());
+        $this->addFlash('notice', $noticeStr);
+        $formData = [
+            'courseShowType' => $request->request->get('courseShowType', null),
+            'oneCategory' => $request->request->get('oneCategory', null),
+            'twoCategory' => $request->request->get('twoCategory', null),
+            'page' => $request->request->getInt('page', 1)
+        ];
+        return $this->redirectToRoute('course_index', $formData);
+    }
 }

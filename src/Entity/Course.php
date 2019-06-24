@@ -995,6 +995,51 @@ class Course implements Dao
     }
 
     /**
+     * 是否为单课程
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isSingleCourse()
+    {
+        $res = false;
+        if ($this->getCourseActualCategory() && $this->getCourseActualCategory()->isSingleCourse()) {
+            $res = true;
+        }
+
+        return $res;
+    }
+
+    /**
+     * 是否免费专区
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isShowFreeZone()
+    {
+        $res = false;
+        if ($this->getCourseActualCategory() && $this->getCourseActualCategory()->isShowFreeZone()) {
+            $res = true;
+        }
+
+        return $res;
+    }
+
+    /**
+     * 是否首页推荐
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isShowRecommendZone()
+    {
+        $res = false;
+        if ($this->getCourseActualCategory() && $this->getCourseActualCategory()->isShowRecommendZone()) {
+            $res = true;
+        }
+
+        return $res;
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {
