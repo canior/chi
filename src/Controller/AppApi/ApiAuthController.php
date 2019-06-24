@@ -403,7 +403,10 @@ class ApiAuthController extends AppApiBaseController
         $constraint = new Assert\Collection(
             [
                 'phone' => [
-                    new Assert\Length(['min' => 11,'minMessage'=>'不能低于{{ limit }}个字符'])
+                    new Assert\Length(['min' => 11,'minMessage'=>'不能低于{{ limit }}个字符']),
+                ],
+                'codeType' => [
+                    new Assert\Length(['min' => 2,'minMessage'=>'不能低于{{ limit }}个字符']),
                 ],
             ]
         );
