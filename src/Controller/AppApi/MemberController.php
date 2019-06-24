@@ -708,7 +708,7 @@ class MemberController extends AppApiBaseController
         // $totalValidShareSourceUsers = $user->getSubUsers()->count();
 
         /* 临时更改 我的分享列出来全部用户头像， 需要加入下拉更新  */
-        $shareSourceUsers = $userRepository->findShareUsers($user->getId(), null, $page, null);
+        $shareSourceUsers = $userRepository->findShareUsers($user->getId(), null, $page, self::PAGE_LIMIT);
         $shareSourceUserArray = [];
         foreach($shareSourceUsers as $shareSourceUser) {
             $shareSourceUserArray[] = $shareSourceUser->getArray();
@@ -750,6 +750,7 @@ class MemberController extends AppApiBaseController
 
         $data = json_decode($request->getContent(), true);
         $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
+        $page = isset($data['page']) ? $data['page'] : 1;
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -767,7 +768,7 @@ class MemberController extends AppApiBaseController
         /**
          * @var GroupUserOrder[] $groupUserOrders
          */
-        $groupUserOrders = $groupUserOrderRepository->findSupplierGroupUserOrdersQuery($user->getId(), $groupUserOrderStatuses)->getResult();
+        $groupUserOrders = $groupUserOrderRepository->findSupplierGroupUserOrdersQuery($user->getId(), $groupUserOrderStatuses,$page, self::PAGE_LIMIT)->getResult();
 
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {

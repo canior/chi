@@ -134,7 +134,7 @@ class GroupUserOrderRepository extends ServiceEntityRepository
      * @param $groupUserOrderStatuses
      * @return \Doctrine\ORM\Query
      */
-    public function findSupplierGroupUserOrdersQuery($supplierUserId, array $groupUserOrderStatuses) {
+    public function findSupplierGroupUserOrdersQuery($supplierUserId, array $groupUserOrderStatuses, $page, $pageLimit) {
         $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('guo')
@@ -146,6 +146,11 @@ class GroupUserOrderRepository extends ServiceEntityRepository
         if (!empty($groupUserOrderStatuses)) {
             $query->andWhere('guo.status in (:groupUserOrderStatuses)')
                 ->setParameter('groupUserOrderStatuses', $groupUserOrderStatuses);
+        }
+
+        if ($page) {
+            $query->setFirstResult(($page - 1) * $pageLimit);
+            $query->setMaxResults($pageLimit);
         }
 
         return $query->orderBy('guo.id', 'DESC')->getQuery();
