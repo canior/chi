@@ -1000,7 +1000,7 @@ class MemberController extends AppApiBaseController
         }
 
         // 返回
-        return CommonUtil::resultData(  ['follow'=>$followArray] )->toJsonResponse();
+        return CommonUtil::resultData(  ['follow'=>array_values($followArray)] )->toJsonResponse();
     }
 
 
