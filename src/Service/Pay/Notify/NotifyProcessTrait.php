@@ -18,6 +18,7 @@ use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\Order\OfflineTableNo;
 use App\Service\Util\CommonUtil;
+use App\Service\Util\MoneyUtil;
 
 trait NotifyProcessTrait
 {
@@ -111,7 +112,7 @@ trait NotifyProcessTrait
                     $data['nextPageType'] = 3;
                 }
             } else if ($course->isThinkingSubject()) {
-                if ($course->getPrice() > 1) {
+                if ($course->getPrice() > MoneyUtil::thinkingGeneratePrice()) {
                     $groupUserOrder->setTableNo((int)OfflineTableNo::getUserTable($groupUserOrder));
                     $data['nextPageType'] = 2;
                 } else {

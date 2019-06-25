@@ -14,6 +14,7 @@ use App\Service\ErrorCode;
 use App\Service\Pay\Pay;
 use App\Service\Util\CommonUtil;
 use App\Service\Util\FactoryUtil;
+use App\Service\Util\MoneyUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -147,7 +148,7 @@ class PayController extends AppApiBaseController
                     $data['nextPageType'] = 4;
                 }
             } else if ($course->isThinkingSubject()) {
-                if ($course->getPrice() > 0.01) {
+                if ($course->getPrice() > MoneyUtil::thinkingGeneratePrice()) {
                     $data['nextPageType'] = 2;
                 } else {
                     //todo sms通知

@@ -50,4 +50,7 @@ class Subject
             'THINKING_TEACHER' => 1000,
         ],
     ];
+
+    //1元思维课价格
+    const THINKING_GENERATE_PRICE = 1.0;
 }
