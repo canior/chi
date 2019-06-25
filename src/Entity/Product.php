@@ -26,17 +26,6 @@ class Product implements Dao
         self::INACTIVE => '未发布'
     ];
 
-    // 固定分类ID
-    const CATEGORY_PRODUCT = 1;
-    const CATEGORY_ONLINE = 2;
-    const CATEGORY_OFFLINE = 3;
-
-    public static $categroy = [
-        self::CATEGORY_PRODUCT => '产品订单',
-        self::CATEGORY_ONLINE => '线上课程订单',
-        self::CATEGORY_OFFLINE => '活动报名订单'
-    ];
-
     public static $hasCouponValues = [
         true => '是',
         false => '否'

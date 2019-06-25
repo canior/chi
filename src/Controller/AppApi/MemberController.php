@@ -699,11 +699,11 @@ class MemberController extends AppApiBaseController
         foreach ($groupUserOrders as $groupUserOrder) {
             $product = $groupUserOrder->getProduct();
             $courseCategory = $groupUserOrder->getCourse()->getCourseCategory()?$groupUserOrder->getCourse()->getCourseCategory()->getId():'';
-            if ($productType == 'product' and !$product->isCourseProduct() and $product->getProductCategory() == Product::CATEGORY_PRODUCT) {
+            if ($productType == 'product' and !$product->isCourseProduct() ) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            } else if ($productType == 'onlineCourse' and $product->isCourseProduct() and $product->getCourse()->isOnline() and $courseCategory == Product::CATEGORY_ONLINE) {
+            } else if ($productType == 'onlineCourse' and $product->isCourseProduct() and $product->getCourse()->isOnline() ) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            } else if ($productType == 'offlineCourse' and $product->isCourseProduct() and !$product->getCourse()->isOnline() and $courseCategory == Product::CATEGORY_OFFLINE) {
+            } else if ($productType == 'offlineCourse' and $product->isCourseProduct() and !$product->getCourse()->isOnline() ) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
             }else{
 
@@ -1000,7 +1000,7 @@ class MemberController extends AppApiBaseController
         }
 
         // 返回
-        return CommonUtil::resultData(  ['follow'=>$followArray] )->toJsonResponse();
+        return CommonUtil::resultData(  ['follow'=>array_values($followArray)] )->toJsonResponse();
     }
 
 
