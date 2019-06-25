@@ -29,7 +29,7 @@ class CourseType extends AbstractType
         $builder
             ->add('id', null, ['label' => 'ID', 'disabled' => true])
             ->add('subject', ChoiceType::class, [
-                'label' => '科目',
+                'label' => '科目[和分钱逻辑相关谨慎选择]',
                 'mapped' => false,
                 'choices' => array_flip(Subject::$subjectTextArray),
                 'required' => true
