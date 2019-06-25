@@ -320,16 +320,20 @@ class MemberController extends AppApiBaseController
 
             $this->getLog()->info("2 保存结束 wxUserInfo:" . json_encode($wxUserInfo));
 
-            $nickName = isset($wxUserInfo['nickname']) ? $wxUserInfo['nickname'] : $defaultNickname; //TODO 这里要添加文案
-            $avatarUrl = isset($wxUserInfo['headimgurl']) ? $wxUserInfo['headimgurl'] : null; //需要一张默认的用户头像
-            $user->setNickname($nickName);
-            $user->setAvatarUrl($avatarUrl);
+            // $nickName = isset($wxUserInfo['nickname']) ? $wxUserInfo['nickname'] : $defaultNickname; //TODO 这里要添加文案
+            // $avatarUrl = isset($wxUserInfo['headimgurl']) ? $wxUserInfo['headimgurl'] : null; //需要一张默认的用户头像
+            // $user->setNickname($nickName);
+            // $user->setAvatarUrl($avatarUrl);
             // $user->info("update user nickname to " . $nickName . " and avatar url");
         }
 
         $this->getLog()->info("3 保存结束" . $unionId);
 
-        $this->entityPersist($user);
+        try {
+            $userManager->updateUser($user, true);
+        } catch (\Exception $e) {
+            return new JsonResponse(["error" => $e->getMessage()], 500);
+        }
 
         $this->getLog()->info("4 保存结束" . $unionId);
 
