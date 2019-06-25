@@ -267,7 +267,7 @@ class MemberController extends AppApiBaseController
     public function updateUserWx(Request $request, UserManagerInterface $userManager, UserRepository $userRepository)
     {
         $this->getLog()->info("updateUserWx");
-        $this->getLog()->info("我进来了");
+        $this->getLog()->info("新版本的我进来了");
 
         $data = json_decode($request->getContent(), true );
         $wxcode = isset($data['wxcode']) ? $data['wxcode'] : null;
