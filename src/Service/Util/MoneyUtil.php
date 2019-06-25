@@ -43,4 +43,17 @@ class MoneyUtil
         }
         return Subject::THINKING_GENERATE_PRICE;
     }
+
+    /**
+     * 获取12000系统学员直通车价格[不同环境]
+     * @return float
+     * @author zxqc2018
+     */
+    public static function tradeSpecialPrice()
+    {
+        if (CommonUtil::isDebug()) {
+            return 0.02;
+        }
+        return Subject::TRADING_SPECIAL_PRICE;
+    }
 }
