@@ -304,7 +304,7 @@ class MemberController extends AppApiBaseController
         $unionId = $openIdInfo['unionid'];
 
 
-        $this->getLog()->info("2 开始保存用户" . $unionId);
+        $this->getLog()->info("1 开始保存用户" . $unionId);
 
         $user->setUsername($openId);
         $user->setUsernameCanonical($openId);
@@ -317,15 +317,21 @@ class MemberController extends AppApiBaseController
 
         if ($user->getAvatarUrl() == null) {
             $wxUserInfo = $wechatModel->getWeChatUserInfoByToken($accessToken, $openId);
+
+            $this->getLog()->info("2 保存结束 wxUserInfo:" . json_encode($wxUserInfo));
+
             $nickName = isset($wxUserInfo['nickname']) ? $wxUserInfo['nickname'] : $defaultNickname; //TODO 这里要添加文案
             $avatarUrl = isset($wxUserInfo['headimgurl']) ? $wxUserInfo['headimgurl'] : null; //需要一张默认的用户头像
             $user->setNickname($nickName);
             $user->setAvatarUrl($avatarUrl);
-            $user->info("update user nickname to " . $nickName . " and avatar url");
+            // $user->info("update user nickname to " . $nickName . " and avatar url");
         }
-        $this->entityPersist($user);
 
         $this->getLog()->info("3 保存结束" . $unionId);
+
+        $this->entityPersist($user);
+
+        $this->getLog()->info("4 保存结束" . $unionId);
 
         //实名并且是系统学院需要生成桌号
         // $this->supplySystemTableNo($user);
