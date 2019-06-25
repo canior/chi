@@ -698,7 +698,7 @@ class MemberController extends AppApiBaseController
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
             $product = $groupUserOrder->getProduct();
-            $courseCategory = $groupUserOrder->getCourse()->getCourseCategory()?$groupUserOrder->getCourse()->getCourseCategory()->getId():'';dump( $courseCategory  );die;
+            $courseCategory = $groupUserOrder->getCourse()->getCourseCategory()?$groupUserOrder->getCourse()->getCourseCategory()->getId():'';
             if ($productType == 'product' and !$product->isCourseProduct() ) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
             } else if ($productType == 'onlineCourse' and $product->isCourseProduct() and $product->getCourse()->isOnline() ) {
