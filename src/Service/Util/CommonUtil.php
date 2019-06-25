@@ -351,14 +351,16 @@ class CommonUtil
     {
         return 'get' . ucfirst($property);
     }
+
     /**
      * 二维数组|集合 转换 一维数组
-     * @param array $data 源数组|集合
+     * @param array|Collection $data 源数组|集合
      * @param array $temp 一维参照
-     * @param bool|string $filterPattern pattern 过滤规则  true 过滤空值  field_str >=< 10 , field_str=['a', 'b']  等筛选
+     * @param bool|string $filterPattern pattern 过滤规则  true 过滤空值
+     * fieldStr >=< 10 , fieldStr = [a,b]  fieldStr = null  fieldStr = empty
      * @return array $ret
+     * @author zxqc2018
      */
-
     public static function two2one($data, array $temp = [], $filterPattern = false)
     {
         $ret = [];
@@ -374,9 +376,9 @@ class CommonUtil
                 if ($dataIsArray) {
                     return $data[$key] ?? $defaultValue;
                 } else {
-                    $method = CommonUtil::makeGetPropertyMethod($key);
+                    $method = self::makeGetPropertyMethod($key);
                     if (method_exists($data, $method)) {
-                        return $dataIsArray->$method();
+                        return $data->$method();
                     } else {
                         return $defaultValue;
                     }
@@ -391,7 +393,7 @@ class CommonUtil
                 }
                 $nullStr = '#@#';
                 if (!empty($match)) {
-                    $compareFieldVal = $getPropertyValue($match, 1, $nullStr);
+                    $compareFieldVal = $getPropertyValue($value, $match[1], $nullStr);
                     $optStr           = $match[2];
                     $compareVal       = $match[3];
                     switch ($optStr) {
