@@ -98,8 +98,8 @@ class OfflineTableNo
 
 
         // 取最少推荐人 人数最少的桌子
-        $table_num = $table[0]['no'] ??  0;
+        $table_no = $arr[0]['no'] ??  0;
 
-        return $table_num;
+        return $table_no;
     }
 }

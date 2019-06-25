@@ -698,12 +698,12 @@ class MemberController extends AppApiBaseController
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
             $product = $groupUserOrder->getProduct();
-            $courseCategory = $groupUserOrder->getCourse()->getCourseCategory()?$groupUserOrder->getCourse()->getCourseCategory()->getId():'';
-            if ($productType == 'product' and !$product->isCourseProduct() and $product->getProductCategory() == Product::CATEGORY_PRODUCT) {
+            $courseCategory = $groupUserOrder->getCourse()->getCourseCategory()?$groupUserOrder->getCourse()->getCourseCategory()->getId():'';dump( $courseCategory  );die;
+            if ($productType == 'product' and !$product->isCourseProduct() ) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            } else if ($productType == 'onlineCourse' and $product->isCourseProduct() and $product->getCourse()->isOnline() and $courseCategory == Product::CATEGORY_ONLINE) {
+            } else if ($productType == 'onlineCourse' and $product->isCourseProduct() and $product->getCourse()->isOnline() ) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            } else if ($productType == 'offlineCourse' and $product->isCourseProduct() and !$product->getCourse()->isOnline() and $courseCategory == Product::CATEGORY_OFFLINE) {
+            } else if ($productType == 'offlineCourse' and $product->isCourseProduct() and !$product->getCourse()->isOnline() ) {
                 $groupUserOrdersArray[] = $groupUserOrder->getArray();
             }else{
 
