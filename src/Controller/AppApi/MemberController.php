@@ -267,28 +267,18 @@ class MemberController extends AppApiBaseController
      */
     public function updateUserWx(Request $request, UserManagerInterface $userManager, UserRepository $userRepository)
     {
-        $this->getLog()->info("updateUserWx");
-        $this->getLog()->info("新版本的我进来了");
 
         $data = json_decode($request->getContent(), true );
         $wxcode = isset($data['wxcode']) ? $data['wxcode'] : null;
-        $this->getLog()->info("我的wxcode:".$wxcode);
-
 
         // 查询匹配用户
-        $this->getLog()->info("查询匹配用户:".$wxcode);
+        $this->getLog()->info("updateUserWx wxcode:".$wxcode);
         $user =  $this->getAppUser();
         if ($user == null) {
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
-        $this->getLog()->info("找到用户了:".$wxcode);
 
         // 如果传了微信code
-        
-
-        
-
-        $this->getLog()->info("wx user wxcode = " . $wxcode);
         $wechatModel = new WeChatDocument([
             'appid' => ConfigParams::getParamWithController(ConfigParams::JQ_APP_WX_ID),
             'secret' => ConfigParams::getParamWithController(ConfigParams::JQ_APP_WX_SECRET),
@@ -305,9 +295,6 @@ class MemberController extends AppApiBaseController
         $unionId = $openIdInfo['unionid'];
 
 
-        $this->getLog()->info("1 开始保存用户" . $unionId);
-
-        
         $defaultNickname = '未知用户';
         $user->setUsername($openId);
         $user->setUsernameCanonical($openId);
@@ -320,9 +307,7 @@ class MemberController extends AppApiBaseController
 
         if ($user->getAvatarUrl() == null) {
             $wxUserInfo = $wechatModel->getWeChatUserInfoByToken($accessToken, $openId);
-
-            $this->getLog()->info("2 保存结束 wxUserInfo:" . json_encode($wxUserInfo));
-
+            $this->getLog()->info("wxUserInfo:" . json_encode($wxUserInfo));
             $nickName = isset($wxUserInfo['nickname']) ? $wxUserInfo['nickname'] : $defaultNickname; //TODO 这里要添加文案
             $avatarUrl = isset($wxUserInfo['headimgurl']) ? $wxUserInfo['headimgurl'] : null; //需要一张默认的用户头像
             $user->setNickname($nickName);
@@ -330,24 +315,17 @@ class MemberController extends AppApiBaseController
             $user->info("update user nickname to " . $nickName . " and avatar url");
         }
 
-        $this->getLog()->error("3 保存结束" . $unionId);
 
         try {
             $userManager->updateUser($user, true);
         } catch (\Exception $e) {
-
-            $this->getLog()->error("4 保存错误" . $e->getMessage());
-
+            $this->getLog()->error("updateUser error:" . $e->getMessage());
             return new JsonResponse(["error" => $e->getMessage()], 500);
         }
 
-        $this->getLog()->error("4 保存结束" . $unionId);
-
         //实名并且是系统学院需要生成桌号
-        // $this->supplySystemTableNo($user);
+        $this->supplySystemTableNo($user);
 
-
-        $this->getLog()->error("4 结束了" . $unionId);
 
         // 返回
         return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();
