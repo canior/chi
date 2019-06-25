@@ -347,7 +347,7 @@ class MemberController extends AppApiBaseController
         $this->getLog()->error("4 结束了" . $unionId);
 
         // 返回
-        return CommonUtil::resultData($user->getArray())->toJsonResponse();
+        return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();
     }
 
 
