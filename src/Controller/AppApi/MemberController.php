@@ -332,6 +332,9 @@ class MemberController extends AppApiBaseController
         try {
             $userManager->updateUser($user, true);
         } catch (\Exception $e) {
+
+            $this->getLog()->info("4 保存错误" . $e->getMessage());
+
             return new JsonResponse(["error" => $e->getMessage()], 500);
         }
 
