@@ -329,7 +329,11 @@ class MemberController extends AppApiBaseController
 
         $this->getLog()->info("3 保存结束" . $unionId);
 
-        $this->entityPersist($user);
+        try {
+            $userManager->updateUser($user, true);
+        } catch (\Exception $e) {
+            return new JsonResponse(["error" => $e->getMessage()], 500);
+        }
 
         $this->getLog()->info("4 保存结束" . $unionId);
 
