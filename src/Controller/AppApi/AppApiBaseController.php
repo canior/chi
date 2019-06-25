@@ -124,9 +124,13 @@ class AppApiBaseController extends BaseController
      * @return \App\Service\ResultData
      * @author zxqc2018
      */
-    public function processRequest(Request $request, $paramKeys = [], $keyFilters = [], $extensionParam = [])
+    public function processRequest(?Request $request = null, $paramKeys = [], $keyFilters = [], $extensionParam = [])
     {
         $res = CommonUtil::resultData();
+
+        if (is_null($request)) {
+            $request = DependencyInjectionSingletonConfig::getInstance()->getRequest();
+        }
 
         //默认参数定义
         $isDefaultConvert = $extensionParam['isDefaultConvert'] ?? true;

@@ -29,6 +29,7 @@ use App\Service\Pay\Contracts\GatewayInterface;
 use App\Service\Pay\Contracts\NotifyInterface;
 use App\Service\Pay\NotifyProcess;
 use App\Service\Pay\Pay;
+use App\Service\Product\OfflineCourseService;
 use App\Service\Sms\AliSms;
 
 class FactoryUtil
@@ -203,5 +204,10 @@ class FactoryUtil
          */
         $repository =  CommonUtil::getRepository(File::class);
         return $repository;
+    }
+
+    public static function OfflineCourseService()
+    {
+        return new OfflineCourseService();
     }
 }

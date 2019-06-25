@@ -44,6 +44,7 @@ class ErrorCode
 
     //-------课程---------------------------------------
     const ERROR_CATEGORY_NOT_EXISTS = 13001;
+    const ERROR_COURSE_NOT_EXISTS = 13002;
     //-------产品---------------------------------------
     const ERROR_PRODUCT_NOT_EXISTS = 14001;
     //-------订单---------------------------------------
@@ -121,6 +122,7 @@ class ErrorCode
             self::ERROR_NOTIFY_VERIFY_SIGN => '异步通知验签失败',
             self::ERROR_NOTIFY_TYPE => '通知方式不支持',
             self::ERROR_COURSE_ALREADY_PAY => '课程已经购买',
+            self::ERROR_COURSE_NOT_EXISTS => '课程或者活动不存在',
         ];
     }
 

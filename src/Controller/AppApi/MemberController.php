@@ -8,11 +8,14 @@
 
 namespace App\Controller\AppApi;
 
+use App\Entity\CourseStudent;
 use App\Entity\ProductReview;
 use App\Entity\ProductReviewImage;
 use App\Repository\FileRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
+use App\Service\Product\OfflineCourseService;
+use App\Service\Util\FactoryUtil;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -1225,56 +1228,6 @@ class MemberController extends AppApiBaseController
     }
 
     /**
-     * 生产桌号 测试方法
-     * @Route("/createUserTable", name="createUserTable", methods="POST")
-     * @param Request $request
-     * @param MessageRepository $messageRepository
-     * @return Response
-     */
-    public function createUserTableAction(Request $request,GroupUserOrderRepository $groupUserOrderRepository){
-
-        $data = json_decode($request->getContent(), true);
-        $groupUserOrder = $groupUserOrderRepository->find('400024939');
-
-        // 查询匹配用户
-        $user =  $this->getAppUser();
-        if ($user == null) {
-            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
-        }
-
-        // 生成桌号
-        $user_table = $this->getUserTable($groupUserOrder,$groupUserOrderRepository,$user);
-        if( !$user_table ){
-            return CommonUtil::resultData( [], ErrorCode::ERROR_ORDER_TABLE_CREATE_FAIL )->toJsonResponse();
-        }
-
-
-        // 保存桌号
-        $groupUserOrder->setTableNo($user_table);
-        $this->getEntityManager()->persist($groupUserOrder);
-        $this->getEntityManager()->flush();
-
-
-        //创建供应商消息
-        $msg = new Message();
-        $msg->setTitle('报名消息确认')->setContent('名称为'.$user->getNickname().'的用户，报名了线下系统课程课程的并线上支付了'.$groupUserOrder->getTotal().'元的会务费，请确认其是否完成系统学员身份的升级')->setUser($user->getParentUser());
-        $this->getEntityManager()->persist($msg);
-        $this->getEntityManager()->flush();
-
-
-        //发送短信 TODO
-        // $sms = new AliSms();
-        // $data = [];
-        // $sms->send($use->getMobile(), $data,'XXX');
-        // if( !$res['succes'] ){
-        //     return $res;
-        // }
-
-        // 返回
-        return CommonUtil::resultData(  ['groupUserOrder'=>$groupUserOrder->getArray()] )->toJsonResponse();
-    }
-
-    /**
      * 添加或修改评论
      * @Route("/groupUserOrder/review", name="appUpdateProductReview", methods="POST")
      * @param Request $request
@@ -1388,5 +1341,27 @@ class MemberController extends AppApiBaseController
         return $requestProcess->toJsonResponse([
             'myProductReviews' => CommonUtil::entityArray2DataArray($productReviews)
         ]);
+    }
+
+    /**
+     * 获取我的评论列表
+     * @Route("/offlineCourse/sign", name="appOfflineCourseSign", methods={"POST"})
+     * @author zxqc2018
+     * @return JsonResponse
+     */
+    public function appOfflineCourseSign()
+    {
+        $requestProcess = $this->processRequest(null, [
+            'courseId', 'courseStudentStatus'
+        ], ['courseId', 'courseStudentStatus']);
+
+        $user = $this->getAppUser();
+
+        if (!in_array($requestProcess['courseStudentStatus'], [CourseStudent::SIGNIN, CourseStudent::WELCOME])) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_PARAM_NOT_ALL_EXISTS, ['errorKey' => 'courseStudentStatus']);
+        }
+        $processResult = FactoryUtil::OfflineCourseService()->offlineSign($user, $requestProcess['courseId'], $requestProcess['courseStudentStatus']);
+
+        return $processResult->toJsonResponse();
     }
 }

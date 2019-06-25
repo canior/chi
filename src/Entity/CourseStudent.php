@@ -15,7 +15,6 @@ use Doctrine\ORM\Mapping as ORM;
 class CourseStudent implements Dao
 {
     const REGISTERED = 'registered';
-
     const WELCOME = 'welcome';
     const SIGNIN = 'signin';
     const REFUSED = 'refused';
