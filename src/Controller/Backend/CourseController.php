@@ -5,18 +5,14 @@ namespace App\Controller\Backend;
 use App\Entity\Category;
 use App\Entity\Course;
 use App\Entity\File;
-use App\Entity\ProductImage;
-use App\Entity\ProductVideo;
 use App\Entity\Subject;
 use App\Form\CourseType;
 use App\Repository\CourseRepository;
-use App\Repository\ProductVideoRepository;
 use App\Repository\TeacherRepository;
-use Doctrine\Common\Collections\ArrayCollection;
+use App\Service\Util\FactoryUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\Collection;
 use App\Command\Product\Image\CreateOrUpdateProductImagesCommand;
 use App\Entity\Product;
 use App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommand;
@@ -38,11 +34,16 @@ class CourseController extends BackendController
             'title' => '课程管理',
             'form' => [
                 'subject' => $request->query->get('subject', null),
+                'courseShowType' => $request->query->get('courseShowType', null),
+                'oneCategory' => $request->query->get('oneCategory', null),
+                'twoCategory' => $request->query->get('twoCategory', null),
                 'page' => $request->query->getInt('page', 1)
-            ]
+            ],
+            'courseShowTypes' => Course::$courseShowTypeTexts,
+            'oneCategoryList' => json_encode(FactoryUtil::categoryRepository()->getCategoryTree(0, true)),
         ];
 
-        $data['data'] = $courseRepository->findBy(['isOnline' => true]);
+        $data['data'] = $courseRepository->findCourseQueryBuild(true, $data['form']['courseShowType'], $data['form']['oneCategory'], $data['form']['twoCategory']);
 
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/course/index.html.twig', $data);
@@ -323,4 +324,61 @@ class CourseController extends BackendController
         return $this->redirectToRoute('course_index');
     }
 
+    /**
+     * 推荐免费专区
+     * @param Request $request
+     * @param Course $course
+     * @return Response
+     * @Route("/course/recommend/free/{id}", name="recommendFreeZone", methods="POST")
+     * @author zxqc2018
+     */
+    public function recommendFreeZone(Request $request, Course $course): Response
+    {
+        if ($course->getCourseActualCategory()->isShowFreeZone()) {
+            $course->getCourseActualCategory()->setShowFreeZone(0);
+            $noticeStr = '下免费专区成功';
+        } else {
+            $course->getCourseActualCategory()->setShowFreeZone(1);
+            $noticeStr = '上免费专区成功';
+        }
+
+        $this->entityPersist($course->getCourseActualCategory());
+        $this->addFlash('notice', $noticeStr);
+        $formData = [
+            'courseShowType' => $request->request->get('courseShowType', null),
+            'oneCategory' => $request->request->get('oneCategory', null),
+            'twoCategory' => $request->request->get('twoCategory', null),
+            'page' => $request->request->getInt('page', 1)
+        ];
+        return $this->redirectToRoute('course_index', $formData);
+    }
+
+    /**
+     * 推荐首页
+     * @param Request $request
+     * @param Course $course
+     * @return Response
+     * @Route("/course/recommend/home/{id}", name="recommendHomeZone", methods="POST")
+     * @author zxqc2018
+     */
+    public function recommendHomeZone(Request $request, Course $course): Response
+    {
+        if ($course->getCourseActualCategory()->isShowRecommendZone()) {
+            $course->getCourseActualCategory()->setShowRecommendZone(0);
+            $noticeStr = '下推荐专区成功';
+        } else {
+            $course->getCourseActualCategory()->setShowRecommendZone(1);
+            $noticeStr = '上推荐专区成功';
+        }
+
+        $this->entityPersist($course->getCourseActualCategory());
+        $this->addFlash('notice', $noticeStr);
+        $formData = [
+            'courseShowType' => $request->request->get('courseShowType', null),
+            'oneCategory' => $request->request->get('oneCategory', null),
+            'twoCategory' => $request->request->get('twoCategory', null),
+            'page' => $request->request->getInt('page', 1)
+        ];
+        return $this->redirectToRoute('course_index', $formData);
+    }
 }

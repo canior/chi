@@ -46,11 +46,7 @@ class CourseType extends AbstractType
                 'class' => Category::class,
                 'required' => false,
                 'choice_label' => function (Category $category) {
-                     if (!empty($category->getParentCategory())) {
-                         return $category->getParentCategory()->__toString() .'-'.$category->__toString();
-                     } else {
-                         return $category->__toString();
-                     }
+                    return $category->__toString();
                 },
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('c')

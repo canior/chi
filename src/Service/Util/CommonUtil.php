@@ -11,6 +11,7 @@ namespace App\Service\Util;
 use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\ResultData;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\Request;
 use Throwable;
 
@@ -338,5 +339,126 @@ class CommonUtil
     public static function getRepository($className)
     {
         return ConfigParams::getRepositoryManager()->getRepository($className);
+    }
+
+    /**
+     * 获取对象内部数据getter方法名
+     * @param string $property
+     * @return string
+     * @author zxqc2018
+     */
+    public static function makeGetPropertyMethod($property)
+    {
+        return 'get' . ucfirst($property);
+    }
+    /**
+     * 二维数组|集合 转换 一维数组
+     * @param array $data 源数组|集合
+     * @param array $temp 一维参照
+     * @param bool|string $filterPattern pattern 过滤规则  true 过滤空值  field_str >=< 10 , field_str=['a', 'b']  等筛选
+     * @return array $ret
+     */
+
+    public static function two2one($data, array $temp = [], $filterPattern = false)
+    {
+        $ret = [];
+
+        if (!empty($data) && !empty($temp) && (($dataIsArray = is_array($data)) || $data instanceof Collection)) {
+            $key = '';
+            $val = '';
+            foreach ($temp as $key => $val) {
+                break;
+            }
+
+            $getPropertyValue = function ($data, $key, $defaultValue = null) use ($dataIsArray){
+                if ($dataIsArray) {
+                    return $data[$key] ?? $defaultValue;
+                } else {
+                    $method = CommonUtil::makeGetPropertyMethod($key);
+                    if (method_exists($data, $method)) {
+                        return $dataIsArray->$method();
+                    } else {
+                        return $defaultValue;
+                    }
+                }
+            };
+
+            $patternStr = '#^\s*(\w+?)\s*([=><]{1,2})\s*(\d+|null|empty|(?:\[[\w\-,]+\]))\s*$#';
+            is_string($filterPattern) && preg_match($patternStr, $filterPattern, $match);
+            foreach ($data as $value) {
+                if (is_bool($filterPattern) && $filterPattern && empty($getPropertyValue($value, $val))) {
+                    continue;
+                }
+                $nullStr = '#@#';
+                if (!empty($match)) {
+                    $compareFieldVal = $getPropertyValue($match, 1, $nullStr);
+                    $optStr           = $match[2];
+                    $compareVal       = $match[3];
+                    switch ($optStr) {
+                        case '>':
+                            if ($compareFieldVal === $nullStr || $compareFieldVal <= $compareVal) {
+                                continue 2;
+                            }
+                            break;
+                        case '<':
+                            if ($compareFieldVal === $nullStr || $compareFieldVal >= $compareVal) {
+                                continue 2;
+                            }
+                            break;
+                        case '>=':
+                            if ($compareFieldVal === $nullStr || $compareFieldVal < $compareVal) {
+                                continue 2;
+                            }
+                            break;
+                        case '<=':
+                            if ($compareFieldVal === $nullStr || $compareFieldVal > $compareVal) {
+                                continue 2;
+                            }
+                            break;
+                        case '=':
+                            if ($compareVal === 'null') {
+                                if ($compareFieldVal !== $nullStr) {
+                                    continue 2;
+                                }
+                            } else if ($compareVal === 'empty') {
+                                if ($compareFieldVal !== $nullStr && !empty($compareFieldVal)) {
+                                    continue 2;
+                                }
+                            } else if (strpos($compareVal, '[') !== false && strpos($compareVal, ']') !== false) {
+                                $equalArr = explode(',', str_replace(['[', ']'], '', $compareVal));
+                                if (!in_array($compareFieldVal, $equalArr)) {
+                                    continue 2;
+                                }
+                            } else if ($compareFieldVal != $compareVal) {
+                                continue 2;
+                            }
+                            break;
+                        case '<>':
+                            if ($compareVal === 'null') {
+                                if ($compareFieldVal === $nullStr) {
+                                    continue 2;
+                                }
+                            } else if ($compareVal === 'empty') {
+                                if (($compareFieldVal === $nullStr || empty($compareFieldVal))) {
+                                    continue 2;
+                                }
+                            } else if ($compareFieldVal != $compareVal) {
+                                continue 2;
+                            }
+                            break;
+                    }
+                }
+                if (is_numeric($key)) {
+                    $ret[] = $getPropertyValue($value, $val);
+                } else {
+                    $tmpKey = $getPropertyValue($value, $key);
+                    if (!is_null($tmpKey)) {
+                        $ret[$tmpKey] = $getPropertyValue($value, $val);
+                    }
+                }
+            }
+        }
+
+        return $ret;
     }
 }

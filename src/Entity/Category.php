@@ -378,7 +378,11 @@ class Category implements Dao
 
     public function __toString()
     {
-        return $this->getName();
+        if (!empty($this->parentCategory)) {
+            return $this->getParentCategory()->getName() . '->' . $this->getName();
+        } else {
+            return $this->getName();
+        }
     }
 
     /**

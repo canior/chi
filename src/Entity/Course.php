@@ -39,9 +39,9 @@ class Course implements Dao
     const COURSE_SHOW_TYPE_ALL = 'all';
 
     public static $courseShowTypeTexts = [
+        self::COURSE_SHOW_TYPE_ALL => '所有',
         self::COURSE_SHOW_TYPE_APP => 'APP',
         self::COURSE_SHOW_TYPE_MINI => '小程序',
-        self::COURSE_SHOW_TYPE_ALL => '所有',
     ];
 
     /**
@@ -992,6 +992,51 @@ class Course implements Dao
     public function setAddressImageFile(?File $addressImageFile): void
     {
         $this->addressImageFile = $addressImageFile;
+    }
+
+    /**
+     * 是否为单课程
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isSingleCourse()
+    {
+        $res = false;
+        if ($this->getCourseActualCategory() && $this->getCourseActualCategory()->isSingleCourse()) {
+            $res = true;
+        }
+
+        return $res;
+    }
+
+    /**
+     * 是否免费专区
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isShowFreeZone()
+    {
+        $res = false;
+        if ($this->getCourseActualCategory() && $this->getCourseActualCategory()->isShowFreeZone()) {
+            $res = true;
+        }
+
+        return $res;
+    }
+
+    /**
+     * 是否首页推荐
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isShowRecommendZone()
+    {
+        $res = false;
+        if ($this->getCourseActualCategory() && $this->getCourseActualCategory()->isShowRecommendZone()) {
+            $res = true;
+        }
+
+        return $res;
     }
 
     /**
