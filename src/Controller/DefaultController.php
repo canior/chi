@@ -16,14 +16,14 @@ use FOS\UserBundle\Model\UserManagerInterface;
 use Knp\Component\Pager\Paginator;
 use League\Tactician\CommandBus;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
     const PAGE_LIMIT = 20;
 
