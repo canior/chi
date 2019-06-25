@@ -179,13 +179,6 @@ class ApiAuthController extends AppApiBaseController
                 $user->info('created user ' . $user);
             }
 
-            if ($user->getAvatarUrl() == null) {
-                $avatarUrl = isset($wxUserInfo['headimgurl']) ? $wxUserInfo['headimgurl'] : null; //需要一张默认的用户头像
-                $user->setNickname($data['phone']);
-                $user->setAvatarUrl($avatarUrl);
-                $user->info("update user nickname to " . $data['phone'] . " and avatar url");
-            }
-
             $this->entityPersist($user);
         }
 
