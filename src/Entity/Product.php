@@ -1010,6 +1010,7 @@ class Product implements Dao
 
         return [
             'id' => $this->getId(),
+            'productId' => $this->getId(),
             'title' => $this->getTitle(),
             'price' => $this->getPrice(),
             'groupPrice' => $this->getGroupPrice(),
