@@ -83,7 +83,7 @@ class CourseType extends AbstractType
             ])
             ->add('courseTag', TextType::class, [
                 'label' => '标签 (多个可以逗号拼接)',
-                'required' => true
+                'required' => false
             ])
             ->add('unlockType', ChoiceType::class, [
                 'label' => '解锁方式',
