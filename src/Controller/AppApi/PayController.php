@@ -156,7 +156,7 @@ class PayController extends AppApiBaseController
                 }
             } else if ($course->isTradingSubject()) {
                 //是否有报名了但是没有分配桌号的
-                if ($user->isCompletedPersonalInfo() && $groupUserOrder->getTotal() == 12000) {
+                if ($user->isCompletedPersonalInfo() && $groupUserOrder->getTotal() == MoneyUtil::tradeSpecialPrice()) {
                     $data['nextPageType'] = 4;
                 }
             }
@@ -164,7 +164,7 @@ class PayController extends AppApiBaseController
 
         if ($data['nextPageType'] == 3) {
             //查找直通车课程id
-            $tradingCourse = FactoryUtil::courseRepository()->findSpecTradingCourse();
+            $tradingCourse = FactoryUtil::courseRepository()->findSpecTradingCourse(MoneyUtil::tradeSpecialPrice());
             if (!empty($tradingCourse)) {
                 $data['tradingProductId'] = $tradingCourse->getProduct()->getId();
             }
