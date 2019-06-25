@@ -183,7 +183,7 @@ class MemberController extends AppApiBaseController
         }
 
         // 返回
-        return CommonUtil::resultData($user->getArray())->toJsonResponse();
+        return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();
     }
 
     /**
@@ -254,8 +254,9 @@ class MemberController extends AppApiBaseController
 
         //实名并且是系统学院需要生成桌号
         $this->supplySystemTableNo($user);
+        
         // 返回
-        return CommonUtil::resultData($user->getArray())->toJsonResponse();
+        return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();
     }
 
     /**
