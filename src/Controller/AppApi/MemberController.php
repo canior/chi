@@ -267,19 +267,25 @@ class MemberController extends AppApiBaseController
     public function updateUserWx(Request $request, UserManagerInterface $userManager, UserRepository $userRepository)
     {
         $this->getLog()->info("updateUserWx");
+        $this->getLog()->info("我进来了");
 
         $data = json_decode($request->getContent(), true );
+        $wxcode = isset($data['wxcode']) ? $data['wxcode'] : null;
+        $this->getLog()->info("我的wxcode:".$wxcode);
+
 
         // 查询匹配用户
+        $this->getLog()->info("查询匹配用户:".$wxcode);
         $user =  $this->getAppUser();
         if ($user == null) {
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
+        $this->getLog()->info("找到用户了:".$wxcode);
 
         // 如果传了微信code
-        $wxcode = isset($data['wxcode']) ? $data['wxcode'] : null;
+        
 
-        $this->getLog()->info("updateUserWx wxcode:".$wxcode);
+        
 
         $this->getLog()->info("wx user wxcode = " . $wxcode);
         $wechatModel = new WeChatDocument([
