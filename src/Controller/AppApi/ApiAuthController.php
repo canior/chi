@@ -167,6 +167,7 @@ class ApiAuthController extends AppApiBaseController
                 $this->getLog()->info("creating user for unionid" . $data['phone']);
                 $user = new User();
                 $user->setUsername($data['phone']);
+                $user->setPhone($data['phone']);
                 $user->setUsernameCanonical($data['phone']);
                 $user->setEmail($data['phone'] . '@qq.com');
                 $user->setEmailCanonical($data['phone'] . '@qq.com');
