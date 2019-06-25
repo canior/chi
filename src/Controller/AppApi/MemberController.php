@@ -327,24 +327,24 @@ class MemberController extends AppApiBaseController
             // $user->info("update user nickname to " . $nickName . " and avatar url");
         }
 
-        $this->getLog()->info("3 保存结束" . $unionId);
+        $this->getLog()->error("3 保存结束" . $unionId);
 
         try {
             $userManager->updateUser($user, true);
         } catch (\Exception $e) {
 
-            $this->getLog()->info("4 保存错误" . $e->getMessage());
+            $this->getLog()->error("4 保存错误" . $e->getMessage());
 
             return new JsonResponse(["error" => $e->getMessage()], 500);
         }
 
-        $this->getLog()->info("4 保存结束" . $unionId);
+        $this->getLog()->error("4 保存结束" . $unionId);
 
         //实名并且是系统学院需要生成桌号
         // $this->supplySystemTableNo($user);
 
 
-        $this->getLog()->info("4 结束了" . $unionId);
+        $this->getLog()->error("4 结束了" . $unionId);
 
         // 返回
         return CommonUtil::resultData($user->getArray())->toJsonResponse();
