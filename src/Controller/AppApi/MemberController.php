@@ -266,6 +266,8 @@ class MemberController extends AppApiBaseController
      */
     public function updateUserWx(Request $request, UserManagerInterface $userManager, UserRepository $userRepository)
     {
+        $this->getLog()->info("updateUserWx");
+
         $data = json_decode($request->getContent(), true );
 
         // 查询匹配用户
@@ -276,6 +278,9 @@ class MemberController extends AppApiBaseController
 
         // 如果传了微信code
         $wxcode = isset($data['wxcode']) ? $data['wxcode'] : null;
+
+        $this->getLog()->info("updateUserWx wxcode:".$wxcode);
+
         $this->getLog()->info("wx user wxcode = " . $wxcode);
         $wechatModel = new WeChatDocument([
             'appid' => ConfigParams::getParamWithController(ConfigParams::JQ_APP_WX_ID),
@@ -293,7 +298,7 @@ class MemberController extends AppApiBaseController
         $unionId = $openIdInfo['unionid'];
 
 
-        $this->getLog()->info("creating user for unionid" . $unionId);
+        $this->getLog()->info("2 update user for unionid" . $unionId);
 
         $user->setUsername($openId);
         $user->setUsernameCanonical($openId);
@@ -314,6 +319,7 @@ class MemberController extends AppApiBaseController
         }
         $this->entityPersist($user);
 
+        $this->getLog()->info("2 update user for unionid" . $unionId);
 
         //实名并且是系统学院需要生成桌号
         $this->supplySystemTableNo($user);
