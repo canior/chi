@@ -975,7 +975,7 @@ class MemberController extends AppApiBaseController
         }
 
 
-        $followArray = $followRepository->findMyFollow($user->getId(),$dateType,$page,self::PAGE_LIMIT);
+        $followArray = $followRepository->findMyFollow($user->getId(),$dateType,$page,5);
         foreach ($followArray as $k => $v) {
             switch ($v['type']) {
                 case Follow::COURSE:
