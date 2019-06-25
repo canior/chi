@@ -304,7 +304,7 @@ class MemberController extends AppApiBaseController
         $unionId = $openIdInfo['unionid'];
 
 
-        $this->getLog()->info("2 update user for unionid" . $unionId);
+        $this->getLog()->info("2 开始保存用户" . $unionId);
 
         $user->setUsername($openId);
         $user->setUsernameCanonical($openId);
@@ -325,10 +325,13 @@ class MemberController extends AppApiBaseController
         }
         $this->entityPersist($user);
 
-        $this->getLog()->info("2 update user for unionid" . $unionId);
+        $this->getLog()->info("3 保存结束" . $unionId);
 
         //实名并且是系统学院需要生成桌号
-        $this->supplySystemTableNo($user);
+        // $this->supplySystemTableNo($user);
+
+
+        $this->getLog()->info("4 结束了" . $unionId);
 
         // 返回
         return CommonUtil::resultData($user->getArray())->toJsonResponse();
