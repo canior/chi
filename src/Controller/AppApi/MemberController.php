@@ -254,7 +254,7 @@ class MemberController extends AppApiBaseController
 
         //实名并且是系统学院需要生成桌号
         $this->supplySystemTableNo($user);
-        
+
         // 返回
         return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();
     }
@@ -307,6 +307,8 @@ class MemberController extends AppApiBaseController
 
         $this->getLog()->info("1 开始保存用户" . $unionId);
 
+        
+        $defaultNickname = '未知用户';
         $user->setUsername($openId);
         $user->setUsernameCanonical($openId);
         $user->setEmail($openId . '@qq.com');
