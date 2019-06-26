@@ -52,6 +52,8 @@ use App\Repository\UserAccountOrderRepository;
 use App\Service\Config\ConfigParams;
 use App\Service\Document\WeChatDocument;
 use App\Repository\FollowCourseMetaRepository;
+use App\Repository\FollowTeacherMetaRepository;
+
 /**
  * @Route("/auth/member")
  */
@@ -959,7 +961,7 @@ class MemberController extends AppApiBaseController
      * @param GroupOrderRepository $groupOrderRepository
      * @return Response
      */
-    public function followAction(Request $request, FollowCourseMetaRepository $followCouseMetaRepository,CourseRepository $courseRepository,TeacherRepository $teacherRepository) {
+    public function followAction(Request $request, FollowCourseMetaRepository $followCourseMetaRepository, FollowTeacherMetaRepository $followTeacherMetaRepository) {
 
         $data = json_decode($request->getContent(), true);
         $type = isset($data['type']) ? $data['type'] : '';
@@ -974,12 +976,8 @@ class MemberController extends AppApiBaseController
         // 查询
         switch ($type) {
             case 'onlineCourse':
-                $type = 1;
-                $followArray = $followCouseMetaRepository->findMyFollow($user->getId(),$type,$page,8);
-                break;
             case 'offlineCourse':
-                $type = 0;
-                $followArray = $followCouseMetaRepository->findMyFollow($user->getId(),$type,$page,8);
+                $followArray = $followCourseMetaRepository->findMyFollow($user->getId(),$type,$page,8);
                 break;
             case 'Teacher':
                 $followArray = $followTeacherMetaRepository->findMyFollow($user->getId(),$page,8);
@@ -990,9 +988,8 @@ class MemberController extends AppApiBaseController
         
         $follows = [];
         foreach ($followArray as $k => $v) {
-            $follows[] = $v->getArray();    
+            $follows[] = ['id'=>$v['id'],$type=>$v[0]->getArray()];
         }
-        // dump($follows);die;
         
         // 返回
         return CommonUtil::resultData(  ['follow'=>$follows] )->toJsonResponse();
