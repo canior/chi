@@ -1197,6 +1197,15 @@ class GroupUserOrder implements Dao
     }
 
     /**
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isUnlockCategoryOrder()
+    {
+        return  !empty($this->getUnlockCategory());
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {

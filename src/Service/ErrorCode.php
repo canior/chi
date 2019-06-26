@@ -71,6 +71,7 @@ class ErrorCode
     const ERROR_NOTIFY_VERIFY_SIGN = 16016;
     const ERROR_NOTIFY_TYPE = 16017;
     const ERROR_COURSE_ALREADY_PAY = 16018;
+    const ERROR_COURSE_CATEGORY_ALREADY_PAY = 16019;
     /**
      * 错误消息集合
      * @return array
@@ -121,8 +122,9 @@ class ErrorCode
             self::ERROR_NOTIFY_RAW_NOT_ALLOW => '异步通知消息不合法',
             self::ERROR_NOTIFY_VERIFY_SIGN => '异步通知验签失败',
             self::ERROR_NOTIFY_TYPE => '通知方式不支持',
-            self::ERROR_COURSE_ALREADY_PAY => '课程已经购买',
+            self::ERROR_COURSE_ALREADY_PAY => '课程或者活动已经购买',
             self::ERROR_COURSE_NOT_EXISTS => '课程或者活动不存在',
+            self::ERROR_COURSE_CATEGORY_ALREADY_PAY => '系列课程已经解锁',
         ];
     }
 
