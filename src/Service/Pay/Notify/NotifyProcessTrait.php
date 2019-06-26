@@ -12,12 +12,14 @@ namespace App\Service\Pay\Notify;
 use App\Entity\CommandMessage;
 use App\Entity\CourseOrder;
 use App\Entity\GroupUserOrder;
+use App\Entity\MessageGroupUserOrderMeta;
 use App\Entity\User;
 use App\Repository\GroupUserOrderRepository;
 use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\Order\OfflineTableNo;
 use App\Service\Util\CommonUtil;
+use App\Service\Util\FactoryUtil;
 use App\Service\Util\MoneyUtil;
 
 trait NotifyProcessTrait
@@ -119,13 +121,24 @@ trait NotifyProcessTrait
                     //todo sms通知
                     $data['nextPageType'] = 1;
                 }
-            } else if ($course->isTradingSubject() && $user->isCompletedPersonalInfo()) {
-                CommonUtil::entityPersist($groupUserOrder);
-                $isFlushGroupUserOrder = true;
-                //是否有报名了但是没有分配桌号的
-                $isSupplyTableNo = $this->supplySystemTableNo($groupUserOrder->getUser());
-                if ($isSupplyTableNo && $groupUserOrder->getTotal() == 12000) {
+            } else if ($course->isTradingSubject()) {
+                //已经实名
+                if ($user->isCompletedPersonalInfo()) {
+                    CommonUtil::entityPersist($groupUserOrder);
+                    $isFlushGroupUserOrder = true;
+                    $this->supplySystemTableNo($groupUserOrder->getUser());
                     $data['nextPageType'] = 4;
+                }
+
+                //有上一级则发送消息
+                if (!empty($groupUserOrder->getUser()->getParentUser())) {
+                    $message = new MessageGroupUserOrderMeta();
+                    $name = CommonUtil::getInsideValue($groupUserOrder, 'getUser.getName', '');
+                    $phone = CommonUtil::getInsideValue($groupUserOrder, 'getUser.getPhone', '');
+                    $message->setDataId($groupUserOrder->getId());
+                    $message->setUser($groupUserOrder->getUser()->getParentUser());
+                    $message->setTitle("您的用户{$name},手机号为{$phone}完成了系统学员的身份升级，详细信息请打开app了解。");
+                    CommonUtil::entityPersist($message);
                 }
             }
         }
