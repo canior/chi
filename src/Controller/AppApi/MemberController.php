@@ -976,7 +976,7 @@ class MemberController extends AppApiBaseController
         
         $data = json_decode($request->getContent(), true);
         $page = isset($data['page']) ? $data['page'] : 1;
-        
+
         // 查询匹配用户
         $user =  $this->getAppUser();
         if ($user == null) {
@@ -1190,12 +1190,21 @@ class MemberController extends AppApiBaseController
         $messageQuery = $messageGroupUserOrderMetaRepository->getGroupUserOrder($user->getId(),$checkStatus);
         $messageArrays = $this->getPaginator()->paginate($messageQuery, $page, self::PAGE_LIMIT);
 
+
+
         $orderArray = [];
+        $idsArray = [];
         foreach ($messageArrays as $order) {
             $order['groupUserOrder'] = $order[0]->getArray();
             unset($order[0]);
             $orderArray[] = $order;
+
+            $idsArray[] = $order['id'];
         }
+
+
+        // 查询列表 标记已读
+        $messageGroupUserOrderMetaRepository->setMessagesIsRead($idsArray);
 
         // 返回
         return CommonUtil::resultData(  ['messageArray'=>$orderArray] )->toJsonResponse();

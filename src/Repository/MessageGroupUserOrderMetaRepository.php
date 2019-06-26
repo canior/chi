@@ -37,15 +37,33 @@ class MessageGroupUserOrderMetaRepository extends ServiceEntityRepository
             ->from(MessageGroupUserOrderMeta::class, 'ff')
             ->leftJoin(GroupUserOrder::class,'cc',Expr\Join::WITH,'ff.dataId = cc.id')
             ->where('ff.user = :userId')
-            ->andWhere('cc.checkStatus = :checkStatus')
             ->setParameter('userId', $userId)
-            ->setParameter('checkStatus', $checkStatus)
             ->orderBy('ff.id', 'DESC');
 
-
-
-
+        if( $checkStatus ){
+            $query->andWhere('cc.checkStatus = :checkStatus')->setParameter('checkStatus', $checkStatus);
+        }
 
         return $query->getQuery();
+    }
+
+    /**
+     * @param $userId
+     * @return array
+     */
+    public function setMessagesIsRead($idsArray)
+    {
+
+        if( !count($idsArray) ){
+            return true;
+        }
+        $idsArray = implode(',', $idsArray);
+
+        $q = $this->_em->createQueryBuilder('u')
+            ->update(MessageGroupUserOrderMeta::class, 'u')
+            ->set('u.isRead', 1)
+            ->where('u.id in (:idsArray)')
+            ->setParameter('idsArray', $idsArray);
+        return $q->getQuery()->execute();
     }
 }
