@@ -468,10 +468,25 @@ class MemberController extends AppApiBaseController
         }
 
 
-        $userAddress->setName($name)->setPhone($phone)->setIsDefault($isDefault)->setRegion($countyDao)->setAddress($address)->setUpdatedAt(time());
+        $userAddress->setUpdatedAt(time());
+        if( isset($data['name']) ){
+            $userAddress->setName($name);
+        }
+        if( isset($data['phone']) ){
+            $userAddress->setPhone($phone);
+        }
+        if( isset($data['isDefault']) ){
+            $userAddress->setIsDefault($isDefault);
+        }
+        if( $countyDao ){
+            $userAddress->setRegion($countyDao);
+        }
+        if( isset($data['address']) ){
+            $userAddress->setAddress($address);
+        }
+
         $this->getEntityManager()->persist($userAddress);
         $this->getEntityManager()->flush();
-
 
         // 返回
         return CommonUtil::resultData(['userAddress' => $userAddress->getArray()])->toJsonResponse();

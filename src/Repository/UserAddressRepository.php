@@ -25,7 +25,7 @@ class UserAddressRepository extends ServiceEntityRepository
         $q = $this->_em->createQueryBuilder('u')
             ->update(UserAddress::class, 'u')
             ->set('u.isDefault', '0')
-            ->where('u.user == :user')
+            ->where('u.user = :user')
             ->setParameter('user', $userId);
         return $q->getQuery()->execute();
     }
