@@ -451,7 +451,7 @@ class MemberController extends AppApiBaseController
             //默认地址
             $addressCount = $user->getActiveUserAddress()->count();
             if( $addressCount > 0 && $isDefault ){
-                $userAddressRepository->setAllAddressNotIsDefault($user->getId());
+                $userAddressRepository->setAllAddressNotDefault($user->getId());
             }
 
         } else {
@@ -463,7 +463,7 @@ class MemberController extends AppApiBaseController
             if ( $addressCount == 0) {
                 $userAddress->setIsDefault(true);
             }else if( $addressCount > 0 && $isDefault ){
-                $userAddressRepository->setAllAddressNotIsDefault($user->getId());
+                $userAddressRepository->setAllAddressNotDefault($user->getId());
             }
         }
 
@@ -471,11 +471,6 @@ class MemberController extends AppApiBaseController
         $userAddress->setName($name)->setPhone($phone)->setIsDefault($isDefault)->setRegion($countyDao)->setAddress($address)->setUpdatedAt(time());
         $this->getEntityManager()->persist($userAddress);
         $this->getEntityManager()->flush();
-
-        // 初始化其他默认地址  
-        if( $userAddress->getIsDefault() ){
-            $userAddressRepository->setOthersNotDefault($user->getId(),$userAddressId);
-        }
 
 
         // 返回
@@ -507,10 +502,18 @@ class MemberController extends AppApiBaseController
         $this->getEntityManager()->flush();
 
         // 检查设置默认地址
-        $userAddressRepository->setDefaultAddress($user->getId());
+        $hasIsDefault = $userAddressRepository->findBy(['user'=>$user->getId(),'isDeleted'=>false,'isDefault'=>3]);
+        if( !$hasIsDefault ){
+            $lastUserAddress = $userAddressRepository->findOneBy(['user'=>$user->getId(),'isDeleted'=>false],['id'=>'desc']);
+            if($lastUserAddress){
+                $lastUserAddress->setIsDefault(true);
+                $this->getEntityManager()->persist($lastUserAddress);
+                $this->getEntityManager()->flush();                
+            }
+        }
 
         // 返回
-        return CommonUtil::resultData(['userAddresses' => $userAddress->getArray()])->toJsonResponse();
+        return CommonUtil::resultData([])->toJsonResponse();
     }
 
     /**
