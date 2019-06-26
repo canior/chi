@@ -53,6 +53,8 @@ use App\Service\Config\ConfigParams;
 use App\Service\Document\WeChatDocument;
 use App\Repository\FollowCourseMetaRepository;
 use App\Repository\FollowTeacherMetaRepository;
+use App\Entity\FollowCourseMeta;
+use App\Entity\FollowTeacherMeta;
 
 /**
  * @Route("/auth/member")
@@ -1003,7 +1005,7 @@ class MemberController extends AppApiBaseController
      * @param FollowRepository $followRepository
      * @return Response
      */
-    public function postFollowAction(Request $request, FollowRepository $followRepository,CourseRepository $courseRepository) {
+    public function postFollowAction(Request $request, FollowCourseMetaRepository $followCourseMetaRepository, FollowTeacherMetaRepository $followTeacherMetaRepository) {
 
         $data = json_decode($request->getContent(), true);
 
@@ -1017,31 +1019,46 @@ class MemberController extends AppApiBaseController
         $type = isset($data['type']) ? $data['type'] : null;
 
         // 是否已经关注
-        $had = $followRepository->findBy(['dataId' => $dataId, 'type' => $type, 'user' => $user->getId()]);
+        $had = null;
+        switch ($type) {
+            case 'course':
+            case 'onlineCourse':
+            case 'offlineCourse':
+                $had = $followCourseMetaRepository->findBy(['dataId' => $dataId,'user' => $user->getId()]);
+                break;
+            case 'Teacher':
+                $had = $followTeacherMetaRepository->findBy(['dataId' => $dataId,'user' => $user->getId()]);
+                break;
+            default:
+                break;
+        }
+
         if( $had ){
             return CommonUtil::resultData( [], ErrorCode::ERROR_HAD_FOLLOW )->toJsonResponse();
         }
 
         // 持久化
-        $follow = new Follow();
-        $follow->setDataId($dataId)->setType($type)->setUser($user);
-        $this->getEntityManager()->persist($follow);
-        $this->getEntityManager()->flush();
-
-        // 返回数据
-        $followArray = $followRepository->find($follow->getId());
-        $course = null;
         switch ($type) {
-            case Follow::COURSE:
-                $course = $courseRepository->find( $dataId );
-                $course = $course->getArray();
+            case 'course':
+            case 'onlineCourse':
+            case 'offlineCourse':
+                $follow = new FollowCourseMeta();
+                $follow->setDataId($dataId)->setUser($user);
+                $this->getEntityManager()->persist($follow);
+                $this->getEntityManager()->flush();
+                break;
+            case 'Teacher':
+                $follow = new FollowTeacherMeta();
+                $follow->setDataId($dataId)->setUser($user);
+                $this->getEntityManager()->persist($follow);
+                $this->getEntityManager()->flush();
                 break;
             default:
                 break;
         }
 
         // 返回
-        return CommonUtil::resultData( ['follow_id' => $follow->getId(),'course'=>$course ] )->toJsonResponse();
+        return CommonUtil::resultData( ['follow_id' => $follow->getId() ] )->toJsonResponse();
     }
 
     /**
@@ -1071,7 +1088,7 @@ class MemberController extends AppApiBaseController
         $this->getEntityManager()->flush();
 
         // 返回
-        return CommonUtil::resultData( ['follow' => $follow ] )->toJsonResponse();
+        return CommonUtil::resultData( [] )->toJsonResponse();
     }
 
     /**
