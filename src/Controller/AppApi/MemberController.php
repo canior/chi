@@ -55,6 +55,7 @@ use App\Repository\FollowCourseMetaRepository;
 use App\Repository\FollowTeacherMetaRepository;
 use App\Entity\FollowCourseMeta;
 use App\Entity\FollowTeacherMeta;
+use App\Repository\MessageGroupUserOrderMetaRepository;
 
 /**
  * @Route("/auth/member")
@@ -1174,7 +1175,7 @@ class MemberController extends AppApiBaseController
      * @param MessageRepository $messageRepository
      * @return Response
      */
-    public function messageAction(Request $request, MessageRepository $messageRepository,GroupUserOrderRepository $groupUserOrderRepository) {
+    public function messageAction(Request $request, MessageGroupUserOrderMetaRepository $messageGroupUserOrderMetaRepository) {
 
         $data = json_decode($request->getContent(), true);
         $page = isset($data['page']) ? $data['page'] : 1;
@@ -1186,28 +1187,18 @@ class MemberController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        $messageQuery = $messageRepository->findOrderMessageQuery($user->getId(),Message::TYPE_GROUP_USER_ORDER);
+        $messageQuery = $messageGroupUserOrderMetaRepository->getGroupUserOrder($user->getId(),$checkStatus);
         $messageArrays = $this->getPaginator()->paginate($messageQuery, $page, self::PAGE_LIMIT);
 
-        $courseArray = [];
-        foreach ($messageArrays as $messageArray) {
-            //
-            $item = $messageArray->getArray();
-            $groupUserOrder = $groupUserOrderRepository->find( $messageArray->getDataId() );
-            $item['groupUserOrder'] = $groupUserOrder->getArray();
-            if( $checkStatus ){
-                if(  $groupUserOrder->getCheckStatus() ){
-                    $courseArray[] = $item;
-                }
-            }else{
-                if(  !$groupUserOrder->getCheckStatus() ){
-                    $courseArray[] = $item;
-                }
-            }
+        $orderArray = [];
+        foreach ($messageArrays as $order) {
+            $order['groupUserOrder'] = $order[0]->getArray();
+            unset($order[0]);
+            $orderArray[] = $order;
         }
 
         // 返回
-        return CommonUtil::resultData(  ['messageArray'=>$courseArray] )->toJsonResponse();
+        return CommonUtil::resultData(  ['messageArray'=>$orderArray] )->toJsonResponse();
     }
 
     /**

@@ -8,8 +8,11 @@ use App\Entity\Traits\IdTrait;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MessageRepository")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="data_type", type="string")
+ * @ORM\DiscriminatorMap({"group_user_order" = "MessageGroupUserOrderMeta"})
  */
-class Message implements Dao
+abstract class Message implements Dao
 {
     use IdTrait, CreatedAtTrait;
 
@@ -50,11 +53,6 @@ class Message implements Dao
         self::TYPE_FOLLOW => '关注类消息',
     ];
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string|null
-     */
-    private $dataType;
 
     /**
      * @var string|null
@@ -178,17 +176,17 @@ class Message implements Dao
     }
 
 
-    public function getArray() : array {
-        return [
-            'id' => $this->getId(),
-            'isRead' => $this->getIsRead(),
-            'title' => $this->getTitle(),
-            'content' => $this->getContent(),
-            'user' => $this->getUser()->getArray(),
-            'dataType' => $this->getDataType(),
-            'dataId' => $this->getDataId(),
-            'expansionData' => $this->getExpansionData(),
-            'user' => $this->getUser()->getArray(),
-        ];
-    }
+    // public function getArray() : array {
+    //     return [
+    //         'id' => $this->getId(),
+    //         'isRead' => $this->getIsRead(),
+    //         'title' => $this->getTitle(),
+    //         'content' => $this->getContent(),
+    //         'user' => $this->getUser()->getArray(),
+    //         'dataType' => $this->getDataType(),
+    //         'dataId' => $this->getDataId(),
+    //         'expansionData' => $this->getExpansionData(),
+    //         'user' => $this->getUser()->getArray(),
+    //     ];
+    // }
 }
