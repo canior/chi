@@ -447,11 +447,23 @@ class MemberController extends AppApiBaseController
         // 查询或新建userAddress
         if ($userAddressId) {
             $userAddress = $userAddressRepository->find($userAddressId);
+
+            //默认地址
+            $addressCount = $user->getActiveUserAddress()->count();
+            if( $addressCount > 0 && $isDefault ){
+                $userAddressRepository->setAllAddressNotIsDefault($user->getId());
+            }
+
         } else {
             $userAddress = new UserAddress();
             $userAddress->setUser($user);
-            if ($user->getActiveUserAddress()->count() == 0) {
+
+            //默认地址
+            $addressCount = $user->getActiveUserAddress()->count();
+            if ( $addressCount == 0) {
                 $userAddress->setIsDefault(true);
+            }else if( $addressCount > 0 && $isDefault ){
+                $userAddressRepository->setAllAddressNotIsDefault($user->getId());
             }
         }
 
@@ -493,6 +505,9 @@ class MemberController extends AppApiBaseController
         $userAddress->setIsDeleted(true)->setUpdatedAt(time());
         $this->getEntityManager()->persist($userAddress);
         $this->getEntityManager()->flush();
+
+        // 检查设置默认地址
+        $userAddressRepository->setDefaultAddress($user->getId());
 
         // 返回
         return CommonUtil::resultData(['userAddresses' => $userAddress->getArray()])->toJsonResponse();
@@ -564,12 +579,15 @@ class MemberController extends AppApiBaseController
         $withdrawedTotal = $user->getWithDrawedTotal();
         $withdrawingTotal = $user->getWithDrawingTotal();
 
-        $userAccountOrderArray = [];
+        // 提现记录
+        $userWithdrawOrder = [];
         foreach ($user->getUserAccountOrders() as $userAccountOrder) {
-            if( $userAccountOrder->getPaymentStatus() == UserAccountOrder::UNPAID ){
-                $userAccountOrderArray['UNPAID'][] = $userAccountOrder->getArray();
-            }else{
-                $userAccountOrderArray['PAID'][] = $userAccountOrder->getArray();
+            if( $userAccountOrder->getUserAccountOrderType() == UserAccountOrder::WITHDRAW ){
+                if( $userAccountOrder->getPaymentStatus() == UserAccountOrder::UNPAID ){
+                    $userWithdrawOrder['UNPAID'][] = $userAccountOrder->getArray();
+                }else{
+                    $userWithdrawOrder['PAID'][] = $userAccountOrder->getArray();
+                }
             }
         }
 
@@ -578,7 +596,45 @@ class MemberController extends AppApiBaseController
             'withdrawedTotal' => $withdrawedTotal,
             'withdrawingTotal' => $withdrawingTotal,
             'userCommissionAmount'=>$userAccountOrderRepository->getUserCommissionAmount($user)['count'],
-            'userAccountOrders' => $userAccountOrderArray
+            'userWithdrawOrder' => $userWithdrawOrder
+        ];
+
+        // 返回
+        return CommonUtil::resultData($data)->toJsonResponse();
+    }
+
+    /**
+     * 资金明细
+     *
+     * @Route("/userAccountOrders", name="userAccountOrders", methods="GET")
+     * @param Request $request
+     * @return Response
+     */
+    public function userAccountOrdersAction(Request $request, UserAccountOrderRepository $userAccountOrderRepository) {
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $accountBalance = $user->getUserAccountTotal();
+        $withdrawTotal = $user->getWithDrawedTotal()+$user->getWithDrawingTotal();
+
+        // 提现记录
+        $userAccountOrder = [];
+        foreach ($user->getUserAccountOrders() as $userAccountOrder) {
+            if( $userAccountOrder->getPaymentStatus() == UserAccountOrder::UNPAID ){
+                $userAccountOrder[] = $userAccountOrder->getArray();
+            }else{
+                $userAccountOrder[] = $userAccountOrder->getArray();
+            }
+        }
+
+        $data = [
+            'userAccountOrders' => $userAccountOrder,
+            // 'incomeTotal' => $incomeTotal,// 收入总额
+            'withdrawTotal' => $withdrawTotal,// 提现总额
         ];
 
         // 返回
@@ -638,9 +694,9 @@ class MemberController extends AppApiBaseController
         }
 
         // 大于0
-        // if ($amount <= 0) {
-        //     return CommonUtil::resultData( [], ErrorCode::ERROR_GREATER_COUNT)->toJsonResponse();
-        // }
+        if ($amount <= 0) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_GREATER_COUNT)->toJsonResponse();
+        }
 
         // 余额
         if ($user->getUserAccountTotal() < $amount) {
