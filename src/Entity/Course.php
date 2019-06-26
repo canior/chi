@@ -1089,6 +1089,7 @@ class Course implements Dao
             'unlockType' => $this->getUnlockType(),
             'unlockTypeText' => $this->getUnlockTypeText(),
             'courseTags' => $this->getCourseTagArr(),
+            'addressImageFileId' => CommonUtil::obj2Id($this->getAddressImageFile()),
         ];
     }
 
