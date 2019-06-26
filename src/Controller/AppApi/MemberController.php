@@ -51,7 +51,7 @@ use App\Repository\MessageRepository;
 use App\Repository\UserAccountOrderRepository;
 use App\Service\Config\ConfigParams;
 use App\Service\Document\WeChatDocument;
-
+use App\Repository\FollowCourseMetaRepository;
 /**
  * @Route("/auth/member")
  */
@@ -958,51 +958,43 @@ class MemberController extends AppApiBaseController
      * @param GroupOrderRepository $groupOrderRepository
      * @return Response
      */
-    public function followAction(Request $request, FollowRepository $followRepository,CourseRepository $courseRepository,TeacherRepository $teacherRepository) {
+    public function followAction(Request $request, FollowCourseMetaRepository $followCouseMetaRepository,CourseRepository $courseRepository,TeacherRepository $teacherRepository) {
 
         $data = json_decode($request->getContent(), true);
         $type = isset($data['type']) ? $data['type'] : '';
         $page = isset($data['page']) ? $data['page'] : 1;
 
         // 查询匹配用户
-        $dateType = null;
-        if( $type == 'onlineCourse' || $type == 'offlineCourse' ){
-            $dateType = Follow::COURSE;
-        }
         $user =  $this->getAppUser();
         if ($user == null) {
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-
-        $followArray = $followRepository->findMyFollow($user->getId(),$dateType,$page,5);
-        foreach ($followArray as $k => $v) {
-            switch ($v['type']) {
-                case Follow::COURSE:
-                    $course = $courseRepository->find( $v['dataId'] );
-                    if($course){
-                        if ( $type == 'onlineCourse' && $course->isOnline() ) {
-                            $followArray[$k]['course'] = $course->getArray();
-                        }else if ( $type == 'offlineCourse' && !$course->isOnline() ) {
-                            $followArray[$k]['course'] = $course->getArray();
-                        }else{
-                            unset($followArray[$k]);
-                        }
-                    }
-                    break;
-                case Follow::TEACHER:
-                    $teacher = $teacherRepository->find( $v['dataId'] );
-                    if($teacher){
-                        $followArray[$k]['teacher'] = $teacher->getArray();
-                    }
-                    break;
-                default:
-                    break;
-            }
+        // 查询
+        switch ($type) {
+            case 'onlineCourse':
+                $type = 1;
+                $followArray = $followCouseMetaRepository->findMyFollow($user->getId(),$type,$page,5);
+                break;
+            case 'offlineCourse':
+                $type = 0;
+                $followArray = $followCouseMetaRepository->findMyFollow($user->getId(),$type,$page,5);
+                break;
+            case 'Teacher':
+                $followArray = $followTeacherMetaRepository->findMyFollow($user->getId(),$page,5);
+                break;
+            default:
+                break;
         }
-
+        
+        $follows = [];
+        foreach ($followArray as $k => $v) {
+            $follows[] = $v->getArray();    
+        }
+        // dump($follows);die;
+        
         // 返回
-        return CommonUtil::resultData(  ['follow'=>array_values($followArray)] )->toJsonResponse();
+        return CommonUtil::resultData(  ['follow'=>$follows] )->toJsonResponse();
     }
 
 

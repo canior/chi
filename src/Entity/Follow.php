@@ -3,11 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use  App\Entity\Follow;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FollowRepository")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="string")
+ * @ORM\DiscriminatorMap({"course" = "FollowCourseMeta", "teacher" = "FollowTeacherMeta"})
  */
-class Follow implements Dao
+abstract class Follow implements Dao
 {
     const COURSE = 'course';
     const TEACHER = 'teacher';
@@ -24,17 +27,13 @@ class Follow implements Dao
      */
     protected $id;
 
-    /**
-     * @var string|null
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $dataId;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string|null
+    /** 
+     * @ORM\ManyToOne(targetEntity="App\Entity\Course", inversedBy="Course") 
+     * @ORM\JoinColumn(name="data_id", referencedColumnName="id", nullable=false)
      */
-    private $type;
+    protected $dataId;
+
 
     /**
      * @var User|null $ownerUser
@@ -49,7 +48,7 @@ class Follow implements Dao
         return $this->id;
     }
     
-    public function getDataId(): ?string
+    public function getDataId()
     {
         return $this->dataId;
     }
@@ -88,4 +87,11 @@ class Follow implements Dao
     {
         $this->user = $user;
     }
+
+
+
+    public abstract function isCourse();
+
+    public abstract function isTeacher();
+
 }
