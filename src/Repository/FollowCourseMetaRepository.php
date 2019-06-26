@@ -12,7 +12,9 @@ use App\Entity\FollowCourseMeta;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-
+use App\Entity\Course;
+use App\Entity\Follow;
+use Doctrine\ORM\Query\Expr;
 /**
  * @method FollowCourseMeta|null find($id, $lockMode = null, $lockVersion = null)
  * @method FollowCourseMeta|null findOneBy(array $criteria, array $orderBy = null)
@@ -26,27 +28,24 @@ class FollowCourseMetaRepository extends ServiceEntityRepository
         parent::__construct($registry, FollowCourseMeta::class);
     }
 
-        /**
+    /**
      * @param $userId
      * @return array
      */
     public function findMyFollow($userId,$type,$page, $pageLimit)
     {
-        // $query = $this->getEntityManager()->createQueryBuilder()
-        //     ->select('ff AS Follow')
-        //     ->from('App:Follow', 'ff');
-            // ->leftJoin('ff.dataId', 'u');
-
-
         $query = $this->getEntityManager()->createQueryBuilder();
-        $query->select('ff')
-            ->from('App:Follow', 'ff')
-            ->leftJoin('ff.dataId', 'c')
+        $query->select('cc,ff.id')
+            ->from(FollowCourseMeta::class, 'ff')
+            ->leftJoin(Course::class,'cc',Expr\Join::WITH,'ff.dataId = cc.id')
             ->where('ff.user = :userId')
-            ->setParameter('userId', $userId);
+            ->setParameter('userId', $userId)
+            ->orderBy('ff.id', 'DESC');
 
-        if ($type) {
-            $query->andWhere('c.isOnline = :isOnline')->setParameter('isOnline', 1);
+        if ($type == 'onlineCourse') {
+            $query->andWhere('cc.isOnline = :isOnline')->setParameter('isOnline', 1);
+        }else if( $type == 'offlineCourse' ) {
+            $query->andWhere('cc.isOnline = :isOnline')->setParameter('isOnline', 0);
         }
 
         if ($page) {
@@ -56,6 +55,4 @@ class FollowCourseMetaRepository extends ServiceEntityRepository
 
         return $query->getQuery()->getResult();
     }
-    
-
 }

@@ -27,13 +27,10 @@ abstract class Follow implements Dao
      */
     protected $id;
 
-
     /** 
-     * @ORM\ManyToOne(targetEntity="App\Entity\Course", inversedBy="Course") 
-     * @ORM\JoinColumn(name="data_id", referencedColumnName="id", nullable=false)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $dataId;
-
 
     /**
      * @var User|null $ownerUser

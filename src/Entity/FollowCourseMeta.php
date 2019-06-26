@@ -27,16 +27,12 @@ class FollowCourseMeta extends Follow
         return true;
     }
 
-
     /**
      * @return array
      */
     public function getArray()
     {
         return [
-            'id'=>$this->getId(),
-            'course'=>$this->getDataId()->getArray(),
-            'user'=>$this->getUser()->getArray(),
         ];
     }
 }
