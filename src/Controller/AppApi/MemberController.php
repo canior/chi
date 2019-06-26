@@ -752,6 +752,7 @@ class MemberController extends AppApiBaseController
 
         $data = json_decode($request->getContent(), true);
         $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
+        $page = isset($data['page']) ? $data['page'] : 1;
 
         /**
          * product, onlineCourse, offlineCourse
@@ -792,6 +793,10 @@ class MemberController extends AppApiBaseController
             }else{
 
             }
+        }
+
+        if( $page > 1 ){
+            $groupUserOrdersArray = [];
         }
 
         // 返回
