@@ -56,7 +56,7 @@ use App\Repository\FollowTeacherMetaRepository;
 use App\Entity\FollowCourseMeta;
 use App\Entity\FollowTeacherMeta;
 use App\Repository\MessageGroupUserOrderMetaRepository;
-
+use App\Repository\UserRecommandStockOrderRepository;
 /**
  * @Route("/auth/member")
  */
@@ -972,10 +972,11 @@ class MemberController extends AppApiBaseController
      * @param Request $request
      * @return Response
      */
-    public function childrenUseAction(Request $request) {
+    public function childrenUseAction(Request $request, UserRecommandStockOrderRepository $userRecommandStockOrderRepository) {
         
         $data = json_decode($request->getContent(), true);
-
+        $page = isset($data['page']) ? $data['page'] : 1;
+        
         // 查询匹配用户
         $user =  $this->getAppUser();
         if ($user == null) {
@@ -983,7 +984,8 @@ class MemberController extends AppApiBaseController
         }
 
         // 获取用户
-        $userStockOrders = $user->getUserRecommandStockOrders();
+        $userStockOrders = $userRecommandStockOrderRepository->getUserRecommandStockOrders($user->getId());
+        $userStockOrders = $this->getPaginator()->paginate($userStockOrders, $page,self::PAGE_LIMIT);
 
         $childrenArray = [];
         foreach ($userStockOrders as $userStockOrder) {
@@ -991,9 +993,7 @@ class MemberController extends AppApiBaseController
         }
 
         // 返回
-        return CommonUtil::resultData( [
-            'children' => $childrenArray,
-        ] )->toJsonResponse();
+        return CommonUtil::resultData( ['children' => $childrenArray] )->toJsonResponse();
     }
 
 
@@ -1056,10 +1056,10 @@ class MemberController extends AppApiBaseController
         switch ($type) {
             case 'onlineCourse':
             case 'offlineCourse':
-                $followArray = $followCourseMetaRepository->findMyFollow($user->getId(),$type,$page,8);
+                $followArray = $followCourseMetaRepository->findMyFollow($user->getId(),$type,$page,self::PAGE_LIMIT);
                 break;
             case 'Teacher':
-                $followArray = $followTeacherMetaRepository->findMyFollow($user->getId(),$page,8);
+                $followArray = $followTeacherMetaRepository->findMyFollow($user->getId(),$page,self::PAGE_LIMIT);
                 break;
             default:
                 break;
