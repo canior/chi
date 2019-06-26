@@ -94,7 +94,9 @@ class ProductController extends AppApiBaseController
                     $productRateSum += $review->getRate();
                 }
             }
-            $data['product']['followId'] = CommonUtil::obj2Id($this->followCourseInfo($user, $product->getCourse()));
+            //todo 关注OK 修改此处代码
+//            $data['product']['followId'] = CommonUtil::obj2Id($this->followCourseInfo($user, $product->getCourse()));
+            $data['product']['followId'] = 0;
             $data['product']['isFollow'] = !empty($data['product']['followId']);
             $data['product']['myReview'] = CommonUtil::obj2Array($product->getMyReview($user));
             $data['product']['rate'] = !empty($productRateSum) ? number_format($productRateSum / $product->getActiveReviews()->count(), 2, '.', '') : 0;

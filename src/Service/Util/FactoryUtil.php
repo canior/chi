@@ -13,6 +13,7 @@ use App\Entity\Category;
 use App\Entity\Course;
 use App\Entity\File;
 use App\Entity\GroupUserOrder;
+use App\Entity\Message;
 use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Entity\User;
@@ -21,6 +22,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use App\Repository\FileRepository;
 use App\Repository\GroupUserOrderRepository;
+use App\Repository\MessageRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
 use App\Repository\UserAccountOrderRepository;
@@ -203,6 +205,19 @@ class FactoryUtil
          * @var FileRepository $repository
          */
         $repository =  CommonUtil::getRepository(File::class);
+        return $repository;
+    }
+
+    /**
+     * @return MessageRepository
+     * @author zxqc2018
+     */
+    public static function messageRepository()
+    {
+        /**
+         * @var MessageRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(Message::class);
         return $repository;
     }
 

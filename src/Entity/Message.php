@@ -74,6 +74,7 @@ class Message implements Dao
     public function __construct()
     {
         $this->setCreatedAt(time());
+        $this->setIsRead(0);
     }
     
     public function getIsRead(): ?string

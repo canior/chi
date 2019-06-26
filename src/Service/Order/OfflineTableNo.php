@@ -10,8 +10,8 @@ namespace App\Service\Order;
 
 
 use App\Entity\GroupUserOrder;
-use App\Service\Config\ConfigParams;
 use App\Service\Util\CommonUtil;
+use App\Service\Util\FactoryUtil;
 
 class OfflineTableNo
 {
@@ -45,8 +45,10 @@ class OfflineTableNo
         }
 
         // 目前人员情况
-        $groupUserOrderRepository = ConfigParams::getRepositoryManager()->getRepository(GroupUserOrder::class);
-        $productUserOrderBy = $groupUserOrderRepository->findUserOrderByProduct( $groupUserOrder->getProduct()->getId() );
+        /**
+         * @var GroupUserOrder[] $productUserOrderBy
+         */
+        $productUserOrderBy = FactoryUtil::groupUserOrderRepository()->findUserOrderByProduct( $groupUserOrder->getProduct()->getId() );
 
         // 同推荐人分布情况
         $tablesUsers = [];

@@ -61,9 +61,10 @@ class MemberController extends AppApiBaseController
      * @Route("/setNewPhone", name="apiSetNewPhone",  methods={"POST"})
      * @param Request $request
      * @param MessageCodeRepository $messageCodeRepository
+     * @param UserManagerInterface $userManager
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function setNewPhone(Request $request, MessageCodeRepository $messageCodeRepository   )
+    public function setNewPhone(Request $request, MessageCodeRepository $messageCodeRepository, UserManagerInterface $userManager)
     {
         $data = json_decode(
             $request->getContent(),
@@ -1355,5 +1356,21 @@ class MemberController extends AppApiBaseController
         $processResult = FactoryUtil::OfflineCourseService()->offlineSign($user, $requestProcess['courseId'], $requestProcess['courseStudentStatus']);
 
         return $processResult->toJsonResponse();
+    }
+
+    /**
+     * 获取我的评论列表
+     * @Route("/message/hasNew", name="isHasNewMessage", methods={"POST"})
+     * @author zxqc2018
+     * @return JsonResponse
+     */
+    public function isHasNewMessage()
+    {
+        $requestProcess = $this->processRequest();
+        $user = $this->getAppUser();
+        $unReadMessage = FactoryUtil::messageRepository()->findOneBy(['user' => $user, 'isRead' => 0]);
+        return $requestProcess->toJsonResponse([
+            'hasNewMessage' => !empty($unReadMessage),
+        ]);
     }
 }
