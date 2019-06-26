@@ -137,7 +137,8 @@ trait NotifyProcessTrait
                     $phone = CommonUtil::getInsideValue($groupUserOrder, 'getUser.getPhone', '');
                     $message->setDataId($groupUserOrder->getId());
                     $message->setUser($groupUserOrder->getUser()->getParentUser());
-                    $message->setTitle("您的用户{$name},手机号为{$phone}完成了系统学员的身份升级，详细信息请打开app了解。");
+                    $message->setContent("您的用户{$name},手机号为{$phone}完成了系统学员的身份升级，详细信息请打开app了解。");
+                    $message->setTitle("学员升级");
                     CommonUtil::entityPersist($message);
                 }
             }
