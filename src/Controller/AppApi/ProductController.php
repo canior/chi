@@ -23,6 +23,7 @@ use App\Repository\ProjectBannerMetaRepository;
 use App\Repository\ProjectTextMetaRepository;
 use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
+use App\Service\Util\FactoryUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -94,9 +95,8 @@ class ProductController extends AppApiBaseController
                     $productRateSum += $review->getRate();
                 }
             }
-            //todo 关注OK 修改此处代码
-//            $data['product']['followId'] = CommonUtil::obj2Id($this->followCourseInfo($user, $product->getCourse()));
-            $data['product']['followId'] = 0;
+
+            $data['product']['followId'] = CommonUtil::obj2Id($this->followCourseInfo($user, $product->getCourse()));
             $data['product']['isFollow'] = !empty($data['product']['followId']);
             $data['product']['myReview'] = CommonUtil::obj2Array($product->getMyReview($user));
             $data['product']['rate'] = !empty($productRateSum) ? number_format($productRateSum / $product->getActiveReviews()->count(), 2, '.', '') : 0;
@@ -186,11 +186,10 @@ class ProductController extends AppApiBaseController
      */
     protected function followCourseInfo(User $user, Course $course)
     {
-        $followRepository = $this->getEntityManager()->getRepository(Follow::class);
         /**
          * @var Follow $follow
          */
-        $follow = $followRepository->findOneBy(['dataId' => $course->getId(), 'user' => $user, 'type' => Follow::COURSE]);
+        $follow = FactoryUtil::followCourseMetaRepository()->findOneBy(['dataId' => $course->getId(), 'user' => $user]);
         return $follow;
     }
 

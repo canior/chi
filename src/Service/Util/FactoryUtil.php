@@ -12,6 +12,8 @@ namespace App\Service\Util;
 use App\Entity\Category;
 use App\Entity\Course;
 use App\Entity\File;
+use App\Entity\FollowCourseMeta;
+use App\Entity\FollowTeacherMeta;
 use App\Entity\GroupUserOrder;
 use App\Entity\Message;
 use App\Entity\Product;
@@ -21,6 +23,8 @@ use App\Entity\UserAccountOrder;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use App\Repository\FileRepository;
+use App\Repository\FollowCourseMetaRepository;
+use App\Repository\FollowTeacherMetaRepository;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\MessageRepository;
 use App\Repository\ProductRepository;
@@ -218,6 +222,33 @@ class FactoryUtil
          * @var MessageRepository $repository
          */
         $repository =  CommonUtil::getRepository(Message::class);
+        return $repository;
+    }
+
+    /**
+     * @return FollowCourseMetaRepository
+     * @author zxqc2018
+     */
+    public static function followCourseMetaRepository()
+    {
+        /**
+         * @var FollowCourseMetaRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(FollowCourseMeta::class);
+        return $repository;
+    }
+
+
+    /**
+     * @return FollowTeacherMetaRepository
+     * @author zxqc2018
+     */
+    public static function followTeacherMetaRepository()
+    {
+        /**
+         * @var FollowTeacherMetaRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(FollowTeacherMeta::class);
         return $repository;
     }
 

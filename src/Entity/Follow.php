@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use  App\Entity\Follow;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FollowRepository")
  * @ORM\InheritanceType("SINGLE_TABLE")
