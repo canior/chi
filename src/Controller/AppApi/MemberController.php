@@ -621,20 +621,22 @@ class MemberController extends AppApiBaseController
         $accountBalance = $user->getUserAccountTotal();
         $withdrawTotal = $user->getWithDrawedTotal()+$user->getWithDrawingTotal();
 
-        // 提现记录
-        $userAccountOrder = [];
+        // 资金记录
+        $userAccountOrders = [];
         foreach ($user->getUserAccountOrders() as $userAccountOrder) {
-            if( $userAccountOrder->getPaymentStatus() == UserAccountOrder::UNPAID ){
-                $userAccountOrder[] = $userAccountOrder->getArray();
-            }else{
-                $userAccountOrder[] = $userAccountOrder->getArray();
+            $userAccountOrders[] = $userAccountOrder->getArray();
+
+            // 收入总额
+            $incomeTotal = 0;
+            if( $userAccountOrder->getUserAccountOrderType() != UserAccountOrder::WITHDRAW ){
+                $incomeTotal = $incomeTotal+$userAccountOrder->getAmount();
             }
         }
 
         $data = [
-            'userAccountOrders' => $userAccountOrder,
-            // 'incomeTotal' => $incomeTotal,// 收入总额
+            'incomeTotal' => $incomeTotal,// 收入总额
             'withdrawTotal' => $withdrawTotal,// 提现总额
+            'userAccountOrders' => $userAccountOrders,
         ];
 
         // 返回
