@@ -19,4 +19,17 @@ class UserRecommandStockOrderRepository extends ServiceEntityRepository
         parent::__construct($registry, UserRecommandStockOrder::class);
     }
 
+    /**
+     * 已用名额
+     */
+    public function getUserRecommandStockOrders($userId)
+    {
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('u')
+            ->from(UserRecommandStockOrder::class, 'u')
+            ->where('u.user = :user')
+            ->setParameter('user', $userId);
+
+        return $query;
+    } 
 }

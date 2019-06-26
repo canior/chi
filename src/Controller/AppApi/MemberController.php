@@ -55,7 +55,8 @@ use App\Repository\FollowCourseMetaRepository;
 use App\Repository\FollowTeacherMetaRepository;
 use App\Entity\FollowCourseMeta;
 use App\Entity\FollowTeacherMeta;
-
+use App\Repository\MessageGroupUserOrderMetaRepository;
+use App\Repository\UserRecommandStockOrderRepository;
 /**
  * @Route("/auth/member")
  */
@@ -468,10 +469,25 @@ class MemberController extends AppApiBaseController
         }
 
 
-        $userAddress->setName($name)->setPhone($phone)->setIsDefault($isDefault)->setRegion($countyDao)->setAddress($address)->setUpdatedAt(time());
+        $userAddress->setUpdatedAt(time());
+        if( isset($data['name']) ){
+            $userAddress->setName($name);
+        }
+        if( isset($data['phone']) ){
+            $userAddress->setPhone($phone);
+        }
+        if( isset($data['isDefault']) ){
+            $userAddress->setIsDefault($isDefault);
+        }
+        if( $countyDao ){
+            $userAddress->setRegion($countyDao);
+        }
+        if( isset($data['address']) ){
+            $userAddress->setAddress($address);
+        }
+
         $this->getEntityManager()->persist($userAddress);
         $this->getEntityManager()->flush();
-
 
         // 返回
         return CommonUtil::resultData(['userAddress' => $userAddress->getArray()])->toJsonResponse();
@@ -956,10 +972,11 @@ class MemberController extends AppApiBaseController
      * @param Request $request
      * @return Response
      */
-    public function childrenUseAction(Request $request) {
+    public function childrenUseAction(Request $request, UserRecommandStockOrderRepository $userRecommandStockOrderRepository) {
         
         $data = json_decode($request->getContent(), true);
-
+        $page = isset($data['page']) ? $data['page'] : 1;
+        
         // 查询匹配用户
         $user =  $this->getAppUser();
         if ($user == null) {
@@ -967,7 +984,8 @@ class MemberController extends AppApiBaseController
         }
 
         // 获取用户
-        $userStockOrders = $user->getUserRecommandStockOrders();
+        $userStockOrders = $userRecommandStockOrderRepository->getUserRecommandStockOrders($user->getId());
+        $userStockOrders = $this->getPaginator()->paginate($userStockOrders, $page,self::PAGE_LIMIT);
 
         $childrenArray = [];
         foreach ($userStockOrders as $userStockOrder) {
@@ -975,9 +993,7 @@ class MemberController extends AppApiBaseController
         }
 
         // 返回
-        return CommonUtil::resultData( [
-            'children' => $childrenArray,
-        ] )->toJsonResponse();
+        return CommonUtil::resultData( ['children' => $childrenArray] )->toJsonResponse();
     }
 
 
@@ -1040,10 +1056,10 @@ class MemberController extends AppApiBaseController
         switch ($type) {
             case 'onlineCourse':
             case 'offlineCourse':
-                $followArray = $followCourseMetaRepository->findMyFollow($user->getId(),$type,$page,8);
+                $followArray = $followCourseMetaRepository->findMyFollow($user->getId(),$type,$page,self::PAGE_LIMIT);
                 break;
             case 'Teacher':
-                $followArray = $followTeacherMetaRepository->findMyFollow($user->getId(),$page,8);
+                $followArray = $followTeacherMetaRepository->findMyFollow($user->getId(),$page,self::PAGE_LIMIT);
                 break;
             default:
                 break;
@@ -1159,7 +1175,7 @@ class MemberController extends AppApiBaseController
      * @param MessageRepository $messageRepository
      * @return Response
      */
-    public function messageAction(Request $request, MessageRepository $messageRepository,GroupUserOrderRepository $groupUserOrderRepository) {
+    public function messageAction(Request $request, MessageGroupUserOrderMetaRepository $messageGroupUserOrderMetaRepository) {
 
         $data = json_decode($request->getContent(), true);
         $page = isset($data['page']) ? $data['page'] : 1;
@@ -1171,28 +1187,18 @@ class MemberController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        $messageQuery = $messageRepository->findOrderMessageQuery($user->getId(),Message::TYPE_GROUP_USER_ORDER);
+        $messageQuery = $messageGroupUserOrderMetaRepository->getGroupUserOrder($user->getId(),$checkStatus);
         $messageArrays = $this->getPaginator()->paginate($messageQuery, $page, self::PAGE_LIMIT);
 
-        $courseArray = [];
-        foreach ($messageArrays as $messageArray) {
-            //
-            $item = $messageArray->getArray();
-            $groupUserOrder = $groupUserOrderRepository->find( $messageArray->getDataId() );
-            $item['groupUserOrder'] = $groupUserOrder->getArray();
-            if( $checkStatus ){
-                if(  $groupUserOrder->getCheckStatus() ){
-                    $courseArray[] = $item;
-                }
-            }else{
-                if(  !$groupUserOrder->getCheckStatus() ){
-                    $courseArray[] = $item;
-                }
-            }
+        $orderArray = [];
+        foreach ($messageArrays as $order) {
+            $order['groupUserOrder'] = $order[0]->getArray();
+            unset($order[0]);
+            $orderArray[] = $order;
         }
 
         // 返回
-        return CommonUtil::resultData(  ['messageArray'=>$courseArray] )->toJsonResponse();
+        return CommonUtil::resultData(  ['messageArray'=>$orderArray] )->toJsonResponse();
     }
 
     /**
