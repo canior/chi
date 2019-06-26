@@ -95,7 +95,7 @@ class ProductController extends AppApiBaseController
                     $productRateSum += $review->getRate();
                 }
             }
-            $this->getLog()->info('followTest', ['id' => $user->getId(), 'courseId' => $product->getCourse()->getId()]);
+
             $data['product']['followId'] = CommonUtil::obj2Id($this->followCourseInfo($user, $product->getCourse()));
             $data['product']['isFollow'] = !empty($data['product']['followId']);
             $data['product']['myReview'] = CommonUtil::obj2Array($product->getMyReview($user));
