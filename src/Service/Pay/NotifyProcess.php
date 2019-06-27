@@ -45,9 +45,11 @@ class NotifyProcess
     {
         if (strpos($this->notifyRaw, ConfigParams::getParamWithController(ConfigParams::JQ_APP_WX_ID)) !== false) {
             $this->processHandle = FactoryUtil::wxPayNotify();
-        } else if (strpos($this->notifyRaw, ConfigParams::getParamWithController(ConfigParams::JQ_APP_ALIPAY_ID))) {
+        } else if (strpos($this->notifyRaw, ConfigParams::getParamWithController(ConfigParams::JQ_APP_ALIPAY_ID)) !== false) {
             $this->processHandle = FactoryUtil::aliPayNotify();
-        } else {
+        } else if (strpos($this->notifyRaw, ConfigParams::getParamWithController(ConfigParams::JQ_GZH_WX_ID)) !== false) {
+            $this->processHandle = FactoryUtil::wxPayGzhNotify();
+        }  else {
             CommonUtil::resultData()->throwErrorException(ErrorCode::ERROR_NOTIFY_RAW_NOT_ALLOW, []);
         }
     }

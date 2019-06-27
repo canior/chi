@@ -45,6 +45,11 @@ class AlipayNotify extends AbstractAlipayNotify
         if (empty($data)) {
             $res->throwErrorException(ErrorCode::ERROR_NOTIFY_VERIFY_SIGN, []);
         }
+
+        if (!in_array($data['trade_status'] ?? '', ['TRADE_SUCCESS', 'TRADE_FINISHED'])) {
+            $res->throwErrorException(ErrorCode::ERROR_NOTIFY_VERIFY_SIGN, []);
+        }
+
         $res->setData($data);
         return $res;
     }

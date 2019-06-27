@@ -44,7 +44,7 @@ class ConfigParams
     //支付宝 支付成功通知url
     const JQ_APP_ALIPAY_NOTIFY_URL = 'jq_app_alipay_notify_url';
     /**
-     * 获取控制器为入口的容易的参数信息
+     * 获取控制器为入口的参数信息
      * @param $key
      * @param null $defaultValue
      * @return mixed

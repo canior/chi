@@ -56,15 +56,13 @@ class Pay
 
     /**
      * Pay constructor.
-     * @param array $config
+     * @param array $wxAppConfig
      */
-    public function __construct(array $config = [])
+    public function __construct(array $wxAppConfig = [])
     {
         $defaultConfig = $this->getConfigSetting();
-        if (!empty($config)) {
-            if (isset($config['wechat'])) {
-                $defaultConfig['wechat'] = array_merge($defaultConfig['wechat'], $config['wechat']);
-            }
+        if (!empty($wxAppConfig)) {
+            $defaultConfig['wechat'] = array_merge($defaultConfig['wechat'], $wxAppConfig);
         }
         $this->config = new Config($defaultConfig);
     }

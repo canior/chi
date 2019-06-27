@@ -42,6 +42,12 @@ class WechatNotify extends AbstractWechatNotify
         if (empty($data)) {
             $res->throwErrorException(ErrorCode::ERROR_NOTIFY_VERIFY_SIGN, []);
         }
+
+        $resultCode = $data['result_code'] ?? '';
+        $returnCode = $data['return_code'] ?? '';
+        if ($resultCode != 'SUCCESS' || $returnCode != 'SUCCESS') {
+            $res->throwErrorException(ErrorCode::ERROR_NOTIFY_VERIFY_SIGN, []);
+        }
         $res->setData($data);
         return $res;
     }
