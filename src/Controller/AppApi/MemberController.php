@@ -648,7 +648,7 @@ class MemberController extends AppApiBaseController
 
             // 收入总额
             if( $userAccountOrder->getUserAccountOrderType() != UserAccountOrder::WITHDRAW ){
-                $incomeTotal = $incomeTotal+$userAccountOrder->getAmount();
+                $incomeTotal = (float)$incomeTotal+(float)$userAccountOrder->getAmount();
             }
         }
 
@@ -1220,7 +1220,7 @@ class MemberController extends AppApiBaseController
 
 
         // 查询列表 标记已读
-        $messageGroupUserOrderMetaRepository->setMessagesIsRead($idsArray);
+        // $messageGroupUserOrderMetaRepository->setMessagesIsRead($idsArray);
 
         // 返回
         return CommonUtil::resultData(  ['messageArray'=>$orderArray] )->toJsonResponse();
