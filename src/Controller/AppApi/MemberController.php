@@ -942,13 +942,11 @@ class MemberController extends AppApiBaseController
         /**
          * @var GroupUserOrder[] $groupUserOrders
          */
-        $groupUserOrders = $groupUserOrderRepository->findSupplierGroupUserOrdersQuery($user->getId(), $groupUserOrderStatuses,$page, self::PAGE_LIMIT)->getResult();
+        $groupUserOrders = $groupUserOrderRepository->supplierGroupUserOrders($user->getId(), $groupUserOrderStatuses,$page, self::PAGE_LIMIT)->getResult();
 
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
-            if (!$groupUserOrder->getProduct()->isCourseProduct()) {
-                $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            }
+            $groupUserOrdersArray[] = $groupUserOrder->getArray();
         }
 
         // 返回
