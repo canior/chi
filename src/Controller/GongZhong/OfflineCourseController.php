@@ -2,30 +2,30 @@
 /**
  * Created by PhpStorm.
  * User: zxqc2018
- * Date: 2019/6/16
- * Time: 15:27
+ * Date: 2019/6/27
+ * Time: 15:32
  */
 
-namespace App\Controller\AppApi;
+namespace App\Controller\GongZhong;
 
 use App\Repository\ProductRepository;
-use App\Repository\ProjectBannerMetaRepository;
 use App\Service\Util\CommonUtil;
+use App\Service\Util\FactoryUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class OfflineCourseController
- * @package App\Controller\AppApi
+ * @package App\Controller\Gongzhong
  * @author zxqc2018
  */
-class OfflineCourseController extends CourseController
+class OfflineCourseController extends GongZhongBaseController
 {
     /**
      * 获取线下课程列表
      *
-     * @Route("/offlineCourses", name="appOfflineCourseIndex", methods="POST")
+     * @Route("/offlineCourses", name="gzhOfflineCourseIndex", methods="POST")
      * @param Request $request
      * @param ProductRepository $productRepository
      * @return JsonResponse
@@ -51,11 +51,13 @@ class OfflineCourseController extends CourseController
     /**
      * 获取课程详情
      *
-     * @Route("/auth/offlineCourse/detail", name="appOfflineCourseDetail", methods="POST")
-     * @param Request $request
+     * @Route("/auth/offlineCourse/detail", name="gzhOfflineCourseDetail", methods="POST")
      * @return JsonResponse
      */
-    public function detailAction(Request $request): JsonResponse {
-        return parent::detailAction($request);
+    public function detailAction(): JsonResponse {
+        $requestProcess = $this->processRequest(null, [
+            'url', 'productId', 'page', 'pageNum'
+        ], ['productId']);
+        return FactoryUtil::offlineCourseService()->getDetailInfo($requestProcess, $this->getAppUser())->toJsonResponse();
     }
 }

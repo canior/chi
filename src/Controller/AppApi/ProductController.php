@@ -15,7 +15,6 @@ use App\Entity\GroupUserOrder;
 use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Entity\ProjectBannerMeta;
-use App\Entity\ProjectTextMeta;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
@@ -39,70 +38,16 @@ class ProductController extends AppApiBaseController
      * 获取产品详情
      * @Route("/auth/product/detail", name="appProductDetail", methods="POST")
      * @param Request $request
-     * @param ProductRepository $productRepository
      * @return JsonResponse
      */
-    public function detailAction(Request $request, ProductRepository $productRepository): JsonResponse
+    public function detailAction(Request $request): JsonResponse
     {
         $requestProcess = $this->processRequest($request, [
             'url', 'productId', 'page', 'pageNum'
         ], ['productId']);
 
         $user = $this->getAppUser();
-        $productId = $requestProcess['productId'];
-        $url = $requestProcess['url'];
-
-        $product = $productRepository->find($productId);
-
-        if (empty($product)) {
-            $requestProcess->throwErrorException(ErrorCode::ERROR_PRODUCT_NOT_EXISTS);
-        }
-
-        //todo 分享
-
-        /**
-         * @var ProjectTextMetaRepository $projectTextMetaRepository
-         */
-        $projectTextMetaRepository = $this->getEntityManager()->getRepository(ProjectTextMeta::class);
-
-        $productArray = $product->isCourseProduct() ? $product->getCourse()->getCourseVideoArray() : $product->getArray();
-        $data = [
-            'product' => $productArray,
-            'shareSources' => [],
-            'textMetaArray' => $this->createProjectTextMetas($projectTextMetaRepository)
-        ];
-
-
-        //课程加上对应的权限以及
-        if ($product->isCourseProduct()) {
-            if ($product->getCourse()->isOnline()) {
-                $data['product']['isPermission'] = $product->getCourse()->isPermission($user);
-                $data['product']['callStatus'] = '';
-                if (empty($data['product']['isPermission'])) {
-                    $newGroupOrder = $user->getNewestGroupUserOrder($product, true);
-                    $data['product']['callStatus'] = CommonUtil::getInsideValue($newGroupOrder, 'getStatus', '');
-                }
-            } else {
-                /**
-                 * @var GroupUserOrder $groupUserOrder
-                 */
-                $groupUserOrder = $this->findGroupUserOrder($user, $product);
-                $data['groupUserOrder'] = CommonUtil::obj2Array($groupUserOrder);
-            }
-            $productRateSum = 0;
-            if (!$product->getActiveReviews()->isEmpty()) {
-                foreach ($product->getActiveReviews() as $review) {
-                    $productRateSum += $review->getRate();
-                }
-            }
-
-            $data['product']['followId'] = CommonUtil::obj2Id($this->followCourseInfo($user, $product->getCourse()));
-            $data['product']['isFollow'] = !empty($data['product']['followId']);
-            $data['product']['myReview'] = CommonUtil::obj2Array($product->getMyReview($user));
-            $data['product']['rate'] = !empty($productRateSum) ? number_format($productRateSum / $product->getActiveReviews()->count(), 2, '.', '') : 0;
-            $data['productReviews'] = CommonUtil::entityArray2DataArray($this->getPaginator()->paginate($product->getActiveReviews(), $requestProcess['page'], $requestProcess['pageNum']));
-        }
-        return $requestProcess->toJsonResponse($data);
+        return FactoryUtil::offlineCourseService()->getDetailInfo($requestProcess, $user)->toJsonResponse();
     }
 
     /**

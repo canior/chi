@@ -16,7 +16,7 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         api:
-            pattern:   ^/appApi/auth
+            pattern:   ^/(appApi|gongZhong)/auth
             stateless: true
             provider: fos_userbundle
             lexik_jwt:

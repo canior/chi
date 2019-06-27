@@ -24,8 +24,8 @@ class ExceptionListener
     {
         $exception = $event->getException();
 
-        //判断是否/appApi 开头的请求 返回json
-        if (!empty($event->getRequest()->getRequestUri()) && strpos($event->getRequest()->getRequestUri(), '/appApi') === 0) {
+        //判断是否api接口 返回json
+        if (!empty($event->getRequest()->getRequestUri()) && CommonUtil::requestUrlStartsWith($event->getRequest(), 'appApi||gongZhong')) {
             $resultData = CommonUtil::resultData([], ErrorCode::ERROR_COMMON_UNKNOWN_ERROR);
 
             //debug模式下输出对应异常信息

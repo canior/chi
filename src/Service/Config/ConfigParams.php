@@ -9,6 +9,7 @@
 namespace App\Service\Config;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Paginator;
 
 /**
  * 配置参数获取 config/parameters.yaml
@@ -92,6 +93,15 @@ class ConfigParams
      */
     public static function getLogger()
     {
-        return $container = DependencyInjectionSingletonConfig::getInstance()->getLogger();
+        return DependencyInjectionSingletonConfig::getInstance()->getLogger();
+    }
+
+    /**
+     * @return Paginator
+     * @author zxqc2018
+     */
+    public static function getPaginator()
+    {
+        return DependencyInjectionSingletonConfig::getInstance()->getContainer()->get('knp_paginator');
     }
 }

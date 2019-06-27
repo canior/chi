@@ -1460,7 +1460,7 @@ class MemberController extends AppApiBaseController
         if (!in_array($requestProcess['courseStudentStatus'], [CourseStudent::SIGNIN, CourseStudent::WELCOME])) {
             $requestProcess->throwErrorException(ErrorCode::ERROR_PARAM_NOT_ALL_EXISTS, ['errorKey' => 'courseStudentStatus']);
         }
-        $processResult = FactoryUtil::OfflineCourseService()->offlineSign($user, $requestProcess['courseId'], $requestProcess['courseStudentStatus']);
+        $processResult = FactoryUtil::offlineCourseService()->offlineSign($user, $requestProcess['courseId'], $requestProcess['courseStudentStatus']);
 
         return $processResult->toJsonResponse();
     }

@@ -275,7 +275,7 @@ class CommonUtil
     /**
      * 请求URL是否开始于xxx
      * @param Request $request
-     * @param string $prefix
+     * @param string $prefix 支付 || 拼接字符串   aaa||bbb
      * @return bool
      * @author zxqc2018
      */
@@ -283,8 +283,14 @@ class CommonUtil
     {
         $res = false;
 
-        if (!empty($request->getRequestUri()) && strpos($request->getRequestUri(), '/' . ltrim($prefix, '/')) === 0) {
-            $res = true;
+        $prefixArr = self::myExplode($prefix, '||');
+        if (!empty($request->getRequestUri())) {
+            foreach ($prefixArr as $val) {
+                if (strpos($request->getRequestUri(), '/' . ltrim($val, '/')) === 0) {
+                    $res = true;
+                    break;
+                }
+            }
         }
         return $res;
     }

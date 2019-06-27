@@ -62,7 +62,7 @@ class AppApiBaseController extends BaseController
         $res = null;
 
         //只判断jwt登陆的url验证token,与后台登陆区分
-        if (!CommonUtil::requestUrlStartsWith($this->appRequest, 'appApi/auth')) {
+        if (!CommonUtil::requestUrlStartsWith($this->appRequest, 'appApi/auth||gongZhong/auth')) {
             if ($force && ($userIdInToken = $this->getAppUserId())) {
                 $user = FactoryUtil::userRepository()->find($userIdInToken);
                 if (!empty($user)) {

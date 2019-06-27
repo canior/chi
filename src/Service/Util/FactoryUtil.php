@@ -18,6 +18,7 @@ use App\Entity\GroupUserOrder;
 use App\Entity\Message;
 use App\Entity\Product;
 use App\Entity\ProductReview;
+use App\Entity\ProjectTextMeta;
 use App\Entity\User;
 use App\Entity\UserAccountOrder;
 use App\Repository\CategoryRepository;
@@ -29,14 +30,17 @@ use App\Repository\GroupUserOrderRepository;
 use App\Repository\MessageRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
+use App\Repository\ProjectTextMetaRepository;
 use App\Repository\UserAccountOrderRepository;
 use App\Repository\UserRepository;
+use App\Service\Config\ConfigParams;
 use App\Service\Pay\Contracts\GatewayInterface;
 use App\Service\Pay\Contracts\NotifyInterface;
 use App\Service\Pay\NotifyProcess;
 use App\Service\Pay\Pay;
 use App\Service\Product\OfflineCourseService;
 use App\Service\Sms\AliSms;
+use Knp\Component\Pager\Paginator;
 
 class FactoryUtil
 {
@@ -238,7 +242,6 @@ class FactoryUtil
         return $repository;
     }
 
-
     /**
      * @return FollowTeacherMetaRepository
      * @author zxqc2018
@@ -252,8 +255,34 @@ class FactoryUtil
         return $repository;
     }
 
-    public static function OfflineCourseService()
+    /**
+     * @return ProjectTextMetaRepository
+     * @author zxqc2018
+     */
+    public static function projectTextMetaRepository()
+    {
+        /**
+         * @var  ProjectTextMetaRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(ProjectTextMeta::class);
+        return $repository;
+    }
+
+    /**
+     * @return OfflineCourseService
+     * @author zxqc2018
+     */
+    public static function offlineCourseService()
     {
         return new OfflineCourseService();
+    }
+
+    /**
+     * @return Paginator
+     * @author zxqc2018
+     */
+    public static function getPaginator()
+    {
+        return ConfigParams::getPaginator();
     }
 }

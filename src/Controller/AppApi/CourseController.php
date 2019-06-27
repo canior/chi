@@ -122,11 +122,10 @@ class CourseController extends ProductController
      *
      * @Route("/auth/course/detail", name="appCourseDetail", methods="POST")
      * @param Request $request
-     * @param ProductRepository $productRepository
      * @return JsonResponse
      */
-    public function detailAction(Request $request, ProductRepository $productRepository): JsonResponse {
-        return parent::detailAction($request, $productRepository);
+    public function detailAction(Request $request): JsonResponse {
+        return parent::detailAction($request);
     }
 
     /**
