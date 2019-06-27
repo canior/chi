@@ -57,7 +57,6 @@ class MessageGroupUserOrderMetaRepository extends ServiceEntityRepository
         if( !count($idsArray) ){
             return true;
         }
-        $idsArray = implode(',', $idsArray);
 
         $q = $this->_em->createQueryBuilder('u')
             ->update(MessageGroupUserOrderMeta::class, 'u')

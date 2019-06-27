@@ -769,34 +769,46 @@ class MemberController extends AppApiBaseController
         if ($groupUserOrderStatus == null){
             $groupUserOrderStatus =  array_keys(GroupUserOrder::$statuses);
         }
-
         $paymentStatusArray = ['paid', 'refunding', 'refunded'];
 
-        $groupUserOrders = $groupUserOrderRepository->findBy(
-            [
-            'user' => $user,
-            'status' => $groupUserOrderStatus,
-            'paymentStatus' => $paymentStatusArray
-            ], 
-            ['id' => 'DESC']
-        );
+
+        switch ($productType) {
+            case 'product':
+                $where = [
+                    'user' => $user,
+                    'status' => $groupUserOrderStatus,
+                    'paymentStatus' => $paymentStatusArray,
+                    'isCourseProduct'=>false,
+                ];
+                break;
+            case 'onlineCourse':
+                $where = [
+                    'user' => $user,
+                    'status' => $groupUserOrderStatus,
+                    'paymentStatus' => $paymentStatusArray,
+                    'isCourseProduct'=>true,
+                    'isOnline'=>true
+                ];
+                break;
+            case 'offlineCourse':
+                $where = [
+                    'user' => $user,
+                    'status' => $groupUserOrderStatus,
+                    'paymentStatus' => $paymentStatusArray,
+                    'isCourseProduct'=>true,
+                    'isOnline'=>false
+                ];
+                break;
+            default:
+                break;
+        }
+
+        $groupUserOrders = $groupUserOrderRepository->findUserGroupUserOrders($where);
+        $groupUserOrders = $this->getPaginator()->paginate($groupUserOrders, $page,self::PAGE_LIMIT);
 
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
-            $product = $groupUserOrder->getProduct();
-            if ($productType == 'product' and !$product->isCourseProduct() ) {
-                $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            } else if ($productType == 'onlineCourse' and $product->isCourseProduct() and $product->getCourse()->isOnline() ) {
-                $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            } else if ($productType == 'offlineCourse' and $product->isCourseProduct() and !$product->getCourse()->isOnline() ) {
-                $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            }else{
-
-            }
-        }
-
-        if( $page > 1 ){
-            $groupUserOrdersArray = [];
+            $groupUserOrdersArray[] = $groupUserOrder->getArray();
         }
 
         // 返回
@@ -932,7 +944,7 @@ class MemberController extends AppApiBaseController
         /**
          * @var GroupUserOrder[] $groupUserOrders
          */
-        $groupUserOrders = $groupUserOrderRepository->findSupplierGroupUserOrdersQuery($user->getId(), $groupUserOrderStatuses,$page, 10)->getResult();
+        $groupUserOrders = $groupUserOrderRepository->findSupplierGroupUserOrdersQuery($user->getId(), $groupUserOrderStatuses,$page, self::PAGE_LIMIT)->getResult();
 
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
@@ -1217,12 +1229,12 @@ class MemberController extends AppApiBaseController
 
     /**
      * 修改审核状态
-     * @Route("/updateStatus", name="updateStatus", methods="POST")
+     * @Route("/updateOrder", name="updateOrder", methods="POST")
      * @param Request $request
      * @param MessageRepository $messageRepository
      * @return Response
      */
-    public function updateStatusAction(Request $request,GroupUserOrderRepository $groupUserOrderRepository) {
+    public function updateOrderAction(Request $request,GroupUserOrderRepository $groupUserOrderRepository) {
 
         $data = json_decode($request->getContent(), true);
 
@@ -1235,6 +1247,7 @@ class MemberController extends AppApiBaseController
         $groupOrdersId = isset($data['groupOrdersId']) ? $data['groupOrdersId'] : null;
         $checkStatus = isset($data['checkStatus']) ? $data['checkStatus'] : null;
         $reason = isset($data['reason']) ? $data['reason'] : null;
+        $reason = isset($data['reason']) ? $data['reason'] : null;
 
         // 持久化
         $groupOrder = $groupUserOrderRepository->find( $groupOrdersId );
@@ -1246,7 +1259,7 @@ class MemberController extends AppApiBaseController
         $this->getEntityManager()->flush();
 
         // 返回
-        return CommonUtil::resultData( ['groupOrder' => $groupOrder->getArray() ] )->toJsonResponse();
+        return CommonUtil::resultData( ['groupOrder' => $groupOrder->getArray()] )->toJsonResponse();
     }
 
 

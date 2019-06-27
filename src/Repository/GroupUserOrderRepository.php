@@ -187,4 +187,38 @@ class GroupUserOrderRepository extends ServiceEntityRepository
             ->setParameter('table', $table);
         return $query->orderBy('guo.id', 'DESC')->getQuery()->getSingleResult()['count'];
     }
+
+
+    /**
+     * @param $productId
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findUserGroupUserOrders($where)
+    {
+        $query = $this->createQueryBuilder('guo')
+            ->leftJoin('guo.product', 'p')
+            ->leftJoin('p.course', 'c');
+
+        if (isset($where['user'])) {
+            $query->andWhere('guo.user = :user')->setParameter('user',$where['user']->getId());
+        }
+
+        if (isset($where['status'])) {
+            $query->andWhere('guo.status in (:status)')->setParameter('status',$where['status']);
+        }
+
+        if (isset($where['paymentStatus'])) {
+            $query->andWhere('guo.paymentStatus in (:paymentStatus)')->setParameter('paymentStatus',$where['paymentStatus']);
+        }
+
+        if (isset($where['isCourseProduct'])) {
+            $query->andWhere('p.course = :course')->setParameter('course',true);
+        }
+
+        if (isset($where['isOnline'])) {
+            $query->andWhere('c.isOnline = :isOnline')->setParameter('isOnline',true);
+        }
+
+        return $query->orderBy('guo.id', 'DESC');
+    }
 }
