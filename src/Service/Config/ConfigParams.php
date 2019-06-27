@@ -19,16 +19,21 @@ use Knp\Component\Pager\Paginator;
  */
 class ConfigParams
 {
-    //微信 金秋智库 app_id
-    const JQ_APP_WX_ID = 'jq_app_wx_id';
-    //微信 金秋智库 密钥
-    const JQ_APP_WX_SECRET = 'jq_app_wx_secret';
     //微信佐商商户ID
     const JQ_APP_WX_MCH_ID = 'jq_app_wx_mch_id';
     //微信佐商商户支付密钥
     const JQ_APP_WX_MCH_SECRET = 'jq_app_wx_mch_secret';
+
+    //微信 金秋智库 app_id
+    const JQ_APP_WX_ID = 'jq_app_wx_id';
+    //微信 金秋智库 密钥
+    const JQ_APP_WX_SECRET = 'jq_app_wx_secret';
     //微信支付成功通知url
     const JQ_APP_WXPAY_NOTIFY_URL = 'jq_app_wxpay_notify_url';
+
+    //微信公众号
+    const JQ_GZH_WX_ID = 'jq_gzh_wx_id';
+    const JQ_GZH_WX_SECRET = 'jq_gzh_wx_mch_secret';
 
     //支付宝 金秋智库 app_id
     const JQ_APP_ALIPAY_ID = 'jq_app_alipay_id';

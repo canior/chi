@@ -56,22 +56,17 @@ class Pay
 
     /**
      * Pay constructor.
+     * @param array $config
      */
-    public function __construct()
+    public function __construct(array $config = [])
     {
-        $this->config = new Config($this->getConfigSetting());
-    }
-
-    /**
-     * @return Pay
-     * @author zxqc2018
-     */
-    public static function getInstance()
-    {
-        if (is_null(static::$instance)) {
-            static::$instance = new static();
+        $defaultConfig = $this->getConfigSetting();
+        if (!empty($config)) {
+            if (isset($config['wechat'])) {
+                $defaultConfig['wechat'] = array_merge($defaultConfig['wechat'], $config['wechat']);
+            }
         }
-        return static::$instance;
+        $this->config = new Config($defaultConfig);
     }
 
     /**

@@ -53,18 +53,38 @@ class FactoryUtil
      */
     public static function aliPayDriver($gateway)
     {
-        return Pay::getInstance()->driver(Pay::ALI_PAY_DRIVER)->gateway($gateway);
+        $pay = new Pay();
+        return $pay->driver(Pay::ALI_PAY_DRIVER)->gateway($gateway);
     }
 
     /**
-     * 微信支付网关获取
+     * APP 微信支付网关获取
      * @param $gateway
      * @return \App\Service\Pay\Contracts\GatewayInterface
      * @author zxqc2018
      */
     public static function wxPayDriver($gateway)
     {
-        return Pay::getInstance()->driver(Pay::WX_PAY_DRIVER)->gateway($gateway);
+        $pay = new Pay();
+        return $pay->driver(Pay::WX_PAY_DRIVER)->gateway($gateway);
+    }
+
+
+    /**
+     * 公众号 微信支付网关获取
+     * @param $gateway
+     * @return \App\Service\Pay\Contracts\GatewayInterface
+     * @author zxqc2018
+     */
+    public static function wxPayGzhDriver($gateway)
+    {
+        $pay = new Pay([
+            'wechat' => [
+                'app_id' => ConfigParams::getParamWithController(ConfigParams::JQ_GZH_WX_ID),
+                'notify_url' => 'https://laowantong.yunlishuju.com/appApi/notify/order/async',
+            ]
+        ]);
+        return $pay->driver(Pay::WX_PAY_DRIVER)->gateway($gateway);
     }
 
     /**
@@ -84,7 +104,8 @@ class FactoryUtil
      */
     public static function aliPayNotify()
     {
-        return Pay::getInstance()->driver(Pay::ALI_PAY_DRIVER)->notify();
+        $pay = new Pay();
+        return $pay->driver(Pay::ALI_PAY_DRIVER)->notify();
     }
 
     /**
@@ -94,7 +115,8 @@ class FactoryUtil
      */
     public static function wxPayNotify()
     {
-        return Pay::getInstance()->driver(Pay::WX_PAY_DRIVER)->notify();
+        $pay = new Pay();
+        return $pay->driver(Pay::WX_PAY_DRIVER)->notify();
     }
 
     /**
