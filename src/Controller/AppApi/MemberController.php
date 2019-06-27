@@ -631,30 +631,29 @@ class MemberController extends AppApiBaseController
      */
     public function userAccountOrdersAction(Request $request, UserAccountOrderRepository $userAccountOrderRepository) {
 
+        $data = json_decode($request->getContent(), true);
+        $page = isset($data['page']) ? $data['page'] : 1;
+
         // 查询匹配用户
         $user =  $this->getAppUser();
         if ($user == null) {
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
-
-        $accountBalance = $user->getUserAccountTotal();
-        $withdrawTotal = $user->getWithDrawedTotal()+$user->getWithDrawingTotal();
+        
+        // 收入总额
+        $incomeTotal = $userAccountOrderRepository->getUserCommissionAmount($user);;
 
         // 资金记录
         $userAccountOrders = [];
-        $incomeTotal = 0;
-        foreach ($user->getUserAccountOrders() as $userAccountOrder) {
-            $userAccountOrders[] = $userAccountOrder->getArray();
-
-            // 收入总额
-            if( $userAccountOrder->getUserAccountOrderType() != UserAccountOrder::WITHDRAW ){
-                $incomeTotal += $userAccountOrder->getAmount();
-            }
+        $userAccountOrdersRes = $userAccountOrderRepository->getUserAccountOrders($user);
+        $userAccountOrdersRes = $this->getPaginator()->paginate($userAccountOrdersRes, $page,self::PAGE_LIMIT);
+        foreach ($userAccountOrdersRes as $order) {
+            $userAccountOrders[] = $order->getArray();
         }
 
         $data = [
-            'incomeTotal' => round($incomeTotal,2),// 收入总额
-            'withdrawTotal' => $withdrawTotal,// 提现总额
+            'incomeTotal' => $incomeTotal?$incomeTotal['count']:0,
+            'withdrawTotal' => $user->getWithDrawedTotal()+$user->getWithDrawingTotal(),// 提现总额
             'userAccountOrders' => $userAccountOrders,
         ];
 
@@ -1246,14 +1245,27 @@ class MemberController extends AppApiBaseController
         $groupOrdersId = isset($data['groupOrdersId']) ? $data['groupOrdersId'] : null;
         $checkStatus = isset($data['checkStatus']) ? $data['checkStatus'] : null;
         $reason = isset($data['reason']) ? $data['reason'] : null;
-        $reason = isset($data['reason']) ? $data['reason'] : null;
+        $carrierName = isset($data['carrierName']) ? $data['carrierName'] : null;
+        $trackingNo = isset($data['trackingNo']) ? $data['trackingNo'] : null;
 
         // 持久化
         $groupOrder = $groupUserOrderRepository->find( $groupOrdersId );
-        $groupOrder->setCheckStatus($checkStatus);
+        
+        //审核
+        if($checkStatus){
+            $groupOrder->setCheckStatus($checkStatus);
+        }
         if($reason){
             $groupOrder->setReason($reason);
         }
+
+        // 发货
+        if($carrierName && $trackingNo){
+            $groupOrder->setCarrierName($carrierName);
+            $groupOrder->setTrackingNo($trackingNo);
+            $groupOrder->setShipping();
+        }
+        
         $this->getEntityManager()->persist($groupOrder);
         $this->getEntityManager()->flush();
 
