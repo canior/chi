@@ -518,7 +518,7 @@ class MemberController extends AppApiBaseController
         $this->getEntityManager()->flush();
 
         // 检查设置默认地址
-        $hasIsDefault = $userAddressRepository->findBy(['user'=>$user->getId(),'isDeleted'=>false,'isDefault'=>3]);
+        $hasIsDefault = $userAddressRepository->findBy(['user'=>$user->getId(),'isDeleted'=>false,'isDefault'=>1]);
         if( !$hasIsDefault ){
             $lastUserAddress = $userAddressRepository->findOneBy(['user'=>$user->getId(),'isDeleted'=>false],['id'=>'desc']);
             if($lastUserAddress){
