@@ -57,6 +57,8 @@ use App\Entity\FollowCourseMeta;
 use App\Entity\FollowTeacherMeta;
 use App\Repository\MessageGroupUserOrderMetaRepository;
 use App\Repository\UserRecommandStockOrderRepository;
+use App\Service\Util\MoneyUtil;
+
 /**
  * @Route("/auth/member")
  */
@@ -809,8 +811,15 @@ class MemberController extends AppApiBaseController
             $groupUserOrdersArray[] = $groupUserOrder->getArray();
         }
 
+        //查找直通车课程id
+        $tradingProductId = null;
+        $tradingCourse = FactoryUtil::courseRepository()->findSpecTradingCourse(MoneyUtil::tradeSpecialPrice());
+        if (!empty($tradingCourse)) {
+            $tradingProductId = $tradingCourse->getProduct()->getId();
+        }
+
         // 返回
-        return CommonUtil::resultData( ['groupUserOrders' => $groupUserOrdersArray ] )->toJsonResponse();
+        return CommonUtil::resultData( ['groupUserOrders' => $groupUserOrdersArray,'tradingProductId'=>$tradingProductId ] )->toJsonResponse();
     }
 
     /**
