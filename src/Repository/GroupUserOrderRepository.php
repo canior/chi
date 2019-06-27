@@ -199,8 +199,8 @@ class GroupUserOrderRepository extends ServiceEntityRepository
             ->leftJoin('guo.product', 'p')
             ->leftJoin('p.course', 'c');
 
-        if (isset($where['user'])) {
-            $query->andWhere('guo.user = :user')->setParameter('user',$where['user']->getId());
+        if (isset($where['userId'])) {
+            $query->andWhere('guo.user = :userId')->setParameter('userId',$where['userId']);
         }
 
         if (isset($where['status'])) {
@@ -213,9 +213,9 @@ class GroupUserOrderRepository extends ServiceEntityRepository
 
         if (isset($where['isCourseProduct']) ) {
             if( $where['isCourseProduct'] == true ){
-                $query->andWhere('p.course is null');
-            }else{
                 $query->andWhere('p.course is not null');
+            }else{
+                $query->andWhere('p.course is null');
             }
         }
 
@@ -226,6 +226,8 @@ class GroupUserOrderRepository extends ServiceEntityRepository
                 $query->andWhere('c.isOnline = :isOnline')->setParameter('isOnline',0);
             }
         }
+
+        // dump( $query );die;
 
         return $query->orderBy('guo.id', 'DESC');
     }

@@ -771,11 +771,10 @@ class MemberController extends AppApiBaseController
         }
         $paymentStatusArray = ['paid', 'refunding', 'refunded'];
 
-
         switch ($productType) {
             case 'product':
                 $where = [
-                    'user' => $user,
+                    'userId' => $user->getId(),
                     'status' => $groupUserOrderStatus,
                     'paymentStatus' => $paymentStatusArray,
                     'isCourseProduct'=>false,
@@ -783,7 +782,7 @@ class MemberController extends AppApiBaseController
                 break;
             case 'onlineCourse':
                 $where = [
-                    'user' => $user,
+                    'userId' => $user->getId(),
                     'status' => $groupUserOrderStatus,
                     'paymentStatus' => $paymentStatusArray,
                     'isCourseProduct'=>true,
@@ -792,7 +791,7 @@ class MemberController extends AppApiBaseController
                 break;
             case 'offlineCourse':
                 $where = [
-                    'user' => $user,
+                    'userId' => $user->getId(),
                     'status' => $groupUserOrderStatus,
                     'paymentStatus' => $paymentStatusArray,
                     'isCourseProduct'=>true,
