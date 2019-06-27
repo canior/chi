@@ -9,7 +9,7 @@
 namespace App\Service\WeChat\OfficialAccount;
 /**
  * 微信处理抽象父类
- * Class AbstractWechatProcess
+ * Class AbstractWeChatProcess
  * @package App\Service\WeChat\OfficialAccount
  * @author zxqc2018
  */
