@@ -58,6 +58,10 @@ services:
         class: App\EventListener\ExceptionListener
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+    api.event.response_listener:
+        class: App\EventListener\ResponseListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.response }
     api.event.jwt_listener:
         class: App\EventListener\JWTAuthenticationListener
         tags:
