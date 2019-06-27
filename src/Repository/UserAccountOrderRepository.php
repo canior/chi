@@ -36,4 +36,18 @@ class UserAccountOrderRepository extends ServiceEntityRepository
             ->setParameter('user', $user->getId());
         return $query->getQuery()->getOneOrNullResult();
     }
+
+    /**
+     * 资金明细
+     * @param $user
+     * @return array
+     */
+    public function getUserAccountOrders($user){
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('uao')
+            ->from('App:UserAccountOrder', 'uao')
+            ->where('uao.user = :user')
+            ->setParameter('user', $user->getId());
+        return $query->getQuery();
+    }
 }
