@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class JsConfigController extends GongZhongBaseController
 {
     /**
-     * @Route("/jsConfig", name="gzhJgConfig", methods="POST")
+     * @Route("/jsConfig", name="gzhJgConfig")
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      * @author zxqc2018
      */
