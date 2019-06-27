@@ -46,7 +46,7 @@ class PayController extends GongZhongBaseController
         if (CommonUtil::isDebug()) {
             $options = [
                 'out_trade_no'     => 'jqtest' . date('YmdHis') . mt_rand(1000, 9999), // 订单号
-                'total_fee'        => '101', // 订单金额，**单位：分**
+                'total_fee'        => '0.01', // 订单金额，**单位：分**
                 'body'             => '公众号测试', // 订单描述
                 'spbill_create_ip' => '127.0.0.1', // 支付人的 IP
                 'openid'           => 'oHo3m1Bju3-W08_F62hLpMJnUfVs', // 支付人的 openID
