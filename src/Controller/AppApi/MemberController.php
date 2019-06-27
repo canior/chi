@@ -642,11 +642,11 @@ class MemberController extends AppApiBaseController
 
         // 资金记录
         $userAccountOrders = [];
+        $incomeTotal = 0;
         foreach ($user->getUserAccountOrders() as $userAccountOrder) {
             $userAccountOrders[] = $userAccountOrder->getArray();
 
             // 收入总额
-            $incomeTotal = 0;
             if( $userAccountOrder->getUserAccountOrderType() != UserAccountOrder::WITHDRAW ){
                 $incomeTotal = $incomeTotal+$userAccountOrder->getAmount();
             }
