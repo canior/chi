@@ -211,12 +211,20 @@ class GroupUserOrderRepository extends ServiceEntityRepository
             $query->andWhere('guo.paymentStatus in (:paymentStatus)')->setParameter('paymentStatus',$where['paymentStatus']);
         }
 
-        if (isset($where['isCourseProduct'])) {
-            $query->andWhere('p.course = :course')->setParameter('course',true);
+        if (isset($where['isCourseProduct']) ) {
+            if( $where['isCourseProduct'] == true ){
+                $query->andWhere('p.course is null');
+            }else{
+                $query->andWhere('p.course is not null');
+            }
         }
 
         if (isset($where['isOnline'])) {
-            $query->andWhere('c.isOnline = :isOnline')->setParameter('isOnline',true);
+            if( $where['isOnline'] == true ){
+                $query->andWhere('c.isOnline = :isOnline')->setParameter('isOnline',1);
+            }else{
+                $query->andWhere('c.isOnline = :isOnline')->setParameter('isOnline',0);
+            }
         }
 
         return $query->orderBy('guo.id', 'DESC');
