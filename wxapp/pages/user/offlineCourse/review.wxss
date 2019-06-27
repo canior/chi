@@ -110,12 +110,12 @@
   width: 172rpx;
   height: 172rpx; 
 }.comment .upload-box image.camera {
-  width: 63rpx;
-  height: 50rpx;
+  width: 66rpx;
+  height: 66rpx;
 }
 .comment .upload-box text {
   font-size: 22rpx;
-  color: #888;
+  color: #999;
   margin-top: 10rpx;
 }
 .comment .review {

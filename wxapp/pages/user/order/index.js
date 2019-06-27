@@ -41,10 +41,96 @@ Page({
       success: (res) => {
         if (res.statusCode == 200 && res.data.code == 200) {
           console.log(res.data.data)
+
+          var groupUserOrders = [
+            {
+              'id': 5010806,
+              'groupOrderId': null,
+              'groupOrderStatus': '状态',
+              'status': 'pending',
+              'statusText': '待发货',
+              'paymentStatus': 'paid',
+              'paymentStatusText': '支付',
+              'product': {
+                title: '商品商品商品',
+                'price': 12.56,
+                'originalPrice': 22.88,
+                'freight': 0,
+                'shortDescription': '描述描述描述描述描述',
+                productImages: [{ 'id': 215, 'type': 'jpeg', 'fileId': 228904 }]
+              },
+              'rewards': 0,
+              'isMasterOrder': 0,
+              'user': [],
+              'productReviews': [],
+              'createdAt': '7777-88-99',
+              'paymentTotal': 99.66,
+              'address': null,
+              'carrierName': '通通通',
+              'trackingNo': '88888',
+            },
+            {
+              'id': 5010806,
+              'groupOrderId': null,
+              'groupOrderStatus': '状态',
+              'status': 'shipping',
+              'statusText': '已发货',
+              'paymentStatus': 'paid',
+              'paymentStatusText': '支付',
+              'product': {
+                title: '吃吃吃喝喝喝',
+                'price': 12.56,
+                'originalPrice': 22.88,
+                'freight': 0,
+                'shortDescription': '888888',
+                productImages: [{ 'id': 215, 'type': 'jpeg', 'fileId': 228904 }]
+              },
+              'rewards': 0,
+              'isMasterOrder': 0,
+              'user': [],
+              'productReviews': [],
+              'createdAt': '7777-88-99',
+              'paymentTotal': 99.66,
+              'address': null,
+              'carrierName': '通通通',
+              'trackingNo': '88888',
+            },
+            {
+              'id': 5010806,
+              'groupOrderId': null,
+              'groupOrderStatus': '状态',
+              'status': 'delivered',
+              'statusText': '已收货',
+              'paymentStatus': 'paid',
+              'paymentStatusText': '支付',
+              'product': {
+                title: '吃吃吃喝喝喝',
+                'price': 12.56,
+                'originalPrice': 22.88,
+                'freight': 0,
+                'shortDescription': '888888',
+                productImages: [{ 'id': 215, 'type': 'jpeg', 'fileId': 228904 }]
+              },
+              'rewards': 0,
+              'isMasterOrder': 0,
+              'user': [],
+              'productReviews': [],
+              'createdAt': '7777-88-99',
+              'paymentTotal': 99.66,
+              'address': null,
+              'carrierName': '通通通',
+              'trackingNo': '88888',
+            },
+          ]
+
           that.setData({
-            groupUserOrders: res.data.data.groupUserOrders,
+            groupUserOrders: groupUserOrders,//res.data.data.groupUserOrders,
             curStatus: status
           })
+          /*that.setData({
+            groupUserOrders: res.data.data.groupUserOrders,
+            curStatus: status
+          })*/
         } else {
           console.log('wx.request return error', res.statusCode);
         }
@@ -115,6 +201,14 @@ Page({
     const orderId = e.currentTarget.dataset.id;
     wx.navigateTo({
       url: '/pages/user/order/review?id=' + orderId,
+    })
+  },
+
+  // 查看物流
+  tracking: function (e) {
+    const orderId = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: '/pages/user/order/tracking?id=' + orderId,
     })
   },
 
