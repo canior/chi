@@ -648,12 +648,12 @@ class MemberController extends AppApiBaseController
 
             // 收入总额
             if( $userAccountOrder->getUserAccountOrderType() != UserAccountOrder::WITHDRAW ){
-                $incomeTotal = (float)$incomeTotal+(float)$userAccountOrder->getAmount();
+                $incomeTotal += $userAccountOrder->getAmount();
             }
         }
 
         $data = [
-            'incomeTotal' => $incomeTotal,// 收入总额
+            'incomeTotal' => round($incomeTotal,2),// 收入总额
             'withdrawTotal' => $withdrawTotal,// 提现总额
             'userAccountOrders' => $userAccountOrders,
         ];
