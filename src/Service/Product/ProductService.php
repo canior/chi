@@ -45,7 +45,7 @@ class ProductService
      * @author zxqc2018
      * @return ResultData
      */
-    public function getDetailInfo(ResultData $requestProcess, User $user)
+    public function getDetailInfo(ResultData $requestProcess, ?User $user = null)
     {
         $productId = $requestProcess['productId'];
         $url = $requestProcess['url'];
@@ -71,11 +71,14 @@ class ProductService
         //课程加上对应的权限以及
         if ($product->isCourseProduct()) {
             if ($product->getCourse()->isOnline()) {
-                $data['product']['isPermission'] = $product->getCourse()->isPermission($user);
+                $data['product']['isPermission'] = false;
                 $data['product']['callStatus'] = '';
-                if (empty($data['product']['isPermission'])) {
-                    $newGroupOrder = $user->getNewestGroupUserOrder($product, true);
-                    $data['product']['callStatus'] = CommonUtil::getInsideValue($newGroupOrder, 'getStatus', '');
+                if (!empty($user)) {
+                    $data['product']['isPermission'] = $product->getCourse()->isPermission($user);
+                    if (empty($data['product']['isPermission'])) {
+                        $newGroupOrder = $user->getNewestGroupUserOrder($product, true);
+                        $data['product']['callStatus'] = CommonUtil::getInsideValue($newGroupOrder, 'getStatus', '');
+                    }
                 }
             } else {
                 /**
@@ -91,9 +94,16 @@ class ProductService
                     $productRateSum += $review->getRate();
                 }
             }
-            $data['product']['followId'] = CommonUtil::obj2Id(FactoryUtil::followCourseMetaRepository()->findOneBy(['dataId' => $product->getCourse()->getId(), 'user' => $user]));
-            $data['product']['isFollow'] = !empty($data['product']['followId']);
-            $data['product']['myReview'] = CommonUtil::obj2Array($product->getMyReview($user));
+
+            $data['product']['followId'] = 0;
+            $data['product']['isFollow'] = false;
+            $data['product']['myReview'] = null;
+
+            if (!empty($user)) {
+                $data['product']['followId'] = CommonUtil::obj2Id(FactoryUtil::followCourseMetaRepository()->findOneBy(['dataId' => $product->getCourse()->getId(), 'user' => $user]));
+                $data['product']['isFollow'] = !empty($data['product']['followId']);
+                $data['product']['myReview'] = CommonUtil::obj2Array($product->getMyReview($user));
+            }
             $data['product']['rate'] = !empty($productRateSum) ? number_format($productRateSum / $product->getActiveReviews()->count(), 2, '.', '') : 0;
             $data['productReviews'] = CommonUtil::entityArray2DataArray(FactoryUtil::getPaginator()->paginate($product->getActiveReviews(), $requestProcess['page'], $requestProcess['pageNum']));
         }
