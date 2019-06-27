@@ -43,8 +43,8 @@ class MessageGroupUserOrderMetaRepository extends ServiceEntityRepository
         if( $checkStatus ){
             $query->andWhere('cc.checkStatus = :checkStatus')->setParameter('checkStatus', $checkStatus);
         }
-        
-        if( $isRead ){
+
+        if( $isRead != '' ){
             $query->andWhere('ff.isRead = :isRead')->setParameter('isRead', $isRead);
         }
 
