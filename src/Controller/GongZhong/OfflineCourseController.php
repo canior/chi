@@ -51,13 +51,13 @@ class OfflineCourseController extends GongZhongBaseController
     /**
      * 获取课程详情
      *
-     * @Route("/auth/offlineCourse/detail", name="gzhOfflineCourseDetail", methods="POST")
+     * @Route("/offlineCourse/detail", name="gzhOfflineCourseDetail", methods="POST")
      * @return JsonResponse
      */
     public function detailAction(): JsonResponse {
         $requestProcess = $this->processRequest(null, [
             'url', 'productId', 'page', 'pageNum'
         ], ['productId']);
-        return FactoryUtil::offlineCourseService()->getDetailInfo($requestProcess, $this->getAppUser())->toJsonResponse();
+        return FactoryUtil::offlineCourseService()->getDetailInfo($requestProcess, $this->getAppUser(true))->toJsonResponse();
     }
 }
