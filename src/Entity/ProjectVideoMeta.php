@@ -48,6 +48,10 @@ class ProjectVideoMeta extends ProjectMeta
         return true;
     }
 
+    public function isTokenMeta()
+    {
+        return false;
+    }
     /**
      * @param string $aliyunVideoId
      * @param string $aliyunVideoUrl

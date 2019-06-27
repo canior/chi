@@ -69,6 +69,11 @@ class ProjectBannerMeta extends ProjectMeta
         return false;
     }
 
+    public function isTokenMeta()
+    {
+        return false;
+    }
+
     public function getRedirectUrl() {
         $metaValueArray = json_decode($this->getMetaValue(), true);
         return $metaValueArray['redirectUrl'];

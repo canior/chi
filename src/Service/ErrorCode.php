@@ -41,6 +41,9 @@ class ErrorCode
     const ERROR_MESSAGE_NOT_FIND = 12011;
     const ERROR_WX_OPENID_LOGIN = 12012;
     const ERROR_LOGIN_CODE_TIMEOUT = 12013;
+    const ERROR_WX_TOKEN_GET = 12014;
+    const ERROR_WX_JS_TOKEN_GET = 12015;
+    const ERROR_WX_PROCESS_NOT_EXISTS = 12016;
 
     //-------课程---------------------------------------
     const ERROR_CATEGORY_NOT_EXISTS = 13001;
@@ -125,6 +128,9 @@ class ErrorCode
             self::ERROR_COURSE_ALREADY_PAY => '课程或者活动已经购买',
             self::ERROR_COURSE_NOT_EXISTS => '课程或者活动不存在',
             self::ERROR_COURSE_CATEGORY_ALREADY_PAY => '系列课程已经解锁',
+            self::ERROR_WX_TOKEN_GET => '获取微信token失败',
+            self::ERROR_WX_JS_TOKEN_GET => '获取微信jsToken失败',
+            self::ERROR_WX_PROCESS_NOT_EXISTS => '微信公众号处理类不存在',
         ];
     }
 

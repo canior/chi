@@ -68,6 +68,11 @@ class ProjectTextMeta extends ProjectMeta
         return false;
     }
 
+    public function isTokenMeta()
+    {
+        return false;
+    }
+
     public function setTextMeta($text) {
         $this->setMetaValue($text);
         return $this;

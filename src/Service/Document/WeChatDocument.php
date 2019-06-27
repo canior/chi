@@ -40,7 +40,7 @@ class WeChatDocument extends AbstractDocument
 
     /**
      * 获取token
-     * @return \App\Service\ResultData
+     * @return string
      * @author zxqc2018
      */
     public function getAccessToken()
@@ -54,9 +54,15 @@ class WeChatDocument extends AbstractDocument
 
         $res = $this->getResponse($path, $query);
 
-        return $res->getCode() > 0 ? null : $res;
+        return $res['access_token'] ?? '';
     }
 
+    /**
+     * 获取jsToken
+     * @param $accessToken
+     * @return string
+     * @author zxqc2018
+     */
     public function getJsTicket($accessToken)
     {
         $path = '/cgi-bin/ticket/getticket';
@@ -64,9 +70,17 @@ class WeChatDocument extends AbstractDocument
             'access_token' => $accessToken,
             'type' => 'jsapi',
         ];
-        $res = $this->getResponse($path, $query, 'POST');
-        return $res;
+        $res = $this->getResponse($path, $query, 'GET');
+        return $res['ticket'] ?? '';
     }
+
+    /**
+     * 发送消息
+     * @param string $accessToken
+     * @param array $postData
+     * @return ResultData
+     * @author zxqc2018
+     */
     public function sendTempMsg($accessToken, $postData)
     {
         $path = '/cgi-bin/message/template/send?access_token=' . $accessToken;

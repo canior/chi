@@ -9,7 +9,22 @@
 namespace App\Controller\GongZhong;
 
 
-class UserController
+use Symfony\Component\Routing\Annotation\Route;
+
+/**
+ * Class UserController
+ * @package App\Controller\GongZhong
+ * @author zxqc2018
+ */
+class UserController extends GongZhongBaseController
 {
 
+    /**
+     * @Route("/login", name="gzhLogin")
+     * @author zxqc2018
+     */
+    public function login()
+    {
+        $requestProcess = $this->processRequest(null);
+    }
 }

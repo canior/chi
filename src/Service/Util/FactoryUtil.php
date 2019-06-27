@@ -19,6 +19,7 @@ use App\Entity\Message;
 use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Entity\ProjectTextMeta;
+use App\Entity\ProjectTokenMeta;
 use App\Entity\User;
 use App\Entity\UserAccountOrder;
 use App\Repository\CategoryRepository;
@@ -31,6 +32,7 @@ use App\Repository\MessageRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
 use App\Repository\ProjectTextMetaRepository;
+use App\Repository\ProjectTokenMetaRepository;
 use App\Repository\UserAccountOrderRepository;
 use App\Repository\UserRepository;
 use App\Service\Config\ConfigParams;
@@ -40,6 +42,7 @@ use App\Service\Pay\NotifyProcess;
 use App\Service\Pay\Pay;
 use App\Service\Product\OfflineCourseService;
 use App\Service\Sms\AliSms;
+use App\Service\WeChat\OfficialAccount\WeChatProcess;
 use Knp\Component\Pager\Paginator;
 
 class FactoryUtil
@@ -309,6 +312,19 @@ class FactoryUtil
     }
 
     /**
+     * @return ProjectTokenMetaRepository
+     * @author zxqc2018
+     */
+    public static function projectTokenMetaRepository()
+    {
+        /**
+         * @var  ProjectTokenMetaRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(ProjectTokenMeta::class);
+        return $repository;
+    }
+
+    /**
      * @return OfflineCourseService
      * @author zxqc2018
      */
@@ -324,5 +340,15 @@ class FactoryUtil
     public static function getPaginator()
     {
         return ConfigParams::getPaginator();
+    }
+
+    /**
+     * @return WeChatProcess
+     * @author zxqc2018
+     */
+    public static function gzhWeChatProcess()
+    {
+        $process = new WeChatProcess(WeChatProcess::GZH_PROCESS);
+        return $process;
     }
 }

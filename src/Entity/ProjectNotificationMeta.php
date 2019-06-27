@@ -45,6 +45,12 @@ class ProjectNotificationMeta extends ProjectMeta
     {
         return false;
     }
+
+    public function isTokenMeta()
+    {
+        return false;
+    }
+
     /**
      * @return array
      */
