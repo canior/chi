@@ -30,7 +30,7 @@ class MessageGroupUserOrderMetaRepository extends ServiceEntityRepository
      * @param $userId
      * @return array
      */
-    public function getGroupUserOrder($userId,$checkStatus)
+    public function getGroupUserOrder($userId,$checkStatus,$isRead)
     {
         $query = $this->getEntityManager()->createQueryBuilder();
         $query->select('cc,ff.id,ff.title,ff.content,ff.createdAt,ff.isRead')
@@ -42,6 +42,10 @@ class MessageGroupUserOrderMetaRepository extends ServiceEntityRepository
 
         if( $checkStatus ){
             $query->andWhere('cc.checkStatus = :checkStatus')->setParameter('checkStatus', $checkStatus);
+        }
+        
+        if( $isRead ){
+            $query->andWhere('ff.isRead = :isRead')->setParameter('isRead', $isRead);
         }
 
         return $query->getQuery();
