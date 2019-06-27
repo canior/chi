@@ -30,7 +30,7 @@ class PayController extends GongZhongBaseController
                 'raw' => file_get_contents('php://input')
             ];
 
-            $this->getLog()->info('notifyTest||' . $data['raw'], []);
+            $this->getLog()->info('notifyGzh||' . $data['raw'], []);
         }
         return CommonUtil::resultData()->toResponse();
     }
