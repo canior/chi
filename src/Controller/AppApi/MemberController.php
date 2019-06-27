@@ -942,13 +942,11 @@ class MemberController extends AppApiBaseController
         /**
          * @var GroupUserOrder[] $groupUserOrders
          */
-        $groupUserOrders = $groupUserOrderRepository->findSupplierGroupUserOrdersQuery($user->getId(), $groupUserOrderStatuses,$page, self::PAGE_LIMIT)->getResult();
+        $groupUserOrders = $groupUserOrderRepository->supplierGroupUserOrders($user->getId(), $groupUserOrderStatuses,$page, self::PAGE_LIMIT)->getResult();
 
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
-            if (!$groupUserOrder->getProduct()->isCourseProduct()) {
-                $groupUserOrdersArray[] = $groupUserOrder->getArray();
-            }
+            $groupUserOrdersArray[] = $groupUserOrder->getArray();
         }
 
         // 返回
@@ -1195,6 +1193,7 @@ class MemberController extends AppApiBaseController
         $data = json_decode($request->getContent(), true);
         $page = isset($data['page']) ? $data['page'] : 1;
         $checkStatus = isset($data['checkStatus']) ? $data['checkStatus'] : '';
+        $isRead = isset($data['isRead']) ? $data['isRead'] : '';
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -1202,7 +1201,7 @@ class MemberController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        $messageQuery = $messageGroupUserOrderMetaRepository->getGroupUserOrder($user->getId(),$checkStatus);
+        $messageQuery = $messageGroupUserOrderMetaRepository->getGroupUserOrder($user->getId(),$checkStatus,$isRead);
         $messageArrays = $this->getPaginator()->paginate($messageQuery, $page, self::PAGE_LIMIT);
 
 
