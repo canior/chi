@@ -1070,6 +1070,7 @@ class Course implements Dao
             'region' => $this->getRegion() ? $this->getRegion()->getArray() : null,
             'teacher' => $this->getTeacher()->getArray(),
             'courseImages' => $courseImageArray,
+            'productImages' => $courseImageArray,
             'courseSpecImages' => $courseSpecImagesArray,
             'reviewsNum' => $this->getProduct()->getTotalActiveReviews(),
             'lookNum' => $this->getLookNum(),
