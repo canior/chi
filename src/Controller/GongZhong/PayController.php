@@ -110,6 +110,12 @@ class PayController extends GongZhongBaseController
             $requestProcess->throwErrorException(ErrorCode::ERROR_COURSE_ALREADY_PAY, []);
         }
 
+        $openId = $groupUserOrder->getUser()->getWxGzhOpenId();
+
+        if (empty($openId)) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_GZH_PAY_ID_NOT_EXISTS, []);
+        }
+
         $body = $groupUserOrder->getProduct()->getTitle();
 
         $groupUserOrder->setPaymentChannel(GroupUserOrder::PAYMENT_CHANNEL_WX_GZH);
@@ -119,7 +125,7 @@ class PayController extends GongZhongBaseController
             'total_fee'        => $groupUserOrder->getTotal() * 100, // 订单金额，**单位：分**
             'body'             => $body, // 订单描述
             'spbill_create_ip' => CommonUtil::getUserIp(), // 支付人的 IP
-            'openid'           => 'oHo3m1Bju3-W08_F62hLpMJnUfVs', // 支付人的 openID
+            'openid'           => $openId, // 支付人的 openID
         ];
 
         $prePayInfo = FactoryUtil::wxPayGzhDriver(Pay::MP_GATEWAY)->apply($options);

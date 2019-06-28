@@ -76,6 +76,7 @@ class ErrorCode
     const ERROR_NOTIFY_TYPE = 16017;
     const ERROR_COURSE_ALREADY_PAY = 16018;
     const ERROR_COURSE_CATEGORY_ALREADY_PAY = 16019;
+    const ERROR_GZH_PAY_ID_NOT_EXISTS = 16020;
     /**
      * 错误消息集合
      * @return array
@@ -133,6 +134,7 @@ class ErrorCode
             self::ERROR_WX_JS_TOKEN_GET => '获取微信jsToken失败',
             self::ERROR_WX_PROCESS_NOT_EXISTS => '微信公众号处理类不存在',
             self::ERROR_WX_OPENID_WITH_CODE => '微信公code获取openid失败',
+            self::ERROR_GZH_PAY_ID_NOT_EXISTS => '微信公众号openid不存在',
         ];
     }
 
