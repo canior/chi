@@ -223,16 +223,18 @@ class MemberController extends AppApiBaseController
         $recommanderName = isset($data['recommanderName']) ? $data['recommanderName'] : null;
 
 
-        // 验证Code TODO 
-        // $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::UPDATE_INFO ],['createdAt'=>'DESC']);
-        // if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
-        //     return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
-        // }
+        if (!CommonUtil::isDebug()) {
+            //验证Code TODO
+            $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::UPDATE_INFO ],['createdAt'=>'DESC']);
+            if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
+                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
+            }
 
-        // 验证过期
-        // if( $messageCode->getCreatedAt(false)+20*60 < time() ){
-        //     return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
-        // }
+            //验证过期
+            if( $messageCode->getCreatedAt(false)+20*60 < time() ){
+                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
+            }
+        }
 
         // 更新资料
         if($name){

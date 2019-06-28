@@ -151,4 +151,70 @@ class UserController extends GongZhongBaseController
 
         return $requestProcess->toJsonResponse($data);
     }
+
+    /**
+     * @Route("/gzhAuth/updateUserInfo", name="gzhUpdateUserInfo",  methods={"POST"})
+     */
+    public function updateUserInfo()
+    {
+        $requestProcess = $this->processRequest(null, [
+            'name', 'phone','idNum','nickname','company','wechat','recommanderName'
+        ], ['code']);
+
+        $user =  $this->getAppUser();
+        $name = $requestProcess['name'];
+        $phone = $requestProcess['phone'];
+        $idNum = $requestProcess['idNum'];
+        $nickname = $requestProcess['nickname'];
+        $company = $requestProcess['company'];
+        $wechat = $requestProcess['wechat'];
+        $recommanderName = $requestProcess['recommanderName'];
+
+
+        if (!CommonUtil::isDebug()) {
+            //验证Code
+            $messageCode = FactoryUtil::messageCodeRepository()->findOneBy([
+                'phone' => $phone,
+                'type'=>MessageCode::UPDATE_INFO
+            ], ['createdAt' => 'DESC']);
+            if(empty($messageCode)|| $messageCode->getCode() != $requestProcess['code'] ){
+                $requestProcess->throwErrorException(ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR, []);
+            }
+
+            //验证过期
+            if( $messageCode->getCreatedAt(false)+20*60 < time() ){
+                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
+            }
+        }
+
+        // 更新资料
+        if($name){
+            $user->setName($name);
+        }
+        if($phone){
+            $user->setPhone($phone);
+        }
+        if($idNum){
+            $user->setIdNum($idNum);
+        }
+        if($nickname){
+            $user->setNickname($nickname);
+        }
+        if($wechat){
+            $user->setWechat($wechat);
+        }
+        if($company){
+            $user->setCompany($company);
+        }
+        if($recommanderName){
+            $user->setRecommanderName($recommanderName);
+        }
+
+        CommonUtil::entityPersist($user);
+
+        //实名并且是系统学院需要生成桌号
+        $this->supplySystemTableNo($user);
+
+        return $requestProcess->toJsonResponse(['user' => CommonUtil::obj2Array($user)]);
+    }
 }
