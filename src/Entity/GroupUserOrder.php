@@ -80,10 +80,12 @@ class GroupUserOrder implements Dao
 
     const PAYMENT_CHANNEL_ALI = 'alipay';
     const PAYMENT_CHANNEL_WX = 'wechat';
+    const PAYMENT_CHANNEL_WX_GZH = 'wechat_gzh';
 
     public static $paymentChannelTexts = [
         self::PAYMENT_CHANNEL_ALI => '支付宝',
-        self::PAYMENT_CHANNEL_WX => '微信'
+        self::PAYMENT_CHANNEL_WX => '微信',
+        self::PAYMENT_CHANNEL_WX_GZH => '微信公众号',
     ];
 
     public static $paymentTraceNoTypes = [
