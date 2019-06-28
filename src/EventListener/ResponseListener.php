@@ -10,6 +10,7 @@ namespace App\EventListener;
 
 
 use App\Service\Util\CommonUtil;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class ResponseListener
@@ -41,7 +42,7 @@ class ResponseListener
                 $response->headers->set('Access-Control-Expose-Headers', 'Authorization, authenticated');
                 $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, OPTIONS');
                 $response->headers->set('Access-Control-Max-Age', 18000);
-                $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
+                $response->headers->set('content-type', 'application/json; charset=UTF-8');
                 $response->headers->set('Access-Control-Allow-Credentials', 'true');
             }
         }
