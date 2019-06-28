@@ -182,7 +182,7 @@ class AppApiBaseController extends BaseController
                 if (!empty($tokenInfo['userId'])) {
                     $this->gzhTokenUserId = $tokenInfo['userId'];
                 }
-                if ($isLogin) {
+                if ($isLogin && empty($this->gzhTokenUserId)) {
                     $res->throwErrorException(ErrorCode::ERROR_TOKEN_INVALID, []);
                 }
             }
