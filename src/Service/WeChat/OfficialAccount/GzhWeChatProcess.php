@@ -16,7 +16,7 @@ use App\Service\Config\ConfigParams;
  * @package App\Service\WeChat\OfficialAccount
  * @author zxqc2018
  */
-class GzhWeChatProcess implements WechatProcessInterface
+class GzhWeChatProcess implements WeChatProcessInterface
 {
 
     /**
