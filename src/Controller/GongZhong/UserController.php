@@ -9,6 +9,7 @@
 namespace App\Controller\GongZhong;
 
 
+use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
 use App\Service\Util\FactoryUtil;
@@ -44,17 +45,16 @@ class UserController extends GongZhongBaseController
         ], ['code']);
 
         $code = $requestProcess['code'];
-        $this->getLog()->info("wxGzh user code = " . $code);
+        ConfigParams::getLogger()->info("wxGzh user code = " . $code);
 
         $gzhWeChatProcess = FactoryUtil::gzhWeChatProcess();
 
         $openIdInfo = $gzhWeChatProcess->getOpenidByCode($code);
 
-        $this->getLog()->info ("get wx user response for code [" . $code . "]: ", $openIdInfo->getData());
-
         if (empty($openIdInfo)) {
             $openIdInfo->throwErrorException(ErrorCode::ERROR_WX_OPENID_LOGIN, []);
         }
+        ConfigParams::getLogger()->info ("get wx user response for code [" . $code . "]: ", $openIdInfo->getData());
 
         $openId = $openIdInfo['openid'];
         $unionId = $openIdInfo['unionid'];
