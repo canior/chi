@@ -66,7 +66,7 @@ class ShareSourceProcess
                         /**
                          * @var QrCode $qrCode
                          */
-                        $qrCode = DependencyInjectionSingletonConfig::getInstance()->getQrCodeFactory()->create("https://gongzhong.zscollege.com.cn");
+                        $qrCode = DependencyInjectionSingletonConfig::getInstance()->getQrCodeFactory()->create($page);
                         $bannerFile = ImageGenerator::createGzhShareQuanBannerImage(ConfigParams::getRepositoryManager(), $qrCode, $product->getShareImageFile());
                         $shareSource->setBannerFile($bannerFile);
                         CommonUtil::entityPersist($shareSource);
