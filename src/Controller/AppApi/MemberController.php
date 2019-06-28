@@ -1251,15 +1251,11 @@ class MemberController extends AppApiBaseController
         }
 
         $groupOrdersId = isset($data['groupOrdersId']) ? $data['groupOrdersId'] : null;
-        $checkStatus = isset($data['checkStatus']) ? $data['checkStatus'] : null;
-        $reason = isset($data['reason']) ? $data['reason'] : null;
-        $carrierName = isset($data['carrierName']) ? $data['carrierName'] : null;
-        $trackingNo = isset($data['trackingNo']) ? $data['trackingNo'] : null;
-
-        // 持久化
         $groupOrder = $groupUserOrderRepository->find( $groupOrdersId );
         
         //审核
+        $checkStatus = isset($data['checkStatus']) ? $data['checkStatus'] : null;
+        $reason = isset($data['reason']) ? $data['reason'] : null;
         if($checkStatus){
             $groupOrder->setCheckStatus($checkStatus);
         }
@@ -1268,10 +1264,18 @@ class MemberController extends AppApiBaseController
         }
 
         // 发货
+        $carrierName = isset($data['carrierName']) ? $data['carrierName'] : null;
+        $trackingNo = isset($data['trackingNo']) ? $data['trackingNo'] : null;
         if($carrierName && $trackingNo){
             $groupOrder->setCarrierName($carrierName);
             $groupOrder->setTrackingNo($trackingNo);
             $groupOrder->setShipping();
+        }
+
+        //  确认收货
+        $setDelivered = isset($data['setDelivered']) ? $data['setDelivered'] : null;
+        if($setDelivered){
+            $groupOrder->setDelivered();
         }
         
         $this->getEntityManager()->persist($groupOrder);
