@@ -54,7 +54,7 @@ class UserController extends GongZhongBaseController
         if (empty($openIdInfo)) {
             $requestProcess->throwErrorException(ErrorCode::ERROR_WX_OPENID_LOGIN, []);
         }
-        ConfigParams::getLogger()->info ("get wx user response for code [" . $code . "]: ", $openIdInfo->getData());
+        ConfigParams::getLogger()->info ("get wx user response for code [" . $code . "]: ", $openIdInfo);
 
         $openId = $openIdInfo['openid'];
         $unionId = $openIdInfo['unionid'];
