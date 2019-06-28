@@ -144,6 +144,12 @@ class PayController extends GongZhongBaseController
 
         $prePayInfo = FactoryUtil::wxPayGzhDriver(Pay::MP_GATEWAY)->apply($options);
 
+        if (empty($prePayInfo['prepayid'])) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_WX_PAY_PREPAY_ID, []);
+        }
+        $prePayId = $prePayInfo['prepayid'];
+        $groupUserOrder->setPrePayId($prePayId);
+
         $groupUserOrder->setOutTradeNo($outTradeNo);
         $this->entityPersist($groupUserOrder);
 
