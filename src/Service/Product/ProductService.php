@@ -65,6 +65,7 @@ class ProductService
             'product' => $productArray,
             'textMetaArray' => [],
             'shareSources' => [],
+            'user' => CommonUtil::obj2Array($user),
         ];
 
         //课程加上对应的权限以及
@@ -86,7 +87,8 @@ class ProductService
                 $groupUserOrder = FactoryUtil::groupUserOrderRepository()->findOneBy(['product' => $product, 'user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
                 $data['groupUserOrder'] = CommonUtil::obj2Array($groupUserOrder);
                 if (!empty($user)) {
-                    $data['shareSources'] = FactoryUtil::shareSourceProcess()->createShareSource(ShareSource::GZH, ShareSource::PRODUCT, $user, $product, $url);
+                    $shareSourceResult = FactoryUtil::shareSourceProcess()->createShareSource(ShareSource::GZH, ShareSource::PRODUCT, $user, $product, $url);
+                    $data['shareSources'] = $shareSourceResult->getData();
                 }
             }
 

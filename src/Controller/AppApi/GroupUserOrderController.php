@@ -70,7 +70,7 @@ class GroupUserOrderController extends AppApiBaseController
         $data = [
             'groupUserOrder' => $groupUserOrder->getArray(),
             'courseStudents' => $courseStudentArray,
-            'shareSources' => $this->createProductShareSource($user, $groupUserOrder->getProduct(), $url),
+            'shareSources' => [],
         ];
 
         return CommonUtil::resultData()->toJsonResponse($data);

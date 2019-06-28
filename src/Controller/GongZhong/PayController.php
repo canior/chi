@@ -10,6 +10,7 @@ namespace App\Controller\GongZhong;
 
 
 use App\Entity\CourseOrder;
+use App\Entity\CourseStudent;
 use App\Entity\GroupUserOrder;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
@@ -199,5 +200,52 @@ class PayController extends GongZhongBaseController
         }
         $data['groupUserOrder'] = $groupUserOrder->getArray();
         return $requestProcess->toJsonResponse($data);
+    }
+
+    /**
+     * 订单待支付页面
+     *
+     * @Route("/gzhAuth/groupUserOrder/view", name="gzhViewGroupUserOrder", methods="POST")
+     * @param Request $request
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @return Response
+     */
+    public function viewAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository)
+    {
+        $requestProcess = $this->processRequest($request, [
+            'url', 'groupUserOrderId',
+        ], ['groupUserOrderId']);
+        $groupUserOrderId = $requestProcess['groupUserOrderId'];
+        $url = $requestProcess['url'];
+        /**
+         * @var GroupUserOrder $groupUserOrder
+         */
+        $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+
+
+        $user = $this->getAppUser();
+
+        if (empty($groupUserOrder) || $user !== $groupUserOrder->getUser()) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS, []);
+        }
+
+        $courseStudentArray = [];
+        if ($groupUserOrder->getProduct()->isCourseProduct()) {
+            /**
+             * @var CourseStudent[] $courseStudents
+             */
+            $courseStudents = $this->getEntityManager()->getRepository(CourseStudent::class)->findBy(["course" => $groupUserOrder->getProduct()->getCourse(), "studentUser" => $user]);
+            foreach ($courseStudents as $courseStudent) {
+                $courseStudentArray[] = $courseStudent->getArray();
+            }
+        }
+
+        $data = [
+            'groupUserOrder' => $groupUserOrder->getArray(),
+            'courseStudents' => $courseStudentArray,
+            'shareSources' => [],
+        ];
+
+        return CommonUtil::resultData()->toJsonResponse($data);
     }
 }
