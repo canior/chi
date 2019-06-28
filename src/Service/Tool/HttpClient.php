@@ -8,6 +8,7 @@
 
 namespace App\Service\Tool;
 
+use App\Service\Config\ConfigParams;
 use App\Service\Util\CommonUtil;
 
 /**
@@ -324,6 +325,7 @@ class HttpClient
                 } else {
                     header('Content-Type: text/html; charset=utf-8');
                 }
+                ConfigParams::getLogger()->info('httpRequest', $outputArr);
             }
         }
         curl_close($ch);
