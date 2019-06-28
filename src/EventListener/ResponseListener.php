@@ -39,7 +39,7 @@ class ResponseListener
 
             if (in_array($origin, $allowOrigin)) {
                 $response->headers->set('Access-Control-Allow-Origin', $origin);
-                $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, X-CSRF-TOKEN, Accept, Authorization, X-XSRF-TOKEN');
+                $response->headers->set('Access-Control-Allow-Headers', 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization, Referer, Origin');
                 $response->headers->set('Access-Control-Expose-Headers', 'Authorization, authenticated');
                 $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, OPTIONS');
                 $response->headers->set('Access-Control-Max-Age', 18000);
