@@ -46,4 +46,20 @@ class ProjectShareMetaRepository extends ServiceEntityRepository
 
         return $query;
     }
+
+    /**
+     * 获取分享配置
+     * @param string $type
+     * @param null $contentType
+     * @return ProjectShareMeta|null
+     * @author zxqc2018
+     */
+    public function findShareMeta($type, $contentType = null)
+    {
+        $key = $type;
+        if (!empty($contentType)) {
+            $key .= '-' . $contentType;
+        }
+        return $this->findOneBy(['metaKey' => $key]);
+    }
 }

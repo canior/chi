@@ -72,6 +72,7 @@ class ShareSource implements Dao
     const REFER = 'refer';
     const QUAN = 'quan';
     const APP = 'app';
+    const GZH = 'gzh';
 
     // 分享内容的类型
     const GROUP_ORDER = 'group_order';
@@ -92,6 +93,7 @@ class ShareSource implements Dao
         self::REFER => '小程序',
         self::QUAN => '朋友圈',
         self::APP => '客户端',
+        self::GZH => '公众号',
 
         // 以下类型为兼容老数据------------------------
         self::REFER_GROUP_ORDER => '小程序拼团分享',
@@ -151,6 +153,36 @@ class ShareSource implements Dao
         return $shareSource;
     }
 
+    /**
+     * @param $type
+     * @param $contentType
+     * @param $page
+     * @param User|null $user
+     * @param File|null $bannerFile
+     * @param null $shareMetaTitle
+     * @param Product|null $product
+     * @return ShareSource
+     */
+    public static function factoryNew($type, $contentType, $page, User $user, File $bannerFile = null, $shareMetaTitle = null, Product $product = null) {
+
+        $shareSource = new ShareSource();
+        $shareSource->setType($type);
+        $shareSource->setContenType($contentType);
+        $shareSource->setUser($user);
+
+        if ($type == self::GZH) {
+            $shareSource->setTitle($user->getNickname() . $shareMetaTitle . $product->getTitle());
+            if ($product->getShareImageFile()) {
+                $shareSource->setBannerFile($product->getShareImageFile());
+            }
+        }else {
+            $shareSource->setBannerFile($bannerFile);
+        }
+
+        $shareSource->setProduct($product);
+        $shareSource->setPage($page);
+        return $shareSource;
+    }
 
     public function __construct()
     {
@@ -176,7 +208,18 @@ class ShareSource implements Dao
         return $this->id;
     }
 
-
+    /**
+     * @return string
+     * @author zxqc2018
+     */
+    public function getCombineKey()
+    {
+        $key = $this->type;
+        if (!empty($this->contentType)) {
+            $key .= '-' . $this->contentType;
+        }
+        return $key;
+    }
 
     public function getUser(): ?User
     {

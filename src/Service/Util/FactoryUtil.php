@@ -19,8 +19,10 @@ use App\Entity\Message;
 use App\Entity\MessageCode;
 use App\Entity\Product;
 use App\Entity\ProductReview;
+use App\Entity\ProjectShareMeta;
 use App\Entity\ProjectTextMeta;
 use App\Entity\ProjectTokenMeta;
+use App\Entity\ShareSource;
 use App\Entity\User;
 use App\Entity\UserAccountOrder;
 use App\Repository\CategoryRepository;
@@ -33,8 +35,10 @@ use App\Repository\MessageCodeRepository;
 use App\Repository\MessageRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
+use App\Repository\ProjectShareMetaRepository;
 use App\Repository\ProjectTextMetaRepository;
 use App\Repository\ProjectTokenMetaRepository;
+use App\Repository\ShareSourceRepository;
 use App\Repository\UserAccountOrderRepository;
 use App\Repository\UserRepository;
 use App\Service\Config\ConfigParams;
@@ -314,6 +318,19 @@ class FactoryUtil
     }
 
     /**
+     * @return ProjectShareMetaRepository
+     * @author zxqc2018
+     */
+    public static function projectShareMetaRepository()
+    {
+        /**
+         * @var  ProjectShareMetaRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(ProjectShareMeta::class);
+        return $repository;
+    }
+
+    /**
      * @return ProjectTokenMetaRepository
      * @author zxqc2018
      */
@@ -336,6 +353,19 @@ class FactoryUtil
          * @var  MessageCodeRepository $repository
          */
         $repository =  CommonUtil::getRepository(MessageCode::class);
+        return $repository;
+    }
+
+    /**
+     * @return ShareSourceRepository
+     * @author zxqc2018
+     */
+    public static function shareSourceRepository()
+    {
+        /**
+         * @var  ShareSourceRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(ShareSource::class);
         return $repository;
     }
 
