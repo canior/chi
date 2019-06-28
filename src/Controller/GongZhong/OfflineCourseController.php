@@ -45,7 +45,7 @@ class OfflineCourseController extends GongZhongBaseController
         return $requestProcess->toJsonResponse([
             'courseList' => CommonUtil::entityArray2DataArray($courseList),
             'user' => CommonUtil::getInsideValue($user, 'array')
-        ]);
+        ], ['content-type' => 'application/json']);
     }
 
     /**
