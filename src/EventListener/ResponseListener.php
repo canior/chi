@@ -34,13 +34,12 @@ class ResponseListener
 
             if(CommonUtil::isDebug()){
                 $allowOrigin[] = 'http://localhost:8080';
-                $allowOrigin[] = 'http://www.zxqc2019.cn';
             }
 
             if (in_array($origin, $allowOrigin)) {
                 $response->headers->set('Access-Control-Allow-Origin', $origin);
                 $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, X-CSRF-TOKEN, Accept, Authorization, X-XSRF-TOKEN, x-requested-with');
-//                $response->headers->set('Access-Control-Expose-Headers', 'Authorization, authenticated');
+                $response->headers->set('Access-Control-Expose-Headers', 'Authorization, authenticated');
                 $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, OPTIONS');
                 $response->headers->set('Access-Control-Max-Age', 18000);
                 $response->headers->set('content-type', 'application/json; charset=UTF-8');

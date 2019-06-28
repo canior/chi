@@ -38,6 +38,10 @@ class AppApiBaseController extends BaseController
     protected $appRequest;
 
     /**
+     * @var int
+     */
+    protected $gzhTokenUserId = 0;
+    /**
      * AppApiBaseController constructor.
      * @param LoggerInterface $logger
      * @param CommandBus $commandBus
@@ -61,6 +65,12 @@ class AppApiBaseController extends BaseController
     {
         $res = null;
 
+        if (!empty($this->gzhTokenUserId)) {
+            $user = FactoryUtil::userRepository()->find($this->gzhTokenUserId);
+            if (!empty($user)) {
+                return $user;
+            }
+        }
         //只判断jwt登陆的url验证token,与后台登陆区分
         if (!CommonUtil::requestUrlStartsWith($this->appRequest, 'appApi/auth||gongZhong/auth')) {
             if ($force && ($userIdInToken = $this->getAppUserId())) {
@@ -150,6 +160,32 @@ class AppApiBaseController extends BaseController
                 break;
             default:
                 $data = array_merge($request->query->all(), $request->request->all(), CommonUtil::mixedTwoWayOpt($request->getContent()));
+        }
+
+
+        //公众号特殊token验证
+        if (CommonUtil::requestUrlStartsWith($request, '/gongZhong')) {
+            $rawToken = $data['crossToken'] ?? '';
+            $isLogin = CommonUtil::requestUrlStartsWith($request, '/gongZhong/gzhAuth');
+            if (empty($rawToken)) {
+                if ($isLogin) {
+                    $res->throwErrorException(ErrorCode::ERROR_TOKEN_AUTH_NOT_FOUND, []);
+                }
+            } else {
+                try{
+                    $token = new JWTUserToken();
+                    $token->setRawToken($rawToken);
+                    $tokenInfo = $this->jwtTokenManage->decode($token);
+                } catch (\Throwable $e) {
+
+                }
+                if (!empty($tokenInfo['userId'])) {
+                    $this->gzhTokenUserId = $tokenInfo['userId'];
+                }
+                if ($isLogin) {
+                    $res->throwErrorException(ErrorCode::ERROR_TOKEN_INVALID, []);
+                }
+            }
         }
 
         //默认需要转换int 的 key
