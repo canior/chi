@@ -17,6 +17,8 @@ use App\Service\ErrorCode;
 use App\Service\Pay\Pay;
 use App\Service\Util\CommonUtil;
 use App\Service\Util\FactoryUtil;
+use App\Service\Util\MoneyUtil;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -158,6 +160,67 @@ class PayController extends GongZhongBaseController
             'payment' => $prePayInfo,
         ];
 
+        return $requestProcess->toJsonResponse($data);
+    }
+
+    /**
+     * 支付同步通知
+     * @Route("/auth/groupUserOrder/notifyPayment", name="gzhNotifyGroupUserOrderPayment", methods="POST")
+     * @param Request $request
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @return JsonResponse
+     */
+    public function notifyPaymentAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) : JsonResponse
+    {
+        $requestProcess = $this->processRequest($request, [
+            'groupUserOrderId', 'isPaid'
+        ], ['groupUserOrderId']);
+
+        $user = $this->getAppUser();
+
+        $groupUserOrder = $groupUserOrderRepository->find($requestProcess['groupUserOrderId']);
+
+        if (empty($groupUserOrder) || $user !== $groupUserOrder->getUser()) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS);
+        }
+
+        $data = [
+            'nextPageType' => 3,
+            'tradingProductId' => 0,
+        ];
+
+        //系统课报名处理
+        $product = $groupUserOrder->getProduct();
+        if ($product->isCourseProduct() && !$product->getCourse()->isOnline()) {
+            $course = $product->getCourse();
+            if ($course->isSystemSubject()) {
+                if ($user->isSystemSubjectPrivilege()) {
+                    //todo sms通知
+                    $data['nextPageType'] = 4;
+                }
+            } else if ($course->isThinkingSubject()) {
+                if ($course->getPrice() > MoneyUtil::thinkingGeneratePrice()) {
+                    $data['nextPageType'] = 2;
+                } else {
+                    //todo sms通知
+                    $data['nextPageType'] = 1;
+                }
+            } else if ($course->isTradingSubject()) {
+                //是否有报名了但是没有分配桌号的
+                if ($user->isCompletedPersonalInfo() && $groupUserOrder->getTotal() == MoneyUtil::tradeSpecialPrice()) {
+                    $data['nextPageType'] = 4;
+                }
+            }
+        }
+
+        if ($data['nextPageType'] == 3) {
+            //查找直通车课程id
+            $tradingCourse = FactoryUtil::courseRepository()->findSpecTradingCourse(MoneyUtil::tradeSpecialPrice());
+            if (!empty($tradingCourse)) {
+                $data['tradingProductId'] = $tradingCourse->getProduct()->getId();
+            }
+        }
+        $data['groupUserOrder'] = $groupUserOrder->getArray();
         return $requestProcess->toJsonResponse($data);
     }
 }
