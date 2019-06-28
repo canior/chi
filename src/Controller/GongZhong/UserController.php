@@ -9,6 +9,9 @@
 namespace App\Controller\GongZhong;
 
 
+use App\Entity\MessageCode;
+use App\Entity\User;
+use App\Entity\UserStatistics;
 use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
@@ -24,15 +27,77 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class UserController extends GongZhongBaseController
 {
-
     /**
-     * @Route("/login", name="gzhLogin")
-     * @author zxqc2018
+     * @Route("/loginPhone", name="gzhAuthLoginPhone",  methods={"POST"})
+     * @param JWTTokenManagerInterface $JWTTokenManager
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     * author zxqc2018
      */
-    public function login()
+    public function loginPhone(JWTTokenManagerInterface $JWTTokenManager )
     {
-        $requestProcess = $this->processRequest(null);
+
+        $requestProcess = $this->processRequest(null, [
+            'phone', 'code', 'openid', 'unionid'
+        ], ['phone', 'code', 'openid', 'unionid']);
+
+        $checkConfig = [
+            'phone' => ['len' => 11],
+            'code' => ['len' => 4],
+        ];
+
+        foreach ($checkConfig as $paramKey => $check) {
+            if (!preg_match("#^\d{{$check['len']}}$#", $requestProcess[$paramKey])) {
+                $requestProcess->throwErrorException(ErrorCode::ERROR_PARAM_NOT_ALL_EXISTS, ['errorKey' => $paramKey]);
+            }
+        }
+
+        //验证Code
+        if (!CommonUtil::isDebug()) {
+            $messageCode = FactoryUtil::messageCodeRepository()->findOneBy(['phone' => $requestProcess['phone'],'type'=> MessageCode::LOGIN]);
+            if(empty($messageCode)|| $messageCode->getCode() != $requestProcess['code'] ){
+                $requestProcess->throwErrorException(ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR, []);
+            }
+        }
+
+        // 查询匹配用户
+        $user = FactoryUtil::userRepository()->findOneBy(['phone' => $requestProcess['phone']]);
+        $flushFlag = false;
+        if (empty($user)) {
+            $this->getLog()->info("creating user for unionid" . $requestProcess['phone']);
+            $user = new User();
+            $user->setUsername($requestProcess['phone']);
+            $user->setPhone($requestProcess['phone']);
+            $user->setUsernameCanonical($requestProcess['phone']);
+            $user->setEmail($requestProcess['phone'] . '@qq.com');
+            $user->setEmailCanonical($requestProcess['phone'] . '@qq.com');
+            $user->setPassword("IamCustomer");
+            $user->setLastLoginTimestamp(time());
+
+            $userStatistics = new UserStatistics($user);
+            $user->addUserStatistic($userStatistics);
+            $user->info('created user ' . $user);
+            $flushFlag = true;
+        } else {
+            if (empty($user->getWxUnionId())) {
+                $user->setWxUnionId($requestProcess['unionid']);
+                $flushFlag = true;
+            }
+
+            if (empty($user->getWxGzhOpenId())) {
+                $user->setWxGzhOpenId($requestProcess['openid']);
+                $flushFlag = true;
+            }
+        }
+
+        if ($flushFlag) {
+            $this->entityPersist($user);
+        }
+        return $requestProcess->toJsonResponse([
+            'user' => CommonUtil::obj2Array($user),
+            'token' => $JWTTokenManager->create($user)
+        ]);
     }
+
     /**
      * @Route("/login/wx", name="gzhAuthloginWx",  methods={"POST"})
      * @param JWTTokenManagerInterface $JWTTokenManager

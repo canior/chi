@@ -73,6 +73,12 @@ class User extends BaseUser implements Dao
     private $wxOpenId;
 
     /**
+     * @var string
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $wxGzhOpenId;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $wxUnionId;
@@ -508,6 +514,22 @@ class User extends BaseUser implements Dao
         $this->wxOpenId = $wxOpenId;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWxGzhOpenId(): ?string
+    {
+        return $this->wxGzhOpenId ?? '';
+    }
+
+    /**
+     * @param string $wxGzhOpenId
+     */
+    public function setWxGzhOpenId(?string $wxGzhOpenId): void
+    {
+        $this->wxGzhOpenId = $wxGzhOpenId;
     }
 
     public function getWxUnionId(): ?string

@@ -16,6 +16,7 @@ use App\Entity\FollowCourseMeta;
 use App\Entity\FollowTeacherMeta;
 use App\Entity\GroupUserOrder;
 use App\Entity\Message;
+use App\Entity\MessageCode;
 use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Entity\ProjectTextMeta;
@@ -28,6 +29,7 @@ use App\Repository\FileRepository;
 use App\Repository\FollowCourseMetaRepository;
 use App\Repository\FollowTeacherMetaRepository;
 use App\Repository\GroupUserOrderRepository;
+use App\Repository\MessageCodeRepository;
 use App\Repository\MessageRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
@@ -321,6 +323,19 @@ class FactoryUtil
          * @var  ProjectTokenMetaRepository $repository
          */
         $repository =  CommonUtil::getRepository(ProjectTokenMeta::class);
+        return $repository;
+    }
+
+    /**
+     * @return MessageCodeRepository
+     * @author zxqc2018
+     */
+    public static function messageCodeRepository()
+    {
+        /**
+         * @var  MessageCodeRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(MessageCode::class);
         return $repository;
     }
 
