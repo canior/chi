@@ -87,7 +87,7 @@ class ProductService
                 $groupUserOrder = FactoryUtil::groupUserOrderRepository()->findOneBy(['product' => $product, 'user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
                 $data['groupUserOrder'] = CommonUtil::obj2Array($groupUserOrder);
                 if (!empty($user)) {
-                    $shareSourceResult = FactoryUtil::shareSourceProcess()->createShareSource(ShareSource::GZH, ShareSource::PRODUCT, $user, $product, $url);
+                    $shareSourceResult = FactoryUtil::shareSourceProcess()->createShareSource([ShareSource::GZH, ShareSource::GZH_QUAN], ShareSource::PRODUCT, $user, $product, $url);
                     $data['shareSources'] = $shareSourceResult->getData();
                 }
             }

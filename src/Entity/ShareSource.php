@@ -72,7 +72,10 @@ class ShareSource implements Dao
     const REFER = 'refer';
     const QUAN = 'quan';
     const APP = 'app';
+    //公众号分享好友
     const GZH = 'gzh';
+    //公众号朋友圈需要生成图片
+    const GZH_QUAN = 'gzh_quan';
 
     // 分享内容的类型
     const GROUP_ORDER = 'group_order';
@@ -216,7 +219,7 @@ class ShareSource implements Dao
     {
         $key = $this->type;
         if (!empty($this->contentType)) {
-            $key .= '-' . $this->contentType;
+            $key .= '_' . $this->contentType;
         }
         return $key;
     }

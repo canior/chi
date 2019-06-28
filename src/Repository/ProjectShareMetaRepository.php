@@ -58,7 +58,7 @@ class ProjectShareMetaRepository extends ServiceEntityRepository
     {
         $key = $type;
         if (!empty($contentType)) {
-            $key .= '-' . $contentType;
+            $key .= '_' . $contentType;
         }
         return $this->findOneBy(['metaKey' => $key]);
     }

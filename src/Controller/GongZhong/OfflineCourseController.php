@@ -9,8 +9,10 @@
 namespace App\Controller\GongZhong;
 
 use App\Repository\ProductRepository;
+use App\Service\Config\DependencyInjectionSingletonConfig;
 use App\Service\Util\CommonUtil;
 use App\Service\Util\FactoryUtil;
+use Endroid\QrCode\Factory\QrCodeFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -52,12 +54,14 @@ class OfflineCourseController extends GongZhongBaseController
      * 获取课程详情
      *
      * @Route("/offlineCourse/detail", name="gzhOfflineCourseDetail", methods="POST")
+     * @param QrCodeFactory $qrCodeFactory
      * @return JsonResponse
      */
-    public function detailAction(): JsonResponse {
+    public function detailAction(QrCodeFactory $qrCodeFactory): JsonResponse {
         $requestProcess = $this->processRequest(null, [
             'url', 'productId', 'page', 'pageNum'
         ], ['productId']);
+        DependencyInjectionSingletonConfig::getInstance()->setQrCodeFactory($qrCodeFactory);
         return FactoryUtil::offlineCourseService()->getDetailInfo($requestProcess, $this->getAppUser(true))->toJsonResponse();
     }
 }

@@ -10,6 +10,7 @@ namespace App\Service\Config;
 
 
 
+use Endroid\QrCode\Factory\QrCodeFactory;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,6 +39,11 @@ class DependencyInjectionSingletonConfig
      * @var LoggerInterface
      */
     private $logger;
+
+    /**
+     * @var QrCodeFactory
+     */
+    private $qrCodeFactory;
 
     public static function getInstance()
     {
@@ -94,5 +100,21 @@ class DependencyInjectionSingletonConfig
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @return QrCodeFactory
+     */
+    public function getQrCodeFactory(): QrCodeFactory
+    {
+        return $this->qrCodeFactory;
+    }
+
+    /**
+     * @param QrCodeFactory $qrCodeFactory
+     */
+    public function setQrCodeFactory(QrCodeFactory $qrCodeFactory): void
+    {
+        $this->qrCodeFactory = $qrCodeFactory;
     }
 }
