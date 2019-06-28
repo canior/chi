@@ -25,7 +25,7 @@ class OfflineCourseController extends GongZhongBaseController
     /**
      * 获取线下课程列表
      *
-     * @Route("/offlineCourses", name="gzhOfflineCourseIndex", methods="POST")
+     * @Route("/offlineCourses", name="gzhOfflineCourseIndex", methods={"POST","OPTIONS"})
      * @param Request $request
      * @param ProductRepository $productRepository
      * @return JsonResponse
