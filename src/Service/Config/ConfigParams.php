@@ -33,7 +33,7 @@ class ConfigParams
 
     //微信公众号
     const JQ_GZH_WX_ID = 'jq_gzh_wx_id';
-    const JQ_GZH_WX_SECRET = 'jq_gzh_wx_mch_secret';
+    const JQ_GZH_WX_SECRET = 'jq_gzh_wx_secret';
 
     //支付宝 金秋智库 app_id
     const JQ_APP_ALIPAY_ID = 'jq_app_alipay_id';
