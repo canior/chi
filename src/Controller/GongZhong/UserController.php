@@ -35,9 +35,8 @@ class UserController extends GongZhongBaseController
      */
     public function loginPhone(JWTTokenManagerInterface $JWTTokenManager )
     {
-
         $requestProcess = $this->processRequest(null, [
-            'phone', 'code', 'openid', 'unionid'
+            'phone', 'code', 'openid', 'unionid', 'shareSourceId'
         ], ['phone', 'code', 'openid', 'unionid']);
 
         $checkConfig = [
@@ -92,6 +91,12 @@ class UserController extends GongZhongBaseController
         if ($flushFlag) {
             $this->entityPersist($user);
         }
+
+        //添加shareSourceUser
+        if ($requestProcess['shareSourceId']) {
+            FactoryUtil::shareSourceProcess()->addShareSourceUser($requestProcess['shareSourceId'], $user);
+        }
+
         return $requestProcess->toJsonResponse([
             'user' => CommonUtil::obj2Array($user),
             'token' => $JWTTokenManager->create($user)
@@ -106,7 +111,7 @@ class UserController extends GongZhongBaseController
     public function wxLogin(JWTTokenManagerInterface $JWTTokenManager)
     {
         $requestProcess = $this->processRequest(null, [
-            'code'
+            'code', 'shareSourceId'
         ], ['code']);
 
         $code = $requestProcess['code'];
@@ -137,6 +142,11 @@ class UserController extends GongZhongBaseController
 
         if (!empty($user)) {
             $data['token'] = $JWTTokenManager->create($user);
+
+            //添加shareSourceUser
+            if ($requestProcess['shareSourceId']) {
+                FactoryUtil::shareSourceProcess()->addShareSourceUser($requestProcess['shareSourceId'], $user);
+            }
         }
 
         return $requestProcess->toJsonResponse($data);

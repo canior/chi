@@ -47,6 +47,7 @@ use App\Service\Pay\Contracts\NotifyInterface;
 use App\Service\Pay\NotifyProcess;
 use App\Service\Pay\Pay;
 use App\Service\Product\OfflineCourseService;
+use App\Service\Share\ShareSourceProcess;
 use App\Service\Sms\AliSms;
 use App\Service\WeChat\OfficialAccount\WeChatProcess;
 use Knp\Component\Pager\Paginator;
@@ -395,5 +396,14 @@ class FactoryUtil
     {
         $process = new WeChatProcess(WeChatProcess::GZH_PROCESS);
         return $process;
+    }
+
+    /**
+     * @return ShareSourceProcess
+     * @author zxqc2018
+     */
+    public static function shareSourceProcess()
+    {
+        return new ShareSourceProcess();
     }
 }

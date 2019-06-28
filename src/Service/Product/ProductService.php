@@ -13,6 +13,7 @@ use App\Entity\Product;
 use App\Entity\ProjectShareMeta;
 use App\Entity\ShareSource;
 use App\Entity\User;
+use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\ResultData;
 use App\Service\Util\CommonUtil;
@@ -58,9 +59,6 @@ class ProductService
             $requestProcess->throwErrorException(ErrorCode::ERROR_PRODUCT_NOT_EXISTS);
         }
 
-        //todo 分享
-
-
         $productArray = $product->isCourseProduct() ? $product->getCourse()->getCourseVideoArray() : $product->getArray();
 
         $data = [
@@ -88,7 +86,7 @@ class ProductService
                 $groupUserOrder = FactoryUtil::groupUserOrderRepository()->findOneBy(['product' => $product, 'user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
                 $data['groupUserOrder'] = CommonUtil::obj2Array($groupUserOrder);
                 if (!empty($user)) {
-                    $data['shareSources'] = $this->createShareSource(ShareSource::GZH, ShareSource::PRODUCT, $user, $product, $url);
+                    $data['shareSources'] = FactoryUtil::shareSourceProcess()->createShareSource(ShareSource::GZH, ShareSource::PRODUCT, $user, $product, $url);
                 }
             }
 
@@ -114,44 +112,5 @@ class ProductService
 
         $requestProcess->setData($data);
         return $requestProcess;
-    }
-
-    /**
-     * 返回分享数据
-     * @param $type
-     * @param $contentType
-     * @param User $user
-     * @param Product $product
-     * @param $page
-     * @return array
-     */
-    protected function createShareSource($type, $contentType, User $user, Product $product, $page)
-    {
-        if (is_null($page)) {
-            $page = '';
-        }
-        /**
-         * @var ProjectShareMeta $referProductShare
-         */
-        $referProductShare = FactoryUtil::projectShareMetaRepository()->findShareMeta($type, $contentType);
-
-        $shareSources = [];
-
-        //产品信息页面转发分享
-        $referShareSource = FactoryUtil::shareSourceRepository()->findOneBy([
-            'user'=> $user,
-            'product' => $product,
-            'type' => ShareSource::GZH,
-            'contentType' => ShareSource::PRODUCT,
-        ]);
-        if ($referShareSource == null) {
-            $referShareSource = ShareSource::factoryNew(ShareSource::GZH, ShareSource::PRODUCT, $page, $user, null, $referProductShare->getShareTitle(), $product);
-            CommonUtil::entityPersist($referShareSource);
-        }
-
-        $shareSources[$referShareSource->getCombineKey()] = $referShareSource->getArray();
-
-
-        return $shareSources;
     }
 }
