@@ -34,6 +34,7 @@ class ResponseListener
 
             if(CommonUtil::isDebug()){
                 $allowOrigin[] = 'http://localhost:8080';
+                $allowOrigin[] = 'http://192.168.0.106:8080';
             }
 
             if (in_array($origin, $allowOrigin)) {
