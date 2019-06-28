@@ -52,8 +52,9 @@ class UserController extends GongZhongBaseController
         $openIdInfo = $gzhWeChatProcess->getOpenidByCode($code);
 
         if (empty($openIdInfo)) {
-            $requestProcess->throwErrorException(ErrorCode::ERROR_WX_OPENID_LOGIN, []);
+            $requestProcess->throwErrorException(ErrorCode::ERROR_WX_OPENID_WITH_CODE, []);
         }
+
         ConfigParams::getLogger()->info ("get wx user response for code [" . $code . "]: ", $openIdInfo);
 
         $openId = $openIdInfo['openid'];

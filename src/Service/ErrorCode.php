@@ -44,6 +44,7 @@ class ErrorCode
     const ERROR_WX_TOKEN_GET = 12014;
     const ERROR_WX_JS_TOKEN_GET = 12015;
     const ERROR_WX_PROCESS_NOT_EXISTS = 12016;
+    const ERROR_WX_OPENID_WITH_CODE = 12017;
 
     //-------课程---------------------------------------
     const ERROR_CATEGORY_NOT_EXISTS = 13001;
@@ -131,6 +132,7 @@ class ErrorCode
             self::ERROR_WX_TOKEN_GET => '获取微信token失败',
             self::ERROR_WX_JS_TOKEN_GET => '获取微信jsToken失败',
             self::ERROR_WX_PROCESS_NOT_EXISTS => '微信公众号处理类不存在',
+            self::ERROR_WX_OPENID_WITH_CODE => '微信公code获取openid失败',
         ];
     }
 
