@@ -46,17 +46,14 @@ class GzhWeChatProcess implements WeChatProcessInterface
 
     /**
      * 微信授权code获取openid
-     * @param bool $onlyOpenid 是否只是取得opneid false 则根据access_token再取得用户信息
      * @param string|null $code 授权code
+     * @param bool $onlyOpenid 是否只是取得opneid false 则根据access_token再取得用户信息
      * @return array
      * @author zxqc2018
      */
-    function getOpenidByCode($onlyOpenid = true, $code = null)
+    function getOpenidByCode($code = null, $onlyOpenid = true)
     {
         $app = $this->getWeChatApp();
-        if (is_null($code)) {
-            $code = $_REQUEST['code'] ?? '';
-        }
         $user = [];
         try {
             $res = $app->getWeChatDocument()->getOpenidByCode($code);

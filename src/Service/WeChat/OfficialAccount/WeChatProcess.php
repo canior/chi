@@ -63,14 +63,14 @@ class WeChatProcess
 
     /**
      * 授权回跳页面保存openId
-     * @param bool $onlyOpenid 是否只是取得opneid false 则根据access_token再取得用户信息
      * @param string|null $code 授权code
+     * @param bool $onlyOpenid 是否只是取得opneid false 则根据access_token再取得用户信息
      * @return mixed
      * @author zxqc2018
      */
-    public function getOpenidByCode($onlyOpenid = true, $code = null)
+    public function getOpenidByCode($code = null, $onlyOpenid = true)
     {
-        return $this->weChatProcess->getOpenidByCode($onlyOpenid, $code);
+        return $this->weChatProcess->getOpenidByCode($code, $onlyOpenid);
     }
 
 
