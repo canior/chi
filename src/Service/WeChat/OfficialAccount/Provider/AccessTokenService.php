@@ -63,6 +63,7 @@ class AccessTokenService
             ]
         ];
 
+        ConfigParams::getLogger()->info('jsConfig', $config);
         return $config[$this->appId][$type] ?? '';
     }
 
