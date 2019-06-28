@@ -85,7 +85,7 @@ class WeChatApp
             if($i%3==0){
                 $randStr.=rand();
             }
-            $randStr.=$str[rand(0,$strLength)];
+            $randStr.=$str[rand(0,$strLength - 1)];
         }
         $randStr.=rand();
         $time = time();
