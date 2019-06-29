@@ -223,31 +223,12 @@ class GroupUserOrderController extends BaseController
         $data = json_decode($request->getContent(), true);
         $isPaid =  isset($data['isPaid']) ? $data['isPaid'] : false;
         $groupUserOrderId =  isset($data['groupUserOrderId']) ? $data['groupUserOrderId'] : null;
-        $thirdSession = isset($data['thirdSession']) ? $data['thirdSession'] : null;
 
-        $user = $this->getWxUser($thirdSession);
         $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
 
         if (!$isPaid) {
             return $this->responseJson('group_order_created_fail', 200, $data);
         }
-
-        $groupUserOrder->setPending();
-
-        if ($groupUserOrder instanceof  CourseOrder) {
-            $groupUserOrder->setRegistered();
-        } else {
-            $groupUserOrder->setPaid();
-        }
-
-        $this->getEntityManager()->persist($groupUserOrder);
-
-        if ($groupUserOrder->getProduct()->isHasCoupon()) {
-            $user->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($groupUserOrder->getId()));
-        }
-
-        $groupUserOrder->setPaymentTime(time());
-        $this->getEntityManager()->flush();
 
         $data = [
             'groupUserOrder' => $groupUserOrder->getArray()
