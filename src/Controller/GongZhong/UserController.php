@@ -217,4 +217,21 @@ class UserController extends GongZhongBaseController
 
         return $requestProcess->toJsonResponse(['user' => CommonUtil::obj2Array($user)]);
     }
+
+    /**
+     *
+     * 合伙人确认身份
+     * @Route("/gzhAuth/partner/confirm", name="partnerConfirmSystemUser", methods={"POST"})
+     * @author zxqc2018
+     */
+    public function partnerConfirmSystemUser()
+    {
+        $requestProcess = $this->processRequest(null, [
+            'groupUserOrderId'
+        ], ['groupUserOrderId']);
+
+        $user = $this->getAppUser();
+        $confirmResult = FactoryUtil::partnerAssistantProcess()->partnerConfirmSystemUser($user, $requestProcess['groupUserOrderId']);
+        return $confirmResult->toJsonResponse();
+    }
 }

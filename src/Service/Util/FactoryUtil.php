@@ -42,6 +42,7 @@ use App\Repository\ShareSourceRepository;
 use App\Repository\UserAccountOrderRepository;
 use App\Repository\UserRepository;
 use App\Service\Config\ConfigParams;
+use App\Service\Order\PartnerAssistantProcess;
 use App\Service\Pay\Contracts\GatewayInterface;
 use App\Service\Pay\Contracts\NotifyInterface;
 use App\Service\Pay\NotifyProcess;
@@ -405,5 +406,14 @@ class FactoryUtil
     public static function shareSourceProcess()
     {
         return new ShareSourceProcess();
+    }
+
+    /**
+     * @return PartnerAssistantProcess
+     * @author zxqc2018
+     */
+    public static function partnerAssistantProcess()
+    {
+        return new PartnerAssistantProcess();
     }
 }

@@ -49,6 +49,11 @@ class ErrorCode
     //-------课程---------------------------------------
     const ERROR_CATEGORY_NOT_EXISTS = 13001;
     const ERROR_COURSE_NOT_EXISTS = 13002;
+    const ERROR_PARTNER_USER_REF = 13003;
+    const ERROR_PARTNER_RECOMMEND_STOCK_EMPTY = 13004;
+    const ERROR_NOT_PARTNER_UP_LEVEL = 13005;
+    const ERROR_PARTNER_UP_COURSE_NOT_SYSTEM = 13006;
+    const ERROR_USER_ALREADY_SYSTEM = 13007;
     //-------产品---------------------------------------
     const ERROR_PRODUCT_NOT_EXISTS = 14001;
     //-------订单---------------------------------------
@@ -135,6 +140,11 @@ class ErrorCode
             self::ERROR_WX_PROCESS_NOT_EXISTS => '微信公众号处理类不存在',
             self::ERROR_WX_OPENID_WITH_CODE => '微信公code获取openid失败',
             self::ERROR_GZH_PAY_ID_NOT_EXISTS => '微信公众号openid不存在',
+            self::ERROR_PARTNER_USER_REF => '合伙人|分院与用户身份确认失败',
+            self::ERROR_PARTNER_RECOMMEND_STOCK_EMPTY => '合伙人|分院名额用完',
+            self::ERROR_NOT_PARTNER_UP_LEVEL => '合伙人|分院身份确认失败',
+            self::ERROR_PARTNER_UP_COURSE_NOT_SYSTEM => '确认身份订单不合法',
+            self::ERROR_USER_ALREADY_SYSTEM => '用户已经是系统学员',
         ];
     }
 

@@ -474,6 +474,15 @@ class User extends BaseUser implements Dao
         return $this->getBianxianUserLevel() == BianxianUserLevel::PARTNER;
     }
 
+    /**
+     * 是否有推荐名额资格
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isHasRecommendStockLevel()
+    {
+        return in_array($this->getBianxianUserLevel(), [BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR]);
+    }
 
     public function getRoleText()
     {
