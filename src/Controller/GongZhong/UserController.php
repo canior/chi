@@ -153,12 +153,14 @@ class UserController extends GongZhongBaseController
     }
 
     /**
+     * 修改用户资料[实名]
      * @Route("/gzhAuth/updateUserInfo", name="gzhUpdateUserInfo",  methods={"POST"})
+     * @author zxqc2018
      */
     public function updateUserInfo()
     {
         $requestProcess = $this->processRequest(null, [
-            'name', 'phone','idNum','nickname','company','wechat','recommanderName'
+            'name', 'phone','idNum','nickname','company','wechat','recommanderName','code'
         ], ['code']);
 
         $user =  $this->getAppUser();
