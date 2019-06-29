@@ -45,7 +45,6 @@ class UserController extends GongZhongBaseController
             'code' => ['len' => 4],
         ];
 
-        ConfigParams::getLogger()->info('gzhLogin', $requestProcess->getData());
         foreach ($checkConfig as $paramKey => $check) {
             if (!preg_match("#^\d{{$check['len']}}$#", $requestProcess[$paramKey])) {
                 $requestProcess->throwErrorException(ErrorCode::ERROR_PARAM_NOT_ALL_EXISTS, ['errorKey' => $paramKey]);

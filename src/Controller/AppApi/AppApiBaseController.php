@@ -17,6 +17,7 @@ use App\Entity\Category;
 use App\Entity\ProjectVideoMeta;
 use App\Entity\User;
 use App\Repository\ProjectVideoMetaRepository;
+use App\Service\Config\ConfigParams;
 use App\Service\Config\DependencyInjectionSingletonConfig;
 use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
@@ -162,7 +163,7 @@ class AppApiBaseController extends BaseController
                 $data = array_merge($request->query->all(), $request->request->all(), CommonUtil::mixedTwoWayOpt($request->getContent()));
         }
 
-
+        ConfigParams::getLogger()->info('gzhLogin', $data);
         //公众号特殊token验证
         if (CommonUtil::requestUrlStartsWith($request, '/gongZhong')) {
             $rawToken = $data['crossToken'] ?? '';
