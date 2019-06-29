@@ -75,6 +75,8 @@ class UserController extends GongZhongBaseController
 
             $userStatistics = new UserStatistics($user);
             $user->addUserStatistic($userStatistics);
+            $user->setWxUnionId($requestProcess['unionid']);
+            $user->setWxGzhOpenId($requestProcess['openid']);
             $user->info('created user ' . $user);
             $flushFlag = true;
         } else {
