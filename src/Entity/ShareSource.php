@@ -97,6 +97,7 @@ class ShareSource implements Dao
         self::QUAN => '朋友圈',
         self::APP => '客户端',
         self::GZH => '公众号',
+        self::GZH_QUAN => '公众号-圈',
 
         // 以下类型为兼容老数据------------------------
         self::REFER_GROUP_ORDER => '小程序拼团分享',
