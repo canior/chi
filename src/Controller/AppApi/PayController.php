@@ -166,8 +166,7 @@ class PayController extends AppApiBaseController
                     $data['nextPageType'] = 1;
                 }
             } else if ($course->isTradingSubject()) {
-                //是否有报名了但是没有分配桌号的
-                if ($user->isCompletedPersonalInfo() && $groupUserOrder->getTotal() == MoneyUtil::tradeSpecialPrice()) {
+                if ($user->isCompletedPersonalInfo()) {
                     $data['nextPageType'] = 4;
                 }
             }
