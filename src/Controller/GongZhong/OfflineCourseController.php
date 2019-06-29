@@ -54,14 +54,12 @@ class OfflineCourseController extends GongZhongBaseController
      * 获取课程详情
      *
      * @Route("/offlineCourse/detail", name="gzhOfflineCourseDetail", methods="POST")
-     * @param QrCodeFactory $qrCodeFactory
      * @return JsonResponse
      */
-    public function detailAction(QrCodeFactory $qrCodeFactory): JsonResponse {
+    public function detailAction(): JsonResponse {
         $requestProcess = $this->processRequest(null, [
             'url', 'productId', 'page', 'pageNum'
         ], ['productId']);
-        DependencyInjectionSingletonConfig::getInstance()->setQrCodeFactory($qrCodeFactory);
         return FactoryUtil::offlineCourseService()->getDetailInfo($requestProcess, $this->getAppUser(true))->toJsonResponse();
     }
 }

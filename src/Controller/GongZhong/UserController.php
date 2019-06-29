@@ -10,6 +10,7 @@ namespace App\Controller\GongZhong;
 
 
 use App\Entity\MessageCode;
+use App\Entity\ShareSource;
 use App\Entity\User;
 use App\Entity\UserStatistics;
 use App\Service\Config\ConfigParams;
@@ -36,7 +37,7 @@ class UserController extends GongZhongBaseController
     public function loginPhone(JWTTokenManagerInterface $JWTTokenManager )
     {
         $requestProcess = $this->processRequest(null, [
-            'phone', 'code', 'openid', 'unionid', 'shareSourceId'
+            'phone', 'code', 'openid', 'unionid', 'shareSourceId','productId', 'url'
         ], ['phone', 'code', 'openid', 'unionid']);
 
         $checkConfig = [
@@ -97,10 +98,24 @@ class UserController extends GongZhongBaseController
             FactoryUtil::shareSourceProcess()->addShareSourceUser($requestProcess['shareSourceId'], $user);
         }
 
-        return $requestProcess->toJsonResponse([
+
+
+        $data = [
             'user' => CommonUtil::obj2Array($user),
             'token' => $JWTTokenManager->create($user)
-        ]);
+        ];
+
+        $data['shareSources'] = [];
+        //产生对应产品的shareSourceId
+        if ($requestProcess['productId']) {
+            $product = FactoryUtil::productRepository()->find($requestProcess['productId']);
+            if (!empty($product)) {
+                $shareSourceResult = FactoryUtil::shareSourceProcess()->createShareSource([ShareSource::GZH, ShareSource::GZH_QUAN], ShareSource::PRODUCT, $user, $product, $requestProcess['url'] ?? '');
+                $data['shareSources'] = $shareSourceResult->getData();
+            }
+        }
+
+        return $requestProcess->toJsonResponse($data);
     }
 
     /**
@@ -111,7 +126,7 @@ class UserController extends GongZhongBaseController
     public function wxLogin(JWTTokenManagerInterface $JWTTokenManager)
     {
         $requestProcess = $this->processRequest(null, [
-            'code', 'shareSourceId'
+            'code', 'shareSourceId','productId','url'
         ], ['code']);
 
         $code = $requestProcess['code'];
@@ -146,6 +161,16 @@ class UserController extends GongZhongBaseController
             //添加shareSourceUser
             if ($requestProcess['shareSourceId']) {
                 FactoryUtil::shareSourceProcess()->addShareSourceUser($requestProcess['shareSourceId'], $user);
+            }
+        }
+
+        $data['shareSources'] = [];
+        //产生对应产品的shareSourceId
+        if ($requestProcess['productId']) {
+            $product = FactoryUtil::productRepository()->find($requestProcess['productId']);
+            if (!empty($product)) {
+                $shareSourceResult = FactoryUtil::shareSourceProcess()->createShareSource([ShareSource::GZH, ShareSource::GZH_QUAN], ShareSource::PRODUCT, $user, $product, $requestProcess['url'] ?? '');
+                $data['shareSources'] = $shareSourceResult->getData();
             }
         }
 
