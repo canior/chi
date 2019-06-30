@@ -170,6 +170,7 @@ class PayController extends GongZhongBaseController
         $data = [
             'nextPageType' => 3,
             'tradingProductId' => 0,
+            'needConfirm' => false,
         ];
 
         //系统课报名处理
@@ -177,9 +178,13 @@ class PayController extends GongZhongBaseController
         if ($product->isCourseProduct() && !$product->getCourse()->isOnline()) {
             $course = $product->getCourse();
             if ($course->isSystemSubject()) {
-                if ($user->isSystemSubjectPrivilege()) {
+                if ($user->isSystemSubjectPrivilege() || $user->isCompletedPersonalInfo()) {
                     //todo sms通知
                     $data['nextPageType'] = 4;
+                }
+                //是否需要合伙人确认
+                if (!$user->isSystemSubjectPrivilege(false)) {
+                    $data['needConfirm'] = true;
                 }
             } else if ($course->isThinkingSubject()) {
                 if ($course->getPrice() > MoneyUtil::thinkingGeneratePrice()) {
@@ -238,10 +243,17 @@ class PayController extends GongZhongBaseController
 
         $data = [
             'groupUserOrder' => $groupUserOrder->getArray(),
+            'needConfirm' => false,
         ];
 
         if (!empty($requestProcess['isConfirmView'])) {
             $data['hasConfirmPrivilege'] = $groupUserOrder->getUser()->getBianxianTopParentPartnerUpUser() == $user;
+        }
+
+        //是否需要确认
+        $product = $groupUserOrder->getProduct();
+        if ($product->isCourseProduct() && !$product->getCourse()->isOnline() && $product->getCourse()->isSystemSubject() && !$user->isSystemSubjectPrivilege(false)) {
+            $data['needConfirm'] = true;
         }
         return $requestProcess->toJsonResponse($data);
     }

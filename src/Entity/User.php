@@ -2040,12 +2040,13 @@ class User extends BaseUser implements Dao
 
     /**
      * 是否有上系统课权限
+     * @param bool $isCheckRealPersonInfo 是否需要验证系统学院实名
      * @return bool
      * @author zxqc2018
      */
-    public function isSystemSubjectPrivilege()
+    public function isSystemSubjectPrivilege($isCheckRealPersonInfo = true)
     {
-        return in_array($this->bianxianUserLevel, [BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR]) || $this->isBianxianAdvancedUser() && $this->isCompletedPersonalInfo();
+        return in_array($this->bianxianUserLevel, [BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR]) || $this->isBianxianAdvancedUser() && (!$isCheckRealPersonInfo || $isCheckRealPersonInfo && $this->isCompletedPersonalInfo());
     }
     /*
      * 成为系统学院时间
