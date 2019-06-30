@@ -10,7 +10,6 @@ namespace App\Controller\GongZhong;
 
 
 use App\Entity\CourseOrder;
-use App\Entity\CourseStudent;
 use App\Entity\GroupUserOrder;
 use App\Repository\GroupUserOrderRepository;
 use App\Repository\ProductRepository;
@@ -22,7 +21,6 @@ use App\Service\Util\MoneyUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class PayController extends GongZhongBaseController
 {
@@ -49,7 +47,7 @@ class PayController extends GongZhongBaseController
      * @Route("/gzhAuth/groupUserOrder/createOfflineCourse", name="gzhCreateOfflineCourseGroupUserOrder", methods="POST")
      * @param Request $request
      * @param ProductRepository $productRepository
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function createOfflineCourseAction(Request $request, ProductRepository $productRepository)
     {
@@ -79,7 +77,7 @@ class PayController extends GongZhongBaseController
      * @Route("/gzhAuth/groupUserOrder/pay", name="gzhPayGroupUserOrder", methods="POST")
      * @param Request $request
      * @param GroupUserOrderRepository $groupUserOrderRepository
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function payAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository)
     {
@@ -211,46 +209,39 @@ class PayController extends GongZhongBaseController
      * 订单待支付页面
      *
      * @Route("/gzhAuth/groupUserOrder/view", name="gzhViewGroupUserOrder", methods="POST")
-     * @param Request $request
-     * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
      */
-    public function viewAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository)
+    public function viewAction()
     {
-        $requestProcess = $this->processRequest($request, [
-            'url', 'groupUserOrderId',
+        $requestProcess = $this->processRequest(null, [
+            'groupUserOrderId', 'isConfirmView'
         ], ['groupUserOrderId']);
         $groupUserOrderId = $requestProcess['groupUserOrderId'];
-        $url = $requestProcess['url'];
         /**
          * @var GroupUserOrder $groupUserOrder
          */
-        $groupUserOrder = $groupUserOrderRepository->find($groupUserOrderId);
+        $groupUserOrder = FactoryUtil::groupUserOrderRepository()->find($groupUserOrderId);
 
-
-        $user = $this->getAppUser();
-
-        if (empty($groupUserOrder) || $user !== $groupUserOrder->getUser()) {
+        if (empty($groupUserOrder)) {
             $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS, []);
         }
 
-        $courseStudentArray = [];
-        if ($groupUserOrder->getProduct()->isCourseProduct()) {
-            /**
-             * @var CourseStudent[] $courseStudents
-             */
-            $courseStudents = $this->getEntityManager()->getRepository(CourseStudent::class)->findBy(["course" => $groupUserOrder->getProduct()->getCourse(), "studentUser" => $user]);
-            foreach ($courseStudents as $courseStudent) {
-                $courseStudentArray[] = $courseStudent->getArray();
+        $user = $this->getAppUser();
+
+        //非合伙人确认页面验证user
+        if (empty($requestProcess['isConfirmView'])) {
+            if ($user !== $groupUserOrder->getUser()) {
+                $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS, []);
             }
         }
 
         $data = [
             'groupUserOrder' => $groupUserOrder->getArray(),
-            'courseStudents' => $courseStudentArray,
-            'shareSources' => [],
         ];
 
-        return CommonUtil::resultData()->toJsonResponse($data);
+        if (!empty($requestProcess['isConfirmView'])) {
+            $data['hasConfirmPrivilege'] = $groupUserOrder->getUser()->getTopParentPartnerUser() == $user;
+        }
+        return $requestProcess->toJsonResponse($data);
     }
 }
