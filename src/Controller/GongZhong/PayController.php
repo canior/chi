@@ -241,7 +241,7 @@ class PayController extends GongZhongBaseController
         ];
 
         if (!empty($requestProcess['isConfirmView'])) {
-            $data['hasConfirmPrivilege'] = $groupUserOrder->getUser()->getTopParentPartnerUser() == $user;
+            $data['hasConfirmPrivilege'] = $groupUserOrder->getUser()->getBianxianTopParentPartnerUpUser() == $user;
         }
         return $requestProcess->toJsonResponse($data);
     }
