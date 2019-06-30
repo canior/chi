@@ -263,4 +263,21 @@ class UserController extends GongZhongBaseController
         $confirmResult = FactoryUtil::partnerAssistantProcess()->partnerConfirmSystemUser($user, $requestProcess['groupUserOrderId']);
         return $confirmResult->toJsonResponse();
     }
+
+    /**
+     * @Route("/getToken", name="getTestToken")
+     * @param JWTTokenManagerInterface $JWTTokenManager
+     * @return JsonResponse
+     */
+    public function getTestToken(JWTTokenManagerInterface $JWTTokenManager )
+    {
+
+        $requestProcess = $this->processRequest(null, ['id'], ['id']);
+        $data = [];
+        if (CommonUtil::isDebug()) {
+            $user = FactoryUtil::userRepository()->find($requestProcess['id']);
+            $data = ['token' => $JWTTokenManager->create($user), 'user' => $user->getId()];
+        }
+        return $requestProcess->toJsonResponse($data);
+    }
 }
