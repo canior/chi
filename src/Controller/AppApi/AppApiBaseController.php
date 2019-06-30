@@ -163,7 +163,9 @@ class AppApiBaseController extends BaseController
                 $data = array_merge($request->query->all(), $request->request->all(), CommonUtil::mixedTwoWayOpt($request->getContent()));
         }
 
-        ConfigParams::getLogger()->info('gzhLogin', $data);
+        if (CommonUtil::isDebug()) {
+            ConfigParams::getLogger()->info('gzhLogin---' . $request->getRequestUri(), $data);
+        }
         //公众号特殊token验证
         if (CommonUtil::requestUrlStartsWith($request, '/gongZhong')) {
             $rawToken = $data['crossToken'] ?? '';
