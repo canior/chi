@@ -51,7 +51,8 @@ class PartnerAssistantProcess
             $res->throwErrorException(ErrorCode::ERROR_USER_ALREADY_SYSTEM, []);
         }
 
-        if ($order->getUser()->getTopParentPartnerUser() !== $user) {
+        $bianxianPartnerUpUser = $order->getUser()->getBianxianTopParentPartnerUpUser();
+        if (empty($bianxianPartnerUpUser) || $order->getUser()->getBianxianTopParentPartnerUpUser() !== $user) {
             $res->throwErrorException(ErrorCode::ERROR_PARTNER_USER_REF, []);
         }
 
@@ -76,7 +77,7 @@ class PartnerAssistantProcess
         }
 
         //TODO 如果合伙人没有名额了怎么办
-        $topParentUser = $order->getUser()->getTopParentPartnerUser();
+        $topParentUser = $order->getUser()->getBianxianTopParentPartnerUpUser();
         if (!empty($topParentUser)) {
             $memo = '合伙人推荐系统学员成功，消除名额';
             $topParentUser->createUserRecommandStockOrder(-1, $bianxianUpgradeUserOrder, $memo);

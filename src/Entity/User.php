@@ -475,6 +475,15 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isBianxianPartnerUpUser()
+    {
+        return BianxianUserLevel::PARTNER == $this->getBianxianUserLevel() || BianxianUserLevel::DISTRIBUTOR == $this->getBianxianUserLevel();
+    }
+
+    /**
      * 是否有推荐名额资格
      * @return bool
      * @author zxqc2018
@@ -1812,6 +1821,35 @@ class User extends BaseUser implements Dao
             }
 
             if ($parent->isBianxianPartnerUser()) {
+                return $parent;
+            }
+            $user = $parent;
+        }
+        return null;
+    }
+
+    /**
+     * 返回变现最上线的一个合伙人|分院
+     * @return User|null
+     */
+    public function getBianxianTopParentPartnerUpUser() {
+
+        //如果自己就是partner则就是自己
+        if ($this->isBianxianPartnerUpUser()) {
+            return $this;
+        }
+
+        if ($this->getParentUser() == null) {
+            return null;
+        }
+
+        $user = $this;
+        while ($parent = $user->getParentUser()) {
+            if ($this->getParentUser() == null) {
+                return null;
+            }
+
+            if ($parent->isBianxianPartnerUpUser()) {
                 return $parent;
             }
             $user = $parent;
