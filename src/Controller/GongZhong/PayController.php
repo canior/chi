@@ -226,6 +226,7 @@ class PayController extends GongZhongBaseController
         $data = [
             'groupUserOrder' => $groupUserOrder->getArray(),
             'needConfirm' => false,
+            'partnerName' => '',
         ];
 
         if (!empty($requestProcess['isConfirmView'])) {
@@ -236,6 +237,7 @@ class PayController extends GongZhongBaseController
         $product = $groupUserOrder->getProduct();
         if ($product->isCourseProduct() && !$product->getCourse()->isOnline() && $product->getCourse()->isSystemSubject() && !$user->isSystemSubjectPrivilege(false)) {
             $data['needConfirm'] = true;
+            $data['partnerName'] = CommonUtil::getInsideValue($groupUserOrder, 'getUser.getBianxianTopParentPartnerUpUser.getName', '做商学院');
         }
         return $requestProcess->toJsonResponse($data);
     }
