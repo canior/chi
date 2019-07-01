@@ -98,7 +98,7 @@ class Pay
                 // 缓存目录配置
                 'cache_path' => '',
                 // 支付成功通知地址
-                'notify_url' => ConfigParams::getParamWithController(ConfigParams::JQ_APP_WXPAY_NOTIFY_URL),
+                'notify_url' => 'https://jinqiu.yunlishuju.com/appApi/notify/order/async',
                 // 网页支付回跳地址
                 'return_url' => '',
             ],
@@ -115,7 +115,7 @@ class Pay
                 // 缓存目录配置
                 'cache_path'  => '',
                 // 支付成功通知地址
-                'notify_url'  => ConfigParams::getParamWithController(ConfigParams::JQ_APP_ALIPAY_NOTIFY_URL),
+                'notify_url'  => 'https://jinqiu.yunlishuju.com/appApi/notify/order/async',
                 // 网页支付回跳地址
                 'return_url'  => '',
             ],
