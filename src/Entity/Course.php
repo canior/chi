@@ -712,6 +712,11 @@ class Course implements Dao
             or Subject::SYSTEM_2 == $this->getSubject();
     }
 
+    public function isPrivateDirectSubject()
+    {
+        return Subject::PRIVATE_DIRECTOR == $this->getSubject();
+    }
+
     /**
      * @return bool
      */
