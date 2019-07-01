@@ -66,7 +66,7 @@ class ShareSourceProcess
                         /**
                          * @var QrCode $qrCode
                          */
-                        $qrCode = DependencyInjectionSingletonConfig::getInstance()->getQrCodeFactory()->create($page, [
+                        $qrCode = DependencyInjectionSingletonConfig::getInstance()->getQrCodeFactory()->create($shareSource->getPage(), [
                             'size' => 110,
                             'round_block_size' => 0,
                         ]);
