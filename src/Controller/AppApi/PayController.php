@@ -10,6 +10,7 @@ namespace App\Controller\AppApi;
 
 use App\Entity\GroupUserOrder;
 use App\Repository\GroupUserOrderRepository;
+use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\Pay\Pay;
 use App\Service\Util\CommonUtil;
@@ -196,6 +197,13 @@ class PayController extends AppApiBaseController
         ];
 
         $this->getLog()->info('notifyTest||' . $data['raw'], []);
+
+        $logPath = ConfigParams::getParamWithController('kernel.project_dir'). '/var/log/';
+
+        if (is_dir($logPath)) {
+            file_put_contents($logPath .'test.pay.log', json_encode($data), FILE_APPEND);
+        }
+
         return FactoryUtil::notifyProcess(file_get_contents('php://input'))->process()->toResponse();
     }
 }
