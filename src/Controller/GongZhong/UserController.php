@@ -53,7 +53,7 @@ class UserController extends GongZhongBaseController
 
         //验证Code
         if (!CommonUtil::isDebug()) {
-            $messageCode = FactoryUtil::messageCodeRepository()->findOneBy(['phone' => $requestProcess['phone'],'type'=> MessageCode::LOGIN]);
+            $messageCode = FactoryUtil::messageCodeRepository()->findOneBy(['phone' => $requestProcess['phone'],'type'=> MessageCode::LOGIN], ['id' => 'DESC']);
             if(empty($messageCode)|| $messageCode->getCode() != $requestProcess['code'] ){
                 $requestProcess->throwErrorException(ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR, []);
             }
@@ -99,8 +99,6 @@ class UserController extends GongZhongBaseController
         if ($requestProcess['shareSourceId']) {
             FactoryUtil::shareSourceProcess()->addShareSourceUser($requestProcess['shareSourceId'], $user);
         }
-
-
 
         $data = [
             'user' => CommonUtil::obj2Array($user),
