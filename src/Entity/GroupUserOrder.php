@@ -502,7 +502,8 @@ class GroupUserOrder implements Dao
                     //分钱逻辑
                     if ($this->getProduct()->getCourse()->getSubject() == Subject::THINKING
                         or $this->getProduct()->getCourse()->getSubject() == Subject::SYSTEM_1
-                        or $this->getProduct()->getCourse()->getSubject() == Subject::SYSTEM_2) { //思维课报名, 系统课1&2复训报名
+                        or $this->getProduct()->getCourse()->getSubject() == Subject::SYSTEM_2
+                        or $this->getProduct()->getCourse()->getSubject() == Subject::PRIVATE_DIRECTOR) { //思维课报名, 系统课1&2复训报名
 
                         $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::VIP, $this);
                         if ($jinqiuUpgradeUserOrder) {

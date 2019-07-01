@@ -186,7 +186,7 @@ class PayController extends GongZhongBaseController
                 if (!$user->isSystemSubjectPrivilege(false)) {
                     $data['needConfirm'] = true;
                 }
-            } else if ($course->isThinkingSubject()) {
+            } else if ($course->isThinkingSubject() || $course->isPrivateDirectSubject()) {
                 if ($course->getPrice() > MoneyUtil::thinkingGeneratePrice()) {
                     $data['nextPageType'] = 2;
                 } else {
