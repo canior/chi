@@ -154,6 +154,9 @@ class AccessTokenService
 
             if (empty($accessToken)) {
                 CommonUtil::resultData()->throwErrorException(ErrorCode::ERROR_WX_TOKEN_GET, []);
+            } else {
+                $this->setTokenCache($accessToken);
+                return $accessToken;
             }
         }
 
@@ -182,6 +185,11 @@ class AccessTokenService
         $token = $this->getToken();
 
         $jsTicket = $this->getJsTicketCache();
+
+        if (!empty($jsTicket)) {
+            return $jsTicket;
+        }
+
         if (empty($jsTicket)) {
             $jsTicket = $this->weChatDocument->getJsTicket($token);
         }
