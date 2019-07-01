@@ -68,7 +68,6 @@ class FactoryUtil
             ConfigParams::JQ_APP_WX_ID => [],
             ConfigParams::JQ_GZH_WX_ID => [
                 'app_id' => ConfigParams::getParamWithController(ConfigParams::JQ_GZH_WX_ID),
-                'notify_url' => 'https://laowantong.yunlishuju.com/appApi/notify/order/async',
             ],
         ];
         return new Pay($wxAppConfig[$wxAppId] ?? []);
