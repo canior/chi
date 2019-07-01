@@ -37,7 +37,7 @@ class UserController extends GongZhongBaseController
     public function loginPhone(JWTTokenManagerInterface $JWTTokenManager )
     {
         $requestProcess = $this->processRequest(null, [
-            'phone', 'code', 'openid', 'unionid', 'shareSourceId','productId', 'url'
+            'phone', 'code', 'openid', 'unionid', 'shareSourceId','productId', 'url','nickname','avatar'
         ], ['phone', 'code', 'openid', 'unionid']);
 
         $checkConfig = [
@@ -77,6 +77,8 @@ class UserController extends GongZhongBaseController
             $user->addUserStatistic($userStatistics);
             $user->setWxUnionId($requestProcess['unionid']);
             $user->setWxGzhOpenId($requestProcess['openid']);
+            $user->setNickname($requestProcess['nickname']);
+            $user->setAvatarUrl($requestProcess['avatar']);
             $user->info('created user ' . $user);
             $flushFlag = true;
         } else {
@@ -87,6 +89,16 @@ class UserController extends GongZhongBaseController
 
             if (empty($user->getWxGzhOpenId())) {
                 $user->setWxGzhOpenId($requestProcess['openid']);
+                $flushFlag = true;
+            }
+
+            if (empty($user->getAvatarUrl())) {
+                $user->setAvatarUrl($requestProcess['avatar']);
+                $flushFlag = true;
+            }
+
+            if (empty($user->getNickname())) {
+                $user->setNickname($requestProcess['nickname']);
                 $flushFlag = true;
             }
         }
@@ -134,7 +146,7 @@ class UserController extends GongZhongBaseController
 
         $gzhWeChatProcess = FactoryUtil::gzhWeChatProcess();
 
-        $openIdInfo = $gzhWeChatProcess->getOpenidByCode($code);
+        $openIdInfo = $gzhWeChatProcess->getOpenidByCode($code, false);
 
         if (empty($openIdInfo)) {
             $requestProcess->throwErrorException(ErrorCode::ERROR_WX_OPENID_WITH_CODE, []);
@@ -144,6 +156,7 @@ class UserController extends GongZhongBaseController
 
         $openId = $openIdInfo['openid'];
         $unionId = $openIdInfo['unionid'];
+        $nickname = $openIdInfo['nickname'] ?? '未知用户';
 
         $user = FactoryUtil::userRepository()->findOneBy(['wxUnionId' => $unionId]);
         $this->getLog()->info("found user " . $user == null ? 'true' : 'false');
@@ -153,6 +166,8 @@ class UserController extends GongZhongBaseController
             'unionid' => $unionId,
             'user' => CommonUtil::obj2Array($user),
             'token' => '',
+            'nickname' => $nickname,
+            'avatar' => $openIdInfo['avatar'] ?? '',
         ];
 
         if (!empty($user)) {
