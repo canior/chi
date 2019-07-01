@@ -201,7 +201,7 @@ class PayController extends AppApiBaseController
         $logPath = ConfigParams::getParamWithController('kernel.project_dir'). '/var/log/';
 
         if (is_dir($logPath)) {
-            file_put_contents($logPath .'test.pay.log', json_encode($data), FILE_APPEND);
+            file_put_contents($logPath .'test.pay.log', json_encode($data) . "\n", FILE_APPEND);
         }
 
         return FactoryUtil::notifyProcess(file_get_contents('php://input'))->process()->toResponse();

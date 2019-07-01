@@ -4,6 +4,7 @@
 
 namespace App\Service\Pay\Gateways;
 
+use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\Pay\Contracts\Config;
 use App\Service\Pay\Contracts\GatewayInterface;
@@ -199,6 +200,12 @@ abstract class Wechat extends GatewayInterface
     protected function preOrder($options = [])
     {
         $this->config = array_merge($this->config, $options);
+
+        $logPath = ConfigParams::getParamWithController('kernel.project_dir'). '/var/log/';
+
+        if (is_dir($logPath)) {
+            file_put_contents($logPath .'test.pay.log', json_encode($this->config) . "\n", FILE_APPEND);
+        }
         return $this->getResult($this->gateway);
     }
 
