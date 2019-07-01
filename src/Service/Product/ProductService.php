@@ -45,10 +45,11 @@ class ProductService
      * 获取产品包括课程详情
      * @param ResultData $requestProcess
      * @param User $user
-     * @author zxqc2018
+     * @param string $showType 公众号 gzh  还是 APP  app
      * @return ResultData
+     * @author zxqc2018
      */
-    public function getDetailInfo(ResultData $requestProcess, ?User $user = null)
+    public function getDetailInfo(ResultData $requestProcess, ?User $user = null, $showType = 'app')
     {
         $productId = $requestProcess['productId'];
         $url = $requestProcess['url'];
@@ -87,8 +88,10 @@ class ProductService
                 $groupUserOrder = FactoryUtil::groupUserOrderRepository()->findOneBy(['product' => $product, 'user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
                 $data['groupUserOrder'] = CommonUtil::obj2Array($groupUserOrder);
                 if (!empty($user)) {
-                    $shareSourceResult = FactoryUtil::shareSourceProcess()->createShareSource([ShareSource::GZH, ShareSource::GZH_QUAN], ShareSource::PRODUCT, $user, $product, $url);
-                    $data['shareSources'] = $shareSourceResult->getData();
+                    if ($showType == 'gzh') {
+                        $shareSourceResult = FactoryUtil::shareSourceProcess()->createShareSource([ShareSource::GZH, ShareSource::GZH_QUAN], ShareSource::PRODUCT, $user, $product, $url);
+                        $data['shareSources'] = $shareSourceResult->getData();
+                    }
                 }
             }
 

@@ -60,6 +60,6 @@ class OfflineCourseController extends GongZhongBaseController
         $requestProcess = $this->processRequest(null, [
             'url', 'productId', 'page', 'pageNum'
         ], ['productId']);
-        return FactoryUtil::offlineCourseService()->getDetailInfo($requestProcess, $this->getAppUser(true))->toJsonResponse();
+        return FactoryUtil::offlineCourseService()->getDetailInfo($requestProcess, $this->getAppUser(true), 'gzh')->toJsonResponse();
     }
 }
