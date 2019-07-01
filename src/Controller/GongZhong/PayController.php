@@ -178,35 +178,17 @@ class PayController extends GongZhongBaseController
         if ($product->isCourseProduct() && !$product->getCourse()->isOnline()) {
             $course = $product->getCourse();
             if ($course->isSystemSubject()) {
-                if ($user->isSystemSubjectPrivilege() || $user->isCompletedPersonalInfo()) {
-                    //todo sms通知
-                    $data['nextPageType'] = 4;
-                }
                 //是否需要合伙人确认
                 if (!$user->isSystemSubjectPrivilege(false)) {
                     $data['needConfirm'] = true;
                 }
-            } else if ($course->isThinkingSubject() || $course->isPrivateDirectSubject()) {
-                if ($course->getPrice() > MoneyUtil::thinkingGeneratePrice()) {
-                    $data['nextPageType'] = 2;
-                } else {
-                    //todo sms通知
-                    $data['nextPageType'] = 1;
-                }
-            } else if ($course->isTradingSubject()) {
-                if ($user->isCompletedPersonalInfo()) {
-                    $data['nextPageType'] = 4;
-                }
+            }
+
+            if ($user->isCompletedPersonalInfo()) {
+                $data['nextPageType'] = 4;
             }
         }
 
-        if ($data['nextPageType'] == 3) {
-            //查找直通车课程id
-            $tradingCourse = FactoryUtil::courseRepository()->findSpecTradingCourse(MoneyUtil::tradeSpecialPrice());
-            if (!empty($tradingCourse)) {
-                $data['tradingProductId'] = $tradingCourse->getProduct()->getId();
-            }
-        }
         $data['groupUserOrder'] = $groupUserOrder->getArray();
         return $requestProcess->toJsonResponse($data);
     }
