@@ -273,6 +273,13 @@ class UserController extends GongZhongBaseController
         ], ['groupUserOrderId']);
 
         $user = $this->getAppUser();
+
+        $logPath = ConfigParams::getParamWithController('kernel.project_dir'). '/var/log/';
+
+        if (is_dir($logPath)) {
+            file_put_contents($logPath .'test.pay.log', json_encode($requestProcess->getData()) . "\n", FILE_APPEND);
+        }
+
         $confirmResult = FactoryUtil::partnerAssistantProcess()->partnerConfirmSystemUser($user, $requestProcess['groupUserOrderId']);
         return $confirmResult->toJsonResponse();
     }
