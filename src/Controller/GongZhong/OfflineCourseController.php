@@ -9,10 +9,8 @@
 namespace App\Controller\GongZhong;
 
 use App\Repository\ProductRepository;
-use App\Service\Config\DependencyInjectionSingletonConfig;
 use App\Service\Util\CommonUtil;
 use App\Service\Util\FactoryUtil;
-use Endroid\QrCode\Factory\QrCodeFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -44,10 +42,15 @@ class OfflineCourseController extends GongZhongBaseController
         ]);
         $courseList = $this->getPaginator()->paginate($courseQuery, $requestProcess['page'], $requestProcess['pageNum']);
 
+        $courseCountQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
+            'offlineCourseType' => $requestProcess['offlineCourseType'],
+            'isGetCount' => true
+        ]);
         return $requestProcess->toJsonResponse([
             'courseList' => CommonUtil::entityArray2DataArray($courseList),
+            'total' => CommonUtil::getTotalQueryCount($courseCountQuery),
             'user' => CommonUtil::getInsideValue($user, 'array')
-        ], ['content-type' => 'application/json']);
+        ]);
     }
 
     /**

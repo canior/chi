@@ -12,6 +12,7 @@ use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
 use App\Service\ResultData;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Throwable;
 
@@ -468,5 +469,23 @@ class CommonUtil
         }
 
         return $ret;
+    }
+
+    /**
+     * 获取统计query总数
+     * @param QueryBuilder $queryBuilder
+     * @return int
+     * @author zxqc2018
+     */
+    public static function getTotalQueryCount(QueryBuilder $queryBuilder)
+    {
+        $res = 0;
+        try {
+            $res = $queryBuilder->getQuery()->getSingleScalarResult();
+        } catch (Throwable $e) {
+            dd($e);
+        }
+
+        return $res;
     }
 }

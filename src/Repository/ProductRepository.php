@@ -101,6 +101,7 @@ class ProductRepository extends ServiceEntityRepository
         $limit = $extension['limit'] ?? null;
         $offlineCourseType = $extension['offlineCourseType'] ?? null;
         $courseShowType = $extension['courseShowType'] ?? Course::COURSE_SHOW_TYPE_APP;
+        $isGetCount = $extension['isGetCount'] ?? false;
 
         if ($isCourse) {
             if(is_null($isOnline)) {
@@ -141,6 +142,11 @@ class ProductRepository extends ServiceEntityRepository
             $query->andWhere('p.course is null');
         }
 
+
+        if ($isGetCount) {
+            $query->select('count(p.id)');
+            return $query;
+        }
         if (empty($orderBy)) {
             $orderBy['p.priority'] = 'DESC';
         }
