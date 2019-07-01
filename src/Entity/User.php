@@ -2023,11 +2023,11 @@ class User extends BaseUser implements Dao
      * @return null|string
      */
     public function getDisplayRecommanderName() {
-        if ($this->getParentUser()) {
-            return $this->getParentUser()->getDisplayName();
-        }
+//        if ($this->getParentUser()) {
+//            return $this->getParentUser()->getDisplayName();
+//        }
 
-        return $this->getRecommanderName() != null ? $this->getRecommanderName() : '变现商学院';
+        return $this->getRecommanderName() != null ? $this->getRecommanderName() : '佐商学社';
     }
 
     /*

@@ -91,6 +91,10 @@ class ProductService
                     if ($showType == 'gzh') {
                         $shareSourceResult = FactoryUtil::shareSourceProcess()->createShareSource([ShareSource::GZH, ShareSource::GZH_QUAN], ShareSource::PRODUCT, $user, $product, $url);
                         $data['shareSources'] = $shareSourceResult->getData();
+                        //添加shareSourceUser
+                        if ($requestProcess['shareSourceId']) {
+                            FactoryUtil::shareSourceProcess()->addShareSourceUser($requestProcess['shareSourceId'], $user);
+                        }
                     }
                 }
             }
