@@ -483,7 +483,6 @@ class CommonUtil
         try {
             $res = $queryBuilder->getQuery()->getSingleScalarResult();
         } catch (Throwable $e) {
-            dd($e);
         }
 
         return $res;
