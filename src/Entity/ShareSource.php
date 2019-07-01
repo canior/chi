@@ -184,7 +184,7 @@ class ShareSource implements Dao
         }
 
         $shareSource->setProduct($product);
-        $shareSource->setPage($page);
+        $shareSource->setPage($page, true);
         return $shareSource;
     }
 
