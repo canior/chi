@@ -47,37 +47,27 @@ class ShareSourceProcess
              */
             $referProductShare = FactoryUtil::projectShareMetaRepository()->findShareMeta($type, $contentType);
 
-            //产品信息页面转发分享
-            $shareSource = FactoryUtil::shareSourceRepository()->findOneBy([
-                'user'=> $user,
-                'product' => $product,
-                'type' => $type,
-                'contentType' => $contentType,
-            ]);
-
-            if ($shareSource == null) {
-                switch ($type) {
-                    case ShareSource::GZH:
-                        $shareSource = ShareSource::factoryNew($type, $contentType, $page, $user, null, $referProductShare->getShareTitle(), $product);
-                        CommonUtil::entityPersist($shareSource);
-                        break;
-                    case ShareSource::GZH_QUAN:
-                        $shareSource = ShareSource::factoryNew($type, $contentType, $page, $user, null, null, $product);
-                        /**
-                         * @var QrCode $qrCode
-                         */
-                        $qrCode = DependencyInjectionSingletonConfig::getInstance()->getQrCodeFactory()->create($shareSource->getPage(), [
-                            'size' => 110,
-                            'round_block_size' => 0,
-                        ]);
-                        $bannerFile = ImageGenerator::createGzhShareQuanBannerImage(ConfigParams::getRepositoryManager(), $qrCode, $product->getShareImageFile());
-                        $shareSource->setBannerFile($bannerFile);
-                        CommonUtil::entityPersist($shareSource);
-                        break;
-                }
+            switch ($type) {
+                case ShareSource::GZH:
+                    $shareSource = ShareSource::factoryNew($type, $contentType, $page, $user, null, $referProductShare->getShareTitle(), $product);
+                    CommonUtil::entityPersist($shareSource);
+                    $res[$shareSource->getCombineKey()] = $shareSource->getArray();
+                    break;
+                case ShareSource::GZH_QUAN:
+                    $shareSource = ShareSource::factoryNew($type, $contentType, $page, $user, null, null, $product);
+                    /**
+                     * @var QrCode $qrCode
+                     */
+                    $qrCode = DependencyInjectionSingletonConfig::getInstance()->getQrCodeFactory()->create($shareSource->getPage(), [
+                        'size' => 110,
+                        'round_block_size' => 0,
+                    ]);
+                    $bannerFile = ImageGenerator::createGzhShareQuanBannerImage(ConfigParams::getRepositoryManager(), $qrCode, $product->getShareImageFile());
+                    $shareSource->setBannerFile($bannerFile);
+                    CommonUtil::entityPersist($shareSource);
+                    $res[$shareSource->getCombineKey()] = $shareSource->getArray();
+                    break;
             }
-
-            $res[$shareSource->getCombineKey()] = $shareSource->getArray();
         }
 
 
