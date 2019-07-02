@@ -1087,10 +1087,10 @@ class MemberController extends AppApiBaseController
         switch ($type) {
             case 'onlineCourse':
             case 'offlineCourse':
-                $followArray = $followCourseMetaRepository->findMyFollow($user->getId(),$type,$page,8);
+                $followArray = $followCourseMetaRepository->findMyFollow($user->getId(),$type,$page,self::PAGE_LIMIT);
                 break;
             case 'Teacher':
-                $followArray = $followTeacherMetaRepository->findMyFollow($user->getId(),$page,8);
+                $followArray = $followTeacherMetaRepository->findMyFollow($user->getId(),$page,self::PAGE_LIMIT);
                 break;
             default:
                 break;
