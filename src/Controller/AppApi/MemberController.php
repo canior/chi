@@ -99,11 +99,18 @@ class MemberController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        // 验证Code  TODO 
-        // $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::FORGET ],['createdAt'=>'DESC']);
-        // if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
-        //     return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
-        // }
+        // 验证Code
+        if (!CommonUtil::isDebug()) {
+            $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::FORGET ],['createdAt'=>'DESC']);
+            if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
+                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
+            }
+
+            //验证过期
+            if( $messageCode->getCreatedAt(false)+20*60 < time() ){
+                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
+            }
+        }
 
         // 重设手机号
         $user->setPhone($data['phone']);
@@ -224,7 +231,7 @@ class MemberController extends AppApiBaseController
 
 
         if (!CommonUtil::isDebug()) {
-            //验证Code TODO
+            //验证Code
             $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::UPDATE_INFO ],['createdAt'=>'DESC']);
             if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
                 return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
