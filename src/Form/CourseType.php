@@ -109,8 +109,8 @@ class CourseType extends AbstractType
                 'mapped' => false,
             ])
             ->add('specImages', DropzoneType::class, [
-                'label' => '课程详细介绍图片（<=5张）',
-                'maxFiles' => 5,
+                'label' => '课程详细介绍图片（<=10张）',
+                'maxFiles' => 10,
                 'priority' => true,
                 'data_class' => null,
                 'mapped' => false,
