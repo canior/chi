@@ -65,7 +65,8 @@ class ProductService
         $groupUserOrder = null;
         $isDiffShow = false;
         //公众号登陆的用户系统课和直通车课程关联课程判断
-        if ($showType == 'gzh' && !empty($user) && $product->isCourseProduct() && !$product->getCourse()->isOnline() && !empty($product->getCourse()->getRefCourse())) {
+        if ($showType == 'gzh' && !empty($user) && $product->isCourseProduct() && !$product->getCourse()->isOnline() &&
+            in_array($product->getCourse()->getSubject(), [Subject::SYSTEM_1, Subject::SYSTEM_2, Subject::TRADING]) && !empty($product->getCourse()->getRefCourse())) {
             $isDiffShow = true;
             /**
              * @var GroupUserOrder $groupUserOrder

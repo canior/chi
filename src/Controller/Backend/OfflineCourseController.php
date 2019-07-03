@@ -72,7 +72,8 @@ class OfflineCourseController extends BackendController
 
                 $systemSubject = [Subject::SYSTEM_1, Subject::SYSTEM_2];
                 $systemTradeSubject = [Subject::TRADING];
-                if (in_array($course->getSubject(), $systemSubject) && in_array($course->getRefCourse()->getSubject(), $systemSubject) ||
+                $thinkingSubject = [Subject::PRIVATE_DIRECTOR, Subject::THINKING];
+                if (in_array($course->getSubject(), $thinkingSubject) || in_array($course->getSubject(), $systemSubject) && in_array($course->getRefCourse()->getSubject(), $systemSubject) ||
                     in_array($course->getSubject(), $systemTradeSubject) && in_array($course->getRefCourse()->getSubject(), $systemTradeSubject)
                 ) {
                     return new Response('关联活动类型不对', 500);
@@ -232,7 +233,8 @@ class OfflineCourseController extends BackendController
                 }
                 $systemSubject = [Subject::SYSTEM_1, Subject::SYSTEM_2];
                 $systemTradeSubject = [Subject::TRADING];
-                if (in_array($course->getSubject(), $systemSubject) && in_array($course->getRefCourse()->getSubject(), $systemSubject) ||
+                $thinkingSubject = [Subject::PRIVATE_DIRECTOR, Subject::THINKING];
+                if (in_array($course->getSubject(), $thinkingSubject) || in_array($course->getSubject(), $systemSubject) && in_array($course->getRefCourse()->getSubject(), $systemSubject) ||
                     in_array($course->getSubject(), $systemTradeSubject) && in_array($course->getRefCourse()->getSubject(), $systemTradeSubject)
                 ) {
                     return new Response('关联活动类型不对', 500);
