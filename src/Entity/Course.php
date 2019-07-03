@@ -170,6 +170,20 @@ class Course implements Dao
      */
     private $addressImageFile;
 
+    /**
+     * @var Course
+     * @ORM\OneToOne(targetEntity="App\Entity\Course", inversedBy="refTargetCourse", cascade={"persist"})
+     * @ORM\JoinColumn(name="ref_course", referencedColumnName="id")
+     */
+    private $refCourse;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Course", mappedBy="refCourse", cascade={"persist"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $refTargetCourse;
+
+
     public function __construct() {
         $product = new Product();
         $product->setCourse($this);
@@ -1031,6 +1045,31 @@ class Course implements Dao
     }
 
     /**
+     * @return Course
+     */
+    public function getRefCourse(): ?Course
+    {
+        return $this->refCourse;
+    }
+
+    /**
+     * @param Course $refCourse
+     */
+    public function setRefCourse(?Course $refCourse): void
+    {
+        $this->refCourse = $refCourse;
+    }
+
+    /**
+     * @return string
+     * @author zxqc2018
+     */
+    public function getRefCourseName()
+    {
+        return CommonUtil::getInsideValue($this, 'getRefCourse.getTitle', '');
+    }
+
+    /**
      * @return array
      */
     public function getArray() : array {
@@ -1082,6 +1121,7 @@ class Course implements Dao
             'unlockTypeText' => $this->getUnlockTypeText(),
             'courseTags' => $this->getCourseTagArr(),
             'addressImageFileId' => CommonUtil::obj2Id($this->getAddressImageFile()),
+            'refCourseName' => $this->getRefCourseName(),
         ];
     }
 

@@ -9,6 +9,7 @@ use App\Entity\Subject;
 use App\Form\OfflineCourseType;
 use App\Repository\CourseRepository;
 use App\Repository\TeacherRepository;
+use App\Service\Util\CommonUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -64,15 +65,29 @@ class OfflineCourseController extends BackendController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            if (!empty($course->getRefCourse())) {
+                if (!empty($course->getRefCourse()->getRefCourse())) {
+                    return new Response('关联活动已经被关联', 500);
+                }
+
+                $systemSubject = [Subject::SYSTEM_1, Subject::SYSTEM_2];
+                $systemTradeSubject = [Subject::TRADING];
+                if (in_array($course->getSubject(), $systemSubject) && in_array($course->getRefCourse()->getSubject(), $systemSubject) ||
+                    in_array($course->getSubject(), $systemTradeSubject) && in_array($course->getRefCourse()->getSubject(), $systemTradeSubject)
+                ) {
+                    return new Response('关联活动类型不对', 500);
+                }
+            }
             $status = $request->request->get('offline_course')['status'];
             $subject = $request->request->get('offline_course')['subject'];
             $course->setStatus($status);
             $course->setSubject($subject);
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($course);
-            $em->flush();
+            CommonUtil::entityPersist($course);
 
+            //双向关联
+            $course->getRefCourse()->setRefCourse($course);
+            CommonUtil::entityPersist($course->getRefCourse());
             try {
                 $images = isset($request->request->get('offline_course')['images']) ? $request->request->get('offline_course')['images'] : [];
                 $imagesCommand = new CreateOrUpdateProductImagesCommand($course->getProduct()->getId(), $images);
@@ -146,6 +161,8 @@ class OfflineCourseController extends BackendController
         $form->get('subject')->setData(array_search($course->getSubjectText(), Subject::$subjectTextArray));
         $form->get('status')->setData(array_search($course->getProduct()->getStatusText(), Product::$statuses));
 
+        //保存原始关联课程
+        $originRefCourse = $course->getRefCourse();
         // init images
         $productImages = $course->getCourseImages();
         if (!$productImages->isEmpty()) {
@@ -204,6 +221,36 @@ class OfflineCourseController extends BackendController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if (!empty($course->getRefCourse())) {
+                if ($course->getRefCourse() === $course) {
+                    return new Response('自己不能关联自己', 500);
+                }
+
+                if (!empty($course->getRefCourse()->getRefCourse()) && $course->getRefCourse()->getRefCourse() !== $course) {
+                    return new Response('关联活动已经被关联', 500);
+                }
+                $systemSubject = [Subject::SYSTEM_1, Subject::SYSTEM_2];
+                $systemTradeSubject = [Subject::TRADING];
+                if (in_array($course->getSubject(), $systemSubject) && in_array($course->getRefCourse()->getSubject(), $systemSubject) ||
+                    in_array($course->getSubject(), $systemTradeSubject) && in_array($course->getRefCourse()->getSubject(), $systemTradeSubject)
+                ) {
+                    return new Response('关联活动类型不对', 500);
+                }
+
+                if (!empty($originRefCourse) && $originRefCourse !== $course->getRefCourse()) {
+                    $originRefCourse->setRefCourse(null);
+                    CommonUtil::entityPersist($originRefCourse);
+                    $course->getRefCourse()->setRefCourse($course);
+                    CommonUtil::entityPersist($course->getRefCourse());
+                }
+            } else {
+                if (!empty($originRefCourse)) {
+                    $originRefCourse->setRefCourse(null);
+                    CommonUtil::entityPersist($originRefCourse);
+                }
+            }
+
             $subject = $request->request->get('offline_course')['subject'];
             $status = $request->request->get('offline_course')['status'];
             $course->setSubject($subject);

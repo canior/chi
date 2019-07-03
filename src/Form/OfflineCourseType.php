@@ -97,6 +97,28 @@ class OfflineCourseType extends AbstractType
                         ->setParameter('password', 'IamCustomer');
                 }
             ])
+            ->add('refCourse', EntityType::class, [
+                'label' => '关联活动',
+                'attr' => ['class' => 'form-control chosen'],
+                'class' => Course::class,
+                'placeholder' => '选择关联活动',
+                'choice_label' => function (Course $course) {
+                    $res =  $course->getTitle() . '-' . $course->getSubjectText();
+                    if ($course->getRefCourse()) {
+                        $res .= '-[已经关联'  .$course->getRefCourse()->getTitle() . ']';
+                    }
+                    return $res;
+                },
+                'query_builder' => function (EntityRepository $er) {
+                    $queryBuilder =  $er->createQueryBuilder('c')
+                        ->where('c.isOnline = :isOnline')
+                        ->setParameter('isOnline', false)
+                        ->andWhere('c.subject in (:subjects)')
+                        ->setParameter('subjects', [Subject::SYSTEM_2, Subject::SYSTEM_1, Subject::TRADING]);
+                    $queryBuilder->orderBy('c.refCourse', 'asc');
+                    return $queryBuilder;
+                }
+            ])
             ->add('shortDescription', TextareaType::class, [
                 'label' => '活动描述',
                 'required' => true

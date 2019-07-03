@@ -8,10 +8,12 @@
 
 namespace App\Service\Product;
 
+use App\Entity\BianxianUserLevel;
 use App\Entity\GroupUserOrder;
 use App\Entity\Product;
 use App\Entity\ProjectShareMeta;
 use App\Entity\ShareSource;
+use App\Entity\Subject;
 use App\Entity\User;
 use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
@@ -60,6 +62,39 @@ class ProductService
             $requestProcess->throwErrorException(ErrorCode::ERROR_PRODUCT_NOT_EXISTS);
         }
 
+        $groupUserOrder = null;
+        $isDiffShow = false;
+        //公众号登陆的用户系统课和直通车课程关联课程判断
+        if ($showType == 'gzh' && !empty($user) && $product->isCourseProduct() && !$product->getCourse()->isOnline() && !empty($product->getCourse()->getRefCourse())) {
+            $isDiffShow = true;
+            /**
+             * @var GroupUserOrder $groupUserOrder
+             */
+            $groupUserOrder = FactoryUtil::groupUserOrderRepository()->findOneBy(['product' => $product, 'user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
+            if (empty($groupUserOrder)) {
+                /**
+                 * @var GroupUserOrder $groupUserOrder
+                 */
+                $groupUserOrder = FactoryUtil::groupUserOrderRepository()->findOneBy(['product' => $product->getCourse()->getRefCourse()->getProduct(), 'user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
+            }
+
+            //购买订单之后只显示当时购买的课程
+            if (empty($groupUserOrder)) {
+                $isAdvanceUp = (BianxianUserLevel::$userLevelPriorityArray[$user->getBianxianUserLevel()] ?? 0) >= 3;
+                if ($isAdvanceUp) {
+                    if (in_array($product->getCourse()->getSubject(), [Subject::TRADING])) {
+                        $product = $product->getCourse()->getRefCourse()->getProduct();
+                    }
+                } else {
+                    if (in_array($product->getCourse()->getSubject(), [Subject::SYSTEM_1, Subject::SYSTEM_1])) {
+                        $product = $product->getCourse()->getRefCourse()->getProduct();
+                    }
+                }
+            } else {
+                $product = $groupUserOrder->getProduct();
+            }
+        }
+
         $productArray = $product->isCourseProduct() ? $product->getCourse()->getCourseVideoArray() : $product->getArray();
 
         $data = [
@@ -82,10 +117,14 @@ class ProductService
                     }
                 }
             } else {
-                /**
-                 * @var GroupUserOrder $groupUserOrder
-                 */
-                $groupUserOrder = FactoryUtil::groupUserOrderRepository()->findOneBy(['product' => $product, 'user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
+
+                //假如没有获取到
+                if (!$isDiffShow) {
+                    /**
+                     * @var GroupUserOrder $groupUserOrder
+                     */
+                    $groupUserOrder = FactoryUtil::groupUserOrderRepository()->findOneBy(['product' => $product, 'user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
+                }
                 $data['groupUserOrder'] = CommonUtil::obj2Array($groupUserOrder);
                 if (!empty($user)) {
                     if ($showType == 'gzh') {

@@ -1211,7 +1211,7 @@ class GroupUserOrder implements Dao
     /**
      * @return array
      */
-    public function getArray() : array {
+    public function getComplexArray() : array {
 
         $productReviewsArray = [];
         foreach ($this->getProductReviews() as $productReview) {
@@ -1247,6 +1247,23 @@ class GroupUserOrder implements Dao
             'appStatus'=>$appStatus['appStatus'],
             'appStatusText'=>$appStatus['appStatusText'],
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getArray() : array {
+        $res = $this->getComplexArray();
+        return $res;
+    }
+
+    /**
+     * @author zxqc2018
+     */
+    public function getGzhArray()
+    {
+        $res = $this->getComplexArray();
+        return $res;
     }
 
     public function __toString()
@@ -1295,10 +1312,10 @@ class GroupUserOrder implements Dao
                 $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
             } else {
                 // offlineCourse
-                if( $course->getSubject() == Subject::THINKING || $course->getSubject() == Subject::TRADING ){
+                if( $course->getSubject() == Subject::THINKING){
                     // 思维课
                     $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
-                }else if( $course->getSubject() == Subject::SYSTEM_1 || $course->getSubject() == Subject::SYSTEM_2 ){
+                }else if( $course->getSubject() == Subject::SYSTEM_1 || $course->getSubject() == Subject::SYSTEM_2 || $course->getSubject() == Subject::TRADING ){
                     // 系统课
                     switch ($this->getUser()->getBianxianUserLevel()) {
                         case BianxianUserLevel::VISITOR:
