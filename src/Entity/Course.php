@@ -888,22 +888,8 @@ class Course implements Dao
         $res = false;
 
         //检查用户等级权限
-        $eligibleViewer = $this->getEligibleViewerUserLevels();
-        foreach ($eligibleViewer as $viewer) {
-
-            if ($viewer == $user->getUserLevel()) {
-
-                //高级VIP 特权VIP 需要判断解锁 系列
-                if (in_array($viewer, [UserLevel::ADVANCED, UserLevel::ADVANCED2])) {
-                    if (!empty($this->getCourseActualCategory()) && $user->getMyUnlockCategory()->contains($this->getCourseActualCategory())) {
-                        $res = true;
-                        break;
-                    }
-                } else {
-                    //$res = true;
-                    break;
-                }
-            }
+        if (!empty($this->getCourseActualCategory()) && $user->getMyUnlockCategory()->contains($this->getCourseActualCategory())) {
+            $res = true;
         }
 
         if (!empty($res)) {
