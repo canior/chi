@@ -102,6 +102,7 @@ class OfflineCourseType extends AbstractType
                 'attr' => ['class' => 'form-control chosen'],
                 'class' => Course::class,
                 'placeholder' => '选择关联活动',
+                'required' => false,
                 'choice_label' => function (Course $course) {
                     $res =  $course->getTitle() . '-' . $course->getSubjectText();
                     if ($course->getRefCourse()) {
