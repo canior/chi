@@ -9,13 +9,13 @@
 namespace App\Controller\AppApi;
 
 
-use App\Entity\Product;
 use App\Entity\ProjectVideoMeta;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProjectBannerMetaRepository;
 use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
+use App\Service\Util\FactoryUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -143,5 +143,23 @@ class CourseController extends ProductController
             'freeCategoryList' => $this->findHomeFreeZoneProducts($categoryRepository),
             'freeVideoInfo' => $this->getProjectVideoMeta(ProjectVideoMeta::VIDEO_FREE_ZONE)
         ]);
+    }
+
+    /**
+     * 观看次数
+     * @Route("/playTimes", name="appPlayTimes", methods={"POST"})
+     * @return JsonResponse
+     * @author zxqc2018
+     */
+    public function playTimesAction()
+    {
+        $requestProcess = $this->processRequest(null, [
+            'courseId'
+        ], ['courseId']);
+        $userId = $this->getAppUserId();
+        if (!empty($userId)) {
+            FactoryUtil::courseService()->incLookNum($requestProcess['courseId']);
+        }
+        return $requestProcess->toJsonResponse();
     }
 }

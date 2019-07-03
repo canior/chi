@@ -9,6 +9,7 @@
 namespace App\Service\Product;
 
 use App\Entity\Course;
+use App\Service\Util\CommonUtil;
 use App\Service\Util\FactoryUtil;
 
 /**
@@ -31,5 +32,20 @@ class CourseService extends ProductService
         $course = FactoryUtil::courseRepository()->find($courseId);
 
         return $course;
+    }
+
+    /**
+     * 课程观看次数
+     * @param $courseId
+     * @author zxqc2018
+     */
+    public function incLookNum($courseId)
+    {
+        $course = $this->getCourseById($courseId);
+
+        if (!empty($course) && $course->isOnline()) {
+            $course->increaseLookNum(1);
+            CommonUtil::entityPersist($course);
+        }
     }
 }

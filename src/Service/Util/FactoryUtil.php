@@ -47,6 +47,7 @@ use App\Service\Pay\Contracts\GatewayInterface;
 use App\Service\Pay\Contracts\NotifyInterface;
 use App\Service\Pay\NotifyProcess;
 use App\Service\Pay\Pay;
+use App\Service\Product\CourseService;
 use App\Service\Product\OfflineCourseService;
 use App\Service\Share\ShareSourceProcess;
 use App\Service\Sms\AliSms;
@@ -377,6 +378,15 @@ class FactoryUtil
     public static function offlineCourseService()
     {
         return new OfflineCourseService();
+    }
+
+    /**
+     * @return CourseService
+     * @author zxqc2018
+     */
+    public static function courseService()
+    {
+        return new CourseService();
     }
 
     /**
