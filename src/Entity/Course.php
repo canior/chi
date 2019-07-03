@@ -726,6 +726,14 @@ class Course implements Dao
             or Subject::SYSTEM_2 == $this->getSubject();
     }
 
+    /**
+     * 需要后台确认的系统课
+     * @return bool
+     */
+    public function isSpecialSystemSubject() {
+        return Subject::SYSTEM_3 == $this->getSubject();
+    }
+
     public function isPrivateDirectSubject()
     {
         return Subject::PRIVATE_DIRECTOR == $this->getSubject();
@@ -745,6 +753,41 @@ class Course implements Dao
         return Subject::TRADING == $this->getSubject();
     }
 
+    /**
+     * 是否为系统课类型包含系统课各种变种
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isSystemType()
+    {
+        return in_array($this->getSubject(), [
+            Subject::SYSTEM_1, Subject::SYSTEM_2,
+            Subject::SYSTEM_3, Subject::TRADING
+        ]);
+    }
+
+    /**
+     * 是否为思维课类型[逻辑上类似]
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isThinkType()
+    {
+        return in_array($this->getSubject(), [
+            Subject::THINKING, Subject::PRIVATE_DIRECTOR,
+        ]);
+    }
+
+
+    /**
+     * 分钱科目
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isShareMoneySubject()
+    {
+        return Subject::TRADING == $this->subject;
+    }
     /**
      * @return array
      */

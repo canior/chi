@@ -254,9 +254,6 @@ class UserController extends GongZhongBaseController
 
         CommonUtil::entityPersist($user);
 
-        //实名并且是系统学院需要生成桌号
-        $this->supplySystemTableNo($user);
-
         return $requestProcess->toJsonResponse(['user' => CommonUtil::obj2Array($user)]);
     }
 

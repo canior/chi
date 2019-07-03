@@ -25,42 +25,6 @@ use App\Service\Util\MoneyUtil;
 trait NotifyProcessTrait
 {
     /**
-     * 补发用户的桌号
-     * @param User $user
-     * @return bool
-     * @author zxqc2018
-     */
-    protected function supplySystemTableNo(User $user)
-    {
-        $res = false;
-
-        if ($user->isSystemSubjectPrivilege()) {
-            /**
-             * @var GroupUserOrderRepository $groupUserOrderRepository
-             */
-            $groupUserOrderRepository = ConfigParams::getRepositoryManager()->getRepository(GroupUserOrder::class);
-            //是否有报名了但是没有分配桌号的
-            $notDistributeOrders = $groupUserOrderRepository->findBy(['user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
-            if (!empty($notDistributeOrders)) {
-                foreach ($notDistributeOrders as $notDistributeOrder) {
-                    if (!empty($notDistributeOrder->getPaymentTime()) && $notDistributeOrder->getProduct()->isCourseProduct() &&
-                        !$notDistributeOrder->getProduct()->getCourse()->isOnline() && $notDistributeOrder->getProduct()->getCourse()->isSystemSubject() &&
-                        empty($notDistributeOrder->getTableNo())) {
-                        $notDistributeOrder->setTableNo((int)OfflineTableNo::getUserTable($notDistributeOrder));
-                        $notDistributeOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
-                        $notDistributeOrder->setCheckAt(time());
-                        CommonUtil::entityPersist($notDistributeOrder);
-                        //todo sms通知
-                        $res = true;
-                    }
-                }
-            }
-        }
-
-        return $res;
-    }
-
-    /**
      * @param string $outTradeNo
      * @author zxqc2018
      * @return \App\Service\ResultData
@@ -126,17 +90,16 @@ trait NotifyProcessTrait
                 if ($user->isCompletedPersonalInfo()) {
                     CommonUtil::entityPersist($groupUserOrder);
                     $isFlushGroupUserOrder = true;
-                    $this->supplySystemTableNo($groupUserOrder->getUser());
                     $data['nextPageType'] = 4;
                 }
 
                 //有上一级则发送消息
-                if (!empty($groupUserOrder->getUser()->getParentUser())) {
+                if (!empty($groupUserOrder->getUser()->getBianxianTopParentPartnerUpUser())) {
                     $message = new MessageGroupUserOrderMeta();
                     $name = CommonUtil::getInsideValue($groupUserOrder, 'getUser.getName', '');
                     $phone = CommonUtil::getInsideValue($groupUserOrder, 'getUser.getPhone', '');
                     $message->setDataId($groupUserOrder->getId());
-                    $message->setUser($groupUserOrder->getUser()->getParentUser());
+                    $message->setUser($groupUserOrder->getUser()->getBianxianTopParentPartnerUpUser());
                     $message->setContent("您的用户{$name},手机号为{$phone}完成了系统学员的身份升级，您的名额将扣除一个。");
                     $message->setTitle("学员升级");
                     CommonUtil::entityPersist($message);

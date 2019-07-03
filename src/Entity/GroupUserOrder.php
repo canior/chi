@@ -500,10 +500,7 @@ class GroupUserOrder implements Dao
                     }
 
                     //分钱逻辑
-                    if ($this->getProduct()->getCourse()->getSubject() == Subject::THINKING
-                        or $this->getProduct()->getCourse()->getSubject() == Subject::SYSTEM_1
-                        or $this->getProduct()->getCourse()->getSubject() == Subject::SYSTEM_2
-                        or $this->getProduct()->getCourse()->getSubject() == Subject::PRIVATE_DIRECTOR) { //思维课报名, 系统课1&2复训报名
+                    if (!$this->getProduct()->getCourse()->isShareMoneySubject()) { //思维课报名, 系统课1&2复训报名 系统3 特殊报名
 
                         $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::VIP, $this);
                         if ($jinqiuUpgradeUserOrder) {
@@ -1117,6 +1114,11 @@ class GroupUserOrder implements Dao
         return $this->checkStatus;
     }
 
+    public function isCheckPass()
+    {
+        return $this->checkStatus == self::CHECK_PASS;
+    }
+
     /**
      * @param string $checkStatus
      */
@@ -1312,10 +1314,10 @@ class GroupUserOrder implements Dao
                 $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
             } else {
                 // offlineCourse
-                if( $course->getSubject() == Subject::THINKING){
+                if( $course->isThinkingSubject() || $course->isPrivateDirectSubject()){
                     // 思维课
                     $appStatus = $this->getPaymentStatus()==self::PAID?1:2;
-                }else if( $course->getSubject() == Subject::SYSTEM_1 || $course->getSubject() == Subject::SYSTEM_2 || $course->getSubject() == Subject::TRADING ){
+                }else if($course->isSystemType()){
                     // 系统课
                     switch ($this->getUser()->getBianxianUserLevel()) {
                         case BianxianUserLevel::VISITOR:
@@ -1423,5 +1425,32 @@ class GroupUserOrder implements Dao
         }
         
         return $log;
+    }
+
+    /**
+     * 订单是否需要合伙人确认
+     * @return bool
+     * @author zxqc2018
+     */
+    public function isNeedPartnerConfirm()
+    {
+        $res = false;
+        if (empty($this->checkStatus) && $this->isPaid()) {
+            $product = $this->getProduct();
+            $res = $product->isCourseProduct() && !$product->getCourse()->isOnline() && $product->getCourse()->isSystemSubject() && !$this->getUser()->isSystemSubjectPrivilege(false);
+
+        }
+        return $res;
+    }
+
+    public function isNeedAdminConfirm()
+    {
+        $res = false;
+        if (empty($this->checkStatus) && $this->isPaid()) {
+            $product = $this->getProduct();
+            $res = $product->isCourseProduct() && !$product->getCourse()->isOnline() && $product->getCourse()->isSpecialSystemSubject();
+        }
+
+        return $res;
     }
 }

@@ -120,6 +120,7 @@ class ProductRepository extends ServiceEntityRepository
                         $subjects[] = Subject::TRADING;
                         $subjects[] = Subject::SYSTEM_1;
                         $subjects[] = Subject::SYSTEM_2;
+                        $subjects[] = Subject::SYSTEM_3;
                     } else if($offlineCourseType == 'PRIVATE_DIRECTOR') {
                         $subjects[] = Subject::PRIVATE_DIRECTOR;
                     }

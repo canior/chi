@@ -70,14 +70,14 @@
                             <thead>
                             <tr>
                                 <th class="col-md-1">活动订单号</th>
-                                <th class="col-md-2">创建时间</th>
-                                <th class="col-md-2">活动</th>
+                                <th class="col-md-1">创建时间</th>
+                                <th class="col-md-1">活动</th>
                                 <th class="col-md-2">用户</th>
                                 <th class="col-md-2">推荐人</th>
                                 <th class="col-md-1">支付金额</th>
                                 <th class="col-md-1">订单状态</th>
                                 <th class="col-md-1">支付状态</th>
-                                <th class="col-md-1 text-center hidden-xs">操作</th>
+                                <th class="col-md-2 text-center hidden-xs">操作</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -101,6 +101,11 @@
 
                                         <td class="text-center">
                                             <div class="btn-group">
+                                                {% if item.isNeedAdminConfirm %}
+                                                    <a class="admin-confirm" data-toggle="modal" data-target="#modal-recommend"
+                                                       data-url="{{ path('adminConfirm', {'id': item.id}) }}"
+                                                       data-item='{"name": "{{ item.user.name }}", "title": "{{ item.product.title }}"}' title="报名确认">报名确认 </a>
+                                                {% endif %}
                                                 <a href="{{ path('offline_course_order_edit', {'id': item.id}) }}"
                                                    title="查看详情">
                                                     <span class="fa fa-edit"></span>
@@ -127,6 +132,33 @@
             </div>
             <!-- /.box -->
         </div>
+        <div class="modal fade" id="modal-recommend" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="recommend" action="#" method="post">
+                        <input type="hidden" name="_token" value="">
+                        <input type="hidden" name="groupUserOrderId" value="{{ form.groupUserOrderId }}">
+                        <input type="hidden" name="userId" value="{{ form.userId }}">
+                        <input type="hidden" name="productName" value="{{ form.productName }}">
+                        <input type="hidden" name="status" value="{{ form.status }}">
+                        <input type="hidden" name="paymentStatus" value="{{ form.paymentStatus }}">
+                        <input type="hidden" name="page" value="{{ form.page }}">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">后台审核</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-info"></div>
+                            <div class="well"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#" class="btn btn-danger" data-dismiss="modal">取消</a>
+                            <input class="submit btn btn-primary" type="submit" value="确定"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <!-- /.col -->
     </div>
     <!-- /.row -->
@@ -137,4 +169,16 @@
 {% block javascripts %}
     {{ parent() }}
     {% include '/backend/includes/delete.js.html.twig' with {title: 'GroupUserOrder'} %}
+    <script type="text/javascript">
+        $(function() {
+            $('.admin-confirm').on('click', function (e) {
+                e.preventDefault();
+                let self = $(this);
+                let item = (self.data('item'));
+                $('#modal-recommend .well').html(item.name + ' 报名 [' + item.title + ']');
+                $('#modal-recommend form').attr("action", $(this).data('url'));
+                $('#modal-recommend form input[name="_token"]').val($(this).data('token'));
+            });
+        });
+    </script>
 {% endblock %}

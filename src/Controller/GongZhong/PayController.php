@@ -173,15 +173,24 @@ class PayController extends GongZhongBaseController
             'needConfirm' => false,
         ];
 
+        $checkStatus = '';
         //系统课报名处理
         $product = $groupUserOrder->getProduct();
         if ($product->isCourseProduct() && !$product->getCourse()->isOnline()) {
             $course = $product->getCourse();
             if ($course->isSystemSubject()) {
-                //是否需要合伙人确认
                 if (!$user->isSystemSubjectPrivilege(false)) {
                     $data['needConfirm'] = true;
+                    $data['partnerName'] = CommonUtil::getInsideValue($groupUserOrder, 'getUser.getBianxianTopParentPartnerUpUser.getName', '佐商学院');
+                } else {
+                    $checkStatus = 'pass';
                 }
+            } else if ($course->isThinkType()) {
+                $checkStatus = 'pass';
+            } else if ($course->isSpecialSystemSubject()) {
+                $data['needAdminConfirm'] = true;
+            } else if ($course->isTradingSubject()) {
+                $checkStatus = 'pass';
             }
 
             if ($user->isCompletedPersonalInfo()) {
@@ -189,7 +198,9 @@ class PayController extends GongZhongBaseController
             }
         }
 
-        $data['groupUserOrder'] = $groupUserOrder->getArray();
+        $groupUserOrderArr = $groupUserOrder->getArray();
+        $groupUserOrderArr['checkStatus'] = $checkStatus;
+        $data['groupUserOrder'] = $groupUserOrderArr;
         return $requestProcess->toJsonResponse($data);
     }
 
@@ -226,19 +237,25 @@ class PayController extends GongZhongBaseController
         $data = [
             'groupUserOrder' => $groupUserOrder->getArray(),
             'needConfirm' => false,
+            'needAdminConfirm' => false,
             'partnerName' => '',
         ];
 
         if (!empty($requestProcess['isConfirmView'])) {
             $data['hasConfirmPrivilege'] = $groupUserOrder->getUser()->getBianxianTopParentPartnerUpUser() == $user;
+        } else {
+            if (empty($groupUserOrder->getCheckStatus())) {
+                if ($groupUserOrder->isNeedAdminConfirm()) {
+                    $data['needAdminConfirm'] = true;
+                }
+                //是否需要确认
+                if ($groupUserOrder->isNeedPartnerConfirm()) {
+                    $data['needConfirm'] = true;
+                    $data['partnerName'] = CommonUtil::getInsideValue($groupUserOrder, 'getUser.getBianxianTopParentPartnerUpUser.getName', '佐商学院');
+                }
+            }
         }
 
-        //是否需要确认
-        $product = $groupUserOrder->getProduct();
-        if ($product->isCourseProduct() && !$product->getCourse()->isOnline() && $product->getCourse()->isSystemSubject() && !$user->isSystemSubjectPrivilege(false)) {
-            $data['needConfirm'] = true;
-            $data['partnerName'] = CommonUtil::getInsideValue($groupUserOrder, 'getUser.getBianxianTopParentPartnerUpUser.getName', '佐商学院');
-        }
         return $requestProcess->toJsonResponse($data);
     }
 }

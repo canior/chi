@@ -273,9 +273,6 @@ class MemberController extends AppApiBaseController
             return new JsonResponse(["error" => $e->getMessage()], 500);
         }
 
-        //实名并且是系统学院需要生成桌号
-        $this->supplySystemTableNo($user);
-
         // 返回
         return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();
     }
@@ -344,14 +341,9 @@ class MemberController extends AppApiBaseController
             return new JsonResponse(["error" => $e->getMessage()], 500);
         }
 
-        //实名并且是系统学院需要生成桌号
-        $this->supplySystemTableNo($user);
-
-
         // 返回
         return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();
     }
-
 
     /**
      * 获取用户收货地址列表

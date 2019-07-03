@@ -171,4 +171,28 @@ class OfflineCourseGroupUserOrderController extends BackendController
         ]);
     }
 
+    /**
+     * 后台确认
+     * @param Request $request
+     * @param GroupUserOrder $groupUserOrder
+     * @return Response
+     * @Route("/groupUserOder/adminConfirm/{id}", name="adminConfirm", methods="POST")
+     * @author zxqc2018
+     */
+    public function adminConfirmAction(Request $request, GroupUserOrder $groupUserOrder): Response
+    {
+        $groupUserOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
+        $this->entityPersist($groupUserOrder);
+        $this->addFlash('notice', '后台审核成功');
+        $formData = [
+            'groupUserOrderId' => $request->query->getInt('groupUserOrderId', null),
+            'userId' => $request->query->getInt('userId', null),
+            'productName' => $request->query->get('productName', null),
+            'status' => $request->query->get('status', null),
+            'paymentStatus' => $request->query->get('paymentStatus', null),
+            'page' => $request->query->getInt('page', 1)
+        ];
+        return $this->redirectToRoute('offline_course_order_index', $formData);
+    }
+
 }

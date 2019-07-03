@@ -15,6 +15,7 @@ class Subject
     const TRADING = 'TRADING';
     const SYSTEM_1 = 'SYSTEM_1';
     const SYSTEM_2 = 'SYSTEM_2';
+    const SYSTEM_3 = 'SYSTEM_3';
     const PRIVATE_DIRECTOR = 'PRIVATE_DIRECTOR';
 
     public static $subjectTextArray = [
@@ -22,6 +23,7 @@ class Subject
         self::TRADING => '变现思维系统直通课',
         self::SYSTEM_1 => '变现系统课I',
         self::SYSTEM_2 => '变现系统课II',
+        self::SYSTEM_3 => '变现系统课III',
         self::PRIVATE_DIRECTOR => '私董',
     ];
 
@@ -30,6 +32,7 @@ class Subject
         self::TRADING => BianxianUserLevel::THINKING,
         self::SYSTEM_1 => BianxianUserLevel::ADVANCED,
         self::SYSTEM_2 => BianxianUserLevel::ADVANCED,
+        self::SYSTEM_3 => BianxianUserLevel::ADVANCED,
         self::PRIVATE_DIRECTOR => BianxianUserLevel::THINKING,
     ];
 
@@ -43,6 +46,7 @@ class Subject
         self::TRADING => [BianxianUserLevel::VISITOR, BianxianUserLevel::THINKING, BianxianUserLevel::ADVANCED, BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR],
         self::SYSTEM_1 => [BianxianUserLevel::ADVANCED, BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR],
         self::SYSTEM_2 => [BianxianUserLevel::ADVANCED, BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR],
+        self::SYSTEM_3 => [BianxianUserLevel::ADVANCED, BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR],
         self::PRIVATE_DIRECTOR => [BianxianUserLevel::VISITOR, BianxianUserLevel::THINKING, BianxianUserLevel::ADVANCED, BianxianUserLevel::PARTNER, BianxianUserLevel::DISTRIBUTOR],
     ];
 
