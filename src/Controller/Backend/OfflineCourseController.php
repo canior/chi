@@ -86,9 +86,12 @@ class OfflineCourseController extends BackendController
 
             CommonUtil::entityPersist($course);
 
-            //双向关联
-            $course->getRefCourse()->setRefCourse($course);
-            CommonUtil::entityPersist($course->getRefCourse());
+            if (!empty($course->getRefCourse())) {
+                //双向关联
+                $course->getRefCourse()->setRefCourse($course);
+                CommonUtil::entityPersist($course->getRefCourse());
+            }
+
             try {
                 $images = isset($request->request->get('offline_course')['images']) ? $request->request->get('offline_course')['images'] : [];
                 $imagesCommand = new CreateOrUpdateProductImagesCommand($course->getProduct()->getId(), $images);
