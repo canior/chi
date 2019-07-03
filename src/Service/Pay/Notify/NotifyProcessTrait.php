@@ -68,7 +68,7 @@ trait NotifyProcessTrait
         if ($product->isCourseProduct() && !$product->getCourse()->isOnline()) {
             $course = $product->getCourse();
             if ($course->isSystemSubject()) {
-                if ($user->isSystemSubjectPrivilege()) {
+                if ($user->isSystemSubjectPrivilege(false)) {
                     $groupUserOrder->setTableNo((int)OfflineTableNo::getUserTable($groupUserOrder));
                     $groupUserOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
                     $groupUserOrder->setCheckAt(time());
@@ -85,14 +85,18 @@ trait NotifyProcessTrait
                     //todo sms通知
                     $data['nextPageType'] = 1;
                 }
+                $groupUserOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
+                $groupUserOrder->setCheckAt(time());
+            } else if ($course->isPrivateDirectSubject()) {
+                $data['nextPageType'] = 1;
+                $groupUserOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
+                $groupUserOrder->setCheckAt(time());
             } else if ($course->isTradingSubject()) {
-                //已经实名
-                if ($user->isCompletedPersonalInfo()) {
-                    CommonUtil::entityPersist($groupUserOrder);
-                    $isFlushGroupUserOrder = true;
-                    $data['nextPageType'] = 4;
-                }
-
+                $groupUserOrder->setTableNo((int)OfflineTableNo::getUserTable($groupUserOrder));
+                $groupUserOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
+                $groupUserOrder->setCheckAt(time());
+                CommonUtil::entityPersist($groupUserOrder);
+                $isFlushGroupUserOrder = true;
                 //有上一级则发送消息
                 if (!empty($groupUserOrder->getUser()->getBianxianTopParentPartnerUpUser())) {
                     $message = new MessageGroupUserOrderMeta();

@@ -11,6 +11,7 @@ namespace App\Controller\Backend;
 
 use App\Entity\GroupUserOrder;
 use App\Repository\GroupUserOrderRepository;
+use App\Service\Order\OfflineTableNo;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -181,7 +182,9 @@ class OfflineCourseGroupUserOrderController extends BackendController
      */
     public function adminConfirmAction(Request $request, GroupUserOrder $groupUserOrder): Response
     {
+        $groupUserOrder->setTableNo((int)OfflineTableNo::getUserTable($groupUserOrder));
         $groupUserOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
+        $groupUserOrder->setCheckAt(time());
         $this->entityPersist($groupUserOrder);
         $this->addFlash('notice', '后台审核成功');
         $formData = [

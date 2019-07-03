@@ -9,6 +9,7 @@
 namespace App\Service\Order;
 
 use App\Entity\BianxianUserLevel;
+use App\Entity\GroupUserOrder;
 use App\Entity\Subject;
 use App\Entity\UpgradeUserOrder;
 use App\Entity\User;
@@ -83,6 +84,9 @@ class PartnerAssistantProcess
             $topParentUser->createUserRecommandStockOrder(-1, $bianxianUpgradeUserOrder, $memo);
         }
 
+        $order->setTableNo((int)OfflineTableNo::getUserTable($order));
+        $order->setCheckStatus(GroupUserOrder::CHECK_PASS);
+        $order->setCheckAt(time());
         CommonUtil::entityPersist($order);
         $res['groupUserOrder'] = $order->getArray();
 
