@@ -8,6 +8,7 @@
 
 namespace App\Controller\AppApi;
 
+use App\Entity\BianxianUserLevel;
 use App\Entity\CourseStudent;
 use App\Entity\ProductReview;
 use App\Entity\ProductReviewImage;
@@ -1507,10 +1508,14 @@ class MemberController extends AppApiBaseController
     public function isHasNewMessage()
     {
         $requestProcess = $this->processRequest();
-        $user = $this->getAppUser();
-        $unReadMessage = FactoryUtil::messageRepository()->findOneBy(['user' => $user, 'isRead' => 0]);
+        $user = $this->getAppUser(true);
+        $hasNewMessage = false;
+        if (!empty($user) && in_array($user->getBianxianUserLevel(), [BianxianUserLevel::DISTRIBUTOR, BianxianUserLevel::PARTNER])) {
+            $unReadMessage = FactoryUtil::messageRepository()->findOneBy(['user' => $user, 'isRead' => 0]);
+            $hasNewMessage = !empty($unReadMessage);
+        }
         return $requestProcess->toJsonResponse([
-            'hasNewMessage' => !empty($unReadMessage),
+            'hasNewMessage' => $hasNewMessage,
         ]);
     }
 }
