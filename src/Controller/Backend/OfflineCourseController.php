@@ -25,27 +25,32 @@ class OfflineCourseController extends BackendController
 {
     /**
      * @Route("/offlineCourse/", name="offline_course_index", methods="GET")
-     * @param CourseRepository $courseRepository
      * @param Request $request
+     * @param CourseRepository $courseRepository
+     * @param TeacherRepository $teacherRepository
      * @return Response
      */
-    public function index(Request $request, CourseRepository $courseRepository): Response
+    public function index(Request $request, CourseRepository $courseRepository, TeacherRepository $teacherRepository): Response
     {
+        $teacherList = CommonUtil::two2one(CommonUtil::entityArray2DataArray($teacherRepository->findAll()), ['id' => 'name']);
         $data = [
             'title' => '活动管理',
-            'subjects' => Subject::$subjectTextArray,
             'form' => [
                 'subject' => $request->query->get('subject', null),
+                'address' => $request->query->get('address', null),
+                'status' => $request->query->get('status', null),
+                'teacher' => $request->query->get('teacher', null),
                 'page' => $request->query->getInt('page', 1)
-            ]
+            ],
+            'subjects' => Subject::$subjectTextArray,
+            'teachers' => $teacherList,
+            'statuses' => Product::$statuses,
         ];
-        if ($data['form']['subject']){
-            $data['data'] = $courseRepository->findBy(['subject' => $data['form']['subject'], 'isOnline' => false]);
-        } else {
-            $data['data'] = $courseRepository->findBy(['isOnline' => false]);
-        }
+
+        $data['data'] = $courseRepository->findOfflineCourseQueryBuild($data['form']);
 
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
+
         return $this->render('backend/offline_course/index.html.twig', $data);
     }
 

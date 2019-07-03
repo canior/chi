@@ -76,4 +76,47 @@ class CourseRepository extends ServiceEntityRepository
 
         return $query;
     }
+
+
+    /**
+     * 查询课程列表
+     * @param array $where
+     * @return \Doctrine\ORM\QueryBuilder
+     * @author zxqc2018
+     */
+    public function findOfflineCourseQueryBuild($where = [])
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->where('c.isOnline =:online')
+            ->setParameter('online', false);
+
+        $subject = $where['subject'] ?? null;
+        $status = $where['status'] ?? null;
+        $teacher = $where['teacher'] ?? null;
+        $address = $where['address'] ?? null;
+
+        if (!empty($subject)) {
+            $query->andWhere('c.subject =:subject')
+                ->setParameter('subject', $subject);
+        }
+
+        if (!empty($status)) {
+            $query->innerJoin('c.product', 'p');
+            $query->andWhere('p.status =:status')
+                ->setParameter('status', $status);
+        }
+
+        if (!empty($teacher)) {
+            $query->andWhere('c.teacher =:teacher')
+                ->setParameter('teacher', $teacher);
+        }
+
+        if (!empty($address)) {
+            $query->andWhere('c.address =:address')
+                ->setParameter('address', $address);
+        }
+
+        $query->orderBy('c.id', 'desc');
+        return $query;
+    }
 }

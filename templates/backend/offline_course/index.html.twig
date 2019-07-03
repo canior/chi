@@ -17,7 +17,7 @@
                 <div class="box-body">
                     <div class="row">
                         <form class="cmxform" id="myForm">
-                            <div class="col-md-3 form-group">
+                            <div class="col-md-2 form-group">
                                 <label>科目</label>
                                 <select name="subject" class="form-control chosen">
                                     <option value="">全部</option>
@@ -26,7 +26,30 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-3 form-group">
+                            <div class="col-md-2 form-group">
+                                <label>讲师</label>
+                                <select name="teacher" class="form-control chosen">
+                                    <option value="">全部</option>
+                                    {% for subject, text in teachers %}
+                                        <option value="{{ subject }}"{% if subject == form.teacher %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>发布状态</label>
+                                <select name="status" class="form-control chosen">
+                                    <option value="">全部</option>
+                                    {% for subject, text in statuses %}
+                                        <option value="{{ subject }}"{% if subject == form.status %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>地址</label>
+                                <input type="text" name="address" class="form-control" value="{{ form.address }}"
+                                       placeholder="地址">
+                            </div>
+                            <div class="col-md-2 form-group">
                                 <label>&nbsp;</label>
                                 <input class="form-control btn btn-primary" type="submit" value="搜索"/>
                             </div>
@@ -37,11 +60,11 @@
                             <thead>
                             <tr>
                                 <th class="col-md-1">ID</th>
-                                <th class="col-md-1">科目</th>
+                                <th class="col-md-2">科目</th>
                                 <th class="col-md-1">活动</th>
-                                <th class="col-md-2">讲师</th>
-                                <th class="col-md-3">日期</th>
-                                <th class="col-md-3">关联活动</th>
+                                <th class="col-md-1">讲师</th>
+                                <th class="col-md-2">日期</th>
+                                <th class="col-md-2">关联活动</th>
                                 <th class="col-md-3">地址</th>
                                 <th class="col-md-1">状态</th>
                                 <th class="col-md-1 text-center hidden-xs">操作</th>
