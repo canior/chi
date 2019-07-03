@@ -249,7 +249,7 @@ class OfflineCourseController extends BackendController
                     }
                 } else {
                     $course->getRefCourse()->setRefCourse($course);
-                    CommonUtil::entityPersist($originRefCourse);
+                    CommonUtil::entityPersist($course->getRefCourse());
                 }
             } else {
                 if (!empty($originRefCourse)) {
