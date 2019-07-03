@@ -87,7 +87,7 @@ class ProductService
                         $product = $product->getCourse()->getRefCourse()->getProduct();
                     }
                 } else {
-                    if (in_array($product->getCourse()->getSubject(), [Subject::SYSTEM_1, Subject::SYSTEM_1])) {
+                    if (in_array($product->getCourse()->getSubject(), [Subject::SYSTEM_1, Subject::SYSTEM_2])) {
                         $product = $product->getCourse()->getRefCourse()->getProduct();
                     }
                 }
