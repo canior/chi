@@ -2063,12 +2063,12 @@ class User extends BaseUser implements Dao
     }
 
     /**
-     * 获取解锁系列
      * @return ArrayCollection|Collection
      * @author zxqc2018
      */
     public function getMyUnlockCategory()
     {
+        $unlockCategoryList = new ArrayCollection();
         $criteria = Criteria::create()
             ->orderBy(array("id" => Criteria::DESC));
 
@@ -2077,7 +2077,13 @@ class User extends BaseUser implements Dao
         $filteredGroupUserOrders = $groupUserOrders->filter(function (GroupUserOrder $groupUserOrder) {
             return !empty($groupUserOrder->getUnlockCategory()) && $groupUserOrder->isPaid();
         });
-        return $filteredGroupUserOrders;
+
+        if (!$filteredGroupUserOrders->isEmpty()) {
+            foreach ($filteredGroupUserOrders as $item) {
+                $unlockCategoryList->add($item->getUnlockCategory());
+            }
+        }
+        return $unlockCategoryList;
     }
 
     /**
