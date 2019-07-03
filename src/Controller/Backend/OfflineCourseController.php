@@ -240,11 +240,16 @@ class OfflineCourseController extends BackendController
                     return new Response('关联活动类型不对', 500);
                 }
 
-                if (!empty($originRefCourse) && $originRefCourse !== $course->getRefCourse()) {
-                    $originRefCourse->setRefCourse(null);
-                    CommonUtil::entityPersist($originRefCourse);
+                if (!empty($originRefCourse)) {
+                    if ($originRefCourse !== $course->getRefCourse()) {
+                        $originRefCourse->setRefCourse(null);
+                        CommonUtil::entityPersist($originRefCourse);
+                        $course->getRefCourse()->setRefCourse($course);
+                        CommonUtil::entityPersist($course->getRefCourse());
+                    }
+                } else {
                     $course->getRefCourse()->setRefCourse($course);
-                    CommonUtil::entityPersist($course->getRefCourse());
+                    CommonUtil::entityPersist($originRefCourse);
                 }
             } else {
                 if (!empty($originRefCourse)) {
