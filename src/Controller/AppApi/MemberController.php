@@ -462,9 +462,11 @@ class MemberController extends AppApiBaseController
             $userAddress = $userAddressRepository->find($userAddressId);
 
             //默认地址
-            $addressCount = $user->getActiveUserAddress()->count();
-            if( $addressCount > 0 && $isDefault ){
-                $userAddressRepository->setAllAddressNotDefault($user->getId());
+            $defaultUserAddress = $user->getDefaultUserAddress();
+            if( $defaultUserAddress->getId() != $userAddressId  && $isDefault ){
+                $defaultUserAddress->setIsDefault(false);
+                $this->getEntityManager()->persist($defaultUserAddress);
+                $this->getEntityManager()->flush();
             }
 
         } else {
