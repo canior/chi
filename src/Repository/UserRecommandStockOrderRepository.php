@@ -28,6 +28,7 @@ class UserRecommandStockOrderRepository extends ServiceEntityRepository
             ->select('u')
             ->from(UserRecommandStockOrder::class, 'u')
             ->where('u.user = :user')
+            ->andWhere('u.qty < 0')
             ->setParameter('user', $userId);
 
         return $query;
