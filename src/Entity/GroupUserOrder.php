@@ -13,6 +13,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use PHPUnit\TextUI\Command;
+use App\Service\Util\FactoryUtil;
+use App\Service\Util\MoneyUtil;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\GroupUserOrderRepository")
@@ -1342,6 +1344,18 @@ class GroupUserOrder implements Dao
             }
         }
 
+        //查找直通车课程id
+        $tradingProductId = null;
+        $tradingCourse = FactoryUtil::courseRepository()->findSpecTradingCourse(MoneyUtil::tradeSpecialPrice());
+        if (!empty($tradingCourse)) {
+            $tradingProductId = $tradingCourse->getProduct()->getId();
+        }
+        
+        $isTradingProductId = false;
+        if( $product->getId() == $tradingProductId ){
+            $isTradingProductId = true;
+        }  
+
         //文字Lable
         $appStatusText = null;
         switch ($appStatus) {
@@ -1349,10 +1363,10 @@ class GroupUserOrder implements Dao
                 $appStatusText = '';
                 break;
             case 1:
-                $appStatusText = '报名通过';
+                $appStatusText = $isTradingProductId?'升级成功':'报名通过';
                 break;
             case 2:
-                $appStatusText = '报名不通过';
+                $appStatusText = $isTradingProductId?'升级失败':'报名不通过';
                 break;
             case 3:
                 $appStatusText = '待审核';
