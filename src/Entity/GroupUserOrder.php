@@ -490,7 +490,7 @@ class GroupUserOrder implements Dao
 
                                 $memo = '支付成功活动订单： [' . $this->getId() . '], 变更推荐人 [' . $oldParentUser . '] => [' . $newParentUser . '], 来自分享: [' . $latestShareSource . ']';
                                 $this->getUser()->setParentUser($newParentUser, $latestShareSource, $memo);
-                                if ($this->getProduct()->getCourse()->getSubject() == Subject::THINKING){
+                                if ($this->getProduct()->getCourse()->isThinkType()){
                                     $this->getUser()->setParentUserExpiresAt(time() + User::PARENT_45_DAYS_EXPIRES_SECONDS);
                                 } else {
                                     $this->getUser()->setParentUserExpiresAt(time() + User::PARENT_365_DAYS_EXPIRES_SECONDS);
