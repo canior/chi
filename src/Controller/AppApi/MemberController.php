@@ -211,7 +211,7 @@ class MemberController extends AppApiBaseController
      * @param MessageCodeRepository $messageCodeRepository
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function updateUserInfo(Request $request, UserManagerInterface $userManager, MessageCodeRepository $messageCodeRepository)
+    public function updateUserInfo(Request $request, UserManagerInterface $userManager, MessageCodeRepository $messageCodeRepository,UserRepository $userRepository)
     {
         $data = json_decode($request->getContent(), true );
 
@@ -249,6 +249,12 @@ class MemberController extends AppApiBaseController
             $user->setName($name);
         }
         if($phone){
+            //手机号是否存在
+            $phoneUser = $userRepository->findOneBy(['phone'=>$phone],['id'=>'DESC']);
+            // dump($phoneUser);die;
+            if( $phoneUser && $phoneUser->getId() != $user->getId() ){
+               return CommonUtil::resultData( [], ErrorCode::ERROR_PHONE_HAD_REGISTER )->toJsonResponse(); 
+            }
             $user->setPhone($phone);
         }
         if($idNum){
