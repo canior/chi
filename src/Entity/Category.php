@@ -456,12 +456,19 @@ class Category implements Dao
         $courses = [];
         $sort = [];
         $categoryTags = [];
+        $categoryPermission = true;
+        if (empty($lookUser)) {
+            $categoryPermission = false;
+        }
         foreach ($this->getCourses() as $key => $course) {
             $sort[$key] = $course->getProduct()->getPriority();
             $tmpArr = $course->getArray();
             $tmpArr['priority'] = $course->getProduct()->getPriority();
             if (!empty($lookUser)) {
                 $tmpArr['isPermission'] = $course->isPermission($lookUser);
+                if (empty($tmpArr['isPermission'])) {
+                    $categoryPermission = false;
+                }
             }
             $courses[] = $tmpArr;
             $categoryTags = array_merge($categoryTags, CommonUtil::getInsideValue($course, 'getCourseTagArr'));
@@ -488,7 +495,7 @@ class Category implements Dao
             'topCateIdentityId' => $topCateIdentityId,
             'shortDescription' => $this->getShortDescription() ?? '',
             'categoryTags' => array_unique($categoryTags),
-            'isPermission' => true,
+            'isPermission' => $categoryPermission,
         ];
     }
 
