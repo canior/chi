@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\UserAddressRepository;
 
 /**
  * Class PayController
@@ -35,11 +36,12 @@ class PayController extends AppApiBaseController
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function payAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository)
+    public function payAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository, UserAddressRepository $userAddressRepository)
     {
-        $requestProcess = $this->processRequest($request, [
-            'groupUserOrderId', 'type'
-        ], ['groupUserOrderId']);
+        $requestProcess = $this->processRequest($request, 
+            ['groupUserOrderId', 'type','addressId'],
+            ['groupUserOrderId']
+        );
         $user = $this->getAppUser();
 
         if (!isset(GroupUserOrder::$paymentChannelTexts[$requestProcess['type']])) {
@@ -56,6 +58,24 @@ class PayController extends AppApiBaseController
             $requestProcess->throwErrorException(ErrorCode::ERROR_ORDER_ALREADY_PAY, []);
         }
 
+        //产品订单 设置地址
+        if(isset($requestProcess['addressId'])){
+            $addressId = $requestProcess['addressId'];
+            $userAddress = $userAddressRepository->find($addressId);
+            if (empty($userAddress) || $userAddress->getUser() !== $user) {
+                $requestProcess->throwErrorException(ErrorCode::ERROR_ADDRESS_NOT_EXISTS, []);
+            }
+
+            //每次订单的地址自动成为用户默认地址
+            $userAddress = $userAddressRepository->find($addressId);
+            $user->setDefaultAddress($userAddress);
+            $this->entityPersist($user, false);
+
+            // 订单地址
+            $groupUserOrder->setUserAddress($userAddress);
+            $this->entityPersist($groupUserOrder);
+        }
+        
         $where = [
             'product' => $groupUserOrder->getProduct(),
             'user' => $user,
