@@ -319,7 +319,7 @@ class MemberController extends AppApiBaseController
         $user->setEmail($openId . '@qq.com');
         $user->setEmailCanonical($openId . '@qq.com');
         $user->setPassword("IamCustomer");
-        $user->setWxOpenId($openId);
+//        $user->setWxOpenId($openId);
         $user->setWxUnionId($unionId);
         $user->setLastLoginTimestamp(time());
 
