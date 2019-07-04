@@ -454,24 +454,17 @@ class MemberController extends AppApiBaseController
             $userAddress = $userAddressRepository->find($userAddressId);
 
             //默认地址
-            $defaultUserAddress = $user->getDefaultUserAddress();
-            if( $defaultUserAddress->getId() != $userAddressId  && $isDefault ){
-                $defaultUserAddress->setIsDefault(false);
-                $this->getEntityManager()->persist($defaultUserAddress);
-                $this->getEntityManager()->flush();
+            $oldIsDefault = $userAddress->getIsDefault();
+            if( isset($data['isDefault']) ){
+                $userAddress->setIsDefault($data['isDefault']);
+                if( $data['isDefault'] && !$oldIsDefault ){
+                    $userAddressRepository->setAllAddressNotDefault($user->getId());
+                }
             }
 
         } else {
             $userAddress = new UserAddress();
             $userAddress->setUser($user);
-
-            //默认地址
-            $addressCount = $user->getActiveUserAddress()->count();
-            if ( $addressCount == 0) {
-                $userAddress->setIsDefault(true);
-            }else if( $addressCount > 0 && $isDefault ){
-                $userAddressRepository->setAllAddressNotDefault($user->getId());
-            }
         }
 
 
@@ -482,9 +475,6 @@ class MemberController extends AppApiBaseController
         if( isset($data['phone']) ){
             $userAddress->setPhone($phone);
         }
-        if( isset($data['isDefault']) ){
-            $userAddress->setIsDefault($isDefault);
-        }
         if( $countyDao ){
             $userAddress->setRegion($countyDao);
         }
@@ -494,6 +484,19 @@ class MemberController extends AppApiBaseController
 
         $this->getEntityManager()->persist($userAddress);
         $this->getEntityManager()->flush();
+
+        // 检查设置默认地址
+        $hasIsDefault = $userAddressRepository->findOneBy(['user'=>$user,'isDeleted'=>false,'isDefault'=>true]);
+        if( !$hasIsDefault ){
+            $lastUserAddress = $userAddressRepository->findOneBy(['user'=>$user,'isDeleted'=>false],['id'=>'DESC']);
+            if($lastUserAddress){
+                $lastUserAddress->setIsDefault(true);
+                $this->getEntityManager()->persist($lastUserAddress);
+                $this->getEntityManager()->flush();                
+            }
+        }
+
+        $userAddress = $userAddressRepository->find($userAddress->getId());
 
         // 返回
         return CommonUtil::resultData(['userAddress' => $userAddress->getArray()])->toJsonResponse();
