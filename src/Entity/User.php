@@ -2151,6 +2151,7 @@ class User extends BaseUser implements Dao
             'defaultAddress' => $this->getDefaultUserAddress() != null ? $this->getDefaultUserAddress()->getArray() : null,
             'lastLogin' => $this->getLastLogin(),
             'recommander' => $recommanderArray,
+            'recommanderUserName' => $recommanderArray?$recommanderArray['nickname']:'',
             'isTeacher' => $this->isTeacher(),
             'isCompletedPersonalInfo' => $this->isCompletedPersonalInfo(),
             'name' => $this->getName(),
