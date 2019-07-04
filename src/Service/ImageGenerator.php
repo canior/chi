@@ -76,7 +76,7 @@ class ImageGenerator
         }
 
         $banner = Image::make($bannerFile->getAbsolutePath());
-        $banner->insert($userQrFile->writeString(), 'bottom-right', 100, 82);
+        $banner->insert($userQrFile->writeString(), 'bottom-right', 68, 82);
 
         $fileName = uniqid() . "jpeg";
         $md5 = md5($fileName);
