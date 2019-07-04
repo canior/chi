@@ -987,7 +987,7 @@ class MemberController extends AppApiBaseController
         return CommonUtil::resultData( [
             'user'=>$user->getArray(),
             'totalStock' => $user->getTotalRecommandStock(),//拥有的总名额
-            'usedStock' => $user->getTotalUserAccountOrdersAsRecommander(),//用掉的总名额
+            'usedStock' => $user->getUsedRecommandStockCount(),//用掉的总名额
             'recommandStock' => $user->getRecommandStock(),//剩余名额
         ] )->toJsonResponse();
     }

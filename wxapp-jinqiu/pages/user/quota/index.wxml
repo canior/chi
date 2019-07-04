@@ -8,7 +8,7 @@
   </view>
 </view>
 <view class="navbar">
-  <view class="nav">已用名额：{{quota.usedStock}}</view>
+  <view class="nav">已用名额：{{quota.usedRecommandStockCount}}</view>
   <view class="nav">名额总数：{{quota.totalStock}}</view>
 </view>
 <view class="split-brand"/>

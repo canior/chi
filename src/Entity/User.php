@@ -669,7 +669,7 @@ class User extends BaseUser implements Dao
      */
     public function getTotalRecommandStock()
     {
-        return $this->getRecommandStock() + $this->getUserAccountOrdersAsRecommander()->count();
+        return $this->getRecommandStock() + $this->getUsedRecommandStockCount();
     }
 
     /**
@@ -1634,6 +1634,20 @@ class User extends BaseUser implements Dao
      */
     public function getTotalRecommandStockOrders() {
         return $this->getUserRecommandStockOrders()->count();
+    }
+
+    /**
+     * 用掉的名额
+     * @return int
+     */
+    public function getUsedRecommandStockCount() {
+        $use = 0;
+        foreach ($this->getUserRecommandStockOrders() as $k => $v) {
+            if( $v->getQty() < 0 ){
+                $use++;
+            }
+        }
+        return $use;
     }
 
     /**
