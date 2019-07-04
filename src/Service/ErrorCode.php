@@ -46,6 +46,7 @@ class ErrorCode
     const ERROR_WX_PROCESS_NOT_EXISTS = 12016;
     const ERROR_WX_OPENID_WITH_CODE = 12017;
     const ERROR_PHONE_HAD_REGISTER = 12018;
+    const ERROR_PLOCE_LOGIN_BY_PHONE = 12019;
 
 
     //-------课程---------------------------------------
@@ -148,6 +149,7 @@ class ErrorCode
             self::ERROR_PARTNER_UP_COURSE_NOT_SYSTEM => '确认身份订单不合法',
             self::ERROR_USER_ALREADY_SYSTEM => '用户已经是系统学员',
             self::ERROR_PHONE_HAD_REGISTER => '手机号已经存在',
+            self::ERROR_PLOCE_LOGIN_BY_PHONE => '请用手机号登陆后再绑定微信',
         ];
     }
 
