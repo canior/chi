@@ -166,4 +166,28 @@ class ProductRepository extends ServiceEntityRepository
 
         return $query;
     }
+
+    /**
+     * 获取首页最新课程列表
+     * @return \Doctrine\ORM\QueryBuilder
+     * @author zxqc2018
+     */
+    public function findHomeNewestCourses()
+    {
+        $query = $this->createQueryBuilder('p')
+            ->where('p.status = :status')
+            ->setParameter('status', Product::ACTIVE);
+        $query->join('p.course', 'c')
+            ->andWhere('c.isOnline = :isOnline')
+            ->setParameter('isOnline', true);
+
+        $query->andWhere('c.courseShowType  in (:courseShowType)')
+            ->setParameter('courseShowType', array_unique([Course::COURSE_SHOW_TYPE_APP, Course::COURSE_SHOW_TYPE_ALL]));
+
+        $query->andWhere('c.isShowNewest =:isShowNewest')
+            ->setParameter('isShowNewest', true);
+        $query->addOrderBy('p.priority', 'DESC')->addOrderBy('p.id', 'DESC');
+
+        return $query;
+    }
 }

@@ -34,7 +34,7 @@ class CourseController extends BackendController
             'title' => '课程管理',
             'form' => [
                 'subject' => $request->query->get('subject', null),
-                'courseShowType' => $request->query->get('courseShowType', null),
+                'courseShowType' => $request->query->get('courseShowType', 'all'),
                 'oneCategory' => $request->query->get('oneCategory', null),
                 'twoCategory' => $request->query->get('twoCategory', null),
                 'page' => $request->query->getInt('page', 1)
@@ -345,7 +345,7 @@ class CourseController extends BackendController
         $this->entityPersist($course->getCourseActualCategory());
         $this->addFlash('notice', $noticeStr);
         $formData = [
-            'courseShowType' => $request->request->get('courseShowType', null),
+            'courseShowType' => $request->request->get('courseShowType', 'all'),
             'oneCategory' => $request->request->get('oneCategory', null),
             'twoCategory' => $request->request->get('twoCategory', null),
             'page' => $request->request->getInt('page', 1)
@@ -374,7 +374,36 @@ class CourseController extends BackendController
         $this->entityPersist($course->getCourseActualCategory());
         $this->addFlash('notice', $noticeStr);
         $formData = [
-            'courseShowType' => $request->request->get('courseShowType', null),
+            'courseShowType' => $request->request->get('courseShowType', 'all'),
+            'oneCategory' => $request->request->get('oneCategory', null),
+            'twoCategory' => $request->request->get('twoCategory', null),
+            'page' => $request->request->getInt('page', 1)
+        ];
+        return $this->redirectToRoute('course_index', $formData);
+    }
+
+    /**
+     * 推荐首页最新课程
+     * @param Request $request
+     * @param Course $course
+     * @return Response
+     * @Route("/course/recommend/newest/{id}", name="recommendNewestZone", methods="POST")
+     * @author zxqc2018
+     */
+    public function recommendNewestZone(Request $request, Course $course): Response
+    {
+        if ($course->isShowNewest()) {
+            $course->setIsShowNewest(0);
+            $noticeStr = '下最新课程专区成功';
+        } else {
+            $course->setIsShowNewest(1);
+            $noticeStr = '上最新课程专区成功';
+        }
+
+        $this->entityPersist($course);
+        $this->addFlash('notice', $noticeStr);
+        $formData = [
+            'courseShowType' => $request->request->get('courseShowType', 'all'),
             'oneCategory' => $request->request->get('oneCategory', null),
             'twoCategory' => $request->request->get('twoCategory', null),
             'page' => $request->request->getInt('page', 1)

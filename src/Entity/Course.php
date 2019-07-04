@@ -183,6 +183,12 @@ class Course implements Dao
      */
     private $refTargetCourse;
 
+    /**
+     * @var boolean
+     * @ORM\Column(type="integer")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $isShowNewest;
 
     public function __construct() {
         $product = new Product();
@@ -192,6 +198,7 @@ class Course implements Dao
         $this->setOnline();
         $this->setLookNum(0);
         $this->setCourseTag('');
+        $this->setIsShowNewest(0);
     }
 
     /**
@@ -716,6 +723,22 @@ class Course implements Dao
 
     public function setOffline() {
         $this->isOnline = false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowNewest(): bool
+    {
+        return !empty($this->isShowNewest);
+    }
+
+    /**
+     * @param bool $isShowNewest
+     */
+    public function setIsShowNewest(bool $isShowNewest): void
+    {
+        $this->isShowNewest = $isShowNewest;
     }
 
     /**

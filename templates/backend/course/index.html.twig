@@ -78,7 +78,12 @@
                                                     <a class="recommend-home" data-toggle="modal" data-target="#modal-recommend"
                                                        data-url="{{ path('recommendHomeZone', {'id': item.id}) }}"
                                                        data-item='{"name": "{{ item.title }}"}'
-                                                       {% if item.isShowRecommendZone %} title="下首页">下首页 {% else %} title="上首页">上首页 {% endif %}</a>
+                                                       {% if item.isShowRecommendZone %} title="下首页推荐">下推荐 {% else %} title="上首页推荐">上推荐 {% endif %}</a>
+
+                                                <a class="recommend-newest" data-toggle="modal" data-target="#modal-recommend"
+                                                   data-url="{{ path('recommendNewestZone', {'id': item.id}) }}"
+                                                   data-item='{"name": "{{ item.title }}"}'
+                                                        {% if item.isShowNewest %} title="下首页最新">下最新 {% else %} title="上首页最新">上最新 {% endif %}</a>
 
                                             </div>
                                         </td>
@@ -152,6 +157,15 @@
                  $('#modal-recommend form input[name="_token"]').val($(this).data('token'));
              });
              $('.recommend-home').on('click', function (e) {
+                 e.preventDefault();
+                 let self = $(this);
+                 let item = (self.data('item'));
+                 $('#modal-recommend .well').html(self.attr('title') + '专区   ' + '<<' + item.name + '>>');
+                 $('#modal-recommend form').attr("action", $(this).data('url'));
+                 $('#modal-recommend form input[name="_token"]').val($(this).data('token'));
+             });
+
+             $('.recommend-newest').on('click', function (e) {
                  e.preventDefault();
                  let self = $(this);
                  let item = (self.data('item'));
