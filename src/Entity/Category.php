@@ -460,6 +460,7 @@ class Category implements Dao
         if (empty($lookUser)) {
             $categoryPermission = false;
         }
+
         foreach ($this->getCourses() as $key => $course) {
             $sort[$key] = $course->getProduct()->getPriority();
             $tmpArr = $course->getArray();
@@ -479,18 +480,21 @@ class Category implements Dao
         if (empty($this->getParentCategory())) {
             $topCateIdentityId = $this->getCateIdentityId();
         }
+
+        $firstCourseArr = $courses[0] ?? [];
+
         return [
             'id' => $this->getId(),
             'name' => $this->getName(),
             'parentCategoryId' => CommonUtil::getInsideValue($this, 'getParentCategory.getId', 0),
             'iconFileId' => CommonUtil::getInsideValue($this, 'getIconFile.id', 0),
-            'teacher' => CommonUtil::getInsideValue($firstCourse, 'getTeacher.array', []),
-            'mainImageId' => CommonUtil::getInsideValue($firstCourse, 'getCourseImages.first.getId', 0),
+            'teacher' => CommonUtil::getInsideValue($firstCourseArr, 'teacher', []),
+            'mainImageId' => CommonUtil::getInsideValue($firstCourseArr, 'courseImages.0.id', 0),
             'lookNum' => $this->getCategoryLookNum(),
             'courseNum' => $this->getCourses()->count(),
             'isSingleCourse' => $this->isSingleCourse(),
             'courses' => $courses,
-            'mainCourseCreateDate' => CommonUtil::getInsideValue($firstCourse, 'getProduct.getCreatedAtFormattedLineDate', ''),
+            'mainCourseCreateDate' => CommonUtil::getInsideValue($firstCourseArr, 'courseCreateTimeLine', ''),
             'topCategoryName' => CommonUtil::getInsideValue($this, 'getParentCategory.getName', ''),
             'topCateIdentityId' => $topCateIdentityId,
             'shortDescription' => $this->getShortDescription() ?? '',

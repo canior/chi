@@ -1188,6 +1188,7 @@ class Course implements Dao
             'courseTags' => $this->getCourseTagArr(),
             'addressImageFileId' => CommonUtil::obj2Id($this->getAddressImageFile()),
             'refCourseName' => $this->getRefCourseName(),
+            'courseCreateTimeLine' => CommonUtil::getInsideValue($this, 'getProduct.getCreatedAtFormattedLineDate', ''),
         ];
     }
 
