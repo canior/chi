@@ -1310,9 +1310,8 @@ class GroupUserOrder implements Dao
      * 是否显示桌号
      *
      * 1.只有线下活动显示桌号
-     * 2.只有思维课，系统课显示桌号 
-     *   系统课 
-     *     1.只有高级身份显示桌号  低级身份显示升级，还有实名认证升级提升
+     * 2.只有思维课，系统课显示桌号
+     *     1.系统课 只有高级身份显示桌号  低级身份显示升级，还有实名认证升级提升
      *     2.思维课大于1元显示桌号
      */
     public function getShowTable(){
@@ -1322,34 +1321,34 @@ class GroupUserOrder implements Dao
         $showUpdate = false;
 
         // 科目
-        $course = $this->getProduct()->getCourse();
-        if( $course->isThinkingSubject() || $course->isPrivateDirectSubject()){
-            // 思维课 todo
-            if( $course->getPrice() > 0.1 ){
-                $showTable = true;
-            }
-        }else if($course->isSystemType()){
-            // 系统课
-            switch ($this->getUser()->getBianxianUserLevel()) {
-                case BianxianUserLevel::VISITOR:
-                case BianxianUserLevel::THINKING:
-                    $showUpdate = true;
-                    break;
-                case BianxianUserLevel::ADVANCED:
-                case BianxianUserLevel::PARTNER:
-                case BianxianUserLevel::DISTRIBUTOR:
-                    $showTable = true;
-                    break;
-                default:
-                    break;
-            }
-        }
+        $product = $this->getProduct();
+        $course = $product->getCourse();
 
         // 非活动订单  不显示桌号
-        $isOnline = $this->getProduct()->getCourse()->isOnline();
-        if( $isOnline){
-            $showTable = false;
+        if( $product->isCourseProduct() && !$isOnline->isOnline()){
+            if( $course->isThinkingSubject() || $course->isPrivateDirectSubject()){
+                // 思维课 todo
+                if( $course->getPrice() > 0.1 ){
+                    $showTable = true;
+                }
+            }else if($course->isSystemType()){
+                // 系统课
+                switch ($this->getUser()->getBianxianUserLevel()) {
+                    case BianxianUserLevel::VISITOR:
+                    case BianxianUserLevel::THINKING:
+                        $showUpdate = true;
+                        break;
+                    case BianxianUserLevel::ADVANCED:
+                    case BianxianUserLevel::PARTNER:
+                    case BianxianUserLevel::DISTRIBUTOR:
+                        $showTable = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
+        
 
         // 未实名认证 不显示桌号
         if( !$this->getUser()->isCompletedPersonalInfo() ){
