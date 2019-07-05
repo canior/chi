@@ -489,7 +489,7 @@ class Category implements Dao
             'parentCategoryId' => CommonUtil::getInsideValue($this, 'getParentCategory.getId', 0),
             'iconFileId' => CommonUtil::getInsideValue($this, 'getIconFile.id', 0),
             'teacher' => CommonUtil::getInsideValue($firstCourseArr, 'teacher', []),
-            'mainImageId' => CommonUtil::getInsideValue($firstCourseArr, 'courseImages.0.id', 0),
+            'mainImageId' => CommonUtil::getInsideValue($firstCourseArr, 'courseImages.0.fileId', 0),
             'lookNum' => $this->getCategoryLookNum(),
             'courseNum' => $this->getCourses()->count(),
             'isSingleCourse' => $this->isSingleCourse(),
