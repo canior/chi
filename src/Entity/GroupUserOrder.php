@@ -1317,7 +1317,6 @@ class GroupUserOrder implements Dao
     public function getShowTable(){
 
         $showTable = false;
-        $showCompletedPersonalInfo = false;
         $showUpdate = false;
 
         // 科目
@@ -1346,14 +1345,12 @@ class GroupUserOrder implements Dao
                     default:
                         break;
                 }
-            }
-        }
-        
 
-        // 未实名认证 不显示桌号
-        if( !$this->getUser()->isCompletedPersonalInfo() ){
-            $showTable = false;
-            $showCompletedPersonalInfo = true;
+                // 未实名认证 不显示桌号
+                if( !$this->getUser()->isCompletedPersonalInfo() ){
+                    $showTable = false;
+                }
+            }
         }
 
         return ['showTable'=>$showTable,'showUpdate'=>$showUpdate];
