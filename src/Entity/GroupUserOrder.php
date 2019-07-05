@@ -1325,7 +1325,7 @@ class GroupUserOrder implements Dao
         $course = $product->getCourse();
 
         // 非活动订单  不显示桌号
-        if( $product->isCourseProduct() && !$isOnline->isOnline()){
+        if( $product->isCourseProduct() && !$course->isOnline()){
             if( $course->isThinkingSubject() || $course->isPrivateDirectSubject()){
                 // 思维课 todo
                 if( $course->getPrice() > 0.1 ){
