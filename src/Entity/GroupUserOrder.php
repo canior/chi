@@ -1336,8 +1336,8 @@ class GroupUserOrder implements Dao
         // 科目
         $course = $this->getProduct()->getCourse();
         if( $course->isThinkingSubject() || $course->isPrivateDirectSubject()){
-            // 思维课
-            if( $course->getPrice() > 1 ){
+            // 思维课 todo
+            if( $course->getPrice() > 0.1 ){
                 $showTable = true;
             }
         }else if($course->isSystemType()){
