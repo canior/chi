@@ -1245,7 +1245,9 @@ class GroupUserOrder implements Dao
             'address' => $this->getUserAddress() == null ? null : $this->getUserAddress()->getArray(),
             'carrierName' => $this->getCarrierName(),
             'trackingNo' => $this->getTrackingNo(),
+            'showTable' =>$this->getShowTable(),
             'tableNo' =>$this->getTableNo(),
+            'showUpdate' =>$this->getShowUserUpdate(),
             'timeLine' =>$this->getTimeLine(),
             'checkStatus' =>$this->getCheckStatus(),
             'appStatus'=>$appStatus['appStatus'],
@@ -1302,6 +1304,62 @@ class GroupUserOrder implements Dao
     public function makeTraceNo()
     {
         return 'jq' . date('YmdHis') . $this->getId() . mt_rand(1000, 9999);
+    }
+
+    public function getShowUserUpdate(){
+        $showUpdate = false;
+        switch ($this->getUser()->getBianxianUserLevel()) {
+            case BianxianUserLevel::VISITOR:
+            case BianxianUserLevel::THINKING:
+                $showUpdate = true;
+                break;
+            default:
+                break;
+        }
+        return $showUpdate;
+    }
+
+    /**
+     * 是否显示桌号
+     *
+     * 1.只有线下活动显示桌号
+     * 2.只有思维课，系统课显示桌号 
+     *   系统课 
+     *     1.只有高级身份显示桌号  低级身份显示升级，还有实名认证升级提升
+     *     2.思维课大于1元显示桌号
+     */
+    public function getShowTable(){
+
+        $showTable = false;
+        $showCompletedPersonalInfo = false;
+
+        // 科目
+        $course = $this->getProduct()->getCourse();
+        if( $course->isThinkingSubject() || $course->isPrivateDirectSubject()){
+            // 思维课
+            if( $course->getPrice() > 1 ){
+                $showTable = true;
+            }
+        }else if($course->isSystemType()){
+            // 系统课
+            if(!$this->getShowUserUpdate()){
+                $showTable = true;
+            }
+        }
+
+        // 非活动订单  不显示桌号
+        $isOnline = $this->getProduct()->getCourse()->isOnline();
+        if( $isOnline){
+            $showTable = false;
+        }
+
+        // 未实名认证 不显示桌号
+        if( !$this->getUser()->isCompletedPersonalInfo() ){
+            $showTable = false;
+            $showCompletedPersonalInfo = true;
+        }
+
+        return $showTable;
     }
 
     // APP订单状态显示
@@ -1397,7 +1455,7 @@ class GroupUserOrder implements Dao
                 }
                 // }
 
-                if(  $this->getTableNo() ){
+                if(  $this->getTableNo() && $this->getShowTable() ){
                     $log[] = ['title'=>'生成坐席号：'.$this->getTableNo().'号','time'=>date('m-d H:i',strtotime($this->getCheckAt()))];
                 }
 
