@@ -320,7 +320,7 @@ class MemberController extends AppApiBaseController
 
         // 验证微信是否已经存在
         if($unionId){
-            $unionIdUser = $userRepository->findOneBy(['unionid'=>$unionId],['id'=>'DESC']);
+            $unionIdUser = $userRepository->findOneBy(['wxUnionId'=>$unionId],['id'=>'DESC']);
             if( $unionIdUser && $unionIdUser->getId() != $user->getId() ){
                return CommonUtil::resultData( [], ErrorCode::ERROR_UNIONID_HAD_REGISTER )->toJsonResponse(); 
             }
