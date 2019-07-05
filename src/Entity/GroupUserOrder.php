@@ -1245,9 +1245,9 @@ class GroupUserOrder implements Dao
             'address' => $this->getUserAddress() == null ? null : $this->getUserAddress()->getArray(),
             'carrierName' => $this->getCarrierName(),
             'trackingNo' => $this->getTrackingNo(),
-            'showTable' =>$this->getShowTable(),
+            'showTable' =>$this->getShowTable()['showTable'],
             'tableNo' =>$this->getTableNo(),
-            'showUpdate' =>$this->getShowUserUpdate(),
+            'showUpdate' =>$this->getShowTable()['showUpdate'],
             'timeLine' =>$this->getTimeLine(),
             'checkStatus' =>$this->getCheckStatus(),
             'appStatus'=>$appStatus['appStatus'],
@@ -1306,19 +1306,6 @@ class GroupUserOrder implements Dao
         return 'jq' . date('YmdHis') . $this->getId() . mt_rand(1000, 9999);
     }
 
-    public function getShowUserUpdate(){
-        $showUpdate = false;
-        switch ($this->getUser()->getBianxianUserLevel()) {
-            case BianxianUserLevel::VISITOR:
-            case BianxianUserLevel::THINKING:
-                $showUpdate = true;
-                break;
-            default:
-                break;
-        }
-        return $showUpdate;
-    }
-
     /**
      * 是否显示桌号
      *
@@ -1332,6 +1319,7 @@ class GroupUserOrder implements Dao
 
         $showTable = false;
         $showCompletedPersonalInfo = false;
+        $showUpdate = false;
 
         // 科目
         $course = $this->getProduct()->getCourse();
@@ -1342,8 +1330,18 @@ class GroupUserOrder implements Dao
             }
         }else if($course->isSystemType()){
             // 系统课
-            if(!$this->getShowUserUpdate()){
-                $showTable = true;
+            switch ($this->getUser()->getBianxianUserLevel()) {
+                case BianxianUserLevel::VISITOR:
+                case BianxianUserLevel::THINKING:
+                    $showUpdate = true;
+                    break;
+                case BianxianUserLevel::ADVANCED:
+                case BianxianUserLevel::PARTNER:
+                case BianxianUserLevel::DISTRIBUTOR:
+                    $showTable = true;
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -1359,7 +1357,7 @@ class GroupUserOrder implements Dao
             $showCompletedPersonalInfo = true;
         }
 
-        return $showTable;
+        return ['showTable'=>$showTable,'showUpdate'=>$showUpdate];
     }
 
     // APP订单状态显示
@@ -1455,7 +1453,7 @@ class GroupUserOrder implements Dao
                 }
                 // }
 
-                if(  $this->getTableNo() && $this->getShowTable() ){
+                if(  $this->getTableNo() && $this->getShowTable()['showTable'] ){
                     $log[] = ['title'=>'生成坐席号：'.$this->getTableNo().'号','time'=>date('m-d H:i',strtotime($this->getCheckAt()))];
                 }
 
