@@ -120,7 +120,7 @@ class CourseType extends AbstractType
                 'required' => false,
             ])
             ->add('previewImageFile', DropzoneType::class, [
-                'label' => '课程视频预览图片',
+                'label' => '课程视频封面图片',
                 'maxFiles' => 1,
                 'priority' => true,
                 'data_class' => null,
