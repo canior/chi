@@ -12,6 +12,7 @@ namespace App\Service\Order;
 use App\Entity\GroupUserOrder;
 use App\Service\Util\CommonUtil;
 use App\Service\Util\FactoryUtil;
+use App\Service\Config\ConfigParams;
 
 class OfflineTableNo
 {
@@ -23,6 +24,8 @@ class OfflineTableNo
      */
     public static function getUserTable(GroupUserOrder $groupUserOrder)
     {
+        ConfigParams::getLogger()->info('生成桌号  时间：' .date('Y-m-d H:i:s',time()).' 订单号：'.$groupUserOrder->getId());
+
         //去除线上课程,产品订单
         if (!$groupUserOrder->getProduct()->isCourseProduct() || $groupUserOrder->getProduct()->getCourse()->isOnline()) {
             return false;
