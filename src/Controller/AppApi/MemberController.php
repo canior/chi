@@ -1239,11 +1239,12 @@ class MemberController extends AppApiBaseController
         $orderArray = [];
         $idsArray = [];
         foreach ($messageArrays as $order) {
-            $order['groupUserOrder'] = $order[0]->getArray();
-            unset($order[0]);
-            $orderArray[] = $order;
-
-            $idsArray[] = $order['id'];
+            if( isset($order[0]) ){
+                $order['groupUserOrder'] = $order[0]->getArray();
+                unset($order[0]);
+                $orderArray[] = $order;
+                $idsArray[] = $order['id'];
+            }
         }
 
 
