@@ -62,5 +62,5 @@ class Subject
     //1元思维课价格
     const THINKING_GENERATE_PRICE = 1.0;
     //12000元升级系统学院直通车价格
-    const TRADING_SPECIAL_PRICE = 0.02;
+    const TRADING_SPECIAL_PRICE = 12000.0;
 }
