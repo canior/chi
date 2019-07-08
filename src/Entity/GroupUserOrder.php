@@ -1350,6 +1350,18 @@ class GroupUserOrder implements Dao
                 if( !$this->getUser()->isCompletedPersonalInfo() ){
                     $showTable = false;
                 }
+
+                //查找直通车 不显示桌号
+                $tradingProductId = null;
+                $tradingCourse = FactoryUtil::courseRepository()->findSpecTradingCourse(MoneyUtil::tradeSpecialPrice());
+                if (!empty($tradingCourse)) {
+                    $tradingProductId = $tradingCourse->getProduct()->getId();
+                }
+                
+                $isTradingProductId = false;
+                if( $product->getId() == $tradingProductId ){
+                    $showTable = false;
+                } 
             }
         }
 
