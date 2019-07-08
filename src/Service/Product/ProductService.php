@@ -128,7 +128,7 @@ class ProductService
                 }
                 $data['groupUserOrder'] = CommonUtil::obj2Array($groupUserOrder);
                 if (!empty($user)) {
-                    if ($showType == 'gzh') {
+                    if ($showType == 'gzh' || $showType == 'app') {
                         $shareSourceResult = FactoryUtil::shareSourceProcess()->createShareSource([ShareSource::GZH, ShareSource::GZH_QUAN], ShareSource::PRODUCT, $user, $product, $url);
                         $data['shareSources'] = $shareSourceResult->getData();
                         //添加shareSourceUser
