@@ -21,7 +21,6 @@ use App\Service\Order\OfflineTableNo;
 use App\Service\Util\CommonUtil;
 use App\Service\Util\FactoryUtil;
 use App\Service\Util\MoneyUtil;
-use App\Service\Config\ConfigParams;
 
 trait NotifyProcessTrait
 {
