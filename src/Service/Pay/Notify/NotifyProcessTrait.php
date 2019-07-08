@@ -31,8 +31,6 @@ trait NotifyProcessTrait
      */
     public function processOrder(string $outTradeNo)
     {
-        ConfigParams::getLogger()->info('NotifyProcessTrait processOrder  time：' .date('Y-m-d H:i:s',time()).' 订单号：'.$outTradeNo);
-
         $requestProcess = CommonUtil::resultData();
         $groupUserOrder = $this->getOrderInfo($outTradeNo);
 
