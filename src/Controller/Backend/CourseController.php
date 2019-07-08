@@ -128,6 +128,18 @@ class CourseController extends BackendController
                 $this->getEntityManager()->flush();
             }
 
+            //add preview image
+            $previewImageFileId = isset($request->request->get('course')['previewImageFile']) ? $request->request->get('course')['previewImageFile'] : null;
+            if ($previewImageFileId) {
+                /**
+                 * @var File $previewImageFile
+                 */
+                $previewImageFile = $this->getEntityManager()->getRepository(File::class)->find($previewImageFileId);
+                $course->getProduct()->setPreviewImageFile($previewImageFile);
+                $this->getEntityManager()->persist($course->getProduct());
+                $this->getEntityManager()->flush();
+            }
+
             $this->addFlash('notice', '创建成功');
             return $this->redirectToRoute('course_index');
         }
@@ -203,6 +215,18 @@ class CourseController extends BackendController
                 'size' => $shareImageFile->getSize()
             ];
             $form->get('shareImageFile')->setData($fileArray);
+        }
+
+        $previewImageFile = $course->getPreviewImageFile();
+        if ($previewImageFile) {
+            $fileImgArray[$previewImageFile->getId()] = [
+                'id' => $previewImageFile->getId(),
+                'fileId' => $previewImageFile->getId(),
+                'priority' => 0,
+                'name' => $previewImageFile->getName(),
+                'size' => $previewImageFile->getSize()
+            ];
+            $form->get('previewImageFile')->setData($fileImgArray);
         }
 
         $form->handleRequest($request);
@@ -294,6 +318,19 @@ class CourseController extends BackendController
 
             } else {
                 $course->setShareImageFile(null);
+            }
+
+            //update preview image
+            $previewImageFileId = isset($request->request->get('course')['previewImageFile']) ? $request->request->get('course')['previewImageFile'] : [];
+            if ($previewImageFileId) {
+                /**
+                 * @var File $previewImageFile
+                 */
+                $previewImageFile = $this->getEntityManager()->getRepository(File::class)->find($previewImageFileId);
+                $course->setPreviewImageFile($previewImageFile);
+
+            } else {
+                $course->setPreviewImageFile(null);
             }
 
             $this->getEntityManager()->persist($course);

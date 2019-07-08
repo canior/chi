@@ -215,6 +215,13 @@ class Product implements Dao
     private $shareImageFile;
 
     /**
+     * @var File | null
+     * @ORM\ManyToOne(targetEntity="App\Entity\File", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $previewImageFile;
+
+    /**
      * @var bool
      * @ORM\Column(type="boolean", nullable=false)
      */
@@ -912,6 +919,22 @@ class Product implements Dao
     }
 
     /**
+     * @return File|null
+     */
+    public function getPreviewImageFile(): ?File
+    {
+        return $this->previewImageFile;
+    }
+
+    /**
+     * @param File|null $previewImageFile
+     */
+    public function setPreviewImageFile(?File $previewImageFile): void
+    {
+        $this->previewImageFile = $previewImageFile;
+    }
+
+    /**
      * @return null|string
      */
     public function getAliyunVideoUrl(): ?string
@@ -1022,6 +1045,7 @@ class Product implements Dao
             'productSpecImages' => $productSpecImagesArray,
             'productVideos' => $productVideosArray,
             'shareImageFileId' => $this->getShareImageFile() ? $this->getShareImageFile()->getId() : null,
+            'previewImageFile' => $this->getPreviewImageFile() ? $this->getPreviewImageFile()->getId() : null,
             'stock' => $this->getStock(),
             'similarProducts' => $similarProductsArray,
             'soldNum' => 1000, //TODO 需要从product statistics里拿

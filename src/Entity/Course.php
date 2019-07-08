@@ -686,6 +686,20 @@ class Course implements Dao
     }
 
     /**
+     * @param File|null $previewImageFile
+     */
+    public function setPreviewImageFile(?File $previewImageFile) {
+        $this->getProduct()->setPreviewImageFile($previewImageFile);
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getPreviewImageFile() {
+        return $this->getProduct()->getPreviewImageFile();
+    }
+
+    /**
      * @return User|null
      */
     public function getOwnerUser(): ?User
@@ -1172,6 +1186,7 @@ class Course implements Dao
             'lookNum' => $this->getLookNum(),
             'courseVideos' => $courseVideosArray,
             'shareImageFileId' => $this->getShareImageFile() ? $this->getShareImageFile()->getId() : null,
+            'previewImageFile' => $this->getPreviewImageFile() ? $this->getPreviewImageFile()->getId() : null,
             'totalStudents' => $this->getTotalStudentUsers(),
             'isOnline' => $this->isOnline,
             'eligibleUserLevels' => Subject::$subjectUserLevelConstraintArray[$this->getSubject()], //for bianxian

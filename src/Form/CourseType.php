@@ -119,6 +119,13 @@ class CourseType extends AbstractType
                 'label' => '课程视频（阿里云视频ID）',
                 'required' => false,
             ])
+            ->add('previewImageFile', DropzoneType::class, [
+                'label' => '课程视频预览图片',
+                'maxFiles' => 1,
+                'priority' => true,
+                'data_class' => null,
+                'mapped' => false,
+            ])
             ->add('shareImageFile', DropzoneType::class, [
                 'label' => '课程分享图片（1张：注意留空保留二维码位置）',
                 'maxFiles' => 1,
