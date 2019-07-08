@@ -26,7 +26,7 @@ class CourseRepository extends ServiceEntityRepository
      * @param int $price 直通车加个
      * @return Course|null
      */
-    public function findSpecTradingCourse($price = 12000)
+    public function findSpecTradingCourse($price = 0.02)
     {
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.product', 'p')
