@@ -5,7 +5,7 @@
         <div>{{ project_video_metum.metaKey }}</div>
     </div>
     {{ form_widget(form) }}
-    <a class="btn btn-danger" href="{{ path('project_banner_meta_index') }}">{{ '返回视频配置'|trans }}</a>
+    <a class="btn btn-danger" href="{{ path('project_video_meta_index') }}">{{ '返回视频配置'|trans }}</a>
     <button class="btn btn-primary">{{ button_label|default('提交') }}</button>
 </div>
 {{ form_end(form) }}

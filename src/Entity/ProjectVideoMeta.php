@@ -52,21 +52,24 @@ class ProjectVideoMeta extends ProjectMeta
     {
         return false;
     }
+
     /**
      * @param string $aliyunVideoId
      * @param string $aliyunVideoUrl
      * @param string $aliyunVideoImageUrl
      * @param string $aliyunVideoExpiresAt
+     * @param string $previewImageFileId
      * @return ProjectMeta
      * @author zxqc2018
      */
-    public function setVideoMeta($aliyunVideoId, $aliyunVideoUrl, $aliyunVideoImageUrl, $aliyunVideoExpiresAt)
+    public function setVideoMeta($aliyunVideoId, $aliyunVideoUrl, $aliyunVideoImageUrl, $aliyunVideoExpiresAt, $previewImageFileId)
     {
         return $this->setMetaValue(json_encode([
             'aliyunVideoId' => $aliyunVideoId,
             'aliyunVideoUrl' => $aliyunVideoUrl,
             'aliyunVideoImageUrl' => $aliyunVideoImageUrl,
             'aliyunVideoExpiresAt' => $aliyunVideoExpiresAt,
+            'previewImageFileId' => $previewImageFileId,
         ]));
     }
 
@@ -79,7 +82,7 @@ class ProjectVideoMeta extends ProjectMeta
     public function setAliyunVideoId(?string $aliyunVideoId)
     {
         $metaValueArray = json_decode($this->getMetaValue(), true);
-        return $this->setVideoMeta($aliyunVideoId, $metaValueArray['aliyunVideoUrl'], $metaValueArray['aliyunVideoImageUrl'], $metaValueArray['aliyunVideoExpiresAt']);
+        return $this->setVideoMeta($aliyunVideoId, $metaValueArray['aliyunVideoUrl'], $metaValueArray['aliyunVideoImageUrl'], $metaValueArray['aliyunVideoExpiresAt'], $metaValueArray['previewImageFileId'] ?? null);
     }
 
     public function getAliyunVideoUrl()
@@ -91,7 +94,7 @@ class ProjectVideoMeta extends ProjectMeta
     public function setAliyunVideoUrl(?string $aliyunVideoUrl)
     {
         $metaValueArray = json_decode($this->getMetaValue(), true);
-        return $this->setVideoMeta($metaValueArray['aliyunVideoId'], $aliyunVideoUrl, $metaValueArray['aliyunVideoImageUrl'], $metaValueArray['aliyunVideoExpiresAt']);
+        return $this->setVideoMeta($metaValueArray['aliyunVideoId'], $aliyunVideoUrl, $metaValueArray['aliyunVideoImageUrl'], $metaValueArray['aliyunVideoExpiresAt'], $metaValueArray['previewImageFileId'] ?? null);
     }
 
     public function getAliyunVideoImageUrl()
@@ -103,7 +106,7 @@ class ProjectVideoMeta extends ProjectMeta
     public function setAliyunVideoImageUrl(?string $aliyunVideoImageUrl)
     {
         $metaValueArray = json_decode($this->getMetaValue(), true);
-        return $this->setVideoMeta($metaValueArray['aliyunVideoId'], $metaValueArray['aliyunVideoUrl'], $aliyunVideoImageUrl, $metaValueArray['aliyunVideoExpiresAt']);
+        return $this->setVideoMeta($metaValueArray['aliyunVideoId'], $metaValueArray['aliyunVideoUrl'], $aliyunVideoImageUrl, $metaValueArray['aliyunVideoExpiresAt'], $metaValueArray['previewImageFileId'] ?? null);
     }
 
     public function getAliyunVideoExpiresAt()
@@ -115,7 +118,19 @@ class ProjectVideoMeta extends ProjectMeta
     public function setAliyunVideoExpiresAt(?string $aliyunVideoExpiresAt)
     {
         $metaValueArray = json_decode($this->getMetaValue(), true);
-        return $this->setVideoMeta($metaValueArray['aliyunVideoId'], $metaValueArray['aliyunVideoUrl'], $metaValueArray['aliyunVideoImageUrl'], $aliyunVideoExpiresAt);
+        return $this->setVideoMeta($metaValueArray['aliyunVideoId'], $metaValueArray['aliyunVideoUrl'], $metaValueArray['aliyunVideoImageUrl'], $aliyunVideoExpiresAt, $metaValueArray['previewImageFileId'] ?? null);
+    }
+
+    public function getPreviewImageFileId()
+    {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $metaValueArray['previewImageFileId'] ?? null;
+    }
+
+    public function setPreviewImageFileId(?string $previewImageFileId)
+    {
+        $metaValueArray = json_decode($this->getMetaValue(), true);
+        return $this->setVideoMeta($metaValueArray['aliyunVideoId'], $metaValueArray['aliyunVideoUrl'], $metaValueArray['aliyunVideoImageUrl'], $metaValueArray['aliyunVideoExpiresAt'], $previewImageFileId);
     }
 
     /**
@@ -171,6 +186,7 @@ class ProjectVideoMeta extends ProjectMeta
             'aliyunVideoUrl' => $this->getAliyunVideoUrl(),
             'aliyunVideoImageUrl' => $this->getAliyunVideoImageUrl(),
             'aliyunVideoExpiresAt' => $this->getAliyunVideoExpiresAt(),
+            'previewImageFileId' => $this->getPreviewImageFileId(),
         ];
     }
 }
