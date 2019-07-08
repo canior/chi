@@ -125,6 +125,13 @@ class Category implements Dao
      */
     private $cateIdentityId;
 
+    /**
+     * @var File|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\File", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $previewImageFile;
+
     public function __construct()
     {
         $this->setShowFreeZone(0);
@@ -425,7 +432,7 @@ class Category implements Dao
     /**
      * @param string $shortDescription
      */
-    public function setShortDescription(string $shortDescription): void
+    public function setShortDescription(?string $shortDescription): void
     {
         $this->shortDescription = $shortDescription;
     }
@@ -444,6 +451,22 @@ class Category implements Dao
     public function setCateIdentityId(int $cateIdentityId): void
     {
         $this->cateIdentityId = $cateIdentityId;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getPreviewImageFile(): ?File
+    {
+        return $this->previewImageFile;
+    }
+
+    /**
+     * @param File|null $previewImageFile
+     */
+    public function setPreviewImageFile(?File $previewImageFile): void
+    {
+        $this->previewImageFile = $previewImageFile;
     }
 
     public function getComplexArray(?User $lookUser = null)

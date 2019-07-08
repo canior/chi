@@ -90,6 +90,15 @@ class CategoryController extends BackendController
                 }
             }
 
+            $previewImageFileId = $request->request->get('category')['previewImageFile'] ?? null;
+            $previewImageFile = null;
+            if (!empty($previewImageFileId)) {
+                $previewImageFile = $fileRepository->find($previewImageFileId);
+                if (empty($previewImageFile)) {
+                    return new Response('页面错误', 500);
+                }
+            }
+
             if (!empty($parentId)) {
                 $parentCategory = $categoryRepository->find($parentId);
                 if (empty($parentCategory)) {
@@ -98,10 +107,15 @@ class CategoryController extends BackendController
                 $category->setParentCategory($parentCategory);
             }
             $category->setIconFile($iconFile);
+            $category->setPreviewImageFile($previewImageFile);
             $this->entityPersist($category);
 
             $this->addFlash('notice', '添加成功');
-            return $this->redirectToRoute('category_index');
+            if (!empty($parentId)) {
+                return $this->redirectToRoute('category_second_index', ['parentId' => $parentId]);
+            } else {
+                return $this->redirectToRoute('category_index');
+            }
         }
 
         if (!empty($parentId)) {
@@ -148,6 +162,18 @@ class CategoryController extends BackendController
 
             $form->get('iconFile')->setData($fileArray);
         }
+        $previewImageFile = $category->getPreviewImageFile();
+        if ($previewImageFile) {
+            $filePreviewArray[$previewImageFile->getId()] = [
+                'id' => $previewImageFile->getId(),
+                'fileId' => $previewImageFile->getId(),
+                'priority' => 0,
+                'name' => $previewImageFile->getName(),
+                'size' => $previewImageFile->getSize()
+            ];
+
+            $form->get('previewImageFile')->setData($filePreviewArray);
+        }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $iconFileId = $request->request->get('category')['iconFile'] ?? null;
@@ -163,7 +189,17 @@ class CategoryController extends BackendController
                 }
             }
 
+            $previewImageFileId = $request->request->get('category')['previewImageFile'] ?? null;
+            $previewImageFile = null;
+            if (!empty($previewImageFileId)) {
+                $previewImageFile = $fileRepository->find($previewImageFileId);
+                if (empty($previewImageFile)) {
+                    return new Response('页面错误', 500);
+                }
+            }
+
             $category->setIconFile($iconFile);
+            $category->setPreviewImageFile($previewImageFile);
             $this->entityPersist($category);
             $this->addFlash('notice', '修改成功');
             $routeParam = ['id' => $category->getId()];
