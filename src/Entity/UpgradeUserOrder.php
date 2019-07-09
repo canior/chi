@@ -404,7 +404,7 @@ class UpgradeUserOrder implements Dao
         /* 分钱给合伙人推荐人 */
         $partnerUser = $this->getUser()->getParentUser();
         if ($partnerUser) {
-            $rewards = Subject::$subjectRewards[$this->getGroupUserOrder()->getProduct()->getCourse()->getSubject()][$partnerUser->getBianxianUserLevel()];
+            $rewards = Subject::$subjectRewards[$this->getGroupUserOrder()->getProduct()->getCourse()->getSubject()][$partnerUser->getBianxianUserLevel()] ?? 0;
             if ($rewards > 0 and $this->isApproved()) {
                 $memo = '合伙人推荐' . $this->getUser()->getDisplayName() . '系统课成功';
                 $this->setRecommanderUser($partnerUser);
@@ -417,7 +417,7 @@ class UpgradeUserOrder implements Dao
         /* 分钱给最后一个思维课讲师 */
         $teacher = $this->getUser()->getTeacherRecommanderUser();
         if ($teacher) {
-            $rewards = Subject::$subjectRewards[$this->getGroupUserOrder()->getProduct()->getCourse()->getSubject()]['THINKING_TEACHER'];
+            $rewards = Subject::$subjectRewards[$this->getGroupUserOrder()->getProduct()->getCourse()->getSubject()]['THINKING_TEACHER'] ?? 0;
             if ($this->isApproved()) {
                 $memo = '学员' . $this->getUser()->getDisplayName() . '升级系统课成功';
                 $this->setPartnerTeacherUser($teacher);
