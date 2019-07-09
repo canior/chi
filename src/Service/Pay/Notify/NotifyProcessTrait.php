@@ -108,6 +108,9 @@ trait NotifyProcessTrait
                     $message->setTitle("学员升级");
                     CommonUtil::entityPersist($message);
                 }
+
+                //补桌号
+                OfflineTableNo::supplySystemTableNo($groupUserOrder->getUser());
             }
         }
 
