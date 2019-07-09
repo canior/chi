@@ -1237,6 +1237,13 @@ class GroupUserOrder implements Dao
         }
         $appStatus = $this->getAppStatus();
 
+        $isLevelUpTradingCourse = false;
+        if ($this->getProduct()->isCourseProduct() && !$this->getProduct()->getCourse()->isOnline() &&
+            $this->getProduct()->getCourse()->isTradingSubject() && $this->getProduct()->getPrice() == MoneyUtil::tradeSpecialPrice()
+        ) {
+            $isLevelUpTradingCourse = true;
+        }
+
         return [
             'id' => $this->getId(),
             'groupOrderId' => $this->isGroupOrder() ? $this->getGroupOrder()->getId() : null,
@@ -1266,6 +1273,7 @@ class GroupUserOrder implements Dao
             'checkStatus' =>$this->getCheckStatus(),
             'appStatus'=>$appStatus['appStatus'],
             'appStatusText'=>$appStatus['appStatusText'],
+            'isLevelUpTradingCourse' => $isLevelUpTradingCourse,
         ];
     }
 
