@@ -415,10 +415,28 @@ class Category implements Dao
     public function getCategoryLookNum()
     {
         $res = 0;
-        foreach ($this->getCourses() as $course) {
+        foreach ($this->getActiveCourses() as $course) {
             $res += $course->getLookNum();
         }
         return $res;
+    }
+
+    /**
+     * 获取发布的课程
+     * @return ArrayCollection
+     * @author zxqc2018
+     */
+    public function getActiveCourses()
+    {
+        $courses = new ArrayCollection();
+        if (!$this->getCourses()->isEmpty()) {
+            foreach ($this->getCourses() as $course) {
+                if ($course->getProduct()->isActive()) {
+                    $courses->add($course);
+                }
+            }
+        }
+        return $courses;
     }
 
     /**
@@ -471,11 +489,6 @@ class Category implements Dao
 
     public function getComplexArray(?User $lookUser = null)
     {
-        /**
-         * @var Course $firstCourse
-         */
-        $firstCourse = CommonUtil::getInsideValue($this, 'courses.first');
-
         $courses = [];
         $sort = [];
         $categoryTags = [];
@@ -484,7 +497,7 @@ class Category implements Dao
             $categoryPermission = false;
         }
 
-        foreach ($this->getCourses() as $key => $course) {
+        foreach ($this->getActiveCourses() as $key => $course) {
             $sort[$key] = $course->getProduct()->getPriority();
             $tmpArr = $course->getArray();
             $tmpArr['priority'] = $course->getProduct()->getPriority();
@@ -514,7 +527,7 @@ class Category implements Dao
             'teacher' => CommonUtil::getInsideValue($firstCourseArr, 'teacher', []),
             'mainImageId' => CommonUtil::getInsideValue($firstCourseArr, 'courseImages.0.fileId', 0),
             'lookNum' => $this->getCategoryLookNum(),
-            'courseNum' => $this->getCourses()->count(),
+            'courseNum' => $this->getActiveCourses()->count(),
             'isSingleCourse' => $this->isSingleCourse(),
             'courses' => $courses,
             'mainCourseCreateDate' => CommonUtil::getInsideValue($firstCourseArr, 'courseCreateTimeLine', ''),
