@@ -1101,6 +1101,20 @@ class GroupUserOrder implements Dao
     }
 
     /**
+     *  根据身份取得桌号
+     * @return string
+     * @author zxqc2018
+     */
+    public function getTableNoCheckIdentity()
+    {
+        $tableNo = '0';
+        if ($this->getUser()->isCompletedPersonalInfo() && $this->getUser()->isSystemSubjectPrivilege(false)) {
+            $tableNo = $this->tableNo;
+        }
+        return $tableNo;
+    }
+
+    /**
      * @param string $tableNo
      */
     public function setTableNo(string $tableNo): void
@@ -1327,7 +1341,7 @@ class GroupUserOrder implements Dao
         if( $product->isCourseProduct() && !$course->isOnline()){
             if( $course->isThinkingSubject() || $course->isPrivateDirectSubject()){
                 // 思维课 todo
-                if( $course->getPrice() > 0.1 ){
+                if( $course->getPrice() > MoneyUtil::thinkingGeneratePrice() ){
                     $showTable = true;
                 }
             }else if($course->isSystemType()){

@@ -10,6 +10,7 @@ namespace App\Service\Order;
 
 
 use App\Entity\GroupUserOrder;
+use App\Entity\User;
 use App\Service\Util\CommonUtil;
 use App\Service\Util\FactoryUtil;
 use App\Service\Config\ConfigParams;
@@ -106,5 +107,38 @@ class OfflineTableNo
         $table_no = $arr[0]['no'] ??  0;
 
         return $table_no;
+    }
+
+    /**
+     * 补发用户的桌号
+     * @param User $user
+     * @return bool
+     * @author zxqc2018
+     */
+    public static function supplySystemTableNo(User $user)
+    {
+        $res = false;
+
+        if ($user->isSystemSubjectPrivilege()) {
+            $groupUserOrderRepository = FactoryUtil::groupUserOrderRepository();
+            //是否有报名了但是没有分配桌号的
+            $notDistributeOrders = $groupUserOrderRepository->findBy(['user' => $user, 'paymentStatus' => GroupUserOrder::PAID]);
+            if (!empty($notDistributeOrders)) {
+                foreach ($notDistributeOrders as $notDistributeOrder) {
+                    if (!empty($notDistributeOrder->getPaymentTime()) && $notDistributeOrder->getProduct()->isCourseProduct() &&
+                        !$notDistributeOrder->getProduct()->getCourse()->isOnline() && $notDistributeOrder->getProduct()->getCourse()->isSystemSubject() &&
+                        empty($notDistributeOrder->getTableNo())) {
+                        $notDistributeOrder->setTableNo((int)OfflineTableNo::getUserTable($notDistributeOrder));
+                        $notDistributeOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
+                        $notDistributeOrder->setCheckAt(time());
+                        CommonUtil::entityPersist($notDistributeOrder);
+                        //todo sms通知
+                        $res = true;
+                    }
+                }
+            }
+        }
+
+        return $res;
     }
 }

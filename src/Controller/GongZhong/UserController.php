@@ -15,6 +15,7 @@ use App\Entity\User;
 use App\Entity\UserStatistics;
 use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
+use App\Service\Order\OfflineTableNo;
 use App\Service\Util\CommonUtil;
 use App\Service\Util\FactoryUtil;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -253,6 +254,9 @@ class UserController extends GongZhongBaseController
         }
 
         CommonUtil::entityPersist($user);
+
+        //实名后补上桌号
+        OfflineTableNo::supplySystemTableNo($user);
 
         return $requestProcess->toJsonResponse(['user' => CommonUtil::obj2Array($user)]);
     }

@@ -83,6 +83,12 @@ class Course implements Dao
 
     /**
      * @var string
+     * @ORM\Column(type="string", length=255)
+     */
+    private $city;
+
+    /**
+     * @var string
      * @ORM\Column(type="text")
      */
     private $address;
@@ -1150,6 +1156,21 @@ class Course implements Dao
     }
 
     /**
+     * @return string
+     */
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param string $city
+     */
+    public function setCity(?string $city): void
+    {
+        $this->city = $city;
+    }
+    /**
      * @return array
      */
     public function getArray() : array {
@@ -1177,6 +1198,7 @@ class Course implements Dao
             'startDate' =>  $this->getStartDate() ? date(self::DATE_FORMAT, $this->getStartDate()) : '',
             'endDate' =>  $this->getEndDate() ? date(self::DATE_FORMAT, $this->getEndDate()) : '',
             'address' => $this->getAddress() ? $this->getAddress() : '-',
+            'city' => $this->getCity(),
             'region' => $this->getRegion() ? $this->getRegion()->getArray() : null,
             'teacher' => $this->getTeacher()->getArray(),
             'courseImages' => $courseImageArray,

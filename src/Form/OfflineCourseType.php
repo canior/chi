@@ -64,6 +64,10 @@ class OfflineCourseType extends AbstractType
                 'placeholder' => ['year' => '年', 'month' => '月', 'day' => '日'],
                 'required' => true
             ])
+            ->add('city', TextType::class, [
+                'label' => '开课城市 (必填)',
+                'required' => true
+            ])
             ->add('address', TextType::class, [
                 'label' => '开课地址 (必填)',
                 'required' => true

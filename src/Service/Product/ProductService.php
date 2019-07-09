@@ -136,6 +136,10 @@ class ProductService
                             FactoryUtil::shareSourceProcess()->addShareSourceUser($requestProcess['shareSourceId'], $user);
                         }
                     }
+                    if ($showType == 'app') {
+                        $shareSourceResult = FactoryUtil::shareSourceProcess()->createShareSource([ShareSource::APP], ShareSource::PRODUCT, $user, $product, $url);
+                        $data['shareSources'] = $shareSourceResult->getData();
+                    }
                 }
             }
 

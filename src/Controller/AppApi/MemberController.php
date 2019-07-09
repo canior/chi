@@ -15,6 +15,7 @@ use App\Entity\ProductReviewImage;
 use App\Repository\FileRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductReviewRepository;
+use App\Service\Order\OfflineTableNo;
 use App\Service\Product\OfflineCourseService;
 use App\Service\Util\FactoryUtil;
 use FOS\UserBundle\Model\UserManagerInterface;
@@ -279,6 +280,8 @@ class MemberController extends AppApiBaseController
             return new JsonResponse(["error" => $e->getMessage()], 500);
         }
 
+        //实名后补上桌号
+        OfflineTableNo::supplySystemTableNo($user);
         // 返回
         return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();
     }
