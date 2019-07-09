@@ -137,7 +137,7 @@ class ProductService
                         }
                     }
                     if ($showType == 'app') {
-                        $shareSourceResult = FactoryUtil::shareSourceProcess()->createShareSource([ShareSource::APP], ShareSource::PRODUCT, $user, $product, $url);
+                        $shareSourceResult = FactoryUtil::shareSourceProcess()->createShareSource([ShareSource::GZH], ShareSource::PRODUCT, $user, $product, $url);
                         $data['shareSources'] = $shareSourceResult->getData();
                     }
                 }

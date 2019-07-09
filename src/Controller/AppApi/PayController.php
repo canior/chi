@@ -188,7 +188,11 @@ class PayController extends AppApiBaseController
                 }
             } else if ($course->isTradingSubject()) {
                 if ($user->isCompletedPersonalInfo()) {
-                    $data['nextPageType'] = 4;
+                    if ($course->getPrice() == MoneyUtil::tradeSpecialPrice()) {
+                        $data['nextPageType'] = 5;
+                    } else {
+                        $data['nextPageType'] = 4;
+                    }
                 }
             }
         }
