@@ -69,8 +69,8 @@ class OfflineCourseType extends AbstractType
                 'required' => true
             ])
             ->add('address', TextType::class, [
-                'label' => '开课地址 (必填)',
-                'required' => true
+                'label' => '开课地址 (选填)',
+                'required' => false
             ])
             ->add('addressImageFile', DropzoneType::class, [
                 'label' => '地址定位 (请把定位置于图片中间)',
