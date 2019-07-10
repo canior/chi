@@ -7,6 +7,7 @@ twig:
     form_themes:
         - "bootstrap_3_layout.html.twig"
         - "form/fields.html.twig"
+        - "form/ueditor.html.twig"
 
     # The following were added in Symfony 2.7.
     date:

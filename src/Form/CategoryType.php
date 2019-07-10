@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Form\Type\UeditorType;
 
 class CategoryType extends AbstractType
 {
@@ -38,10 +39,7 @@ class CategoryType extends AbstractType
                 'data_class' => null,
                 'mapped' => false,
             ])
-            ->add('shortDescription', TextareaType::class, [
-                'label' => '分类描述',
-                'required' => false,
-            ])
+            
             ->add('aliyunVideoId', TextType::class, [
                 'label' => '阿里云视频ID',
                 'required' => false,
@@ -49,6 +47,10 @@ class CategoryType extends AbstractType
             ->add('priority', IntegerType::class, [
                 'label' => '排序优先级（数字越大越靠前）',
                 'required' => true,
+            ])
+            ->add('shortDescription', UeditorType::class, [
+                'label' => '分类描述',
+                'required' => false,
             ])
         ;
     }
