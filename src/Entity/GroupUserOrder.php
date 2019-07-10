@@ -1513,7 +1513,7 @@ class GroupUserOrder implements Dao
                     $log[] = ['title'=>'等待活动开始','time'=>date('m-d H:i',time())];
                 }
 
-                if( $this->getTableNo() ){
+                if(  $this->getTableNo() && $this->getShowTable()['showTable'] ){
                     $log[] = ['title'=>'生成坐席号：'.$this->getTableNo().'号','time'=>date('m-d H:i',strtotime($this->getCreatedAt()))];
                 }
                 if( $this->getTableNo() ){
