@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class EditGroupUserOrderType extends AbstractType
 {
@@ -22,6 +23,10 @@ class EditGroupUserOrderType extends AbstractType
                 'label' => '支付状态',
                 'mapped' => false,
                 'choices' => array_flip(GroupUserOrder::$paymentStatuses),
+            ])
+            ->add('tableNo', TextType::class, [
+                'label' => '桌号',
+                'required' => false
             ])
         ;
     }
