@@ -1,14 +1,13 @@
 {% block ueditor_widget %} 
     {% spaceless %} 
     	<br>
-        <textarea id="shortDescription" name="category[shortDescription]"></textarea>
+        <textarea id="{{name}}" style="height: 200px;" name="{{ full_name }}">{{data}}</textarea>
     {% endspaceless %}
     <script type="text/javascript" charset="utf-8" src="{{ asset('ueditor/ueditor.config.js') }}"></script>
 	<script type="text/javascript" charset="utf-8" src="{{ asset('ueditor/ueditor.all.min.js') }}"> </script>
 	<script type="text/javascript" charset="utf-8" src="{{ asset('ueditor/lang/zh-cn/zh-cn.js') }}"></script>
-
 	<script type="text/javascript">
-	    var ue = UE.getEditor('shortDescription', {
+	    var ue = UE.getEditor('{{name}}', {
 	        autoHeightEnabled: false,
 	    });
 	</script>
