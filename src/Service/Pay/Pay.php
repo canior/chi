@@ -24,6 +24,7 @@ class Pay
 {
     const ALI_PAY_DRIVER = 'alipay';
     const WX_PAY_DRIVER = 'wechat';
+    const YINLIAN_PAY_DRIVER = 'yinlian';
 
     const APP_GATEWAY = 'app';
     const BILL_GATEWAY = 'bill';
@@ -118,6 +119,19 @@ class Pay
                 'notify_url'  => ConfigParams::getParamWithController(ConfigParams::JQ_APP_ALIPAY_NOTIFY_URL),
                 // 网页支付回跳地址
                 'return_url'  => '',
+            ],
+            // 银联支付参数
+            'yinlian' => [
+                'url'=>ConfigParams::getParamWithController(ConfigParams::JQ_APP_YINLIAN_URL),
+                /*支付请求接口地址，无需更改 */
+                'mchId'=>ConfigParams::getParamWithController(ConfigParams::JQ_APP_YINLIAN_MCHID),
+                /* 测试商户号，商户正式上线时需更改为自己的 */
+                'key'=>ConfigParams::getParamWithController(ConfigParams::JQ_APP_YINLIAN_KEY),
+                /* 测试密钥，商户需更改为自己的*/
+                'version'=>'2.0',
+                'sign_type'=>'MD5',
+                'notify_url'  => ConfigParams::getParamWithController(ConfigParams::JQ_APP_YINLIAN_NOTIFY_URL),
+                'sub_appid'  => ConfigParams::getParamWithController(ConfigParams::JQ_APP_YINLIAN_SUB_APPID),
             ],
         ];
     }

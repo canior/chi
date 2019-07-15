@@ -96,6 +96,17 @@ class FactoryUtil
         return self::pay()->driver(Pay::WX_PAY_DRIVER)->gateway($gateway);
     }
 
+    /**
+     * 公众号 银联支付网关获取
+     * @param $gateway
+     * @return \App\Service\Pay\Contracts\GatewayInterface
+     * @author zxqc2018
+     */
+    public static function yinlianPayDriver($gateway)
+    {
+        return self::pay()->driver(Pay::YINLIAN_PAY_DRIVER)->gateway($gateway);
+    }
+
 
     /**
      * 公众号 微信支付网关获取
@@ -146,6 +157,16 @@ class FactoryUtil
     public static function wxPayGzhNotify()
     {
         return self::pay(ConfigParams::JQ_GZH_WX_ID)->driver(Pay::WX_PAY_DRIVER)->notify();
+    }
+
+    /**
+     * 银联异步通知服务类
+     * @return NotifyInterface|GatewayInterface
+     * @author zxqc2018
+     */
+    public static function yinlianPayNotify()
+    {
+        return self::pay(ConfigParams::JQ_APP_YINLIAN_ID)->driver(Pay::YINLIAN_PAY_DRIVER)->notify();
     }
 
     /**

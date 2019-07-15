@@ -35,6 +35,15 @@ class ConfigParams
     const JQ_GZH_WX_ID = 'jq_gzh_wx_id';
     const JQ_GZH_WX_SECRET = 'jq_gzh_wx_secret';
 
+
+    //银联
+    const JQ_APP_YINLIAN_URL = 'jq_yinlian_url';
+    const JQ_APP_YINLIAN_MCHID = 'jq_yinlian_cehid';
+    const JQ_APP_YINLIAN_KEY = 'jq_yinlian_key';
+    const JQ_APP_YINLIAN_NOTIFY_URL = 'jq_yinlian_notify_url';
+    const JQ_APP_YINLIAN_SUB_APPID = 'jq_yinlian_sub_appid';
+    const JQ_APP_YINLIAN_ID = 'jq_app_yinlian_id';
+
     //支付宝 金秋智库 app_id
     const JQ_APP_ALIPAY_ID = 'jq_app_alipay_id';
     //支付宝 金秋智库 商户私钥

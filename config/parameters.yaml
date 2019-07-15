@@ -28,3 +28,11 @@ parameters:
 
 
 
+  ##金秋app 银联
+  jq_yinlian_url: '%env(JQ_APP_YINLIAN_URL)%'
+  jq_yinlian_cehid: '%env(JQ_APP_YINLIAN_MCHID)%'
+  jq_yinlian_key: '%env(JQ_APP_YINLIAN_KEY)%'
+  jq_yinlian_notify_url: '%env(JQ_APP_YINLIAN_NOTIFY_URL)%'
+  jq_yinlian_sub_appid: '%env(JQ_APP_YINLIAN_SUB_APPID)%'
+  jq_app_yinlian_id: '%env(JQ_APP_YINLIAN_ID)%'
+  

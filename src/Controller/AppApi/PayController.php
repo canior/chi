@@ -114,6 +114,18 @@ class PayController extends AppApiBaseController
                 $result = FactoryUtil::aliPayDriver(Pay::APP_GATEWAY)->apply($options);
                 $prePayInfo['payV2Str'] = http_build_query($result);
                 break;
+            case GroupUserOrder::PAYMENT_CHANNEL_YINLIAN:
+                // 支付参数
+                $options = [
+                    'out_trade_no' => $outTradeNo, // 商户订单号
+                    'total_amount' => $groupUserOrder->getTotal() * 100, // 订单金额，**单位：分**
+                    'body'      => $body, // 支付订单描述
+                    'spbill_create_ip'      => CommonUtil::getUserIp(), // IP
+                    'sub_openid' => $user->getWxOpenId(),
+                ];
+                $result = FactoryUtil::yinlianPayDriver(Pay::APP_GATEWAY)->apply($options);
+                $prePayInfo = $result;
+                break;
             case GroupUserOrder::PAYMENT_CHANNEL_WX:
                 // 支付参数
                 $options = [
