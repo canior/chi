@@ -83,7 +83,7 @@ class PayController extends GongZhongBaseController
     public function payAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository)
     {
         $requestProcess = $this->processRequest($request, [
-            'groupUserOrderId'
+            'groupUserOrderId','type'
         ], ['groupUserOrderId']);
         $user = $this->getAppUser();
 
@@ -119,21 +119,40 @@ class PayController extends GongZhongBaseController
 
         $groupUserOrder->setPaymentChannel(GroupUserOrder::PAYMENT_CHANNEL_WX_GZH);
         $outTradeNo = $groupUserOrder->makeTraceNo();
-        $options = [
-            'out_trade_no'     => $outTradeNo, // 订单号
-            'total_fee'        => $groupUserOrder->getTotal() * 100, // 订单金额，**单位：分**
-            'body'             => $body, // 订单描述
-            'spbill_create_ip' => CommonUtil::getUserIp(), // 支付人的 IP
-            'openid'           => $openId, // 支付人的 openID
-        ];
 
-        $prePayInfo = FactoryUtil::wxPayGzhDriver(Pay::MP_GATEWAY)->apply($options);
+        switch ($requestProcess['type']) {
+            case GroupUserOrder::PAYMENT_CHANNEL_YINLIAN:
+                // 支付参数
+                $options = [
+                    'out_trade_no' => $outTradeNo, // 商户订单号
+                    'total_amount' => $groupUserOrder->getTotal() * 100, // 订单金额，**单位：分**
+                    'body'      => $body, // 支付订单描述
+                    'spbill_create_ip'      => CommonUtil::getUserIp(), // IP
+                    'sub_openid' => $openId,
+                ];
+                $result = FactoryUtil::yinlianPayDriver(Pay::APP_GATEWAY)->apply($options);
+                if ( !isset($result['sign']['pay_info']) ) {
+                    $requestProcess->throwErrorException(ErrorCode::ERROR_YINLIAN_PAY, []);
+                }
+                $prePayInfo = $result['sign']['pay_info'];
+                break;
+            case GroupUserOrder::PAYMENT_CHANNEL_WX:
+                $options = [
+                    'out_trade_no'     => $outTradeNo, // 订单号
+                    'total_fee'        => $groupUserOrder->getTotal() * 100, // 订单金额，**单位：分**
+                    'body'             => $body, // 订单描述
+                    'spbill_create_ip' => CommonUtil::getUserIp(), // 支付人的 IP
+                    'openid'           => $openId, // 支付人的 openID
+                ];
 
-        if (empty($prePayInfo['prepayid'])) {
-            $requestProcess->throwErrorException(ErrorCode::ERROR_WX_PAY_PREPAY_ID, []);
+                $prePayInfo = FactoryUtil::wxPayDriver(Pay::MP_GATEWAY)->apply($options);
+                if (empty($prePayInfo['prepayid'])) {
+                    $requestProcess->throwErrorException(ErrorCode::ERROR_WX_PAY_PREPAY_ID, []);
+                }
+                $prePayId = $prePayInfo['prepayid'];
+                $groupUserOrder->setPrePayId($prePayId);
+                break;
         }
-        $prePayId = $prePayInfo['prepayid'];
-        $groupUserOrder->setPrePayId($prePayId);
 
         $groupUserOrder->setOutTradeNo($outTradeNo);
         $this->entityPersist($groupUserOrder);

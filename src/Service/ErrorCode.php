@@ -86,6 +86,7 @@ class ErrorCode
     const ERROR_COURSE_ALREADY_PAY = 16018;
     const ERROR_COURSE_CATEGORY_ALREADY_PAY = 16019;
     const ERROR_GZH_PAY_ID_NOT_EXISTS = 16020;
+    const ERROR_YINLIAN_PAY = 16021;
     /**
      * 错误消息集合
      * @return array
@@ -152,6 +153,7 @@ class ErrorCode
             self::ERROR_PHONE_HAD_REGISTER => '手机号已经存在',
             self::ERROR_PLOCE_LOGIN_BY_PHONE => '请用手机号登陆后再绑定微信',
             self::ERROR_UNIONID_HAD_REGISTER => '微信已经绑定其他手机号',
+            self::ERROR_YINLIAN_PAY => '银联支付发生错误',
         ];
     }
 
