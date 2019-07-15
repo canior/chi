@@ -76,10 +76,13 @@ abstract class Yinlian extends GatewayInterface
      */
     public function verify($data, $sign = null, $sync = false)
     {
-        // dump(simplexml_load_string($data));die;
-        $data = Utils::fromXml($data);
-        // $sign = is_null($sign) ? $data['sign'] : $sign;
-        return $data;
+        $resdata = false;
+        $this->resHandler->setContent($data);
+        $this->resHandler->setKey($this->config['key']);
+        if($this->resHandler->isTenpaySign()){
+            $resdata = Utils::fromXml($data);
+        }
+        return $resdata;
     }
 
 

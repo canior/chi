@@ -49,6 +49,8 @@ class NotifyProcess
             $this->processHandle = FactoryUtil::aliPayNotify();
         } else if (strpos($this->notifyRaw, ConfigParams::getParamWithController(ConfigParams::JQ_GZH_WX_ID)) !== false) {
             $this->processHandle = FactoryUtil::wxPayGzhNotify();
+        }  else if (strpos($this->notifyRaw, ConfigParams::getParamWithController(ConfigParams::JQ_APP_YINLIAN_MCHID)) !== false) {
+            $this->processHandle = FactoryUtil::yinlianPayNotify();
         }  else {
             CommonUtil::resultData()->throwErrorException(ErrorCode::ERROR_NOTIFY_RAW_NOT_ALLOW, []);
         }

@@ -37,12 +37,10 @@ class YinlianNotify extends AbstractYinlianNotify
      */
     public function notifyVerify(string $notifyRaw): ResultData
     {
-        // echo 1555;die;
         $res = CommonUtil::resultData();
         $data = $this->verify($notifyRaw);
 
-
-        if (empty($data)) {
+        if (!$data){
             $res->throwErrorException(ErrorCode::ERROR_NOTIFY_VERIFY_SIGN, []);
         }
 
