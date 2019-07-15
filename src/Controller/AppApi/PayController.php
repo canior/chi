@@ -124,7 +124,7 @@ class PayController extends AppApiBaseController
                     'sub_openid' => $user->getWxOpenId(),
                 ];
                 $result = FactoryUtil::yinlianPayDriver(Pay::APP_GATEWAY)->apply($options);
-                $prePayInfo = $result;
+                $prePayInfo = isset($result['sign']['pay_info'])?$result['sign']['pay_info']:[];
                 break;
             case GroupUserOrder::PAYMENT_CHANNEL_WX:
                 // 支付参数
