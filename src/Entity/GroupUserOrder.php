@@ -231,6 +231,9 @@ class GroupUserOrder implements Dao
      */
     private $reason;
 
+    // 直通车ID
+    public $tradingProductId = null;
+
     public function __construct() {
         $this->upgradeUserOrders = new ArrayCollection();
         $this->upgradeOrderCoupons = new ArrayCollection();
@@ -1375,15 +1378,9 @@ class GroupUserOrder implements Dao
                     $showTable = false;
                 }
 
-                //查找直通车 不显示桌号
-                $tradingProductId = null;
-                $tradingCourse = FactoryUtil::courseRepository()->findSpecTradingCourse(MoneyUtil::tradeSpecialPrice());
-                if (!empty($tradingCourse)) {
-                    $tradingProductId = $tradingCourse->getProduct()->getId();
-                }
-                
+                //直通车不显示桌号                
                 $isTradingProductId = false;
-                if( $product->getId() == $tradingProductId ){
+                if( $product->getId() == $this->getTradingProductId() ){
                     $showTable = false;
                 } 
             }
@@ -1432,15 +1429,9 @@ class GroupUserOrder implements Dao
             }
         }
 
-        //查找直通车课程id
-        $tradingProductId = null;
-        $tradingCourse = FactoryUtil::courseRepository()->findSpecTradingCourse(MoneyUtil::tradeSpecialPrice());
-        if (!empty($tradingCourse)) {
-            $tradingProductId = $tradingCourse->getProduct()->getId();
-        }
-        
+        //直通车
         $isTradingProductId = false;
-        if( $product->getId() == $tradingProductId ){
+        if( $product->getId() == $this->getTradingProductId() ){
             $isTradingProductId = true;
         }  
 
@@ -1554,5 +1545,18 @@ class GroupUserOrder implements Dao
         }
 
         return $res;
+    }
+
+    /**
+     * 查找直通车ID
+     */
+    public function getTradingProductId(){
+        if( $this->tradingProductId == null ){
+            $tradingCourse = FactoryUtil::courseRepository()->findSpecTradingCourse(MoneyUtil::tradeSpecialPrice());
+            if (!empty($tradingCourse)) {
+                $this->tradingProductId = $tradingCourse->getProduct()->getId();
+            }
+        }
+        return $this->tradingProductId;
     }
 }
