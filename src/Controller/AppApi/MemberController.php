@@ -875,13 +875,14 @@ class MemberController extends AppApiBaseController
         }
 
 
-        $groupOrdersArray = [];
-
+        
         $groupOrdersQuery = $groupOrderRepository->findGroupOrdersForUserQuery($user->getId(), $groupOrderStatusArray);
         /**
          * @var GroupUserOrder[] $groupOrders
          */
         $groupOrders = $this->getPaginator()->paginate($groupOrdersQuery, $page,self::PAGE_LIMIT);
+
+        $groupOrdersArray = [];
         foreach ($groupOrders as $groupOrder) {
             $groupOrdersArray[] = $groupOrder->getArray();
         }
