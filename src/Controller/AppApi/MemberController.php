@@ -874,8 +874,6 @@ class MemberController extends AppApiBaseController
             $groupOrderStatusArray[] = $groupOrderStatus;
         }
 
-
-        
         $groupOrdersQuery = $groupOrderRepository->findGroupOrdersForUserQuery($user->getId(), $groupOrderStatusArray);
         /**
          * @var GroupUserOrder[] $groupOrders
