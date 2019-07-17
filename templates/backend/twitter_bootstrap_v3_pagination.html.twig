@@ -81,7 +81,7 @@
             <span>{{ 'label_next'|trans({}, 'KnpPaginatorBundle') }}&nbsp;&raquo;</span>
         </li>
     {% endif %}
-        <input type="text" name="page" id="pageNum" style="width: 50px;;padding: 5px 12px;">
+        <input type="number" name="page" id="pageNum" style="width: 50px;;padding: 5px 12px;">
         <button type="bnutton" onClick="jumpPageByNum()" style="width: 50px;;padding: 5px 2px;">跳转</button>
         <script type="text/javascript">
             function jumpPageByNum(){
