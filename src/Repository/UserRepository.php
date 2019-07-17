@@ -57,7 +57,7 @@ class UserRepository extends ServiceEntityRepository
      * @param null $createdAtEnd
      * @return QueryBuilder
      */
-    public function findUsersQueryBuilder($userId = null, $nameWildCard = null, $role = null, $userLevel = null, $bianxianUserLevel = null, $createdAtStart = null, $createdAtEnd = null)
+    public function findUsersQueryBuilder($userId = null, $nameWildCard = null, $role = null, $userLevel = null, $bianxianUserLevel = null, $createdAtStart = null, $createdAtEnd = null, $recommanderName = null)
     {
         /**
          * @var QueryBuilder $query
@@ -74,6 +74,11 @@ class UserRepository extends ServiceEntityRepository
         if ($role) {
             $query->andWhere('u.roles like :roles')
                 ->setParameter('roles', '%' . $role . '%');
+        }
+
+        if ($recommanderName) {
+            $query->andWhere('u.recommanderName like :recommanderName')
+                ->setParameter('recommanderName', '%' . $recommanderName . '%');
         }
 
         if ($userLevel) {

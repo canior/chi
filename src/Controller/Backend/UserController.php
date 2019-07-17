@@ -38,6 +38,7 @@ class UserController extends BackendController
             'form' => [
                 'userId' => $request->query->getInt('userId', null),
                 'username' => $request->query->get('username', null),
+                'recommanderName' => $request->query->get('recommanderName', null),
                 'userLevel' => $request->query->get('userLevel', null),
                 'bianxianUserLevel' => $request->query->get('bianxianUserLevel', null),
                 'role' => $request->query->get('role', null),
@@ -49,7 +50,7 @@ class UserController extends BackendController
             'userLevels' => UserLevel::$userLevelTextArray,
             'bianxianUserLevels' => BianxianUserLevel::$userLevelTextArray,
         ];
-        $data['data'] = $userRepository->findUsersQueryBuilder($data['form']['userId'], $data['form']['username'], $data['form']['role'], $data['form']['userLevel'], $data['form']['bianxianUserLevel'], $data['form']['createdAtStart'], $data['form']['createdAtEnd']);
+        $data['data'] = $userRepository->findUsersQueryBuilder($data['form']['userId'], $data['form']['username'], $data['form']['role'], $data['form']['userLevel'], $data['form']['bianxianUserLevel'], $data['form']['createdAtStart'], $data['form']['createdAtEnd'], $data['form']['recommanderName']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/user/index.html.twig', $data);
     }
