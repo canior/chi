@@ -19,6 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\UserPersonalType;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * @Route("/backend")
@@ -305,5 +307,70 @@ class UserController extends BackendController
         }
 
         return $this->redirectToRoute('user_index');
+    }
+
+    /**
+     * @Route("/user/export", name="user_export", methods="GET")
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @param Request $request
+     * @return Response
+     */
+    public function export(UserRepository $userRepository, Request $request): Response
+    {
+        $data = [
+            'title' => '用户管理',
+            'form' => [
+                'userId' => $request->query->getInt('userId', null),
+                'username' => $request->query->get('username', null),
+                'recommanderName' => $request->query->get('recommanderName', null),
+                'userLevel' => $request->query->get('userLevel', null),
+                'bianxianUserLevel' => $request->query->get('bianxianUserLevel', null),
+                'role' => $request->query->get('role', null),
+                'createdAtStart' => $request->query->get('createdAtStart', null),
+                'createdAtEnd' => $request->query->get('createdAtEnd', null),
+                'page' => $request->query->getInt('page', 1)
+            ],
+            'roles' => User::$roleTexts,
+            'userLevels' => UserLevel::$userLevelTextArray,
+            'bianxianUserLevels' => BianxianUserLevel::$userLevelTextArray,
+        ];
+        $exportData = $userRepository->findUsersQueryBuilder($data['form']['userId'], $data['form']['username'], $data['form']['role'], $data['form']['userLevel'], $data['form']['bianxianUserLevel'], $data['form']['createdAtStart'], $data['form']['createdAtEnd'], $data['form']['recommanderName'])->getQuery()->getResult();
+
+        $csvData = new ArrayCollection();
+        $csvData->add([]);
+        $csvData->add(['用户ID','昵称', '姓名', '电话', '会员等级', '变现等级', '推荐人', '用户角色', '上次登录时间', '创建时间']);
+
+        foreach ($exportData as $User) {
+            $user = $User['user'];
+            $line = [
+                $user->getId(),
+                $user->getNickname(),
+                $user->getName(),
+                $user->getPhone(),
+                $user->getUserLevel() ? UserLevel::$userLevelTextArray[$user->getUserLevel()] : null,
+                $user->getBianxianUserLevel() ? BianxianUserLevel::$userLevelTextArray[$user->getBianxianUserLevel()] : null,
+                $user->isRecommanderVerified()?$user->getParentUser()->getNickname():$user->getRecommanderName(),
+                $user->getRoleText(),
+                $user->getLastLogin()? $user->getLastLogin()->format("Y-m-d H:i:s.u") :'',
+                $user->getCreatedAt(),
+            ];
+
+            $csvData->add($line);
+        }
+
+        $callBack = function () use ($csvData) {
+            $csv = fopen('php://output', 'w+');
+            //This line is important:
+            fwrite($csv,"\xEF\xBB\xBF");
+            while (false !== ($line = $csvData->next())) {
+                fputcsv($csv, $line, ',');
+            }
+            fclose($csv);
+        };
+
+        return new StreamedResponse($callBack, 200, [
+            'Content-Type' => 'text/csv; charset=gbk',
+            'Content-Disposition' => 'attachment; filename="用户_'.date("Ymd_His").'.csv"'
+        ]);
     }
 }

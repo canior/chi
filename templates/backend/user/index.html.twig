@@ -80,6 +80,13 @@
                                 <label>&nbsp;</label>
                                 <input class="form-control btn btn-primary" type="submit" value="搜索"/>
                             </div>
+                            <div class="col-md-1 form-group">
+                                <label>&nbsp;</label>
+                                <a class="form-control btn btn-danger" href="{{ path('user_export', {'userId':form.userId, 'username':form.username, 'recommanderName':form.recommanderName, 'bianxianUserLevel':form.bianxianUserLevel, 'role':form.role, 'createdAtStart':form.createdAtStart, 'createdAtEnd':form.createdAtEnd}) }}"
+                                   title="导出">
+                                    导出
+                                </a>
+                            </div>
                         </form>
                     </div>
                     <div class="table-responsive">
