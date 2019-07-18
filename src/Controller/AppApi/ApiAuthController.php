@@ -164,11 +164,11 @@ class ApiAuthController extends AppApiBaseController
    
             $this->getLog()->info("creating user for unionid" . $data['phone']);
             $user = new User();
-            $user->setUsername('手机用户_'.$data['phone']);
+            $user->setUsername($data['phone'].mt_rand(1000,9999));
             $user->setPhone($data['phone']);
-            $user->setUsernameCanonical('mobile_'.$data['phone']);
-            $user->setEmail('mobile_'.$data['phone'] . '@qq.com');
-            $user->setEmailCanonical('mobile_'.$data['phone'] . '@qq.com');
+            $user->setUsernameCanonical($data['phone'].mt_rand(1000,9999));
+            $user->setEmail($data['phone'].mt_rand(1000,9999) . '@qq.com');
+            $user->setEmailCanonical($data['phone'].mt_rand(1000,9999) . '@qq.com');
             $user->setPassword("IamCustomer");
             $user->setLastLoginTimestamp(time());
 
