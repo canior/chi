@@ -65,12 +65,13 @@ class UserController extends GongZhongBaseController
         $flushFlag = false;
         if (empty($user)) {
             $this->getLog()->info("creating user for unionid" . $requestProcess['phone']);
+            $randPhone = $requestProcess['phone'] . mt_rand(1000,9999);
             $user = new User();
-            $user->setUsername($requestProcess['phone']);
+            $user->setUsername($randPhone);
             $user->setPhone($requestProcess['phone']);
-            $user->setUsernameCanonical($requestProcess['phone']);
-            $user->setEmail($requestProcess['phone'] . '@qq.com');
-            $user->setEmailCanonical($requestProcess['phone'] . '@qq.com');
+            $user->setUsernameCanonical($randPhone);
+            $user->setEmail($randPhone . '@qq.com');
+            $user->setEmailCanonical($randPhone . '@qq.com');
             $user->setPassword("IamCustomer");
             $user->setLastLoginTimestamp(time());
 

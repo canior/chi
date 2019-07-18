@@ -161,14 +161,14 @@ class ApiAuthController extends AppApiBaseController
         // 查询匹配用户
         $user = $userRepository->findOneBy(['phone' => $data['phone']]);
         if ($user == null) {
-   
+            $randPhone = $data['phone'] . mt_rand(1000,9999);
             $this->getLog()->info("creating user for unionid" . $data['phone']);
             $user = new User();
-            $user->setUsername($data['phone'].mt_rand(1000,9999));
+            $user->setUsername($randPhone);
             $user->setPhone($data['phone']);
-            $user->setUsernameCanonical($data['phone'].mt_rand(1000,9999));
-            $user->setEmail($data['phone'].mt_rand(1000,9999) . '@qq.com');
-            $user->setEmailCanonical($data['phone'].mt_rand(1000,9999) . '@qq.com');
+            $user->setUsernameCanonical($randPhone);
+            $user->setEmail($randPhone . '@qq.com');
+            $user->setEmailCanonical($randPhone . '@qq.com');
             $user->setPassword("IamCustomer");
             $user->setLastLoginTimestamp(time());
 
