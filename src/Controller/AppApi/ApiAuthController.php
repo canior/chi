@@ -161,8 +161,6 @@ class ApiAuthController extends AppApiBaseController
         // 查询匹配用户
         $user = $userRepository->findOneBy(['phone' => $data['phone']]);
         if ($user == null) {
-            $defaultNickname = '未知用户';
-            $defaultAvatarUrl = null;
    
             $this->getLog()->info("creating user for unionid" . $data['phone']);
             $user = new User();
