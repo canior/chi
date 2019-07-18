@@ -441,7 +441,7 @@ class MemberController extends AppApiBaseController
         $city = isset($data['city']) ? $data['city'] : null;
         $county = isset($data['county']) ? $data['county'] : null;
         $address = isset($data['address']) ? $data['address'] : null;
-        $isDefault = isset($data['isDefault']) ? $data['isDefault'] : 0;
+        $isDefault = isset($data['isDefault']) ? $data['isDefault'] : false;
 
         // 查询或新建region
         $provinceDao = $regionRepository->findOneBy(['name' => $province, 'parentRegion' => null]);
@@ -481,6 +481,7 @@ class MemberController extends AppApiBaseController
 
         } else {
             $userAddress = new UserAddress();
+            $userAddress->setIsDefault($isDefault);
             $userAddress->setUser($user);
         }
 
