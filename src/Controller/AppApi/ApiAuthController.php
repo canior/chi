@@ -161,23 +161,21 @@ class ApiAuthController extends AppApiBaseController
         // 查询匹配用户
         $user = $userRepository->findOneBy(['phone' => $data['phone']]);
         if ($user == null) {
-            $defaultNickname = '未知用户';
-            $defaultAvatarUrl = null;
-            if ($user == null) {
-                $this->getLog()->info("creating user for unionid" . $data['phone']);
-                $user = new User();
-                $user->setUsername($data['phone']);
-                $user->setPhone($data['phone']);
-                $user->setUsernameCanonical($data['phone']);
-                $user->setEmail($data['phone'] . '@qq.com');
-                $user->setEmailCanonical($data['phone'] . '@qq.com');
-                $user->setPassword("IamCustomer");
-                $user->setLastLoginTimestamp(time());
+            $randPhone = $data['phone'] . mt_rand(1000,9999);
+            $this->getLog()->info("creating user for unionid" . $data['phone']);
+            $user = new User();
+            $user->setUsername($randPhone);
+            $user->setPhone($data['phone']);
+            $user->setUsernameCanonical($randPhone);
+            $user->setEmail($randPhone . '@qq.com');
+            $user->setEmailCanonical($randPhone . '@qq.com');
+            $user->setPassword("IamCustomer");
+            $user->setLastLoginTimestamp(time());
 
-                $userStatistics = new UserStatistics($user);
-                $user->addUserStatistic($userStatistics);
-                $user->info('created user ' . $user);
-            }
+            $userStatistics = new UserStatistics($user);
+            $user->addUserStatistic($userStatistics);
+            $user->info('created user ' . $user);
+
 
             $this->entityPersist($user);
         }
