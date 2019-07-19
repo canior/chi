@@ -331,7 +331,6 @@ class MemberController extends AppApiBaseController
 
 
         $defaultNickname = '未知用户';
-        $user->setUsername($openId);
         $user->setUsernameCanonical($openId);
         $user->setEmail($openId . '@qq.com');
         $user->setEmailCanonical($openId . '@qq.com');
