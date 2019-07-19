@@ -39,6 +39,7 @@ class JWTAuthenticationListener
          */
         $user = $event->getUser();
         $payload['userId'] = !empty($user) ? $user->getId() : 0;
+        $payload['username'] = !empty($user) ? $user->getId() : 0;
         $event->setData($payload);
     }
 
