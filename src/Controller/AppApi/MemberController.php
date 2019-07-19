@@ -331,14 +331,7 @@ class MemberController extends AppApiBaseController
 
 
         $defaultNickname = '未知用户';
-        $user->setUsernameCanonical($openId);
-        $user->setEmail($openId . '@qq.com');
-        $user->setEmailCanonical($openId . '@qq.com');
-        $user->setPassword("IamCustomer");
-//        $user->setWxOpenId($openId);
         $user->setWxUnionId($unionId);
-        $user->setLastLoginTimestamp(time());
-
         if ($user->getAvatarUrl() == null) {
             $wxUserInfo = $wechatModel->getWeChatUserInfoByToken($accessToken, $openId);
             $this->getLog()->info("wxUserInfo:" . json_encode($wxUserInfo));
