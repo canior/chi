@@ -489,7 +489,7 @@ class ApiAuthController extends AppApiBaseController
             // TODO
             $versions = [
                 'app'=>'ios-app',
-                'versions'=>'1.0.1',
+                'versions'=>'1.0.0',
                 'title'=>'2.0版本正式发布',
                 'info'=>'1.全新视觉设计 2.性能全面提升',
                 'url'=>'https://apps.apple.com/cn/app/%E6%85%95%E8%AF%BE%E7%BD%91-it%E7%BC%96%E7%A8%8B%E5%9F%B9%E8%AE%ADmooc%E5%85%AC%E5%BC%80%E8%AF%BE%E5%B9%B3%E5%8F%B0/id722179140'
