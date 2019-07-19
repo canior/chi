@@ -471,4 +471,43 @@ class ApiAuthController extends AppApiBaseController
         // 返回
         return CommonUtil::resultData([])->toJsonResponse();
     }
+
+    /**
+     * 获取版本号
+     *
+     * @Route("/getVersions", name="getVersions", methods="GET")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @return Response
+     */
+    public function getVersionsAction(Request $request) {
+
+        $data = json_decode($request->getContent(), true );
+        $type = isset($data['type']) ? $data['type'] : null;
+
+        if( $type == 'IOS' ){
+            // TODO
+            $versions = [
+                'app'=>'ios-app',
+                'versions'=>'2.0.1',
+                'title'=>'2.0版本正式发布',
+                'info'=>'1.全新视觉设计 2.性能全面提升',
+                'url'=>'http://download.jqktapp.com'
+            ];
+        }else if( $type == 'ANDRIOD' ){
+            // TODO
+            $versions = [
+                'app'=>'amdriod-app',
+                'versions'=>'1.0.1',
+                'title'=>'2.0版本正式发布',
+                'info'=>'1.全新视觉设计 2.性能全面提升',
+                'url'=>'http://download.jqktapp.com'
+            ];
+        }else{
+           $versions = []; 
+        }
+
+        // 返回
+        return CommonUtil::resultData($versions)->toJsonResponse();
+    }
 }
