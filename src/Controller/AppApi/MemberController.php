@@ -585,30 +585,6 @@ class MemberController extends AppApiBaseController
 
 
     /**
-     * 获取版本号
-     *
-     * @Route("/getVersions", name="getVersions", methods="GET")
-     * @param Request $request
-     * @param UserRepository $userRepository
-     * @return Response
-     */
-    public function getVersionsAction(Request $request) {
-
-        // TODO
-        $versions = [
-            'app'=>'jqktapp',
-            'versions'=>'2.0',
-            'title'=>'2.0版本正式发布',
-            'info'=>'1.全新视觉设计 2.性能全面提升',
-            'url'=>'http://download.jqktapp.com'
-        ];
-
-        // 返回
-        return CommonUtil::resultData($versions)->toJsonResponse();
-    }
-
-
-    /**
      * 查看用户账户
      *
      * @Route("/account", name="account", methods="GET")
