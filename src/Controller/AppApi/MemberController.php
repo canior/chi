@@ -481,6 +481,9 @@ class MemberController extends AppApiBaseController
 
         } else {
             $userAddress = new UserAddress();
+            if( isset($data['isDefault']) ){
+                $userAddress->setIsDefault($isDefault);
+            }
             $userAddress->setUser($user);
         }
 
