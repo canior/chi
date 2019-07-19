@@ -475,7 +475,7 @@ class ApiAuthController extends AppApiBaseController
     /**
      * 获取版本号
      *
-     * @Route("/getVersions", name="getVersions", methods="GET")
+     * @Route("/getVersions", name="getVersions", methods="POST")
      * @param Request $request
      * @param UserRepository $userRepository
      * @return Response
