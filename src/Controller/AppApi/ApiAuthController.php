@@ -471,4 +471,43 @@ class ApiAuthController extends AppApiBaseController
         // 返回
         return CommonUtil::resultData([])->toJsonResponse();
     }
+
+    /**
+     * 获取版本号
+     *
+     * @Route("/getVersions", name="getVersions", methods="POST")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @return Response
+     */
+    public function getVersionsAction(Request $request) {
+
+        $data = json_decode($request->getContent(), true );
+        $type = isset($data['type']) ? $data['type'] : null;
+
+        if( $type == 'IOS' ){
+            // TODO
+            $versions = [
+                'app'=>'ios-app',
+                'versions'=>'1.0.0',
+                'title'=>'2.0版本正式发布',
+                'info'=>'1.全新视觉设计 2.性能全面提升',
+                'url'=>'https://apps.apple.com/cn/app/%E6%85%95%E8%AF%BE%E7%BD%91-it%E7%BC%96%E7%A8%8B%E5%9F%B9%E8%AE%ADmooc%E5%85%AC%E5%BC%80%E8%AF%BE%E5%B9%B3%E5%8F%B0/id722179140'
+            ];
+        }else if( $type == 'ANDRIOD' ){
+            // TODO
+            $versions = [
+                'app'=>'amdriod-app',
+                'versions'=>'1.0.1',
+                'title'=>'2.0版本正式发布',
+                'info'=>'1.全新视觉设计 2.性能全面提升',
+                'url'=>'http://download.jqktapp.com'
+            ];
+        }else{
+           $versions = []; 
+        }
+
+        // 返回
+        return CommonUtil::resultData($versions)->toJsonResponse();
+    }
 }
