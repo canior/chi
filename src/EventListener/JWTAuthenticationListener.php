@@ -57,7 +57,6 @@ class JWTAuthenticationListener
 
         $resultData = CommonUtil::resultData();
         $resultData['token'] = $data['token'];
-        $resultData['userId'] = $user->getId();
 
         $event->setData($resultData->toArray());
     }
