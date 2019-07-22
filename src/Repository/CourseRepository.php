@@ -94,6 +94,8 @@ class CourseRepository extends ServiceEntityRepository
         $status = $where['status'] ?? null;
         $teacher = $where['teacher'] ?? null;
         $address = $where['address'] ?? null;
+        $createdAtStart = $where['createdAtStart'] ?? null;
+        $createdAtEnd = $where['createdAtEnd'] ?? null;
 
         if (!empty($subject)) {
             $query->andWhere('c.subject =:subject')
@@ -114,6 +116,22 @@ class CourseRepository extends ServiceEntityRepository
         if (!empty($address)) {
             $query->andWhere('c.address =:address')
                 ->setParameter('address', $address);
+        }
+
+        if ($createdAtStart) {
+            if (is_string($createdAtStart)) {
+                $createdAtStart = strtotime($createdAtStart);
+            }
+            $query->andWhere('c.startDate >= :createdAtStart')
+                ->setParameter('createdAtStart', $createdAtStart);
+        }
+
+        if ($createdAtEnd) {
+            if (is_string($createdAtEnd)) {
+                $createdAtEnd = strtotime($createdAtEnd);
+            }
+            $query->andWhere('c.startDate <= :createdAtEnd')
+                ->setParameter('createdAtEnd', $createdAtEnd);
         }
 
         $query->orderBy('c.id', 'desc');

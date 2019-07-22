@@ -40,6 +40,8 @@ class OfflineCourseController extends BackendController
                 'address' => $request->query->get('address', null),
                 'status' => $request->query->get('status', null),
                 'teacher' => $request->query->get('teacher', null),
+                'createdAtStart' => $request->query->get('createdAtStart', null),
+                'createdAtEnd' => $request->query->get('createdAtEnd', null),
                 'page' => $request->query->getInt('page', 1)
             ],
             'subjects' => Subject::$subjectTextArray,
