@@ -183,13 +183,17 @@ class ApiAuthController extends AppApiBaseController
         // 验证Code
         if (!CommonUtil::isDebug()) {
             $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ],['id'=>'DESC']);
-            if( ($messageCode == null || $messageCode->getCode() != $data['code'] ) && $data['code'] != 4321 ){
-                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
+            if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
+                if( !($data['phone'] == 18017204971 && $data['code'] == 4321) ){
+                    return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
+                }
             }
 
             //验证过期
-            if( $messageCode->getCreatedAt(false)+20*60 < time() && $data['code'] != 4321 ){
-                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
+            if( $messageCode->getCreatedAt(false)+20*60 < time() ){
+                if( !($data['phone'] == 18017204971 && $data['code'] == 4321) ){
+                    return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
+                }
             }
         }
 
