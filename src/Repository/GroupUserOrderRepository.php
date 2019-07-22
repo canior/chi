@@ -30,7 +30,7 @@ class GroupUserOrderRepository extends ServiceEntityRepository
      * @param null $paymentStatus
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findGroupUserOrdersQueryBuilder($isCourse = false, $groupOrderId = null, $groupUserOrderId = null, $userId = null, $productName = null, $type = null, $status = null, $paymentStatus = null)
+    public function findGroupUserOrdersQueryBuilder($isCourse = false, $groupOrderId = null, $groupUserOrderId = null, $userId = null, $productName = null, $type = null, $status = null, $paymentStatus = null, $username = null)
     {
         $query = $this->createQueryBuilder('guo')
             ->orderBy('guo.id', 'DESC');
@@ -51,6 +51,16 @@ class GroupUserOrderRepository extends ServiceEntityRepository
         if ($userId) {
             $query->andWhere('guo.user = :userId')
                 ->setParameter('userId', $userId);
+        }
+
+        if ($username) {
+            $query->leftJoin('guo.user', 'gu');
+            $orX = $query->expr()->orX();
+            $literal = $query->expr()->literal("%$username%");
+            $orX->add($query->expr()->like('gu.username', $literal));
+            $orX->add($query->expr()->like('gu.nickname', $literal));
+            $orX->add($query->expr()->like('gu.name', $literal));
+            $query->andWhere($orX);
         }
 
         if ($type == 'NOT NULL') {
@@ -93,8 +103,8 @@ class GroupUserOrderRepository extends ServiceEntityRepository
      * @param null $paymentStatus
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findOfflineCourseOrders($groupUserOrderId = null, $userId = null, $courseName = null, $status = null, $paymentStatus = null) {
-        $query = $this->findGroupUserOrdersQueryBuilder(true, null, $groupUserOrderId, $userId, $courseName,  null, $status, $paymentStatus);
+    public function findOfflineCourseOrders($groupUserOrderId = null, $userId = null, $courseName = null, $status = null, $paymentStatus = null, $username = null) {
+        $query = $this->findGroupUserOrdersQueryBuilder(true, null, $groupUserOrderId, $userId, $courseName,  null, $status, $paymentStatus, $username);
         $query->join('p.course', 'c')
             ->andWhere('c.isOnline = false');
         return $query;

@@ -37,6 +37,7 @@ class OfflineCourseGroupUserOrderController extends BackendController
             'form' => [
                 'groupUserOrderId' => $request->query->getInt('groupUserOrderId', null),
                 'userId' => $request->query->getInt('userId', null),
+                'username' => $request->query->get('username', null),
                 'productName' => $request->query->get('productName', null),
                 'status' => $request->query->get('status', null),
                 'paymentStatus' => $request->query->get('paymentStatus', null),
@@ -45,7 +46,7 @@ class OfflineCourseGroupUserOrderController extends BackendController
             'statuses' => GroupUserOrder::$courseStatuses,
             'paymentStatuses' => GroupUserOrder::$paymentStatuses,
         ];
-        $data['data'] = $groupUserOrderRepository->findOfflineCourseOrders($data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['productName'], $data['form']['status'], $data['form']['paymentStatus']);
+        $data['data'] = $groupUserOrderRepository->findOfflineCourseOrders($data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['productName'], $data['form']['status'], $data['form']['paymentStatus'],$data['form']['username']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/offline_course_order/index.html.twig', $data);
     }
