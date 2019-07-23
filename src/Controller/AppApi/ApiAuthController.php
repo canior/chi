@@ -96,6 +96,11 @@ class ApiAuthController extends AppApiBaseController
         }else{
             $user = new User();
             $user->setWxUnionId($data['wxUnionId']);
+
+            // Statistics
+            $userStatistics = new UserStatistics($user);
+            $user->addUserStatistic($userStatistics);
+            $user->info('created user ' . $user);
         }
 
         // User
@@ -109,12 +114,6 @@ class ApiAuthController extends AppApiBaseController
         $user->setLastLoginTimestamp(time());
         $user->setNickname($data['nickname']);
         $user->setAvatarUrl($data['avatarUrl']);
-
-        // Statistics
-        $userStatistics = new UserStatistics($user);
-        $user->addUserStatistic($userStatistics);
-        $user->info('created user ' . $user);
-
         $this->entityPersist($user);
 
         return CommonUtil::resultData(['user'=>$user->getArray(),'token' => $JWTTokenManager->create($user)])->toJsonResponse();
