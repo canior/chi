@@ -405,17 +405,6 @@ class ApiAuthController extends AppApiBaseController
             return CommonUtil::resultData( ['user'=>$user->getArray(),'token'=>''] )->toJsonResponse();exit();
         }
 
-        if ($user->getAvatarUrl() == null) {
-            $wxUserInfo = $wechat->getWeChatUserInfoByToken($accessToken, $openId);
-            $nickName = isset($wxUserInfo['nickname']) ? $wxUserInfo['nickname'] : $defaultNickname; //TODO 这里要添加文案
-            $avatarUrl = isset($wxUserInfo['headimgurl']) ? str_replace("http","https",$wxUserInfo['headimgurl']) : null; //需要一张默认的用户头像
-            $user->setNickname($nickName);
-            $user->setAvatarUrl($avatarUrl);
-            $user->info("update user nickname to " . $nickName . " and avatar url");
-        }
-
-        $this->entityPersist($user);
-
         return $requestProcess->toJsonResponse(['user' => $user->getArray(),'token' => $JWTTokenManager->create($user)]);
     }
 
