@@ -402,7 +402,7 @@ class ApiAuthController extends AppApiBaseController
             $user->setNickname($nickName);
             $user->setAvatarUrl($avatarUrl);
 
-            return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();exit();
+            return CommonUtil::resultData( ['user'=>$user->getArray(),'token'=>''] )->toJsonResponse();exit();
         }
 
         if ($user->getAvatarUrl() == null) {
