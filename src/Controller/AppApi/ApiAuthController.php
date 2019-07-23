@@ -68,16 +68,12 @@ class ApiAuthController extends AppApiBaseController
         if (!CommonUtil::isDebug()) {
             $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ],['id'=>'DESC']);
             if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
-                if( !($data['phone'] == 18017204971 && $data['code'] == 4321) ){
-                    return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
-                }
+                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
             }
 
             //验证过期
             if( $messageCode->getCreatedAt(false)+20*60 < time() ){
-                if( !($data['phone'] == 18017204971 && $data['code'] == 4321) ){
-                    return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
-                }
+                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
             }
         }
 
@@ -204,6 +200,19 @@ class ApiAuthController extends AppApiBaseController
             return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, implode(',', $message))->toJsonResponse();
         }
 
+        // 验证Code
+        if (!CommonUtil::isDebug()) {
+            $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ],['id'=>'DESC']);
+            if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
+                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
+            }
+
+            //验证过期
+            if( $messageCode->getCreatedAt(false)+20*60 < time() ){
+                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
+            }
+        }
+
         // 查询匹配用户
         $user = $userRepository->findOneBy(['phone' => $data['phone']]);
         if ($user == null) {
@@ -223,25 +232,7 @@ class ApiAuthController extends AppApiBaseController
             $user->addUserStatistic($userStatistics);
             $user->info('created user ' . $user);
 
-
             $this->entityPersist($user);
-        }
-
-        // 验证Code
-        if (!CommonUtil::isDebug()) {
-            $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ],['id'=>'DESC']);
-            if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
-                if( !($data['phone'] == 18017204971 && $data['code'] == 4321) ){
-                    return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
-                }
-            }
-
-            //验证过期
-            if( $messageCode->getCreatedAt(false)+20*60 < time() ){
-                if( !($data['phone'] == 18017204971 && $data['code'] == 4321) ){
-                    return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
-                }
-            }
         }
 
         // 返回
