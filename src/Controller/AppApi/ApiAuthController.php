@@ -81,19 +81,24 @@ class ApiAuthController extends AppApiBaseController
             }
         }
 
+
         // 查询匹配用户
         $user = $userRepository->findOneBy(['phone' => $data['phone']]);
         if ($user) {
-            return CommonUtil::resultData( [], ErrorCode::ERROR_PHONE_HAD_REGISTER )->toJsonResponse();
-        }
-
-        $user = $userRepository->findOneBy(['wxUnionId' => $data['wxUnionId']]);
-        if ($user) {
-            return CommonUtil::resultData( [], ErrorCode::ERROR_UNIONID_HAD_USE )->toJsonResponse();
+            // 手机号已经注册
+            if( $user->getWxUnionId() ){
+                // 该用户有公众号 提示手机号已经注册
+                return CommonUtil::resultData( [], ErrorCode::ERROR_PHONE_HAD_REGISTER )->toJsonResponse();
+            }else{
+                // 该用户没有公众号  直接绑定
+                $user->setWxUnionId($data['wxUnionId']);
+            }
+        }else{
+            $user = new User();
+            $user->setWxUnionId($data['wxUnionId']);
         }
 
         // User
-        $user = new User();
         $randPhone = $data['phone'] . mt_rand(1000,9999);
         $user->setUsername($randPhone);
         $user->setPhone($data['phone']);
@@ -102,7 +107,6 @@ class ApiAuthController extends AppApiBaseController
         $user->setEmailCanonical($randPhone . '@qq.com');
         $user->setPassword("IamCustomer");
         $user->setLastLoginTimestamp(time());
-        $user->setWxUnionId($data['wxUnionId']);
         $user->setNickname($data['nickname']);
         $user->setAvatarUrl($data['avatarUrl']);
 
