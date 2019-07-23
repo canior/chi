@@ -387,22 +387,22 @@ class ApiAuthController extends AppApiBaseController
         $user = $userRepository->findOneBy(['wxUnionId' => $unionId]);
         $this->getLog()->info("found user " . $user == null ? 'true' : 'false');
         if ($user == null) {
-            //提示手机号登陆
-            return CommonUtil::resultData( [], ErrorCode::ERROR_PLOCE_LOGIN_BY_PHONE )->toJsonResponse();
-//             $this->getLog()->info("creating user for unionid" . $unionId);
-//             $user = new User();
-//             $user->setUsername($openId);
-//             $user->setUsernameCanonical($openId);
-//             $user->setEmail($openId . '@qq.com');
-//             $user->setEmailCanonical($openId . '@qq.com');
-//             $user->setPassword("IamCustomer");
-// //            $user->setWxOpenId($openId);
-//             $user->setWxUnionId($unionId);
-//             $user->setLastLoginTimestamp(time());
+            //提示填写手机号
+            $user = new User();
+            $user->setUsername($openId);
+            $user->setUsernameCanonical($openId);
+            $user->setEmail($openId . '@qq.com');
+            $user->setEmailCanonical($openId . '@qq.com');
+            $user->setPassword("IamCustomer");
+            $user->setWxUnionId($unionId);
 
-//             $userStatistics = new UserStatistics($user);
-//             $user->addUserStatistic($userStatistics);
-//             $user->info('created user ' . $user);
+            $wxUserInfo = $wechat->getWeChatUserInfoByToken($accessToken, $openId);
+            $nickName = isset($wxUserInfo['nickname']) ? $wxUserInfo['nickname'] : $defaultNickname;
+            $avatarUrl = isset($wxUserInfo['headimgurl']) ? str_replace("http","https",$wxUserInfo['headimgurl']) : null;
+            $user->setNickname($nickName);
+            $user->setAvatarUrl($avatarUrl);
+
+            return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();exit();
         }
 
         if ($user->getAvatarUrl() == null) {
