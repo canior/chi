@@ -48,6 +48,7 @@ class ErrorCode
     const ERROR_PHONE_HAD_REGISTER = 12018;
     const ERROR_PLOCE_LOGIN_BY_PHONE = 12019;
     const ERROR_UNIONID_HAD_REGISTER = 12020;
+    const ERROR_UNIONID_HAD_USE = 12021;
 
 
     //-------课程---------------------------------------
@@ -154,6 +155,7 @@ class ErrorCode
             self::ERROR_PLOCE_LOGIN_BY_PHONE => '请用手机号登陆后再绑定微信',
             self::ERROR_UNIONID_HAD_REGISTER => '微信已经绑定其他手机号',
             self::ERROR_YINLIAN_PAY => '银联支付发生错误',
+            self::ERROR_UNIONID_HAD_USE => '微信wxUnionId已注册',
         ];
     }
 
