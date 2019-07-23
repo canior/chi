@@ -214,6 +214,7 @@ class ApiAuthController extends AppApiBaseController
             $user->setEmailCanonical($randPhone . '@qq.com');
             $user->setPassword("IamCustomer");
             $user->setLastLoginTimestamp(time());
+            $user->setNickname($randPhone);
 
             $userStatistics = new UserStatistics($user);
             $user->addUserStatistic($userStatistics);
