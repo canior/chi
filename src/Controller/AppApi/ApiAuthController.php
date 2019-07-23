@@ -40,7 +40,7 @@ class ApiAuthController extends AppApiBaseController
      * @param UserManagerInterface $userManager
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function register(Request $request, UserManagerInterface $userManager,JWTTokenManagerInterface $JWTTokenManager)
+    public function register(Request $request, UserManagerInterface $userManager,JWTTokenManagerInterface $JWTTokenManager, UserRepository $userRepository)
     {
         $data = json_decode(
             $request->getContent(),
@@ -49,32 +49,70 @@ class ApiAuthController extends AppApiBaseController
 
         $validator = Validation::createValidator();
         $constraint = new Assert\Collection([
-            'username' => new Assert\Length(['min' => 6, 'max' => 30]),
-            'password' => new Assert\Length(['min' => 6, 'max' => 30]),
+            'nickname' => new Assert\Length(['min' => 1, 'max' => 30]),
+            'avatarUrl' => new Assert\Length(['min' => 6, 'max' => 3000]),
+            'phone' => new Assert\Length(['min' => 10, 'max' => 15]),
+            'wxUnionId' => new Assert\Length(['min' => 6, 'max' => 30]),
+            'code' => new Assert\Length(['min' => 4, 'max' => 10]),
         ]);
         $violations = $validator->validate($data, $constraint);
-
         if ($violations->count() > 0) {
-            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, 417, (string)$violations)->toJsonResponse();
-        }
-        $username = $data['username'];
-        $password = $data['password'];
-        $user = new User();
-        $user
-            ->setUsername($username)
-            ->setPlainPassword($password)
-            ->setEmail($username . '@qq.com')
-            ->setEnabled(true)
-            ->setRoles([User::ROLE_CUSTOMER])
-            ->setSuperAdmin(false)
-        ;
-        try {
-            $userManager->updateUser($user, true);
-        } catch (\Exception $e) {
-            return new JsonResponse(["error" => $e->getMessage()], 500);
+            $message = [];
+            foreach ($violations as $violation) {
+                $message[] = $violation->getMessage();
+            }
+            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, implode(',', $message))->toJsonResponse();
         }
 
-        return CommonUtil::resultData(['token' => $JWTTokenManager->create($user)])->toJsonResponse();
+        // 验证Code
+        if (!CommonUtil::isDebug()) {
+            $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ],['id'=>'DESC']);
+            if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
+                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
+            }
+
+            //验证过期
+            if( $messageCode->getCreatedAt(false)+20*60 < time() ){
+                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
+            }
+        }
+
+
+        // 查询匹配用户
+        $user = $userRepository->findOneBy(['phone' => $data['phone']]);
+        if ($user) {
+            // 手机号已经注册
+            if( $user->getWxUnionId() ){
+                // 该用户有公众号 提示手机号已经注册
+                return CommonUtil::resultData( [], ErrorCode::ERROR_PHONE_HAD_REGISTER )->toJsonResponse();
+            }else{
+                // 该用户没有公众号  直接绑定
+                $user->setWxUnionId($data['wxUnionId']);
+            }
+        }else{
+            $user = new User();
+            $user->setWxUnionId($data['wxUnionId']);
+
+            // Statistics
+            $userStatistics = new UserStatistics($user);
+            $user->addUserStatistic($userStatistics);
+            $user->info('created user ' . $user);
+        }
+
+        // User
+        $randPhone = $data['phone'] . mt_rand(1000,9999);
+        $user->setUsername($randPhone);
+        $user->setPhone($data['phone']);
+        $user->setUsernameCanonical($randPhone);
+        $user->setEmail($randPhone . '@qq.com');
+        $user->setEmailCanonical($randPhone . '@qq.com');
+        $user->setPassword("IamCustomer");
+        $user->setLastLoginTimestamp(time());
+        $user->setNickname($data['nickname']);
+        $user->setAvatarUrl($data['avatarUrl']);
+        $this->entityPersist($user);
+
+        return CommonUtil::resultData(['user'=>$user->getArray(),'token' => $JWTTokenManager->create($user)])->toJsonResponse();
     }
 
 
@@ -101,7 +139,11 @@ class ApiAuthController extends AppApiBaseController
         ]);
         $violations = $validator->validate($data, $constraint);
         if ($violations->count() > 0) {
-            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, 417, (string)$violations)->toJsonResponse();
+            $message = [];
+            foreach ($violations as $violation) {
+                $message[] = $violation->getMessage();
+            }
+            return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, implode(',', $message))->toJsonResponse();
         }
 
         // 查询匹配用户
@@ -158,6 +200,19 @@ class ApiAuthController extends AppApiBaseController
             return CommonUtil::resultData([], ErrorCode::ERROR_LOGIN_USER_NOT_FIND, implode(',', $message))->toJsonResponse();
         }
 
+        // 验证Code
+        if (!CommonUtil::isDebug()) {
+            $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ],['id'=>'DESC']);
+            if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
+                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
+            }
+
+            //验证过期
+            if( $messageCode->getCreatedAt(false)+20*60 < time() ){
+                return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
+            }
+        }
+
         // 查询匹配用户
         $user = $userRepository->findOneBy(['phone' => $data['phone']]);
         if ($user == null) {
@@ -171,30 +226,13 @@ class ApiAuthController extends AppApiBaseController
             $user->setEmailCanonical($randPhone . '@qq.com');
             $user->setPassword("IamCustomer");
             $user->setLastLoginTimestamp(time());
+            $user->setNickname($randPhone);
 
             $userStatistics = new UserStatistics($user);
             $user->addUserStatistic($userStatistics);
             $user->info('created user ' . $user);
 
-
             $this->entityPersist($user);
-        }
-
-        // 验证Code
-        if (!CommonUtil::isDebug()) {
-            $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ],['id'=>'DESC']);
-            if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
-                if( !($data['phone'] == 18017204971 && $data['code'] == 4321) ){
-                    return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
-                }
-            }
-
-            //验证过期
-            if( $messageCode->getCreatedAt(false)+20*60 < time() ){
-                if( !($data['phone'] == 18017204971 && $data['code'] == 4321) ){
-                    return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_CODE_TIMEOUT )->toJsonResponse();
-                }
-            }
         }
 
         // 返回
@@ -391,33 +429,20 @@ class ApiAuthController extends AppApiBaseController
         $user = $userRepository->findOneBy(['wxUnionId' => $unionId]);
         $this->getLog()->info("found user " . $user == null ? 'true' : 'false');
         if ($user == null) {
-            //提示手机号登陆
-            return CommonUtil::resultData( [], ErrorCode::ERROR_PLOCE_LOGIN_BY_PHONE )->toJsonResponse();
-//             $this->getLog()->info("creating user for unionid" . $unionId);
-//             $user = new User();
-//             $user->setUsername($openId);
-//             $user->setUsernameCanonical($openId);
-//             $user->setEmail($openId . '@qq.com');
-//             $user->setEmailCanonical($openId . '@qq.com');
-//             $user->setPassword("IamCustomer");
-// //            $user->setWxOpenId($openId);
-//             $user->setWxUnionId($unionId);
-//             $user->setLastLoginTimestamp(time());
-
-//             $userStatistics = new UserStatistics($user);
-//             $user->addUserStatistic($userStatistics);
-//             $user->info('created user ' . $user);
-        }
-
-        if ($user->getAvatarUrl() == null) {
+            //提示填写手机号
+            $user = new User();
+            $user->setWxUnionId($unionId);
             $wxUserInfo = $wechat->getWeChatUserInfoByToken($accessToken, $openId);
-            $nickName = isset($wxUserInfo['nickname']) ? $wxUserInfo['nickname'] : $defaultNickname; //TODO 这里要添加文案
-            $avatarUrl = isset($wxUserInfo['headimgurl']) ? str_replace("http","https",$wxUserInfo['headimgurl']) : null; //需要一张默认的用户头像
+            $nickName = isset($wxUserInfo['nickname']) ? $wxUserInfo['nickname'] : $defaultNickname;
+            $avatarUrl = isset($wxUserInfo['headimgurl']) ? str_replace("http","https",$wxUserInfo['headimgurl']) : null;
             $user->setNickname($nickName);
             $user->setAvatarUrl($avatarUrl);
-            $user->info("update user nickname to " . $nickName . " and avatar url");
+
+            return CommonUtil::resultData( ['user'=>$user->getArray(),'token'=>''] )->toJsonResponse();exit();
         }
 
+        // Last Login
+        $user->setLastLoginTimestamp(time());
         $this->entityPersist($user);
 
         return $requestProcess->toJsonResponse(['user' => $user->getArray(),'token' => $JWTTokenManager->create($user)]);
