@@ -162,4 +162,32 @@ class CourseController extends ProductController
         }
         return $requestProcess->toJsonResponse();
     }
+
+    /**
+     * 获取解锁系列的产品详情
+     * @Route("/unlock/category/product", name="appGetUnlockCategoryProduct", methods={"POST"})
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @return JsonResponse
+     * @author zxqc2018
+     */
+    public function getUnlockCategoryProduct(Request $request, ProductRepository $productRepository)
+    {
+        $requestProcess = $this->processRequest($request, [
+            'cateId'
+        ], ['cateId']);
+
+        $user = $this->getAppUser(true);
+
+        $unlockSku = 'unlock-'. $requestProcess['cateId'];
+        $product = $productRepository->findOneBy(['sku' => $unlockSku]);
+        $data = [
+            'product' => CommonUtil::obj2Array($product),
+            'textMetaArray' => [],
+            'shareSources' => [],
+            'user' => CommonUtil::obj2Array($user),
+        ];
+
+        return $requestProcess->toJsonResponse($data);
+    }
 }
