@@ -102,6 +102,13 @@ class CourseRepository extends ServiceEntityRepository
                 ->setParameter('subject', $subject);
         }
 
+        if ( isset($where['subjectText']) && $where['subjectText'] ) {
+            $literal = $query->expr()->literal("%".$where['subjectText']."%");
+            $query->leftJoin('c.product', 'p')
+                ->andWhere($query->expr()->like('p.title', $literal));
+        }
+
+
         if (!empty($status)) {
             $query->innerJoin('c.product', 'p');
             $query->andWhere('p.status =:status')
@@ -111,6 +118,12 @@ class CourseRepository extends ServiceEntityRepository
         if (!empty($teacher)) {
             $query->andWhere('c.teacher =:teacher')
                 ->setParameter('teacher', $teacher);
+        }
+
+        if ( isset($where['teacherName']) && $where['teacherName'] ) {
+            $literal = $query->expr()->literal("%".$where['teacherName']."%");
+            $query->leftJoin('c.teacher', 't')
+                ->andWhere($query->expr()->like('t.name', $literal));
         }
 
         if (!empty($address)) {

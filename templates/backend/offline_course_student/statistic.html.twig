@@ -25,6 +25,41 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                            <div class="col-md-4 form-group">
+                                <label>活动日期</label>
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <input type="text" name="createdAtStart" class="form-control"
+                                               value="{{ form.createdAtStart }}"
+                                               placeholder="开始时间" autocomplete="off">
+                                    </div>
+                                    <div class="col-xs-1"> ~</div>
+                                    <div class="col-xs-5">
+                                        <input type="text" name="createdAtEnd" class="form-control"
+                                               value="{{ form.createdAtEnd }}"
+                                               placeholder="结束时间" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>讲师</label>
+                                <input type="text" name="teacherName" class="form-control" value="{{ form.teacherName }}"
+                                       placeholder="讲师">
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>活动名称</label>
+                                <input type="text" name="subjectText" class="form-control" value="{{ form.subjectText }}"
+                                       placeholder="活动名称">
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>状态</label>
+                                <select name="status" class="form-control chosen">
+                                    <option value="">全部</option>
+                                    {% for status, text in statuses %}
+                                        <option value="{{ status }}"{% if status == form.status %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                             <div class="col-md-3 form-group">
                                 <label>&nbsp;</label>
                                 <input class="form-control btn btn-primary" type="submit" value="搜索"/>
@@ -98,5 +133,39 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script type="text/javascript">
+        $(function () {
+            // bind daterangepicker
+            var timeFormat = 'YYYY-MM-DD';
+            var $createdAtStart = $('input[name="createdAtStart"]');
+            var $createdAtEnd = $('input[name="createdAtEnd"]');
+            $createdAtStart.daterangepicker({
+                autoUpdateInput: false,
+                singleDatePicker: true,
+                singleClasses: "picker_2",
+                locale: {
+                    format: timeFormat
+                }
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $createdAtEnd.data('daterangepicker').setStartDate(picker.startDate.format(timeFormat));
+                $createdAtEnd.data('daterangepicker').setEndDate(picker.startDate.format(timeFormat));
+                $createdAtEnd.data('daterangepicker').minDate = picker.startDate;
+                $(this).val(picker.startDate.format(timeFormat) + ' 00:00:00');
+            });
+            $createdAtEnd.daterangepicker({
+                autoUpdateInput: false,
+                singleDatePicker: true,
+                singleClasses: "picker_2",
+                locale: {
+                    format: timeFormat
+                }
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $createdAtStart.data('daterangepicker').setStartDate(picker.startDate.format(timeFormat));
+                $createdAtStart.data('daterangepicker').setEndDate(picker.startDate.format(timeFormat));
+                $createdAtStart.data('daterangepicker').maxDate = picker.startDate;
+                $(this).val(picker.startDate.format(timeFormat) + ' 23:59:59');
+            });
+        });
+    </script>
     {% include '/backend/includes/delete.js.html.twig' with {title: 'CourseStudent'} %}
 {% endblock %}

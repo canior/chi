@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Course;
 use Endroid\QrCode\Factory\QrCodeFactory;
+use App\Entity\Product;
+
 /**
  * @Route("/backend")
  */
@@ -27,32 +29,31 @@ class OfflineCourseStudentController extends BackendController
      */
     public function statisticIndex(Request $request, CourseStudentRepository $courseStudentRepository, CourseRepository $courseRepository): Response
     {
+        $page = $request->query->getInt('page', 1);
         $data = [
             'title' => '报到管理',
             'subjects' => Subject::$subjectTextArray,
             'user' => $this->getUser(),
             'form' => [
                 'subject' => $request->query->get('subject', null),
-                'page' => $request->query->getInt('page', 1)
-            ]
+                'teacherName' => $request->query->get('teacherName', null),
+                'subjectText' => $request->query->get('subjectText', null),
+                'status' => $request->query->get('status', null),
+                'createdAtStart' => $request->query->get('createdAtStart', null),
+                'createdAtEnd' => $request->query->get('createdAtEnd', null),
+            ],
+            'statuses' => Product::$statuses
         ];
 
-        if($data['form']['subject']) {
-            $data['data'] = $courseRepository->findBy(['subject' => $data['form']['subject'], 'isOnline' => false]);
-        } else {
-            $data['data'] = $courseRepository->findBy(['isOnline' => false]);
-        }
-
+        // 查询条件
+        $where = $data['form'];
+        $where['isOnline'] = false;
         if ($this->getUser()->isSecurity()) {
-            if($data['form']['subject']) {
-                $data['data'] = $courseRepository->findBy(['subject' => $data['form']['subject'], 'ownerUser' => $this->getUser(), 'isOnline' => false]);
-            } else {
-                $data['data'] = $courseRepository->findBy(['ownerUser' => $this->getUser(), 'isOnline' => false]);
-            }
+            $where['ownerUser'] = $this->getUser();
         }
 
-
-        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
+        $data['data'] = $courseRepository->findOfflineCourseQueryBuild($where);
+        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $page, self::PAGE_LIMIT);
         return $this->render('backend/offline_course_student/statistic.html.twig', $data);
     }
 
