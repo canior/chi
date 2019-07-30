@@ -30,7 +30,7 @@ class GroupUserOrderRepository extends ServiceEntityRepository
      * @param null $paymentStatus
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findGroupUserOrdersQueryBuilder($isCourse = false, $groupOrderId = null, $groupUserOrderId = null, $userId = null, $productName = null, $type = null, $status = null, $paymentStatus = null, $username = null)
+    public function findGroupUserOrdersQueryBuilder($isCourse = false, $groupOrderId = null, $groupUserOrderId = null, $userId = null, $productName = null, $type = null, $status = null, $paymentStatus = null, $username = null, $createdAtStart = null, $createdAtEnd = null,$subject = NULL,$recommanderName = NULL)
     {
         $query = $this->createQueryBuilder('guo')
             ->orderBy('guo.id', 'DESC');
@@ -92,6 +92,35 @@ class GroupUserOrderRepository extends ServiceEntityRepository
             $query->andWhere($query->expr()->like('p.title', $literal));
         }
 
+        if ($createdAtStart) {
+            if (is_string($createdAtStart)) {
+                $createdAtStart = strtotime($createdAtStart);
+            }
+            $query->andWhere('guo.createdAt >= :createdAtStart')
+                ->setParameter('createdAtStart', $createdAtStart);
+        }
+
+        if ($createdAtEnd) {
+            if (is_string($createdAtEnd)) {
+                $createdAtEnd = strtotime($createdAtEnd);
+            }
+            $query->andWhere('guo.createdAt <= :createdAtEnd')
+                ->setParameter('createdAtEnd', $createdAtEnd);
+        }
+
+        if ($subject) {
+            $query->andWhere('c.subject =:subject')
+                ->setParameter('subject', $subject);
+        }
+
+        if ($recommanderName) {
+            $query->leftJoin('guo.user', 'guser');
+            $orX = $query->expr()->orX();
+            $literal = $query->expr()->literal("%$recommanderName%");
+            $orX->add($query->expr()->like('guser.recommanderName', $literal));
+            $query->andWhere($orX);
+        }
+
         return $query;
     }
 
@@ -103,8 +132,8 @@ class GroupUserOrderRepository extends ServiceEntityRepository
      * @param null $paymentStatus
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findOfflineCourseOrders($groupUserOrderId = null, $userId = null, $courseName = null, $status = null, $paymentStatus = null, $username = null) {
-        $query = $this->findGroupUserOrdersQueryBuilder(true, null, $groupUserOrderId, $userId, $courseName,  null, $status, $paymentStatus, $username);
+    public function findOfflineCourseOrders($groupUserOrderId = null, $userId = null, $courseName = null, $status = null, $paymentStatus = null, $username = null, $createdAtStart = null, $createdAtEnd = null,$subject = null,$recommanderName = null) {
+        $query = $this->findGroupUserOrdersQueryBuilder(true, null, $groupUserOrderId, $userId, $courseName,  null, $status, $paymentStatus, $username, $createdAtStart, $createdAtEnd,$subject,$recommanderName);
         $query->join('p.course', 'c')
             ->andWhere('c.isOnline = false');
         return $query;
