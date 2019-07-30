@@ -21,6 +21,7 @@ use App\Form\EditGroupUserOrderType;
 use App\Form\GroupUserOrderType;
 use App\Form\VerifyParentUserType;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Entity\Subject;
 
 class OfflineCourseGroupUserOrderController extends BackendController
 {
@@ -32,6 +33,7 @@ class OfflineCourseGroupUserOrderController extends BackendController
      */
     public function index(GroupUserOrderRepository $groupUserOrderRepository, Request $request): Response
     {
+        // dump(Subject::$subjectTextArray);die;
         $data = [
             'title' => '活动订单',
             'form' => [
@@ -41,12 +43,17 @@ class OfflineCourseGroupUserOrderController extends BackendController
                 'productName' => $request->query->get('productName', null),
                 'status' => $request->query->get('status', null),
                 'paymentStatus' => $request->query->get('paymentStatus', null),
+                'createdAtStart' => $request->query->get('createdAtStart', null),
+                'createdAtEnd' => $request->query->get('createdAtEnd', null),
+                'recommanderName' => $request->query->get('recommanderName', null),
+                'subject' => $request->query->get('subject', null),
                 'page' => $request->query->getInt('page', 1)
             ],
+            'subjects' => Subject::$subjectTextArray,
             'statuses' => GroupUserOrder::$courseStatuses,
             'paymentStatuses' => GroupUserOrder::$paymentStatuses,
         ];
-        $data['data'] = $groupUserOrderRepository->findOfflineCourseOrders($data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['productName'], $data['form']['status'], $data['form']['paymentStatus'],$data['form']['username']);
+        $data['data'] = $groupUserOrderRepository->findOfflineCourseOrders($data['form']['groupUserOrderId'], $data['form']['userId'], $data['form']['productName'], $data['form']['status'], $data['form']['paymentStatus'],$data['form']['username'], $data['form']['createdAtStart'], $data['form']['createdAtEnd'], $data['form']['subject'], $data['form']['recommanderName']);
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/offline_course_order/index.html.twig', $data);
     }
