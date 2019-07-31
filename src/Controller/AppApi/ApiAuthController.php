@@ -40,7 +40,7 @@ class ApiAuthController extends AppApiBaseController
      * @param UserManagerInterface $userManager
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function register(Request $request, UserManagerInterface $userManager,JWTTokenManagerInterface $JWTTokenManager, UserRepository $userRepository)
+    public function register(Request $request, UserManagerInterface $userManager,JWTTokenManagerInterface $JWTTokenManager, UserRepository $userRepository,MessageCodeRepository $messageCodeRepository)
     {
         $data = json_decode(
             $request->getContent(),
@@ -66,7 +66,7 @@ class ApiAuthController extends AppApiBaseController
 
         // 验证Code
         if (!CommonUtil::isDebug()) {
-            $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ],['id'=>'DESC']);
+            $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'] ],['id'=>'DESC']);
             if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
                 return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
             }
@@ -202,7 +202,7 @@ class ApiAuthController extends AppApiBaseController
 
         // 验证Code
         if (!CommonUtil::isDebug()) {
-            $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'],'type'=>MessageCode::LOGIN ],['id'=>'DESC']);
+            $messageCode = $messageCodeRepository->findOneBy(['phone' => $data['phone'] ],['id'=>'DESC']);
             if( $messageCode == null || $messageCode->getCode() != $data['code'] ){
                 return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_PHONE_OR_CODE_ERROR )->toJsonResponse();
             }
