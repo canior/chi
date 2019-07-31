@@ -40,7 +40,7 @@ class ApiAuthController extends AppApiBaseController
      * @param UserManagerInterface $userManager
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function register(Request $request, UserManagerInterface $userManager,JWTTokenManagerInterface $JWTTokenManager, UserRepository $userRepository)
+    public function register(Request $request, UserManagerInterface $userManager,JWTTokenManagerInterface $JWTTokenManager, UserRepository $userRepository,MessageCodeRepository $messageCodeRepository)
     {
         $data = json_decode(
             $request->getContent(),
