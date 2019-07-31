@@ -145,7 +145,7 @@ class PayController extends GongZhongBaseController
                     'openid'           => $openId, // 支付人的 openID
                 ];
 
-                $prePayInfo = FactoryUtil::wxPayDriver(Pay::MP_GATEWAY)->apply($options);
+                $prePayInfo = FactoryUtil::wxPayGzhDriver(Pay::MP_GATEWAY)->apply($options);
                 if (empty($prePayInfo['prepayid'])) {
                     $requestProcess->throwErrorException(ErrorCode::ERROR_WX_PAY_PREPAY_ID, []);
                 }
