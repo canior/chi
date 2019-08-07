@@ -77,8 +77,13 @@ class UserRepository extends ServiceEntityRepository
         }
 
         if ($recommanderName) {
-            $query->andWhere('u.recommanderName like :recommanderName')
-                ->setParameter('recommanderName', '%' . $recommanderName . '%');
+            $query->innerJoin('u.parentUser', 'up');
+            $orX = $query->expr()->orX();
+            $literal = $query->expr()->literal("%$recommanderName%");
+            $orX->add($query->expr()->like('up.username', $literal));
+            $orX->add($query->expr()->like('up.nickname', $literal));
+            $orX->add($query->expr()->like('up.name', $literal));
+            $query->andWhere($orX);
         }
 
         if ($userLevel) {
