@@ -87,6 +87,55 @@ class CategoryRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('c')
             ->where('c.isDeleted =:isDeleted')
+            ->setParameter('isDeleted', false);
+
+        if (!is_null($parentId)) {
+            if (empty($parentId)) {
+                $query->andWhere('c.parentCategory is null');
+            } else {
+                $query->andWhere('c.parentCategory =:parentId')
+                    ->setParameter('parentId', $parentId);
+            }
+        }
+
+        if (!empty($name)) {
+            $query->andWhere('c.name like :name')
+                ->setParameter('name', "%{$name}%");
+        }
+
+        if (!is_null($isSingleCourse)) {
+            $query->andWhere('c.singleCourse =:singleCourse')
+                ->setParameter('singleCourse', $isSingleCourse);
+        }
+
+        if (!is_null($showFreeZone)) {
+            $query->andWhere('c.showFreeZone =:showFreeZone')
+                ->setParameter('showFreeZone', $showFreeZone);
+        }
+
+        if (!is_null($showRecommendZone)) {
+            $query->andWhere('c.showRecommendZone =:showRecommendZone')
+                ->setParameter('showRecommendZone', $showRecommendZone);
+        }
+
+        $query->addOrderBy('c.priority', 'DESC')->addOrderBy('c.id', 'DESC');
+        return $query;
+    }
+
+    /**
+     * 取得产品类别
+     * @param null|int $parentId 父类ID
+     * @param string $name 分类名
+     * @param bool $isSingleCourse 是否单课程
+     * @param null $showFreeZone 是否免费专区
+     * @param null $showRecommendZone 是否推荐专区
+     * @return \Doctrine\ORM\QueryBuilder
+     * @author zxqc2018
+     */
+    public function findSiteCategoryListQuery($parentId = null, $name = '', $isSingleCourse = false, $showFreeZone = null, $showRecommendZone = null)
+    {
+        $query = $this->createQueryBuilder('c')
+            ->where('c.isDeleted =:isDeleted')
             ->andWhere('c.status =:status')
             ->setParameter('isDeleted', false)
             ->setParameter('status', Category::ACTIVE);
@@ -132,6 +181,16 @@ class CategoryRepository extends ServiceEntityRepository
     public function findFreeCategory()
     {
         return $this->findCategoryListQuery(null, '', null, true, null);
+    }
+
+    /**
+     * 取得前台免费类别
+     * @return \Doctrine\ORM\QueryBuilder
+     * @author zxqc2018
+     */
+    public function findSiteFreeCategory()
+    {
+        return $this->findSiteCategoryListQuery(null, '', null, true, null);
     }
 
     /**
