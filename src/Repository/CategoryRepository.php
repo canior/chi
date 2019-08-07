@@ -87,7 +87,9 @@ class CategoryRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('c')
             ->where('c.isDeleted =:isDeleted')
-            ->setParameter('isDeleted', false);
+            ->andWhere('c.status =:status')
+            ->setParameter('isDeleted', false)
+            ->setParameter('status', Category::ACTIVE);
 
         if (!is_null($parentId)) {
             if (empty($parentId)) {

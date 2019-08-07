@@ -108,6 +108,10 @@ class CategoryController extends BackendController
             }
             $category->setIconFile($iconFile);
             $category->setPreviewImageFile($previewImageFile);
+
+            $status = $request->request->get('category')['status'];
+            $category->setStatus($status);
+
             $this->entityPersist($category);
 
             $this->addFlash('notice', '添加成功');
@@ -150,6 +154,7 @@ class CategoryController extends BackendController
     public function edit(Request $request, Category $category, FileRepository $fileRepository, $parentId): Response
     {
         $form = $this->createForm(CategoryType::class, $category);
+        $form->get('status')->setData(array_search($category->getStatusText(), Category::$statuses));
         $iconFile = $category->getIconFile();
         if ($iconFile) {
             $fileArray[$iconFile->getId()] = [
@@ -200,6 +205,10 @@ class CategoryController extends BackendController
 
             $category->setIconFile($iconFile);
             $category->setPreviewImageFile($previewImageFile);
+
+            $status = $request->request->get('category')['status'];
+            $category->setStatus($status);
+
             $this->entityPersist($category);
             $this->addFlash('notice', '修改成功');
             $routeParam = ['id' => $category->getId()];
