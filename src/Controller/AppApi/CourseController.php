@@ -40,7 +40,7 @@ class CourseController extends ProductController
 
         $newestProductsArray = $this->findHomeNewestProducts($productRepository);
 
-        $category = $categoryRepository->findCategoryListQuery(0, '', null)->getQuery()->getResult();
+        $category = $categoryRepository->findSiteCategoryListQuery(0, '', null)->getQuery()->getResult();
         $data = [
             'banners' => $bannersArray,
             'freeZoneBanner' => $this->createHomeFreeZoneBannerMetas($projectBannerMetaRepository),
@@ -73,7 +73,7 @@ class CourseController extends ProductController
         if (empty($parentCategory)) {
             $requestProcess->throwErrorException(ErrorCode::ERROR_CATEGORY_NOT_EXISTS, []);
         }
-        $categoryQuery = $categoryRepository->findCategoryListQuery($requestProcess['cateId'], '', null);
+        $categoryQuery = $categoryRepository->findSiteCategoryListQuery($requestProcess['cateId'], '', null);
         $categoryList = $this->getPaginator()->paginate($categoryQuery, $requestProcess['page'], $requestProcess['pageNum']);
 
 
