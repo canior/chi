@@ -14,6 +14,7 @@ use App\Service\Ali\AliVod;
 use App\Service\Util\CommonUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\StatusTrait;
 
 /**
  * Category
@@ -23,7 +24,15 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Category implements Dao
 {
-    use IdTrait;
+    use IdTrait,StatusTrait;
+
+    const ACTIVE = 'active';
+    const INACTIVE = 'inactive';
+
+    public static $statuses = [
+        self::ACTIVE => '已发布',
+        self::INACTIVE => '未发布'
+    ];
 
     /**
      * @var string

@@ -13,6 +13,7 @@ use App\Form\Type\DropzoneType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -43,6 +44,11 @@ class CategoryType extends AbstractType
             ->add('aliyunVideoId', TextType::class, [
                 'label' => '阿里云视频ID',
                 'required' => false,
+            ])
+            ->add('status', ChoiceType::class, [
+                'label' => '状态',
+                'mapped' => false,
+                'choices' => array_flip(Category::$statuses)
             ])
             ->add('priority', IntegerType::class, [
                 'label' => '排序优先级（数字越大越靠前）',
