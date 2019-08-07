@@ -106,7 +106,7 @@ class ProductController extends AppApiBaseController
      */
     protected function findHomeFreeZoneProducts(CategoryRepository $categoryRepository)
     {
-        return CommonUtil::entityArray2DataArray($categoryRepository->findFreeCategory()->getQuery()->getResult());
+        return CommonUtil::entityArray2DataArray($categoryRepository->findSiteFreeCategory()->getQuery()->getResult());
     }
 
     /**
