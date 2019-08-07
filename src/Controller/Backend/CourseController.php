@@ -79,6 +79,7 @@ class CourseController extends BackendController
                     $categoryActual = Category::factory($course->getTitle(), $course->getCourseCategory());
                     $categoryActual->setSingleCourse(1);
                     $categoryActual->setPriority($course->getPriority());
+                    $categoryActual->setStatus($status);
                     $this->entityPersist($categoryActual, false);
                     $course->setCourseActualCategory($categoryActual);
                 } else {
@@ -246,10 +247,12 @@ class CourseController extends BackendController
                         $course->getCourseActualCategory()->setName($course->getTitle());
                         $course->getCourseActualCategory()->setPriority($course->getPriority());
                         $course->getCourseActualCategory()->setParentCategory($course->getCourseCategory());
+                        $course->getCourseActualCategory()->setStatus($status);
                     } else {
                         $categoryActual = Category::factory($course->getTitle(), $course->getCourseCategory());
                         $categoryActual->setSingleCourse(1);
                         $categoryActual->setPriority($course->getPriority());
+                        $categoryActual->setStatus($status);
                         $this->entityPersist($categoryActual, false);
                         $course->setCourseActualCategory($categoryActual);
                     }
@@ -272,6 +275,9 @@ class CourseController extends BackendController
             if ($originCoursePriority != $course->getPriority() && !empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
                 $course->getCourseActualCategory()->setPriority($course->getPriority());
             }
+
+            //状态
+            $course->getCourseActualCategory()->setStatus($status);
 
             $course->setStatus($status);
             $course->setSubject($subject);
