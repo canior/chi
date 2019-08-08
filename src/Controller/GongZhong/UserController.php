@@ -133,6 +133,48 @@ class UserController extends GongZhongBaseController
     }
 
     /**
+     * @Route("/sendCode", name="sendCode",  methods={"POST"})
+     * @param Request $request
+     * @param EncoderFactoryInterface $encoderFactory
+     * @param UserManagerInterface $userManager
+     * @return @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function sendCode()
+    {
+        $data = $this->processRequest(null, ['phone', 'code'],['phone', 'code']);
+
+        $checkConfig = [
+            'phone' => ['len' => 11],
+            'code' => ['len' => 4],
+        ];
+        foreach ($checkConfig as $paramKey => $check) {
+            if (!preg_match("#^\d{{$check['len']}}$#", $requestProcess[$paramKey])) {
+                $requestProcess->throwErrorException(ErrorCode::ERROR_PARAM_NOT_ALL_EXISTS, ['errorKey' => $paramKey]);
+            }
+        }
+
+        //生产验证码
+        $phone = isset($data['phone']) ? $data['phone'] : null;
+        $codeType = isset($data['codeType']) ? $data['codeType'] : null;
+
+        $code = rand(1000, 9999);
+        $messageCode = new MessageCode();
+        $messageCode->setPhone($phone);
+        $messageCode->setCode($code);
+        $messageCode->setType($codeType);
+        $this->getEntityManager()->persist($messageCode);
+        $this->getEntityManager()->flush();
+
+        // 发送验证码
+        $msgTemplateId = "SMS_168345248";
+        $msgData = ['code'=>$code];
+        $this->sendSmsMsg($phone, $msgData, $msgTemplateId);
+
+        // 返回
+        return CommonUtil::resultData([])->toJsonResponse();
+    }
+
+    /**
      * @Route("/login/wx", name="gzhAuthloginWx",  methods={"POST"})
      * @param JWTTokenManagerInterface $JWTTokenManager
      * @return JsonResponse

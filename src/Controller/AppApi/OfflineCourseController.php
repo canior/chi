@@ -14,6 +14,7 @@ use App\Service\Util\CommonUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\GroupUserOrderRepository;
 
 /**
  * Class OfflineCourseController
@@ -57,5 +58,29 @@ class OfflineCourseController extends CourseController
      */
     public function detailAction(Request $request): JsonResponse {
         return parent::detailAction($request);
+    }
+
+    /**
+     * 
+     *
+     * @Route("/auth/offlineCourse/detail/user", name="appOfflineCourseDetailUser", methods="POST")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function userAction(Request $request,GroupUserOrderRepository $groupUserOrderRepository): JsonResponse {
+
+        $requestProcess = $this->processRequest($request, [
+            'productId', 'page', 'pageNum','paymentStatus'
+        ], ['productId']);
+        $user = $this->getAppUser();
+
+        $page  = isset($requestProcess['page'])?$requestProcess['page']:1;
+        $pageNum  = isset($requestProcess['pageNum'])?$requestProcess['pageNum']:20;
+        $paymentStatus = isset($requestProcess['paymentStatus'])?$requestProcess['paymentStatus']:'';
+
+        $groupUserOrderQuery = $groupUserOrderRepository->groupUserOrdersQueryBuilder($requestProcess['productId'],$paymentStatus);
+        $groupUserOrder = $this->getPaginator()->paginate($groupUserOrderQuery,$page, $pageNum);
+
+        return CommonUtil::resultData(['groupUserOrder'=>CommonUtil::entityArray2DataArray($groupUserOrder)])->toJsonResponse();
     }
 }
