@@ -128,7 +128,7 @@ class GroupUserOrderRepository extends ServiceEntityRepository
      * @param bool $isCourse
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function groupUserOrdersQueryBuilder($productId = null,$paymentStatus = null)
+    public function groupUserOrdersQueryBuilder($productId = null,$paymentStatus = null,$isGetCount = false)
     {
         $query = $this->createQueryBuilder('guo')
             ->orderBy('guo.id', 'DESC');
@@ -141,6 +141,11 @@ class GroupUserOrderRepository extends ServiceEntityRepository
         if ($paymentStatus) {
             $query->andWhere('guo.paymentStatus = :paymentStatus')
                 ->setParameter('paymentStatus', $paymentStatus);
+        }
+
+        if ($isGetCount) {
+            $query->select('count(guo.id)');
+            return $query;
         }
 
         return $query;

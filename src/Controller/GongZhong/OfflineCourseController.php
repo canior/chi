@@ -99,6 +99,13 @@ class OfflineCourseController extends GongZhongBaseController
         $groupUserOrderQuery = $groupUserOrderRepository->groupUserOrdersQueryBuilder($requestProcess['productId'],$paymentStatus);
         $groupUserOrder = $this->getPaginator()->paginate($groupUserOrderQuery,$page, $pageNum);
 
-        return CommonUtil::resultData(['groupUserOrder'=>CommonUtil::entityArray2DataArray($groupUserOrder)])->toJsonResponse();
+        $groupUserCountQuery = $groupUserOrderRepository->groupUserOrdersQueryBuilder($requestProcess['productId'],$paymentStatus,true);
+
+        return CommonUtil::resultData(
+            [
+                'groupUserOrder'=>CommonUtil::entityArray2DataArray($groupUserOrder),
+                'total' => CommonUtil::getTotalQueryCount($groupUserCountQuery),
+            ]
+        )->toJsonResponse();
     }
 }
