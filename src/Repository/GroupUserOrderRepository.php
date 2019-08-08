@@ -125,6 +125,28 @@ class GroupUserOrderRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param bool $isCourse
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function groupUserOrdersQueryBuilder($productId = null,$paymentStatus = null)
+    {
+        $query = $this->createQueryBuilder('guo')
+            ->orderBy('guo.id', 'DESC');
+
+        if ($productId) {
+            $query->where('guo.product = :productId')
+            ->setParameter('productId', $productId);
+        }
+
+        if ($paymentStatus) {
+            $query->andWhere('guo.paymentStatus = :paymentStatus')
+                ->setParameter('paymentStatus', $paymentStatus);
+        }
+
+        return $query;
+    }
+
+    /**
      * @param null $groupUserOrderId
      * @param null $userId
      * @param null $courseName
