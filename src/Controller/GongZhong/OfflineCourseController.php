@@ -14,6 +14,7 @@ use App\Service\Util\FactoryUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\GroupUserOrderRepository;
 
 /**
  * Class OfflineCourseController
@@ -46,8 +47,19 @@ class OfflineCourseController extends GongZhongBaseController
             'offlineCourseType' => $requestProcess['offlineCourseType'],
             'isGetCount' => true
         ]);
+
+        $data  = [];
+        foreach ($courseList as $k => $v) {
+            $item = $v->getArray();
+            $item['is_initiator'] = false;
+            if( $v->getCourse()->getInitiator() && $v->getCourse()->getInitiator()->getId() ==  $user->getID() ){
+                $item['is_initiator'] = true;
+            }
+            $data[] = $item;
+        }
+
         return $requestProcess->toJsonResponse([
-            'courseList' => CommonUtil::entityArray2DataArray($courseList),
+            'courseList' => $data,
             'total' => CommonUtil::getTotalQueryCount($courseCountQuery),
             'user' => CommonUtil::obj2Array($user),
         ]);
@@ -64,5 +76,29 @@ class OfflineCourseController extends GongZhongBaseController
             'url', 'productId', 'page', 'pageNum','shareSourceId'
         ], ['productId']);
         return FactoryUtil::offlineCourseService()->getDetailInfo($requestProcess, $this->getAppUser(true), 'gzh')->toJsonResponse();
+    }
+
+    /**
+     * 
+     *
+     * @Route("/offlineCourse/detail/user", name="gzhOfflineCourseDetailUser", methods="POST")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function userAction(Request $request,GroupUserOrderRepository $groupUserOrderRepository): JsonResponse {
+
+        $requestProcess = $this->processRequest($request, [
+            'productId', 'page', 'pageNum','paymentStatus'
+        ], ['productId']);
+        $user = $this->getAppUser();
+
+        $page  = isset($requestProcess['page'])?$requestProcess['page']:1;
+        $pageNum  = isset($requestProcess['pageNum'])?$requestProcess['pageNum']:20;
+        $paymentStatus = isset($requestProcess['paymentStatus'])?$requestProcess['paymentStatus']:'';
+
+        $groupUserOrderQuery = $groupUserOrderRepository->groupUserOrdersQueryBuilder($requestProcess['productId'],$paymentStatus);
+        $groupUserOrder = $this->getPaginator()->paginate($groupUserOrderQuery,$page, $pageNum);
+
+        return CommonUtil::resultData(['groupUserOrder'=>CommonUtil::entityArray2DataArray($groupUserOrder)])->toJsonResponse();
     }
 }
