@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Criteria;
+use App\Service\Util\FactoryUtil;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CourseRepository")
@@ -1206,6 +1207,10 @@ class Course implements Dao
             'courseSpecImages' => $courseSpecImagesArray,
             'reviewsNum' => $this->getProduct()->getTotalActiveReviews(),
             'lookNum' => $this->getLookNum(),
+            'tableCount' => $this->getTableCount(),
+            'tableUserCount' => $this->getTableUserCount(),
+            'maxUserCount' => $this->getTableCount()*$this->getTableUserCount(),
+            'userCount' => $this->getUserNum(),
             'courseVideos' => $courseVideosArray,
             'shareImageFileId' => $this->getShareImageFile() ? $this->getShareImageFile()->getId() : null,
             'previewImageFile' => $this->getPreviewImageFile() ? $this->getPreviewImageFile()->getId() : null,
@@ -1227,6 +1232,11 @@ class Course implements Dao
             'refCourseName' => $this->getRefCourseName(),
             'courseCreateTimeLine' => CommonUtil::getInsideValue($this, 'getProduct.getCreatedAtFormattedLineDate', ''),
         ];
+    }
+
+    // 已经参与人数
+    public function getUserNum(){
+        return FactoryUtil::groupUserOrderRepository()->getProductUserCount( $this->getProduct()->getId() );
     }
 
     /**

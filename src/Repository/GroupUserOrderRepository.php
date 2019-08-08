@@ -255,6 +255,22 @@ class GroupUserOrderRepository extends ServiceEntityRepository
         return $query->orderBy('guo.id', 'DESC')->getQuery()->getSingleResult()['count'];
     }
 
+    /**
+     * @param null $productId
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getProductUserCount($productId) {
+        $query = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(guo) as count')
+            ->from(GroupUserOrder::class, 'guo')
+            ->where('guo.product = :product')
+            ->andWhere('guo.paymentStatus = :paymentStatus')
+            ->setParameter('product',$productId)
+            ->setParameter('paymentStatus','paid');
+        return $query->orderBy('guo.id', 'DESC')->getQuery()->getSingleResult()['count'];
+    }
+
 
     /**
      * @param $productId
