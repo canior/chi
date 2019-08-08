@@ -191,6 +191,12 @@ class Course implements Dao
     private $refTargetCourse;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $initiator;
+    
+    /**
      * @var boolean
      * @ORM\Column(type="integer")
      * @ORM\JoinColumn(nullable=false)
@@ -285,6 +291,25 @@ class Course implements Dao
     public function setTeacher(?Teacher $teacher): void
     {
         $this->teacher = $teacher;
+    }
+
+    /**
+     * @return User
+     */
+    public function getInitiator()
+    {
+        return $this->initiator;
+    }
+
+    /**
+     * @param initiator $initiator
+     * @return GroupOrder
+     */
+    public function setInitiator($initiator)
+    {
+        $this->initiator = $initiator;
+
+        return $this;
     }
 
     /**
@@ -1230,6 +1255,7 @@ class Course implements Dao
             'courseTags' => $this->getCourseTagArr(),
             'addressImageFileId' => CommonUtil::obj2Id($this->getAddressImageFile()),
             'refCourseName' => $this->getRefCourseName(),
+            'initiator' => $this->getInitiator()?$this->getInitiator()->getArray():null,
             'courseCreateTimeLine' => CommonUtil::getInsideValue($this, 'getProduct.getCreatedAtFormattedLineDate', ''),
         ];
     }

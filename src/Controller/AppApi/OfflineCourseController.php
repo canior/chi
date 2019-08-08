@@ -43,8 +43,18 @@ class OfflineCourseController extends CourseController
         ]);
         $courseList = $this->getPaginator()->paginate($courseQuery, $requestProcess['page'], $requestProcess['pageNum']);
 
+        $data  = [];
+        foreach ($courseList as $k => $v) {
+            $item = $v->getArray();
+            $item['is_initiator'] = false;
+            if( $v->getCourse()->getInitiator() && $v->getCourse()->getInitiator()->getId() ==  $user->getID() ){
+                $item['is_initiator'] = true;
+            }
+            $data[] = $item;
+        }
+
         return $requestProcess->toJsonResponse([
-            'courseList' => CommonUtil::entityArray2DataArray($courseList),
+            'courseList' =>$data,
             'user' => CommonUtil::getInsideValue($user, 'array')
         ]);
     }
