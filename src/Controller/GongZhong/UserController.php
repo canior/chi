@@ -141,15 +141,15 @@ class UserController extends GongZhongBaseController
      */
     public function sendCode()
     {
-        $data = $this->processRequest(null, ['phone', 'code'],['phone', 'code']);
+        $data = $this->processRequest(null, ['phone', 'codeType'],['phone']);
 
         $checkConfig = [
             'phone' => ['len' => 11],
-            'code' => ['len' => 4],
+            'codeType' => ['len' => 2],
         ];
         foreach ($checkConfig as $paramKey => $check) {
-            if (!preg_match("#^\d{{$check['len']}}$#", $requestProcess[$paramKey])) {
-                $requestProcess->throwErrorException(ErrorCode::ERROR_PARAM_NOT_ALL_EXISTS, ['errorKey' => $paramKey]);
+            if (!preg_match("#^\d{{$check['len']}}$#", $data[$paramKey])) {
+                $data->throwErrorException(ErrorCode::ERROR_PARAM_NOT_ALL_EXISTS, ['errorKey' => $paramKey]);
             }
         }
 
