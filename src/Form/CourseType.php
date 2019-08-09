@@ -44,7 +44,7 @@ class CourseType extends AbstractType
                 'placeholder' => '选择课程分类',
                 'attr' => ['class' => 'form-control chosen'],
                 'class' => Category::class,
-                'required' => false,
+                'required' => true,
                 'choice_label' => function (Category $category) {
                     return $category->__toString();
                 },
