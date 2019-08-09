@@ -100,6 +100,7 @@ class ProductRepository extends ServiceEntityRepository
         $orderBy = $extension['orderBy'] ?? [];
         $limit = $extension['limit'] ?? null;
         $offlineCourseType = $extension['offlineCourseType'] ?? null;
+        $initiator = $extension['initiator'] ?? null;
         $courseShowType = $extension['courseShowType'] ?? Course::COURSE_SHOW_TYPE_APP;
         $isGetCount = $extension['isGetCount'] ?? false;
 
@@ -129,6 +130,13 @@ class ProductRepository extends ServiceEntityRepository
                         $query->andWhere('c.subject  in (:subjects)')
                             ->setParameter('subjects', $subjects);
                     }
+
+                    if (!empty($initiator)) {
+                        $query->andWhere('c.initiator = :initiator')
+                            ->setParameter('initiator', $initiator);
+                    }
+
+                    
                 }
 
                 if ($isOnline) {
