@@ -129,7 +129,7 @@ class GongZhongMemberController extends GongZhongBaseController
 
         // 返回
         return CommonUtil::resultData( [
-            // 'user'=>$user->getArray(),
+            'user'=>$user->getArray(),
             'totalStock' => $user->getTotalRecommandStock(),//拥有的总名额
             'usedStock' => $user->getUsedRecommandStockCount(),//用掉的总名额
             'recommandStock' => $user->getRecommandStock(),//剩余名额
@@ -345,5 +345,46 @@ class GongZhongMemberController extends GongZhongBaseController
 
         // 返回
         return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();
+    }
+
+    /**
+     * 我发起的思维课
+     *
+     * @Route("/gzhAuth/initiatorOfflineCourses", name="gzhinitiatorOfflineCourseIndex", methods={"POST","OPTIONS"})
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @return JsonResponse
+     */
+    public function initiatorOfflineCoursesAction(Request $request, ProductRepository $productRepository) : JsonResponse
+    {
+        $requestProcess = $this->processRequest($request, ['offlineCourseType', 'page', 'pageNum'], ['offlineCourseType']);
+        $user = $this->getAppUser();
+
+        $courseQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
+            'offlineCourseType' => $requestProcess['offlineCourseType'],
+            'initiator'=>$user
+        ]);
+        $courseList = $this->getPaginator()->paginate($courseQuery, $requestProcess['page'], $requestProcess['pageNum']);
+
+        $courseCountQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
+            'offlineCourseType' => $requestProcess['offlineCourseType'],
+            'initiator'=>$user,
+            'isGetCount' => true
+        ]);
+
+        $data  = [];
+        foreach ($courseList as $k => $v) {
+            $item = $v->getArray();
+            $item['is_initiator'] = false;
+            if( $v->getCourse()->getInitiator() && $v->getCourse()->getInitiator()->getId() ==  $user->getID() ){
+                $item['is_initiator'] = true;
+            }
+            $data[] = $item;
+        }
+
+        return $requestProcess->toJsonResponse([
+            'courseList' => $data,
+            'total' => CommonUtil::getTotalQueryCount($courseCountQuery),
+        ]);
     }
 }
