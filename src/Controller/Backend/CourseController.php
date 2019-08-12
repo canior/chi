@@ -276,8 +276,10 @@ class CourseController extends BackendController
                 $course->getCourseActualCategory()->setPriority($course->getPriority());
             }
 
-            //状态
-            $course->getCourseActualCategory()->setStatus($status);
+            //假如状态有改动 单课程 
+            if ( !empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
+                $course->getCourseActualCategory()->setStatus($status);
+            }
 
             $course->setStatus($status);
             $course->setSubject($subject);

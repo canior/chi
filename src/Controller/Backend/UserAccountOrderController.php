@@ -87,6 +87,14 @@ class UserAccountOrderController extends BackendController
             $em->persist($userAccountOrder);
             $em->flush();
             $this->addFlash('notice', '添加成功');
+
+            if( $form->get('userAccountOrderType')->getData() == UserAccountOrder::EXPERIENCE ){
+                $user->setUserAccountTotal( $user->getUserAccountTotal()+$userAccountOrder->getAmount() );
+                $em->persist($user);
+                $em->flush();    
+            }
+            
+
             return $this->redirectToRoute('user_account_order_index', ['userId' => $userAccountOrder->getUser()->getId()]);
         }
 
