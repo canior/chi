@@ -141,11 +141,10 @@ class UserController extends GongZhongBaseController
      */
     public function sendCode()
     {
-        $data = $this->processRequest(null, ['phone', 'codeType'],['phone']);
+        $data = $this->processRequest(null, ['phone', 'codeType'],['phone', 'codeType']);
 
         $checkConfig = [
             'phone' => ['len' => 11],
-            'codeType' => ['len' => 2],
         ];
         foreach ($checkConfig as $paramKey => $check) {
             if (!preg_match("#^\d{{$check['len']}}$#", $data[$paramKey])) {
