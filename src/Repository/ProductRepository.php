@@ -147,6 +147,15 @@ class ProductRepository extends ServiceEntityRepository
                     }
                 }
             }
+
+            if( isset($extension['isEnd']) ){
+                if( $extension['isEnd'] == true ){
+                    $query->andWhere('c.endDate < :endDate')->setParameter('endDate', time());
+                }else{
+                    $query->andWhere('c.endDate >= :endDate')->setParameter('endDate', time());
+                }
+            }  
+
         } else {
             $query->andWhere('p.course is null');
         }
