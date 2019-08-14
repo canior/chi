@@ -357,17 +357,19 @@ class GongZhongMemberController extends GongZhongBaseController
      */
     public function initiatorOfflineCoursesAction(Request $request, ProductRepository $productRepository) : JsonResponse
     {
-        $requestProcess = $this->processRequest($request, ['offlineCourseType', 'page', 'pageNum'], ['offlineCourseType']);
+        $requestProcess = $this->processRequest($request, ['offlineCourseType','isEnd', 'page', 'pageNum'], ['offlineCourseType']);
         $user = $this->getAppUser();
 
         $courseQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
             'offlineCourseType' => $requestProcess['offlineCourseType'],
+            'isEnd' => $requestProcess['isEnd'],
             'initiator'=>$user
         ]);
         $courseList = $this->getPaginator()->paginate($courseQuery, $requestProcess['page'], $requestProcess['pageNum']);
 
         $courseCountQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
             'offlineCourseType' => $requestProcess['offlineCourseType'],
+            'isEnd' => $requestProcess['isEnd'],
             'initiator'=>$user,
             'isGetCount' => true
         ]);
