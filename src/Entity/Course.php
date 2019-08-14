@@ -1236,7 +1236,9 @@ class Course implements Dao
             'tableUserCount' => $this->getTableUserCount(),
             'maxUserCount' => $this->getTableCount()*$this->getTableUserCount(),
             'userCount' => $this->getUserNum(),
+            'unpaidUserNum' => $this->getUnpaidUserNum(),
             'courseVideos' => $courseVideosArray,
+            'shareCount' => $this->getShareCount(),
             'shareImageFileId' => $this->getShareImageFile() ? $this->getShareImageFile()->getId() : null,
             'previewImageFile' => $this->getPreviewImageFile() ? $this->getPreviewImageFile()->getId() : null,
             'totalStudents' => $this->getTotalStudentUsers(),
@@ -1263,6 +1265,16 @@ class Course implements Dao
     // 已经参与人数
     public function getUserNum(){
         return FactoryUtil::groupUserOrderRepository()->getProductUserCount( $this->getProduct()->getId() );
+    }
+
+    // 未付款人数
+    public function getUnpaidUserNum(){
+        return FactoryUtil::groupUserOrderRepository()->getProductUserCount( $this->getProduct()->getId(),GroupUserOrder::UNPAID );
+    }
+
+    // 分享人数
+    public function getShareCount(){
+        return 0;
     }
 
     /**
