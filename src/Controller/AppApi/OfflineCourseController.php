@@ -47,7 +47,7 @@ class OfflineCourseController extends CourseController
         foreach ($courseList as $k => $v) {
             $item = $v->getArray();
             $item['is_initiator'] = false;
-            if( $v->getCourse()->getInitiator() && $v->getCourse()->getInitiator()->getId() ==  $user->getID() ){
+            if( $user && $v->getCourse()->getInitiator() && $v->getCourse()->getInitiator()->getId() ==  $user->getID() ){
                 $item['is_initiator'] = true;
             }
             $data[] = $item;

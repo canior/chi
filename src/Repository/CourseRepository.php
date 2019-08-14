@@ -74,6 +74,7 @@ class CourseRepository extends ServiceEntityRepository
             }
         }
 
+        $query->orderBy('c.id', 'desc');
         return $query;
     }
 

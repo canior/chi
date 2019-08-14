@@ -37,13 +37,13 @@ class UserStockController extends BackendController
         $data['data'] = array();
 
         if ($data['form']['name']) {
-            $userAddressArray = $userAddressRepository->findBy(['name' => $data['form']['name']]);
+            $userAddressArray = $userAddressRepository->findBy(['name' => $data['form']['name']],['id' => 'DESC']);
             foreach($userAddressArray as $userAddress) {
                 $data['data'][] = $userAddress->getUser();
             }
         }
         else {
-            $data['data'] = $userRepository->findBy(['userLevel' => UserLevel::PARTNER]);
+            $data['data'] = $userRepository->findBy(['userLevel' => UserLevel::PARTNER],['id' => 'DESC']);
         }
 
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);

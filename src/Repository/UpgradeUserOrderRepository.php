@@ -69,6 +69,8 @@ class UpgradeUserOrderRepository extends ServiceEntityRepository
                 ->setParameter('status', $status);
         }
 
+        $query->orderBy('uuo.id', 'desc');
+
         return $query;
     }
 }
