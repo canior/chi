@@ -61,6 +61,7 @@ class ProductStatisticsRepository extends ServiceEntityRepository
                 ->setParameter('day', $day);
         }
 
+        $query->orderBy('ps.id', 'desc');
         return $query;
     }
 }

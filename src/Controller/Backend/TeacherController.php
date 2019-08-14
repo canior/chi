@@ -28,10 +28,10 @@ class TeacherController extends BackendController
             ]
         ];
         if ($data['form']['name']) {
-            $data['data'] = $teacherRepository->findBy(['name' => $data['form']['name']]);
+            $data['data'] = $teacherRepository->findBy(['name' => $data['form']['name']],['id' => 'DESC']);
         }
         else {
-            $data['data'] = $teacherRepository->findAll();
+            $data['data'] = $teacherRepository->findBy([],['id' => 'DESC']);
         }
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/teacher/index.html.twig', $data);

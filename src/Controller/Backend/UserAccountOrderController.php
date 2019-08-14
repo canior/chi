@@ -33,9 +33,9 @@ class UserAccountOrderController extends BackendController
             ]
         ];
         if ($data['form']['name'])
-            $data['data'] = $userRepository->findBy(['name' => $data['form']['name']]);
+            $data['data'] = $userRepository->findBy(['name' => $data['form']['name']],['id' => 'DESC']);
         else
-            $data['data'] = $userRepository->findAll();
+            $data['data'] = $userRepository->findBy([],['id' => 'DESC']);
 
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/user_account_order/statistic.html.twig', $data);
@@ -176,7 +176,7 @@ class UserAccountOrderController extends BackendController
             ],
             'data' => [],
         ];
-        $data['data'] = $userAccountOrderRepository->findBy(['userAccountOrderType' => UserAccountOrder::WITHDRAW, 'paymentStatus' => UserAccountOrder::UNPAID]);
+        $data['data'] = $userAccountOrderRepository->findBy(['userAccountOrderType' => UserAccountOrder::WITHDRAW, 'paymentStatus' => UserAccountOrder::UNPAID],['id' => 'DESC']);
 
         $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
         return $this->render('backend/user_account_order/withdrawOrders.html.twig', $data);

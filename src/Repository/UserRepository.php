@@ -121,6 +121,8 @@ class UserRepository extends ServiceEntityRepository
                 ->setParameter('createdAtEnd', $createdAtEnd);
         }
 
+        $query->orderBy('u.id', 'desc');
+
         return $query;
     }
 

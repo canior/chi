@@ -77,6 +77,8 @@ class UserStatisticsRepository extends ServiceEntityRepository
                 ->setParameter('day', $day);
         }
 
+        $query->orderBy('us.id', 'desc');
+
         return $query;
     }
 }

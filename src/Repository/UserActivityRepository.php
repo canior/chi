@@ -57,6 +57,8 @@ class UserActivityRepository extends ServiceEntityRepository
                 ->setParameter('createdAtEnd', $createdAtEnd);
         }
 
+        $query->orderBy('ua.id', 'desc');
+
         return $query;
     }
 }
