@@ -236,4 +236,24 @@ class UserRepository extends ServiceEntityRepository
 
         return $query;
     }
+
+    /**
+     * @param null $parentId
+     * @return QueryBuilder
+     */
+    public function getUserByParent($parentId = null)
+    {
+        /**
+         * @var QueryBuilder $query
+         */
+        $query = $this->createQueryBuilder('u');
+
+        if ($parentId) {
+            $query->where('u.parentUser = :parentId')->setParameter('parentId', $parentId);
+        }
+
+        $query->orderBy('u.id', 'desc');
+
+        return $query->getQuery()->getResult();
+    }
 }

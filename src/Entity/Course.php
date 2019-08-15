@@ -195,7 +195,7 @@ class Course implements Dao
 
     public static $checkStatusTexts = [
         self::CHECK_PASS => '审核通过',
-        self::CHECK_REJECT => '驳回',
+        self::CHECK_REJECT => '审核驳回',
     ];
 
     /**
