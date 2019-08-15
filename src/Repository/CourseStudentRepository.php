@@ -18,4 +18,27 @@ class CourseStudentRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, CourseStudent::class);
     }
+
+
+    /**
+     * @param bool $isCourse
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function courseStudentsQueryBuilder($courseId = null,$isGetCount = false)
+    {
+        $query = $this->createQueryBuilder('cs')
+            ->orderBy('cs.id', 'DESC');
+
+        if ($courseId) {
+            $query->where('cs.course = :courseId')
+            ->setParameter('courseId', $courseId);
+        }
+
+        if ($isGetCount) {
+            $query->select('count(cs.id)');
+            return $query;
+        }
+
+        return $query;
+    }
 }
