@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\Util\FactoryUtil;
 use App\Service\Util\MoneyUtil;
+use App\Repository\UserRepository;
 
 /**
  */
@@ -43,9 +44,9 @@ class GongZhongGroupUserOrderController extends GongZhongBaseController
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
      */
-    public function groupUserOrdersAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
+    public function groupUserOrdersAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository, UserRepository $userRepository) {
 
-        $data = $this->processRequest($request, ['productType', 'page'], ['productType']);
+        $data = $this->processRequest($request, ['productType', 'page','recommander'], ['productType']);
 
         $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
         $page = isset($data['page']) ? $data['page'] : 1;
@@ -55,6 +56,7 @@ class GongZhongGroupUserOrderController extends GongZhongBaseController
          */
         $productType = isset($data['productType']) ? $data['productType'] : '';
         $productCategory = isset($data['productCategory']) ? $data['productCategory'] :'';
+        $recommander = isset($data['recommander']) ? $data['recommander'] :'';
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -70,7 +72,6 @@ class GongZhongGroupUserOrderController extends GongZhongBaseController
         switch ($productType) {
             case 'product':
                 $where = [
-                    'userId' => $user->getId(),
                     'status' => $groupUserOrderStatus,
                     'paymentStatus' => $paymentStatusArray,
                     'isCourseProduct'=>false,
@@ -78,7 +79,6 @@ class GongZhongGroupUserOrderController extends GongZhongBaseController
                 break;
             case 'onlineCourse':
                 $where = [
-                    'userId' => $user->getId(),
                     'status' => $groupUserOrderStatus,
                     'paymentStatus' => $paymentStatusArray,
                     'isCourseProduct'=>true,
@@ -87,7 +87,6 @@ class GongZhongGroupUserOrderController extends GongZhongBaseController
                 break;
             case 'offlineCourse':
                 $where = [
-                    'userId' => $user->getId(),
                     'status' => $groupUserOrderStatus,
                     'paymentStatus' => $paymentStatusArray,
                     'isCourseProduct'=>true,
@@ -98,22 +97,31 @@ class GongZhongGroupUserOrderController extends GongZhongBaseController
                 break;
         }
 
+        // 推荐人订单，自己订单
+        if($recommander){
+            $recommandersUser = $userRepository->getUserByParent($user->getId());
+            $recommanders = [];
+            foreach ($recommandersUser as $k => $v) {
+                $recommanders[] = $v->getId();
+            }
+            $where['recommanders'] = $recommanders;
+        }else{
+            $where['userId'] = $user->getId();
+        }
+
         $groupUserOrders = $groupUserOrderRepository->findUserGroupUserOrders($where);
         $groupUserOrders = $this->getPaginator()->paginate($groupUserOrders, $page,self::PAGE_LIMIT);
+        $groupUserOrdersCount = $groupUserOrderRepository->findUserGroupUserOrders($where,true);
 
         $groupUserOrdersArray = [];
         foreach ($groupUserOrders as $groupUserOrder) {
             $groupUserOrdersArray[] = $groupUserOrder->getArray();
         }
 
-        //查找直通车课程id
-        $tradingProductId = null;
-        $tradingCourse = FactoryUtil::courseRepository()->findSpecTradingCourse(MoneyUtil::tradeSpecialPrice());
-        if (!empty($tradingCourse)) {
-            $tradingProductId = $tradingCourse->getProduct()->getId();
-        }
-
         // 返回
-        return CommonUtil::resultData( ['groupUserOrders' => $groupUserOrdersArray,'tradingProductId'=>$tradingProductId ] )->toJsonResponse();
+        return CommonUtil::resultData( [
+            'groupUserOrders' => $groupUserOrdersArray,
+            'total' => CommonUtil::getTotalQueryCount($groupUserOrdersCount),
+        ] )->toJsonResponse();
     }
 }

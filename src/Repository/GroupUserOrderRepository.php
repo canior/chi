@@ -303,7 +303,7 @@ class GroupUserOrderRepository extends ServiceEntityRepository
      * @param $productId
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findUserGroupUserOrders($where)
+    public function findUserGroupUserOrders($where,$isGetCount = false)
     {
         $query = $this->createQueryBuilder('guo')
             ->leftJoin('guo.product', 'p')
@@ -311,6 +311,10 @@ class GroupUserOrderRepository extends ServiceEntityRepository
 
         if (isset($where['userId'])) {
             $query->andWhere('guo.user = :userId')->setParameter('userId',$where['userId']);
+        }
+
+        if (isset($where['recommanders'])) {
+            $query->andWhere('guo.user in (:recommanders)')->setParameter('recommanders',$where['recommanders']);
         }
 
         if (isset($where['status'])) {
@@ -335,6 +339,11 @@ class GroupUserOrderRepository extends ServiceEntityRepository
             }else{
                 $query->andWhere('c.isOnline = :isOnline')->setParameter('isOnline',0);
             }
+        }
+
+        if ($isGetCount) {
+            $query->select('count(guo.id)');
+            return $query;
         }
 
         // dump( $query );die;
