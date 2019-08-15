@@ -190,6 +190,29 @@ class Course implements Dao
      */
     private $refTargetCourse;
 
+    const CHECK_PASS = 'pass';
+    const CHECK_REJECT = 'reject';
+
+    public static $checkStatusTexts = [
+        self::CHECK_PASS => '审核通过',
+        self::CHECK_REJECT => '驳回',
+    ];
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $checkStatus;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $checkAt;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $reason;
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=true)
@@ -1259,7 +1282,30 @@ class Course implements Dao
             'refCourseName' => $this->getRefCourseName(),
             'initiator' => $this->getInitiator()?$this->getInitiator()->getArray():null,
             'courseCreateTimeLine' => CommonUtil::getInsideValue($this, 'getProduct.getCreatedAtFormattedLineDate', ''),
+            'checkStatus' =>$this->getCheckStatus(),
+            'checkStatusText' =>$this->getCheckStatusText(),
+            'progressText' =>$this->getProgress(),
         ];
+    }
+
+    // 进度
+    public function getProgress(){
+
+        $text = $this->getCheckStatusText();
+
+        if( $this->getCheckStatus() == self::CHECK_PASS ){
+            if( $this->getEndDate() < time() ){
+                $text = '已结束';
+            }
+
+            if( $this->getStartDate() < time() ){
+                $text = '未开始';
+            }else{
+                $text = '报名中';
+            }
+        }
+
+        return $text;
     }
 
     // 已经参与人数
@@ -1302,5 +1348,63 @@ class Course implements Dao
         }
 
         return $res;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCheckStatus()
+    {
+        return $this->checkStatus;
+    }
+
+    public function getCheckStatusText()
+    {
+        return self::$checkStatusTexts[$this->getCheckStatus()] ?? '待审核';
+    }
+
+    public function isCheckPass()
+    {
+        return $this->checkStatus == self::CHECK_PASS;
+    }
+
+    /**
+     * @param string $checkStatus
+     */
+    public function setCheckStatus(string $checkStatus)
+    {
+        $this->checkStatus = $checkStatus;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCheckAt()
+    {
+        return $this->checkAt;
+    }
+
+    /**
+     * @param string $checkAt
+     */
+    public function setCheckAt(int $checkAt)
+    {
+        $this->checkAt = $checkAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReason()
+    {
+        return $this->reason;
+    }
+
+    /**
+     * @param string $reason
+     */
+    public function setReason($reason)
+    {
+        $this->reason = $reason;
     }
 }
