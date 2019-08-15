@@ -1284,28 +1284,31 @@ class Course implements Dao
             'courseCreateTimeLine' => CommonUtil::getInsideValue($this, 'getProduct.getCreatedAtFormattedLineDate', ''),
             'checkStatus' =>$this->getCheckStatus(),
             'checkStatusText' =>$this->getCheckStatusText(),
-            'progressText' =>$this->getProgress(),
+            'progress' =>$this->getProgress()['progress'],
+            'progressText' =>$this->getProgress()['progressText'],
         ];
     }
 
     // 进度
     public function getProgress(){
-
-        $text = $this->getCheckStatusText();
-
+        $progressText = $this->getCheckStatusText();
+        $progress = $this->getCheckStatus()?$this->getCheckStatus():'wait';
         if( $this->getCheckStatus() == self::CHECK_PASS ){
             if( $this->getEndDate() < time() ){
-                $text = '已结束';
-            }
-
-            if( $this->getStartDate() < time() ){
-                $text = '未开始';
+                $progressText = '已结束';
+                $progress = 'end';
             }else{
-                $text = '报名中';
+                if( $this->getStartDate() > time() ){
+                    $progressText = '活动进行中';
+                    $progress = 'start';
+                }else{
+                    $progressText = '报名中';
+                    $progress = 'sign';
+                }
             }
         }
 
-        return $text;
+        return ['progressText'=>$progressText,'progress'=>$progress];
     }
 
     // 已经参与人数
