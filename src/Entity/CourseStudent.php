@@ -158,6 +158,7 @@ class CourseStudent implements Dao
     public function getArray() {
         return [
             'id' => $this->getId(),
+            'user' => $this->getStudentUser()->getArray(),
             'status' => $this->getStatus(),
             'statusText' => self::$statusTexts[$this->getStatus()],
             'courseId' => $this->getCourse()->getId(),
