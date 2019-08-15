@@ -56,7 +56,7 @@ class GongZhongGroupUserOrderController extends GongZhongBaseController
          */
         $productType = isset($data['productType']) ? $data['productType'] : '';
         $productCategory = isset($data['productCategory']) ? $data['productCategory'] :'';
-        $recommander = isset($data['recommander']) ? $data['recommander'] :'';
+        $recommander = isset($data['recommander']) ? $data['recommander'] :false;
 
         // 查询匹配用户
         $user =  $this->getAppUser();
