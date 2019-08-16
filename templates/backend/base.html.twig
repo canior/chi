@@ -25,7 +25,7 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>{{ title is defined ? title : '' }} <small>{{ intro is defined ? intro : '' }}</small></h1>
+            <h4>{{ title is defined ? title : '' }} <small>{{ intro is defined ? intro : '' }}</small></h4>
             {{ render(controller('App\\Controller\\Backend\\BackendController:breadcrumb', { 'request': app.request })) }}
         </section>
 
