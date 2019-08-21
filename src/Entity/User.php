@@ -484,6 +484,14 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * @return bool
+     */
+    public function isNewUser()
+    {
+        return BianxianUserLevel::VISITOR == $this->getBianxianUserLevel() || BianxianUserLevel::THINKING == $this->getBianxianUserLevel();
+    }
+
+    /**
      * 是否有推荐名额资格
      * @return bool
      * @author zxqc2018
@@ -2185,6 +2193,7 @@ class User extends BaseUser implements Dao
             'recommandNameEditable' => $this->getParentUser() == null ? true : false,
             'isAdvancedPlus' => $this->isAdavancePlusUserLevel(),
             'advancedTime' => $this->getAdvancedTime(),
+            'isNewUser' => $this->isNewUser(),
         ];
     }
 }
