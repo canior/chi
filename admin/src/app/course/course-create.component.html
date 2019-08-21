@@ -1,0 +1,277 @@
+<page [title]="'编辑'">
+    
+    <nz-spin  [nzSpinning]="isLoading">
+        <div nz-row [nzGutter]="16"  [style.marginBottom.px]="24">
+            <form nz-form>
+                <div nz-col class="gutter-row"  nzXl="18" nzXs="24"  [style.marginBottom.px]="24">
+                    <div class="gutter-box">
+                        <nz-card nzTitle="内容设置" [nzBordered]="false" [style.marginBottom.px]="24">
+                            
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable">系列</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-select >
+                                                <nz-option nzValue="album" nzLabel="待开发"></nz-option>
+                                            </nz-select >
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>分类</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-tree-select [nzNodes]="category" name="category" [(ngModel)]="selectCourse.category" [nzDefaultExpandAll]="true">
+                                            </nz-tree-select>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="title" nzRequired>课程名称</nz-form-label>
+                                        <nz-form-control>
+                                            <input nz-input name="title" [(ngModel)]="selectCourse.title" type="text">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>讲师</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-select nzAllowClear>
+                                                <nz-option *ngFor="let item of teacher" nzValue="{{item.id}}" nzLabel="{{item.name}}"></nz-option>
+                                            </nz-select>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="title" nzRequired>视频地址</nz-form-label>
+                                        <nz-form-control>
+                                            <input nz-input name="title" [(ngModel)]="selectCourse.title" type="text">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable">标签</nz-form-label>
+                                        <nz-form-control>
+                                            <input nz-input name="author" [(ngModel)]="selectCourse.author" type="text">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="remark" nzRequired>封面图片</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-upload 
+                                                nzAction="{{file_upload_url}}" 
+                                                nzListType="picture-card" 
+                                                [(nzFileList)]="fileList" 
+                                                [nzShowButton]="fileList.length < 1" 
+                                                [nzShowUploadList]="showUploadList" 
+                                                [nzMultiple]="false"
+                                                (nzChange)="handleChange($event)"
+                                            >
+                                                <i nz-icon nzType="plus"></i>
+                                                <div class="ant-upload-text">上传</div>
+                                            </nz-upload>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="remark" nzRequired>分享图片</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-upload 
+                                                nzAction="{{file_upload_url}}" 
+                                                nzListType="picture-card" 
+                                                [(nzFileList)]="fileList" 
+                                                [nzShowButton]="fileList.length < 1" 
+                                                [nzShowUploadList]="showUploadList" 
+                                                [nzMultiple]="false"
+                                                (nzChange)="handleChange($event)"
+                                            >
+                                                <i nz-icon nzType="plus"></i>
+                                                <div class="ant-upload-text">上传</div>
+                                            </nz-upload>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable">课程简介</nz-form-label>
+                                        <nz-form-control>
+                                            <textarea nz-input name="content" [(ngModel)]="selectCourse.content" rows="4">{{selectCourse.content}}</textarea>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="remark">课程详情</nz-form-label>
+                                        <nz-form-control>
+                                            <textarea nz-input  name="remark" [(ngModel)]="selectCourse.remark" rows="10">{{selectCourse.remark}}</textarea>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            
+                            
+                            
+                        </nz-card>
+
+                        <nz-card  nzTitle="定价" [nzBordered]="false">
+
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="top" nzRequired>定价类型</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-radio-group name="unlockType" [(ngModel)]="selectCourse.unlockType">
+                                                <label nz-radio nzValue="buy_type_three">单独购买</label>
+                                                <label nz-radio nzValue="buy_type_four">免费</label>
+                                                <label nz-radio nzValue="buy_type_two">单独拼团</label>
+                                                <label nz-radio nzValue="buy_type_one">可拼团，可购买</label>
+                                            </nz-radio-group>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="title" nzRequired>价格</nz-form-label>
+                                        <nz-form-control>
+                                            <input nz-input name="title" [(ngModel)]="selectCourse.title" type="text">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="title" nzRequired>集Call时长（小时）</nz-form-label>
+                                        <nz-form-control>
+                                            <input nz-input name="title" [(ngModel)]="selectCourse.title" type="text">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="title" nzRequired>集Call人数</nz-form-label>
+                                        <nz-form-control>
+                                            <input nz-input name="title" [(ngModel)]="selectCourse.title" type="text">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item>
+                                        <nz-form-control>
+                                            <button (click)="doSubmit()" nz-button nzType="primary">保存</button>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                        </nz-card>
+
+                    </div>
+                </div>
+                <div nz-col class="gutter-row"  nzXl="6" nzXs="24"  [style.marginBottom.px]="24">
+                    <div nz-row [nzGutter]="16">
+                        <nz-card  nzTitle="显示设置" id="c1" [nzBordered]="false" [style.marginBottom.px]="24">
+
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="top" nzRequired>显示设备</nz-form-label>
+                                        <nz-form-control>
+                                            <label nz-checkbox >全部</label>
+                                            <label nz-checkbox >APP</label>
+                                            <label nz-checkbox >小程序</label>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="top">是否置顶</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-switch  ></nz-switch>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="top">是否推荐</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-switch ></nz-switch>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="top">是否在免费栏显示</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-switch   ></nz-switch>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="title">排序</nz-form-label>
+                                        <nz-form-control>
+                                            <input nz-input name="title" [(ngModel)]="selectCourse.title" type="text">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                        </nz-card>
+
+                        
+                    </div>
+                </div>
+            </form>
+        </div>
+    </nz-spin>
+
+</page>

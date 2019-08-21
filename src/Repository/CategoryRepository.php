@@ -74,6 +74,24 @@ class CategoryRepository extends ServiceEntityRepository
     }
 
     /**
+     * 查询分类
+     * @return array
+     */
+    public function getCategoryList()
+    {
+        $query = $this->getEntityManager()->createQueryBuilder();
+        $query->select('c.id,c.name,c.parentCategoryId as pid')
+            ->from(Category::class, 'c')
+            ->where('c.isDeleted = :isDeleted')
+            ->setParameter('isDeleted', 0)
+            ->orderBy('c.id', 'DESC');
+            
+        $query->andWhere('c.singleCourse = :singleCourse')->setParameter('singleCourse', 0);
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
      * 取得产品类别
      * @param null|int $parentId 父类ID
      * @param string $name 分类名

@@ -1242,6 +1242,7 @@ class Course implements Dao
             'id' => $this->getId(),
             'productId' => $this->getProduct()->getId(),
             'title' => $this->getProduct()->getTitle(),
+            'category_name' => $this->getCourseCategory()?$this->getCourseCategory()->getName():'',
             'price' => $this->getProduct()->getPrice(),
             'shortDescription' => $this->getProduct()->getShortDescription(),
             'startDate' =>  $this->getStartDate() ? date(self::DATE_FORMAT, $this->getStartDate()) : '',
@@ -1270,7 +1271,7 @@ class Course implements Dao
             'subject' => $this->getSubject(),
             'subjectText' => $this->getSubject() ? Subject::$subjectTextArray[$this->getSubject()] : null,
             'eligibleViewer' => $this->getEligibleViewerUserLevels(),
-            'aliyunVideoId' => $this->getAliyunVideoId(),
+            // 'aliyunVideoId' => $this->getAliyunVideoId(),
             'requiredGroupUserOrders' => $this->getTotalGroupUserOrdersRequired(),
             'topCategoryName' => CommonUtil::getInsideValue($this, 'getCourseActualCategory.getParentCategory.getName', ''),
             'topCateIdentityId' => CommonUtil::getInsideValue($this, 'getCourseActualCategory.getParentCategory.getCateIdentityId', null),
@@ -1280,12 +1281,43 @@ class Course implements Dao
             'courseTags' => $this->getCourseTagArr(),
             'addressImageFileId' => CommonUtil::obj2Id($this->getAddressImageFile()),
             'refCourseName' => $this->getRefCourseName(),
-            'initiator' => $this->getInitiator()?$this->getInitiator()->getArray():null,
+            // 'initiator' => $this->getInitiator()?$this->getInitiator()->getArray():null,
             'courseCreateTimeLine' => CommonUtil::getInsideValue($this, 'getProduct.getCreatedAtFormattedLineDate', ''),
             'checkStatus' =>$this->getCheckStatus(),
             'checkStatusText' =>$this->getCheckStatusText(),
             'progress' =>$this->getProgress()['progress'],
             'progressText' =>$this->getProgress()['progressText'],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getLittleArray() : array {
+        return [
+            'id' => $this->getId(),
+            'productId' => $this->getProduct()->getId(),
+            'title' => $this->getProduct()->getTitle(),
+            'category_name' => $this->getCourseCategory()?$this->getCourseCategory()->getName():'',
+            'price' => $this->getProduct()->getPrice(),
+            'shortDescription' => $this->getProduct()->getShortDescription(),
+            'startDate' =>  $this->getStartDate() ? date(self::DATE_FORMAT, $this->getStartDate()) : '',
+            'endDate' =>  $this->getEndDate() ? date(self::DATE_FORMAT, $this->getEndDate()) : '',
+            'address' => $this->getAddress() ? $this->getAddress() : '-',
+            'city' => $this->getCity(),
+            'region' => $this->getRegion() ? $this->getRegion()->getArray() : null,
+            'teacher' => $this->getTeacher()->getArray(),
+            'reviewsNum' => $this->getProduct()->getTotalActiveReviews(),
+            'lookNum' => $this->getLookNum(),
+            'tableCount' => $this->getTableCount(),
+            'tableUserCount' => $this->getTableUserCount(),
+            'maxUserCount' => $this->getTableCount()*$this->getTableUserCount(),
+            'userCount' => $this->getUserNum(),
+            'unpaidUserNum' => $this->getUnpaidUserNum(),
+            'totalStudents' => $this->getTotalStudentUsers(),
+            'isOnline' => $this->isOnline,
+            'subject' => $this->getSubject(),
+            'subjectText' => $this->getSubject() ? Subject::$subjectTextArray[$this->getSubject()] : null,
         ];
     }
 

@@ -16,6 +16,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Command\Product\Image\CreateOrUpdateProductImagesCommand;
 use App\Entity\Product;
 use App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommand;
+use App\Service\Util\CommonUtil;
+use App\Repository\CategoryRepository;
 
 /**
  * @Route("/backend")
@@ -30,22 +32,33 @@ class CourseController extends BackendController
      */
     public function index(Request $request, CourseRepository $courseRepository): Response
     {
-        $data = [
-            'title' => '课程管理',
-            'form' => [
-                'subject' => $request->query->get('subject', null),
-                'courseShowType' => $request->query->get('courseShowType', 'all'),
-                'oneCategory' => $request->query->get('oneCategory', null),
-                'twoCategory' => $request->query->get('twoCategory', null),
-                'page' => $request->query->getInt('page', 1)
-            ],
-            'courseShowTypes' => Course::$courseShowTypeTexts,
-            'oneCategoryList' => json_encode(FactoryUtil::categoryRepository()->getCategoryTree(0, true)),
-        ];
+        // NG
+        $data = [];
+        if( $request->query->get('ng') ){
+            $data = [
+                'title' => '课程管理',
+                'form' => [
+                    'subject' => $request->query->get('subject', null),
+                    'courseShowType' => $request->query->get('courseShowType', 'all'),
+                    'oneCategory' => $request->query->get('oneCategory', null),
+                    'twoCategory' => $request->query->get('twoCategory', null),
+                    'page' => $request->query->getInt('page', 1)
+                ],
+                'courseShowTypes' => Course::$courseShowTypeTexts,
+                'oneCategoryList' => json_encode(FactoryUtil::categoryRepository()->getCategoryTree(0, true)),
+            ];
 
-        $data['data'] = $courseRepository->findCourseQueryBuild(true, $data['form']['courseShowType'], $data['form']['oneCategory'], $data['form']['twoCategory']);
+            $data['data'] = $courseRepository->findCourseQueryBuild(true, $data['form']['courseShowType'], $data['form']['oneCategory'], $data['form']['twoCategory']);
 
-        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
+            $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
+
+            $datas  = [];
+            foreach ($data['pagination'] as $k => $v) {
+                $datas[] = $v->getLittleArray();
+            }
+            return CommonUtil::resultData($datas)->toJsonResponse();
+        }
+
         return $this->render('backend/course/index.html.twig', $data);
     }
 
@@ -152,6 +165,85 @@ class CourseController extends BackendController
             'title' => '创建新课程',
             'form' => $form->createView(),
         ]);
+    }
+
+    public function getTree($list,$pid=0,$itemprefix = '') {
+        static $icon = array('│', '├', '└');
+        static $nbsp = " ";
+        static $arr = array();
+        $number = 1;
+        foreach($list as $row) {
+            if($row['pid'] == $pid) {
+                $brotherCount = 0;
+                //判断当前有多少个兄弟分类
+                foreach($list as $r) {
+                    if($row['pid'] == $r['pid']) {
+                        $brotherCount++;
+                    }
+                }
+                if($brotherCount >0) {
+                    $j = $k = '';
+                    if($number == $brotherCount) {
+                        $j .= $icon[2];
+                        $k = $itemprefix ? $nbsp : '';
+                    }else{
+                        $j .= $icon[1];
+                        $k = $itemprefix ? $icon[0] : '';
+                    }
+                    $spacer = $itemprefix ? $itemprefix . $j : '';
+                    $row['name'] = $spacer.$row['name'];
+                    $arr[] = $row;
+                    $number++;
+                    $this->getTree($list,$row['id'],$itemprefix . $k . $nbsp);
+                }
+            }
+        }
+        return  $arr;
+    }
+
+    /**
+     * 菜单树
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getTempTree($data, $pId = 0)
+    {
+        $tree = array();
+        foreach($data as $k => $v)
+        {
+            if($v['pid'] == $pId)
+            {
+                //子
+                $item = $this->getTempTree($data, $v['id']);
+                $v['isLeaf'] = true;
+                if(count($item) ){
+                    $v['isLeaf'] = false;
+                    $v['children'] = $item ;
+                }
+
+                $v['key'] = $v['id'];
+                $v['title'] = $v['name'];
+                $tree[] = $v;
+            }
+        }
+        return $tree;
+    }
+
+    /**
+     * @Route("/course/createData/{id}", name="CreateData", methods="GET|POST")
+     * @param Request $request
+     * @param Course $course
+     * @return Response
+     */
+    public function getCreateData(Request $request, CategoryRepository $categoryRepository, TeacherRepository $teacherRepository): Response{
+
+        $data['category'] = $categoryRepository->getCategoryList();
+        $data['category'] = $this->getTempTree($data['category']);
+        // dump($data);die;
+
+        $data['teacher'] = $teacherRepository->getTeacherList();
+
+        return CommonUtil::resultData($data)->toJsonResponse();
     }
 
     /**

@@ -52,6 +52,13 @@ class Category implements Dao
     private $parentCategory;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="parent_category_id", type="string")
+     */
+    private $parentCategoryId;
+
+    /**
      * @var File
      *
      * @ORM\ManyToOne(targetEntity="File", cascade={"persist"})
