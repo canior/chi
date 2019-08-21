@@ -12,6 +12,8 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use App\Entity\GroupUserOrder;
 use App\Entity\Follow;
+use App\Entity\User;
+use App\Entity\BianxianUserLevel;
 use Doctrine\ORM\Query\Expr;
 /**
  * @method MessageGroupUserOrderMeta|null find($id, $lockMode = null, $lockVersion = null)
@@ -30,7 +32,7 @@ class MessageGroupUserOrderMetaRepository extends ServiceEntityRepository
      * @param $userId
      * @return array
      */
-    public function getGroupUserOrder($userId,$checkStatus,$isRead)
+    public function getGroupUserOrder($userId,$checkStatus,$isRead,$isNewUser = false)
     {
         $query = $this->getEntityManager()->createQueryBuilder();
         $query->select('cc,ff.id,ff.title,ff.content,ff.createdAt,ff.isRead')
@@ -42,6 +44,12 @@ class MessageGroupUserOrderMetaRepository extends ServiceEntityRepository
 
         if( $checkStatus ){
             $query->andWhere('cc.checkStatus = :checkStatus')->setParameter('checkStatus', $checkStatus);
+        }
+
+        if( $isNewUser ){
+            $query->leftJoin(User::class,'uu',Expr\Join::WITH,'cc.user = uu.id')
+            ->andWhere('uu.bianxianUserLevel in (:bianxianUserLevels)')
+            ->setParameter('bianxianUserLevels', [ BianxianUserLevel::VISITOR,BianxianUserLevel::THINKING ]);
         }
 
         if( $isRead != '' ){

@@ -182,6 +182,7 @@ class GongZhongMemberController extends GongZhongBaseController
         $page = isset($data['page']) ? $data['page'] : 1;
         $checkStatus = isset($data['checkStatus']) ? $data['checkStatus'] : '';
         $isRead = isset($data['isRead']) ? $data['isRead'] : '';
+        $isNewUser = isset($data['isNewUser']) ? $data['isNewUser'] : false;
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -189,7 +190,7 @@ class GongZhongMemberController extends GongZhongBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        $messageQuery = $messageGroupUserOrderMetaRepository->getGroupUserOrder($user->getId(),$checkStatus,$isRead);
+        $messageQuery = $messageGroupUserOrderMetaRepository->getGroupUserOrder($user->getId(),$checkStatus,$isRead,$isNewUser);
         $messageArrays = $this->getPaginator()->paginate($messageQuery, $page, self::PAGE_LIMIT);
 
         $orderArray = [];
