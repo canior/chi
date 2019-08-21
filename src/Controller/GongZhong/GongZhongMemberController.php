@@ -207,8 +207,11 @@ class GongZhongMemberController extends GongZhongBaseController
         // 查询列表 标记已读
         // $messageGroupUserOrderMetaRepository->setMessagesIsRead($idsArray);
 
+        // 获取返还金产品 返还金专用产品
+        // TODO
+
         // 返回
-        return CommonUtil::resultData(  ['messageArray'=>$orderArray] )->toJsonResponse();
+        return CommonUtil::resultData(  ['messageArray'=>$orderArray,'productId'=116 ] )->toJsonResponse();
     }
 
     /**
