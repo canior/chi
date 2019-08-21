@@ -1286,6 +1286,7 @@ class Course implements Dao
             'checkStatusText' =>$this->getCheckStatusText(),
             'progress' =>$this->getProgress()['progress'],
             'progressText' =>$this->getProgress()['progressText'],
+            'totalCourseStudents'=>$this->getTotalCourseStudents()
         ];
     }
 
