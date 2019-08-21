@@ -177,7 +177,7 @@ class GongZhongMemberController extends GongZhongBaseController
      */
     public function messageAction(Request $request, MessageGroupUserOrderMetaRepository $messageGroupUserOrderMetaRepository) {
 
-        $data = $this->processRequest($request,['page','checkStatus','isRead']);
+        $data = $this->processRequest($request,['page','checkStatus','isRead','isNewUser']);
 
         $page = isset($data['page']) ? $data['page'] : 1;
         $checkStatus = isset($data['checkStatus']) ? $data['checkStatus'] : '';
