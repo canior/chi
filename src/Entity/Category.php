@@ -589,6 +589,8 @@ class Category implements Dao
             'parent_id' => $this->getParentCategory() == null ? 0 : $this->getParentCategory()->getId(),
             'parent_name' => $this->getParentCategory() == null ? '' : $this->getParentCategory()->getName(),
             'status' => $this->getStatus(),
+            'priority' => $this->getPriority(),
+            'aliyunVideoId' => $this->getAliyunVideoId(),
         ];
     }
 

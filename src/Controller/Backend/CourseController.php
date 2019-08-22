@@ -151,7 +151,7 @@ class CourseController extends BackendController
 
         $id = $request->get('id', null);
         if( $id ){
-            $data['course'] = $courseRepository->find($id);
+            $data['course'] = $courseRepository->find($id)->getLittleArray();
         }
 
         $data['category'] = $this->getTempTree( $categoryRepository->getCategoryList() );
@@ -367,18 +367,16 @@ class CourseController extends BackendController
     }
 
     /**
-     * @Route("/course/{id}", name="course_delete", methods="DELETE")
+     * @Route("/course/delete/{id}", name="courseDelete", methods="GET|POST")
+     * @param Request $request
+     * @param Course $course
      */
-    public function delete(Request $request, Course $course): Response
+    public function deleteData(Request $request, Course $course): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$course->getId(), $request->request->get('_token'))) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($course);
-            $em->flush();
-            $this->addFlash('notice', '删除成功');
-        }
-
-        return $this->redirectToRoute('course_index');
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($course);
+        $em->flush();
+        return CommonUtil::resultData([])->toJsonResponse();
     }
 
     /**

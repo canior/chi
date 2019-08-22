@@ -92,7 +92,7 @@ class CategoryController extends BackendController
 
         $id = $request->get('id', null);
         if( $id ){
-            $data['category'] = $categoryRepository->find($id);
+            $data['category'] = $categoryRepository->find($id)->getLittleArray();
         }
 
         $data['categorys'] = $this->getTempTree( $categoryRepository->getCategoryList() );
@@ -168,6 +168,49 @@ class CategoryController extends BackendController
             $category->setPriority( $category->getId() );
             $this->entityPersist($category);
         }
+
+        return CommonUtil::resultData([])->toJsonResponse();
+    }
+
+    /**
+     * @Route("/category/update", name="category_update", methods="GET|POST")
+     * @param Request $request
+     * @param CategoryRepository $categoryRepository
+     * @param FileRepository $fileRepository
+     * @return Response
+     */
+    public function update(Request $request, CategoryRepository $categoryRepository): Response
+    {
+
+        $datas = json_decode($request->getContent(), true);
+
+        $id = isset($datas['id']) ? $datas['id'] : null;
+        $title = isset($datas['title']) ? $datas['title'] : null;
+        $status = isset($datas['status']) ? $datas['status'] : 'active';
+        $priority = isset($datas['priority']) ? $datas['priority'] : null;
+        $parent_id = isset($datas['parent_id']) ? $datas['parent_id'] : null;
+
+
+        $category = $categoryRepository->find($id);
+        $category->setName($title);
+        $category->setStatus($status);
+
+        if($priority){
+            $category->setPriority($priority);
+        }
+        
+
+        if (!empty($parent_id)) {
+            $parent = $categoryRepository->find($parent_id);
+            if (empty($parent)) {
+                return new Response('分类不存在', 500);
+            }
+            $category->setParentCategory($parent);
+        }
+
+        
+        $this->entityPersist($category);
+
 
         return CommonUtil::resultData([])->toJsonResponse();
     }
@@ -268,5 +311,17 @@ class CategoryController extends BackendController
             ];
         }
         return call_user_func_array([$this, 'render'], $renderParams);
+    }
+
+    /**
+     * @Route("/category/delete/{id}", name="categoryDelete", methods="GET|POST")
+     * @param Request $request
+     * @param Course $course
+     */
+    public function categoryDelete(Request $request, Category $category): Response
+    {
+        $category->setIsDeleted(1);
+        $this->entityPersist($category);
+        return CommonUtil::resultData([])->toJsonResponse();
     }
 }
