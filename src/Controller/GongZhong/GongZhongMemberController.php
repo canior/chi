@@ -211,7 +211,7 @@ class GongZhongMemberController extends GongZhongBaseController
         // TODO
 
         // 返回
-        return CommonUtil::resultData(  ['messageArray'=>$orderArray,'productId'=116 ] )->toJsonResponse();
+        return CommonUtil::resultData(  ['messageArray'=>$orderArray,'productId'=>116 ] )->toJsonResponse();
     }
 
     /**
