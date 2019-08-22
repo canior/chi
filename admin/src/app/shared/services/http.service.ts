@@ -69,6 +69,9 @@ export class HttpService {
                 dataParams = dataParams.set(key, params[key]);
             }
         }
+
+        dataParams = dataParams.set('isNg','true');
+
         /**
          * 如果为生产环境时，不需要porxy代理，
          * 为了统一处理请求的url，获取在environment中配置的请求地址及变量，

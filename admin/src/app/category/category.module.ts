@@ -6,7 +6,6 @@ import { SharedModule } from '~/shared/shared.module';
 import { CategoryRoutingModule } from './category-routing.module';
 import { CategoryComponent } from './category.component';
 import { FormsModule } from '@angular/forms';
-import { NgxTinymceModule } from 'ngx-tinymce';
 
 @NgModule({
   imports: [
@@ -14,9 +13,6 @@ import { NgxTinymceModule } from 'ngx-tinymce';
     NgZorroAntdModule,
     SharedModule,
     FormsModule,
-    NgxTinymceModule.forRoot({
-        baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.0/',
-    }),
     CategoryRoutingModule
   ],
   declarations: [CategoryComponent]

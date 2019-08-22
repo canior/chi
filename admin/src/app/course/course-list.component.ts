@@ -54,7 +54,7 @@ export class CourseListComponent implements OnInit {
         this.isLoading = true;
 
         //网络请求
-        this.http.get( '/course',{ ng:'ng',page:this.page,num:this.num,sort:this.sort,order:this.order } )
+        this.http.get( '/course',{ page:this.page,num:this.num,sort:this.sort,order:this.order } )
             .then( (res:any ) => {
                 if( res.code == 0 ){
                     this.courses = res.data;

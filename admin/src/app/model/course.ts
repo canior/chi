@@ -12,5 +12,10 @@ export class Course {
 	public top:string;
 	public teacher:any;
 	public image_url:any;
+	public aliyunVideoId:any;
+	// public aliyunVideoId:any;
+	public unlockType:any;
+	// public aliyunVideoId:any;
+	// public aliyunVideoId:any;
 	public link:any;
 }

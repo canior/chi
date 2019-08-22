@@ -18,6 +18,7 @@ use App\Entity\Product;
 use App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommand;
 use App\Service\Util\CommonUtil;
 use App\Repository\CategoryRepository;
+use App\Entity\Teacher;
 
 /**
  * @Route("/backend")
@@ -34,7 +35,7 @@ class CourseController extends BackendController
     {
         // NG
         $data = [];
-        if( $request->query->get('ng') ){
+        if( $request->query->get('isNg') ){
             $data = [
                 'title' => '课程管理',
                 'form' => [
@@ -71,135 +72,47 @@ class CourseController extends BackendController
     public function new(Request $request, TeacherRepository $teacherRepository): Response
     {
 
+        $datas = json_decode($request->getContent(), true);
+        $title = isset($datas['title']) ? $datas['title'] : null;
+        $status = isset($datas['status']) ? $datas['status'] : 'active';
+        $subject = isset($datas['subject']) ? $datas['subject'] : null;
+        $unlockType = isset($datas['unlockType']) ? $datas['unlockType'] : null;
+        $courseShowType = isset($datas['courseShowType']) ? $datas['courseShowType'] : null;
+        $checkStatus = isset($datas['checkStatus']) ? $datas['checkStatus'] : null;
+
+
+        $teacher_id = isset($datas['teacher']) ? $datas['teacher'] : null;
+        $teacher = $teacherRepository->find($teacher_id);
+
         $course = new Course();
-        $form = $this->createForm(CourseType::class, $course);
-        $form->handleRequest($request);
+        $course->setCourseTag($title);
+        $course->setStatus($status);
+        $course->setTeacher($teacher);
+        $course->setSubject($subject);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        // dump( $course );die;
+        // $course->setUnlockType($unlockType);
+        // $course->setCourseShowType($courseShowType);
 
-            $status = $request->request->get('course')['status'];
-            $subject = $request->request->get('course')['subject'];
-            $unlockType = $request->request->get('course')['unlockType'];
-            $courseShowType = $request->request->get('course')['courseShowType'];
-            $checkStatus = $request->request->get('course')['checkStatus'];
-            $course->setStatus($status);
-            $course->setCheckStatus($checkStatus);
-            $course->setSubject($subject);
-            $course->setUnlockType($unlockType);
-            $course->setCourseShowType($courseShowType);
-
-            //假如选择一级分类默认创建一个二级的单课类别
-            if (!empty($course->getCourseCategory())) {
-                if (empty($course->getCourseCategory()->getParentCategory())) {
-                    $categoryActual = Category::factory($course->getTitle(), $course->getCourseCategory());
-                    $categoryActual->setSingleCourse(1);
-                    $categoryActual->setPriority($course->getPriority());
-                    $categoryActual->setStatus($status);
-                    $this->entityPersist($categoryActual, false);
-                    $course->setCourseActualCategory($categoryActual);
-                } else {
-                    $course->setCourseActualCategory($course->getCourseCategory());
-                }
-            }
-
-            $this->entityPersist($course);
-
-            try {
-                $images = isset($request->request->get('course')['images']) ? $request->request->get('course')['images'] : [];
-                $imagesCommand = new CreateOrUpdateProductImagesCommand($course->getProduct()->getId(), $images);
-                $this->getCommandBus()->handle($imagesCommand);
-            } catch (\Exception $e) {
-                $this->getLog()->error('can not run CreateOrUpdateProductImagesCommand because of' . $e->getMessage());
-                if ($this->isDev()) {
-                    dump($e->getFile());
-                    dump($e->getMessage());
-                    die;
-                }
-                return new Response('页面错误', 500);
-            }
-
-            try {
-                $specImages = isset($request->request->get('course')['specImages']) ? $request->request->get('course')['specImages'] : [];
-                $specImagesCommand = new CreateOrUpdateProductSpecImagesCommand($course->getProduct()->getId(), $specImages);
-                $this->getCommandBus()->handle($specImagesCommand);
-            } catch (\Exception $e) {
-                $this->getLog()->error('can not run CreateOrUpdateProductSpecImagesCommand because of' . $e->getMessage());
-                if ($this->isDev()) {
-                    dump($e->getFile());
-                    dump($e->getMessage());
-                    die;
-                }
-                return new Response('页面错误', 500);
-            }
-
-            //add share image
-            $shareImageFileId = isset($request->request->get('course')['shareImageFile']) ? $request->request->get('course')['shareImageFile'] : null;
-            if ($shareImageFileId) {
-                /**
-                 * @var File $shareImageFile
-                 */
-                $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
-                $course->getProduct()->setShareImageFile($shareImageFile);
-                $this->getEntityManager()->persist($course->getProduct());
-                $this->getEntityManager()->flush();
-            }
-
-            //add preview image
-            $previewImageFileId = isset($request->request->get('course')['previewImageFile']) ? $request->request->get('course')['previewImageFile'] : null;
-            if ($previewImageFileId) {
-                /**
-                 * @var File $previewImageFile
-                 */
-                $previewImageFile = $this->getEntityManager()->getRepository(File::class)->find($previewImageFileId);
-                $course->getProduct()->setPreviewImageFile($previewImageFile);
-                $this->getEntityManager()->persist($course->getProduct());
-                $this->getEntityManager()->flush();
-            }
-
-            $this->addFlash('notice', '创建成功');
-            return $this->redirectToRoute('course_index');
-        }
-
-        return $this->render('backend/course/new.html.twig', [
-            'course' => $course,
-            'title' => '创建新课程',
-            'form' => $form->createView(),
-        ]);
-    }
-
-    public function getTree($list,$pid=0,$itemprefix = '') {
-        static $icon = array('│', '├', '└');
-        static $nbsp = " ";
-        static $arr = array();
-        $number = 1;
-        foreach($list as $row) {
-            if($row['pid'] == $pid) {
-                $brotherCount = 0;
-                //判断当前有多少个兄弟分类
-                foreach($list as $r) {
-                    if($row['pid'] == $r['pid']) {
-                        $brotherCount++;
-                    }
-                }
-                if($brotherCount >0) {
-                    $j = $k = '';
-                    if($number == $brotherCount) {
-                        $j .= $icon[2];
-                        $k = $itemprefix ? $nbsp : '';
-                    }else{
-                        $j .= $icon[1];
-                        $k = $itemprefix ? $icon[0] : '';
-                    }
-                    $spacer = $itemprefix ? $itemprefix . $j : '';
-                    $row['name'] = $spacer.$row['name'];
-                    $arr[] = $row;
-                    $number++;
-                    $this->getTree($list,$row['id'],$itemprefix . $k . $nbsp);
-                }
+        //假如选择一级分类默认创建一个二级的单课类别
+        if (!empty($course->getCourseCategory())) {
+            if (empty($course->getCourseCategory()->getParentCategory())) {
+                $categoryActual = Category::factory($course->getTitle(), $course->getCourseCategory());
+                $categoryActual->setSingleCourse(1);
+                $categoryActual->setPriority($course->getPriority());
+                $categoryActual->setStatus($status);
+                $this->entityPersist($categoryActual, false);
+                $course->setCourseActualCategory($categoryActual);
+            } else {
+                $course->setCourseActualCategory($course->getCourseCategory());
             }
         }
-        return  $arr;
+
+        $this->entityPersist($course);
+
+        return CommonUtil::resultData([])->toJsonResponse();
     }
+
 
     /**
      * 菜单树
@@ -230,20 +143,23 @@ class CourseController extends BackendController
     }
 
     /**
-     * @Route("/course/createData/{id}", name="CreateData", methods="GET|POST")
+     * @Route("/course/create", name="courseCreate", methods="GET|POST")
      * @param Request $request
-     * @param Course $course
      * @return Response
      */
-    public function getCreateData(Request $request, CategoryRepository $categoryRepository, TeacherRepository $teacherRepository): Response{
+    public function create(Request $request, CourseRepository $courseRepository,CategoryRepository $categoryRepository, TeacherRepository $teacherRepository): Response{
 
-        $data['category'] = $categoryRepository->getCategoryList();
-        $data['category'] = $this->getTempTree($data['category']);
-        // dump($data);die;
+        $id = $request->get('id', null);
+        if( $id ){
+            $data['course'] = $courseRepository->find($id);
+        }
+
+        $data['category'] = $this->getTempTree( $categoryRepository->getCategoryList() );
 
         $data['teacher'] = $teacherRepository->getTeacherList();
 
         return CommonUtil::resultData($data)->toJsonResponse();
+
     }
 
     /**

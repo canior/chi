@@ -12,7 +12,7 @@
                                     <nz-form-item class="nz-form-item">
                                         <nz-form-label class="nz-formlable">系列</nz-form-label>
                                         <nz-form-control>
-                                            <nz-select >
+                                            <nz-select nzDisabled>
                                                 <nz-option nzValue="album" nzLabel="待开发"></nz-option>
                                             </nz-select >
                                         </nz-form-control>
@@ -34,7 +34,7 @@
                             <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
                                 <div class="gutter-box">
                                     <nz-form-item class="nz-form-item">
-                                        <nz-form-label class="nz-formlable" nzFor="title" nzRequired>课程名称</nz-form-label>
+                                        <nz-form-label class="nz-formlable" nzFor="title" nzRequired>课程标题</nz-form-label>
                                         <nz-form-control>
                                             <input nz-input name="title" [(ngModel)]="selectCourse.title" type="text">
                                         </nz-form-control>
@@ -46,7 +46,7 @@
                                     <nz-form-item class="nz-form-item">
                                         <nz-form-label class="nz-formlable" nzRequired>讲师</nz-form-label>
                                         <nz-form-control>
-                                            <nz-select nzAllowClear>
+                                            <nz-select nzAllowClear name="teacher" [(ngModel)]="selectCourse.teacher">
                                                 <nz-option *ngFor="let item of teacher" nzValue="{{item.id}}" nzLabel="{{item.name}}"></nz-option>
                                             </nz-select>
                                         </nz-form-control>
@@ -58,7 +58,7 @@
                                     <nz-form-item class="nz-form-item">
                                         <nz-form-label class="nz-formlable" nzFor="title" nzRequired>视频地址</nz-form-label>
                                         <nz-form-control>
-                                            <input nz-input name="title" [(ngModel)]="selectCourse.title" type="text">
+                                            <input nz-input name="aliyunVideoId" [(ngModel)]="selectCourse.aliyunVideoId" type="text">
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
@@ -73,6 +73,7 @@
                                     </nz-form-item>
                                 </div>
                             </div>
+ 
                             
                             <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
                                 <div class="gutter-box">
@@ -104,11 +105,11 @@
                                             <nz-upload 
                                                 nzAction="{{file_upload_url}}" 
                                                 nzListType="picture-card" 
-                                                [(nzFileList)]="fileList" 
-                                                [nzShowButton]="fileList.length < 1" 
-                                                [nzShowUploadList]="showUploadList" 
+                                                [(nzFileList)]="fileListShare" 
+                                                [nzShowButton]="fileListShare.length < 1" 
+                                                [nzShowUploadList]="showUploadListShare" 
                                                 [nzMultiple]="false"
-                                                (nzChange)="handleChange($event)"
+                                                (nzChange)="handleShareChange($event)"
                                             >
                                                 <i nz-icon nzType="plus"></i>
                                                 <div class="ant-upload-text">上传</div>

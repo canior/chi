@@ -577,6 +577,21 @@ class Category implements Dao
         ];
     }
 
+    /**
+     * 取得简单数组列表
+     * @return array
+     */
+    public function getLittleArray()
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getName(),
+            'parent_id' => $this->getParentCategory() == null ? 0 : $this->getParentCategory()->getId(),
+            'parent_name' => $this->getParentCategory() == null ? '' : $this->getParentCategory()->getName(),
+            'status' => $this->getStatus(),
+        ];
+    }
+
 
     /**
      * 视频是否过期

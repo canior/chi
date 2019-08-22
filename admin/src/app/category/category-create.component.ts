@@ -3,15 +3,15 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@ang
 import { Router, ActivatedRoute } from '@angular/router';
 import { NzMessageService,UploadFile,NzModalService } from 'ng-zorro-antd';
 import { HttpService } from '../shared/shared.module';
-import { Course } from '../model/course';
+import { Category } from '../model/category';
 import {environment } from '../../environments/environment';
 
 @Component({
-	selector: 'app-course-create',
-	templateUrl: './course-create.component.html',
-	styleUrls: ['./course-create.component.less']
+	selector: 'app-category-create',
+	templateUrl: './category-create.component.html',
+	styleUrls: ['./category-create.component.less']
 })
-export class CourseCreateComponent implements OnInit {
+export class CategoryCreateComponent implements OnInit {
 
 	constructor(
 		private activeRoute: ActivatedRoute,
@@ -24,11 +24,8 @@ export class CourseCreateComponent implements OnInit {
 
 	id:string;
 	isLoading = true;
-	selectCourse = new Course;
-	category = [];
-    teacher = [];
-
-
+	selectCategory = new Category;
+    categorys = [];
 
 
 	ngOnInit() {
@@ -48,22 +45,22 @@ export class CourseCreateComponent implements OnInit {
 
     	this.isLoading = false;
 
-    	let url = '/course/create';
+    	let url = '/category/create';
 
         //网络请求
         this.http.get( url,{id:this.id} )
             .then( (res:any ) => {
-                this.category = res.data.category;
-                this.teacher = res.data.teacher;
+
+                this.categorys = res.data.categorys;
 
                 if( this.id ){
-                    this.selectCourse = res.data.course;
-                    if( this.selectCourse.image ){
+                    this.selectCategory = res.data.category;
+                    if( this.selectCategory.image ){
                         let item =  {
                             uid: 0,
-                            name: this.selectCourse.image,
+                            name: this.selectCategory.image,
                             status: 'done',
-                            url: this.selectCourse.image_url
+                            url: this.selectCategory.image_url
                         };
                         this.fileList = [item];
                     }
@@ -81,16 +78,16 @@ export class CourseCreateComponent implements OnInit {
 
         this.isLoading = true;
 
-        let url = '/course/new';
+        let url = '/category/new';
         if( this.id ){
-            url = '/course/update';
+            url = '/category/update';
         }
 
-        this.http.post(url, this.selectCourse )
+        this.http.post(url, this.selectCategory )
             .then( (res:any ) => {
                 if (res.code == 0) {
                     this.message.create('success',res.msg);
-                    this.router.navigate(['backend/course']);
+                    this.router.navigate(['backend/category']);
                 } else {
                     this.message.create('error',res.msg);
                 }
@@ -121,9 +118,9 @@ export class CourseCreateComponent implements OnInit {
     handleChange(info:any): void {
         // console.log(info.type);
         if( info.file.response != undefined && info.file.response.data ){
-            this.selectCourse.image = info.file.response.data;
+            this.selectCategory.image = info.file.response.data;
         }else if( info.type != undefined && info.type == "removed" ){
-            this.selectCourse.image = '';
+            this.selectCategory.image = '';
         }else if( info.file.response != undefined && info.file.response.msg ){
             this.message.error(info.file.response.msg);
         }
@@ -131,7 +128,6 @@ export class CourseCreateComponent implements OnInit {
 
 
     // 文件上传
-
     showUploadListShare = {
         showPreviewIcon: true,
         showRemoveIcon: true,
@@ -139,20 +135,35 @@ export class CourseCreateComponent implements OnInit {
     };
     fileListShare = [];
 
-
-    
     // 监听文件选择器
     handleShareChange(info:any): void {
         // console.log(info.type);
         if( info.file.response != undefined && info.file.response.data ){
-            this.selectCourse.image = info.file.response.data;
+            this.selectCategory.image = info.file.response.data;
         }else if( info.type != undefined && info.type == "removed" ){
-            this.selectCourse.image = '';
+            this.selectCategory.image = '';
         }else if( info.file.response != undefined && info.file.response.msg ){
             this.message.error(info.file.response.msg);
         }
     }
 
 
-    
+    //
+    config: any = {
+        height: 250,
+        theme: 'modern',
+        // powerpaste advcode toc tinymcespellchecker a11ychecker mediaembed linkchecker help
+        plugins: 'print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image imagetools link media template codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern',
+        // toolbar: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
+        image_advtab: true,
+        imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
+        // templates: [
+        //   { title: 'Test template 1', content: 'Test 1' },
+        //   { title: 'Test template 2', content: 'Test 2' }
+        // ],
+        // content_css: [
+        //   '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+        //   '//www.tinymce.com/css/codepen.min.css'
+        // ]
+    };
 }

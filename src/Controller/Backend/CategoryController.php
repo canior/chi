@@ -15,6 +15,7 @@ use App\Repository\FileRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\Util\CommonUtil;
 
 /**
  * @Route("/backend")
@@ -29,17 +30,75 @@ class CategoryController extends BackendController
      */
     public function index(CategoryRepository $categoryRepository, Request $request): Response
     {
-        $data = [
-            'title' => '一级分类列表',
-            'form' => [
-                'name' => $request->query->get('name', null),
-                'page' => $request->query->getInt('page', 1)
-            ]
-        ];
-        $data['data'] = $categoryRepository->findCategoryListQuery(0, $data['form']['name']);
-        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
+        // NG
+        $data = [];
+        if( $request->query->get('isNg') ){
+
+            $data = [
+                'title' => '一级分类列表',
+                'form' => [
+                    'name' => $request->query->get('name', null),
+                    'page' => $request->query->getInt('page', 1)
+                ]
+            ];
+            $data['data'] = $categoryRepository->findCategoryListQuery(null, $data['form']['name']);
+            $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
+
+
+            $datas  = [];
+            foreach ($data['pagination'] as $k => $v) {
+                $datas[] = $v->getLittleArray();
+            }
+            return CommonUtil::resultData($datas)->toJsonResponse();
+        }
 
         return $this->render('backend/category/index.html.twig', $data);
+    }
+
+    /**
+     * 菜单树
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getTempTree($data, $pId = 0)
+    {
+        $tree = array();
+        foreach($data as $k => $v)
+        {
+            if($v['pid'] == $pId)
+            {
+                //子
+                $item = $this->getTempTree($data, $v['id']);
+                $v['isLeaf'] = true;
+                if(count($item) ){
+                    $v['isLeaf'] = false;
+                    $v['children'] = $item ;
+                }
+
+                $v['key'] = $v['id'];
+                $v['title'] = $v['name'];
+                $tree[] = $v;
+            }
+        }
+        return $tree;
+    }
+
+    /**
+     * @Route("/category/create", name="categoryCreate", methods="GET|POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function create(Request $request,CategoryRepository $categoryRepository): Response{
+
+        $id = $request->get('id', null);
+        if( $id ){
+            $data['category'] = $categoryRepository->find($id);
+        }
+
+        $data['categorys'] = $this->getTempTree( $categoryRepository->getCategoryList() );
+
+        return CommonUtil::resultData($data)->toJsonResponse();
+
     }
 
     /**
@@ -73,74 +132,44 @@ class CategoryController extends BackendController
      * @param FileRepository $fileRepository
      * @return Response
      */
-    public function new(Request $request, $parentId, CategoryRepository $categoryRepository, FileRepository $fileRepository): Response
+    public function new(Request $request, $parentId, CategoryRepository $categoryRepository): Response
     {
+
+        $datas = json_decode($request->getContent(), true);
+        $title = isset($datas['title']) ? $datas['title'] : null;
+        $status = isset($datas['status']) ? $datas['status'] : 'active';
+        $priority = isset($datas['priority']) ? $datas['priority'] : null;
+        $parent_id = isset($datas['parent_id']) ? $datas['parent_id'] : null;
+        // $courseShowType = isset($datas['courseShowType']) ? $datas['courseShowType'] : null;
+        // $checkStatus = isset($datas['checkStatus']) ? $datas['checkStatus'] : null;
+
         $category = new Category();
-        $form = $this->createForm(CategoryType::class, $category);
-        $form->handleRequest($request);
+        $category->setName($title);
+        $category->setStatus($status);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if($priority){
+            $category->setPriority($priority);
+        }
+        
 
-            $iconFileId = $request->request->get('category')['iconFile'] ?? null;
-            $iconFile = null;
-            if (!empty($iconFileId)) {
-                $iconFile = $fileRepository->find($iconFileId);
-                if (empty($iconFile)) {
-                    return new Response('页面错误', 500);
-                }
+        if (!empty($parent_id)) {
+            $parent = $categoryRepository->find($parent_id);
+            if (empty($parent)) {
+                return new Response('分类不存在', 500);
             }
+            $category->setParentCategory($parent);
+        }
 
-            $previewImageFileId = $request->request->get('category')['previewImageFile'] ?? null;
-            $previewImageFile = null;
-            if (!empty($previewImageFileId)) {
-                $previewImageFile = $fileRepository->find($previewImageFileId);
-                if (empty($previewImageFile)) {
-                    return new Response('页面错误', 500);
-                }
-            }
+        
+        $this->entityPersist($category);
 
-            if (!empty($parentId)) {
-                $parentCategory = $categoryRepository->find($parentId);
-                if (empty($parentCategory)) {
-                    return new Response('分类不存在', 500);
-                }
-                $category->setParentCategory($parentCategory);
-            }
-            $category->setIconFile($iconFile);
-            $category->setPreviewImageFile($previewImageFile);
-
-            $status = $request->request->get('category')['status'];
-            $category->setStatus($status);
-
+        // 默认排序值
+        if( !$priority ){
+            $category->setPriority( $category->getId() );
             $this->entityPersist($category);
-
-            $this->addFlash('notice', '添加成功');
-            if (!empty($parentId)) {
-                return $this->redirectToRoute('category_second_index', ['parentId' => $parentId]);
-            } else {
-                return $this->redirectToRoute('category_index');
-            }
         }
 
-        if (!empty($parentId)) {
-            $renderParams = [
-                'backend/category/second.new.html.twig', [
-                    'category' => $category,
-                    'title' => '添加二级分类',
-                    'parentId' => $parentId,
-                    'form' => $form->createView(),
-                ]
-            ];
-        } else {
-            $renderParams = [
-                'backend/category/new.html.twig', [
-                    'category' => $category,
-                    'title' => '添加一级分类',
-                    'form' => $form->createView(),
-                ]
-            ];
-        }
-        return call_user_func_array([$this, 'render'], $renderParams);
+        return CommonUtil::resultData([])->toJsonResponse();
     }
 
     /**

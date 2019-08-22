@@ -19,68 +19,12 @@ export class CategoryComponent implements OnInit {
     ) {
     }
 
-    categorys = [];
+
     page = 1;
     num = 10;
     total_page:number;
     isLoading = false;
-
-    category = [];
-
-    isVisible = false;
-    selectCategory = new Category;
-
-    isVisibleWeibo = false;
-    selectWeibo = [];
-
-
-    //
-    config: any = {
-        height: 250,
-        theme: 'modern',
-        // powerpaste advcode toc tinymcespellchecker a11ychecker mediaembed linkchecker help
-        plugins: 'print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image imagetools link media template codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern',
-        // toolbar: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
-        image_advtab: true,
-        imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
-        // templates: [
-        //   { title: 'Test template 1', content: 'Test 1' },
-        //   { title: 'Test template 2', content: 'Test 2' }
-        // ],
-        // content_css: [
-        //   '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-        //   '//www.tinymce.com/css/codepen.min.css'
-        // ]
-    };
-
-
-    // 文件上传
-    file_upload_url = environment.api+'/common/upload';
-    showUploadList = {
-        showPreviewIcon: true,
-        showRemoveIcon: true,
-        hidePreviewIconInNonImage: true
-    };
-    fileList = [];
-    previewImage: string | undefined = '';
-    previewVisible = false;
-
-    handlePreview = (file: UploadFile) => {
-        this.previewImage = file.url || file.thumbUrl;
-        this.previewVisible = true;
-    };
-
-    // 监听文件选择器
-    handleChange(info:any): void {
-        // console.log(info.type);
-        if( info.file.response != undefined && info.file.response.data ){
-            this.selectCategory.image = info.file.response.data;
-        }else if( info.type != undefined && info.type == "removed" ){
-            this.selectCategory.image = '';
-        }else if( info.file.response != undefined && info.file.response.msg ){
-            this.message.error(info.file.response.msg);
-        }
-    }
+    categorys = [];
 
 
     ngOnInit() {
@@ -93,8 +37,6 @@ export class CategoryComponent implements OnInit {
             localStorage.setItem('category_page',String(1));
         }
 
-
-
         this.initData();
     }
 
@@ -103,30 +45,14 @@ export class CategoryComponent implements OnInit {
         this.isLoading = true;
 
         //网络请求
-        // this.http.get( '/category',{ page:this.page,num:this.num } )
-        //     .then( (res:any ) => {
-        //         if( res.code == 0 ){
-        //             this.categorys = res.data;
-        //             this.total_page = Number(res.total_page);
-        //         }else{
-        //             this.message.error(res.msg);
-        //         }
-        //     }).catch((msg : string) => {
-        //         this.message.error(msg);
-        //     })
-        //     .finally( () => {
-        //         this.isLoading = false;
-        //     })
-
-
-        this.isLoading = false;
-
-        let url = '/course/createData/0';
-
-        //网络请求
-        this.http.get( url,{} )
+        this.http.get( '/category',{ page:this.page,num:this.num } )
             .then( (res:any ) => {
-                this.category = res.data.category;
+                if( res.code == 0 ){
+                    this.categorys = res.data;
+                    this.total_page = Number(res.total_page);
+                }else{
+                    this.message.error(res.msg);
+                }
             }).catch((msg : string) => {
                 this.message.error(msg);
             })
@@ -184,110 +110,5 @@ export class CategoryComponent implements OnInit {
     nzPageSizeChange(number:number){
         this.num = number;
         this.initData();
-    }
-
-
-    //---------------- 编辑
-
-
-    // 提交表单
-    doSubmit(){
-
-        this.isLoading = true;
-        let url = '/category';
-        if( this.selectCategory.id ){
-            url = '/category/update/'+this.selectCategory.id;
-        }
-
-        this.http.post(url, this.selectCategory )
-            .then( (res:any ) => {
-                if (res.code == 0) {
-                    this.message.create('success',res.msg);
-                    this.isVisible = false;
-                    this.initData();
-                } else {
-                    this.message.create('error',res.msg);
-                }
-            }).catch((res : any) => {
-                this.message.create('error',res);
-            })
-            .finally( () => {
-                this.isLoading = false;
-            })
-    }
-
-    newCategory(){
-        this.isVisible = true;
-    }
-
-    showModal(): void {
-        this.isVisible = true;
-    }
-
-    handleOk(): void {
-        this.doSubmit();
-        
-    }
-
-    handleCancel(): void {
-        this.isVisible = false;
-        this.selectCategory = new Category;
-        this.fileList = [];
-    }
-
-
-    showWeibo(item: any): void {
-        this.isVisibleWeibo = true;
-
-
-        this.isLoading = true;
-
-        let url = '/category/'+item.id;
-        this.http.get(url, {} )
-            .then( (res:any ) => {
-                if (res.code == 0) {
-                    this.selectWeibo = res.data.weibo;
-                } else {
-                    this.message.create('error',res.msg);
-                }
-            }).catch((res : any) => {
-                this.message.create('error',res);
-            })
-            .finally( () => {
-                this.isLoading = false;
-            })
-    }
-
-
-
-    closeWeibo(): void {
-        this.isVisibleWeibo = false;
-        this.selectWeibo = [];
-    }
-
-    editCategory(item: any): void {
-        let category = new Category();
-        category.id = item.id;
-        category.username = item.username;
-        category.password = item.password;
-        category.mobile = item.mobile;
-        category.email = item.email;
-        category.nickname = item.nickname;
-        category.weibo_url = item.weibo_url;
-        category.image = item.image;
-        category.profile = item.profile;
-
-        if( item.image ){
-            let imgitem =  {
-                uid: 0,
-                name: item.image,
-                status: 'done',
-                url: item.image_url
-            };
-            this.fileList = [imgitem];
-        }
-
-        this.selectCategory = category;
-        this.showModal();
     }
 }

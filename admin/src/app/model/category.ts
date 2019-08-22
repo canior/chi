@@ -11,14 +11,14 @@ export class Category {
 	public category:string;
 	public top:string;
 	public usergroup:string;
-	public group_name:string;
+	public parent_name:string;
 
-	public email:string;
-	public mobile:string;
-	public nickname:string;
+	public title:string;
+	public aliyunVideoId:string;
+	public sorting:string;
 	public content:string;
-	public weibo_url:string;
-	public new_password:string;
+	public priority:string;
+	public parent_id:string;
 	
 	public weibos:[]
 }
