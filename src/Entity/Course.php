@@ -1292,9 +1292,12 @@ class Course implements Dao
 
     // 进度
     public function getProgress(){
-        $progressText = $this->getCheckStatusText();
-        $progress = $this->getCheckStatus()?$this->getCheckStatus():'wait';
-        if( $this->getCheckStatus() == self::CHECK_PASS ){
+        if( $this->getInitiator() ){
+            $progressText = $this->getCheckStatusText();
+            $progress = $this->getCheckStatus()?$this->getCheckStatus():'wait';
+        }
+        
+        if( !$this->getInitiator() || $this->getCheckStatus() == self::CHECK_PASS ){
             if( $this->getEndDate() < time() ){
                 $progressText = '已结束';
                 $progress = 'end';
