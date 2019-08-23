@@ -456,7 +456,7 @@ class Course implements Dao
      * @return null|string
      */
     public function getTitle() {
-        return $this->getProduct()->getTitle();
+        return $this->getProduct()?$this->getProduct()->getTitle():null;
     }
 
     /**
