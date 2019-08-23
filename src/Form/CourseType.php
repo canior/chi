@@ -138,20 +138,6 @@ class CourseType extends AbstractType
                 'label' => '排序优先级（数字越大越靠前）',
                 'required' => true,
             ])
-            // ->add('initiator', TextType::class, [
-            //     'label' => '发起人ID(不填为后台创建)',
-            //     'required' => false
-            // ])
-            ->add('checkStatus', ChoiceType::class, [
-                'label' => '审核状态',
-                'mapped' => false,
-                'required' => false,
-                'choices' => array_flip(Course::$checkStatusTexts)
-            ])
-            ->add('reason', TextType::class, [
-                'label' => '驳回理由',
-                'required' => false
-            ])
         ;
     }
 
