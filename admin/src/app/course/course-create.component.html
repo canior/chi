@@ -24,7 +24,7 @@
                                     <nz-form-item class="nz-form-item">
                                         <nz-form-label class="nz-formlable" nzRequired>分类</nz-form-label>
                                         <nz-form-control>
-                                            <nz-tree-select [nzNodes]="category" name="category" [(ngModel)]="selectCourse.category" [nzDefaultExpandAll]="true">
+                                            <nz-tree-select [nzNodes]="category" name="category_id" [(ngModel)]="selectCourse.category_id" [nzDefaultExpandAll]="true">
                                             </nz-tree-select>
                                         </nz-form-control>
                                     </nz-form-item>
@@ -46,7 +46,7 @@
                                     <nz-form-item class="nz-form-item">
                                         <nz-form-label class="nz-formlable" nzRequired>讲师</nz-form-label>
                                         <nz-form-control>
-                                            <nz-select nzAllowClear name="teacher" [(ngModel)]="selectCourse.teacher">
+                                            <nz-select nzAllowClear name="teacher_id" [(ngModel)]="selectCourse.teacher_id">
                                                 <nz-option *ngFor="let item of teacher" nzValue="{{item.id}}" nzLabel="{{item.name}}"></nz-option>
                                             </nz-select>
                                         </nz-form-control>
@@ -58,7 +58,7 @@
                                     <nz-form-item class="nz-form-item">
                                         <nz-form-label class="nz-formlable" nzFor="title" nzRequired>视频地址</nz-form-label>
                                         <nz-form-control>
-                                            <input nz-input name="aliyunVideoId" [(ngModel)]="selectCourse.aliyunVideoId" type="text">
+                                            <input nz-input name="video_key" [(ngModel)]="selectCourse.video_key" type="text">
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
@@ -68,7 +68,7 @@
                                     <nz-form-item class="nz-form-item">
                                         <nz-form-label class="nz-formlable">标签</nz-form-label>
                                         <nz-form-control>
-                                            <input nz-input name="author" [(ngModel)]="selectCourse.author" type="text">
+                                            <input nz-input name="course_tag" [(ngModel)]="selectCourse.course_tag" type="text">
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
@@ -152,7 +152,7 @@
                                     <nz-form-item class="nz-form-item">
                                         <nz-form-label class="nz-formlable" nzFor="top" nzRequired>定价类型</nz-form-label>
                                         <nz-form-control>
-                                            <nz-radio-group name="unlockType" [(ngModel)]="selectCourse.unlockType">
+                                            <nz-radio-group name="unlock_type" [(ngModel)]="selectCourse.unlock_type">
                                                 <label nz-radio nzValue="buy_type_three">单独购买</label>
                                                 <label nz-radio nzValue="buy_type_four">免费</label>
                                                 <label nz-radio nzValue="buy_type_two">单独拼团</label>
