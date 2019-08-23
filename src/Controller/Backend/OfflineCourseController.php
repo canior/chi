@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraints\Collection;
 use App\Command\Product\Image\CreateOrUpdateProductImagesCommand;
 use App\Entity\Product;
 use App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommand;
+use App\Repository\UserRepository;
 
 /**
  * @Route("/backend")
@@ -90,6 +91,10 @@ class OfflineCourseController extends BackendController
             $subject = $request->request->get('offline_course')['subject'];
             $course->setStatus($status);
             $course->setSubject($subject);
+
+            $initiator = $request->request->get('offline_course')['initiator'];
+            $initiator = $userRepository->find($initiator);
+            $course->setInitiator($initiator);
 
             CommonUtil::entityPersist($course);
 
@@ -166,11 +171,13 @@ class OfflineCourseController extends BackendController
      * @param Course $course
      * @return Response
      */
-    public function edit(Request $request, Course $course): Response
+    public function edit(Request $request, Course $course,UserRepository $userRepository): Response
     {
         $form = $this->createForm(OfflineCourseType::class, $course);
         $form->get('subject')->setData(array_search($course->getSubjectText(), Subject::$subjectTextArray));
         $form->get('status')->setData(array_search($course->getProduct()->getStatusText(), Product::$statuses));
+        $form->get('initiator')->setData($course->getInitiator()?$course->getInitiator()->getId():null);
+        $form->get('checkStatus')->setData($course->getCheckStatus());
 
         //保存原始关联课程
         $originRefCourse = $course->getRefCourse();
@@ -272,6 +279,14 @@ class OfflineCourseController extends BackendController
             $status = $request->request->get('offline_course')['status'];
             $course->setSubject($subject);
             $course->setStatus($status);
+
+            $checkStatus = $request->request->get('offline_course')['checkStatus'];
+            $course->setCheckStatus($checkStatus);
+            
+            $initiator = $request->request->get('offline_course')['initiator'];
+            $initiator = $userRepository->find($initiator);
+            $course->setInitiator($initiator);
+
             $this->getEntityManager()->persist($course);
 
             try {
