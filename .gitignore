@@ -34,3 +34,8 @@ yarn-error.log
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
+
+
+### ng admin
+/admin/node_modules
+/admin/dist
