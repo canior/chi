@@ -1297,7 +1297,7 @@ class Course implements Dao
         return [
             'id' => $this->getId(),
             'title' => $this->getProduct()->getTitle(),
-            'category' => $this->getCourseCategory()?$this->getCourseCategory()->getId():'',
+            'category_id' => $this->getCourseCategory()?$this->getCourseCategory()->getId():'',
             'category_title' => $this->getCourseCategory()?$this->getCourseCategory()->getName():'',
             'start_date' =>  $this->getStartDate() ? date(self::DATE_FORMAT, $this->getStartDate()) : '',
             'end_date' =>  $this->getEndDate() ? date(self::DATE_FORMAT, $this->getEndDate()) : '',
@@ -1305,7 +1305,14 @@ class Course implements Dao
             'teacher_name' => $this->getTeacher()?$this->getTeacher()->getName():null,
             'video_key' => $this->getAliyunVideoId(),
             'album_title' => null,
-            'album_id' => null,
+            'update_at' => $this->getProduct()->getUpdatedAt(),
+            'course_tag' => $this->getCourseTag(),
+            'content' => $this->getShortDescription(),
+            'show_type' => $this->getCourseShowType(),
+            'cost_type' => $this->getUnlockType(),
+            'collect_num' => $this->getTotalGroupUserOrdersRequired(),
+            'collect_timelong' => $this->getGroupOrderValidForHours(),
+            'price' => $this->getPrice(),
         ];
     }
 

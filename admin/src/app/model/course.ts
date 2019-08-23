@@ -3,8 +3,8 @@ export class Course {
 	public id:string;
 	public title:string;
 
+	public update_at:string;
 	public category_id:any;
-	public category:string;
 	public category_title:string;
 	public start_date:string;
 	public end_date:string;
@@ -12,7 +12,15 @@ export class Course {
 	public teacher_id:string;
 	public teacher_name:string;
 	public top:string;
-	public teacher:any;
+
+
+	public cost_type:any;
+	public price:any;
+	public collect_timelong:any;
+	public collect_num:any;
+	
+	public show_type:any;
+
 	public image:any;
 	public remark:any;
 	public content:any;

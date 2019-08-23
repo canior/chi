@@ -138,7 +138,7 @@
                         <nz-tag *ngIf="item.status == 1" [nzColor]="'#87d068'">显示</nz-tag>
                         <nz-tag *ngIf="item.status != 1" [nzColor]="'#87d068'">隐藏</nz-tag>
                     </td>
-                    <td>{{item.start_date}}</td>
+                    <td>{{item.update_at}}</td>
                     <td>
                         <nz-tag routerLink='/backend/course/create' [queryParams]="{'id':item.id}" [style.marginRight.px]="10"><i nz-icon type="form"></i> 编辑</nz-tag>
                         <nz-tag (click)="delListItem(item.id)"><i nz-icon type="delete"></i> 删除</nz-tag>

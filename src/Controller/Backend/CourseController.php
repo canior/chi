@@ -69,26 +69,50 @@ class CourseController extends BackendController
      * @param TeacherRepository $teacherRepository
      * @return Response
      */
-    public function new(Request $request, TeacherRepository $teacherRepository): Response
+    public function new(Request $request, TeacherRepository $teacherRepository,CategoryRepository $categoryRepository): Response
     {
 
         $datas = json_decode($request->getContent(), true);
         $title = isset($datas['title']) ? $datas['title'] : null;
-        $status = isset($datas['status']) ? $datas['status'] : 'active';
-        $subject = isset($datas['subject']) ? $datas['subject'] : null;
+        
+        
         $unlockType = isset($datas['unlockType']) ? $datas['unlockType'] : null;
         $courseShowType = isset($datas['courseShowType']) ? $datas['courseShowType'] : null;
         $checkStatus = isset($datas['checkStatus']) ? $datas['checkStatus'] : null;
+        
 
-
-        $teacher_id = isset($datas['teacher']) ? $datas['teacher'] : null;
-        $teacher = $teacherRepository->find($teacher_id);
 
         $course = new Course();
-        $course->setCourseTag($title);
+
+        $course->setTitle($title);
+
+        
+        $status = isset($datas['status']) ? $datas['status'] : 'active';
         $course->setStatus($status);
-        $course->setTeacher($teacher);
+
+
+        $aliyunVideoId = isset($datas['video_key']) ? $datas['video_key'] : null;
+        if($aliyunVideoId){
+            $course->setAliyunVideoId($aliyunVideoId);
+        }
+
+        $teacher_id = isset($datas['teacher_id']) ? $datas['teacher_id'] : null;
+        if($teacher_id){
+            $teacher = $teacherRepository->find($teacher_id);
+            $course->setTeacher($teacher);
+        }
+
+        $subject = isset($datas['subject']) ? $datas['subject'] : null;
         $course->setSubject($subject);
+
+        $course_tag = isset($datas['course_tag']) ? $datas['course_tag'] : null;
+        $course->setCourseTag($course_tag);
+
+        $category_id = isset($datas['category_id']) ? $datas['category_id'] : null;
+        if($category_id){
+            $category = $categoryRepository->find($category_id);
+            $course->setCourseCategory ($category);
+        }
 
         // dump( $course );die;
         // $course->setUnlockType($unlockType);
@@ -109,6 +133,111 @@ class CourseController extends BackendController
         }
 
         $this->entityPersist($course);
+
+
+
+        // $product = new Product();
+        // $product->setCourse($course);
+        // $product->setTitle($title);
+        // $this->entityPersist($product);
+
+        return CommonUtil::resultData([])->toJsonResponse();
+    }
+
+
+    /**
+     * @Route("/course/update", name="course_update", methods="GET|POST")
+     * @param Request $request
+     * @param TeacherRepository $teacherRepository
+     * @return Response
+     */
+    public function update(Request $request, CourseRepository $courseRepository, TeacherRepository $teacherRepository,CategoryRepository $categoryRepository): Response
+    {
+
+        $datas = json_decode($request->getContent(), true);
+        
+
+        $id = isset($datas['id']) ? $datas['id'] : null;
+        $title = isset($datas['title']) ? $datas['title'] : null;
+        $unlockType = isset($datas['unlockType']) ? $datas['unlockType'] : null;
+        $courseShowType = isset($datas['courseShowType']) ? $datas['courseShowType'] : null;
+        $checkStatus = isset($datas['checkStatus']) ? $datas['checkStatus'] : null;
+        $course = $courseRepository->find($id);
+
+        $course->setTitle($title);
+
+        
+        $status = isset($datas['status']) ? $datas['status'] : 'active';
+        $course->setStatus($status);
+
+
+        $aliyunVideoId = isset($datas['video_key']) ? $datas['video_key'] : null;
+        if($aliyunVideoId){
+            $course->setAliyunVideoId($aliyunVideoId);
+        }
+
+        $teacher_id = isset($datas['teacher_id']) ? $datas['teacher_id'] : null;
+        if($teacher_id){
+            $teacher = $teacherRepository->find($teacher_id);
+            $course->setTeacher($teacher);
+        }
+
+        $subject = isset($datas['subject']) ? $datas['subject'] : null;
+        $course->setSubject($subject);
+
+        $course_tag = isset($datas['course_tag']) ? $datas['course_tag'] : null;
+        $course->setCourseTag($course_tag);
+
+        $category_id = isset($datas['category_id']) ? $datas['category_id'] : null;
+        if($category_id){
+            $category = $categoryRepository->find($category_id);
+            $course->setCourseCategory ($category);
+        }
+
+        $unlockType = isset($datas['cost_type']) ? $datas['cost_type'] : null;
+        $collect_timelong = isset($datas['collect_timelong']) ? $datas['collect_timelong'] : null;
+        $collect_num = isset($datas['collect_num']) ? $datas['collect_num'] : null;
+        $price = isset($datas['price']) ? $datas['price'] : null;
+        $remark = isset($datas['remark']) ? $datas['remark'] : null;
+        $content = isset($datas['content']) ? $datas['content'] : null;
+        $show_type = isset($datas['show_type']) ? $datas['show_type'] : null;
+
+
+
+        $course->setUnlockType($unlockType);
+        $course->setPrice($price);
+        $course->setTotalGroupUserOrdersRequired($collect_num);
+        $course->setGroupOrderValidForHours($collect_timelong);
+
+        $course->setShortDescription($content);
+        $course->setCourseShowType($show_type);
+
+        // dump( $course );die;
+        // $course->setUnlockType($unlockType);
+        // $course->setCourseShowType($courseShowType);
+
+        //假如选择一级分类默认创建一个二级的单课类别
+        if (!empty($course->getCourseCategory())) {
+            if (empty($course->getCourseCategory()->getParentCategory())) {
+                $categoryActual = Category::factory($course->getTitle(), $course->getCourseCategory());
+                $categoryActual->setSingleCourse(1);
+                $categoryActual->setPriority($course->getPriority());
+                $categoryActual->setStatus($status);
+                $this->entityPersist($categoryActual, false);
+                $course->setCourseActualCategory($categoryActual);
+            } else {
+                $course->setCourseActualCategory($course->getCourseCategory());
+            }
+        }
+
+        $this->entityPersist($course);
+
+
+
+        // $product = new Product();
+        // $product->setCourse($course);
+        // $product->setTitle($title);
+        // $this->entityPersist($product);
 
         return CommonUtil::resultData([])->toJsonResponse();
     }
