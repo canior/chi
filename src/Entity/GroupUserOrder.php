@@ -234,6 +234,12 @@ class GroupUserOrder implements Dao
     // 直通车ID
     public $tradingProductId = null;
 
+    /**
+     * 返还金支付的订单ID
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $payForOrderId;
+
     public function __construct() {
         $this->upgradeUserOrders = new ArrayCollection();
         $this->upgradeOrderCoupons = new ArrayCollection();
@@ -1321,6 +1327,22 @@ class GroupUserOrder implements Dao
     public function setUnlockCategory(Category $unlockCategory): void
     {
         $this->unlockCategory = $unlockCategory;
+    }
+
+    /**
+     * @return payForOrderId
+     */
+    public function getPayForOrderId()
+    {
+        return $this->payForOrderId;
+    }
+
+    /**
+     * @param payForOrderId
+     */
+    public function setPayForOrderId(String $payForOrderId)
+    {
+        $this->payForOrderId = $payForOrderId;
     }
 
     /**
