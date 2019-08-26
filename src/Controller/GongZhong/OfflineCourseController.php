@@ -53,7 +53,7 @@ class OfflineCourseController extends GongZhongBaseController
         foreach ($courseList as $k => $v) {
             $item = $v->getArray();
             $item['is_initiator'] = false;
-            if( $user && $v->getCourse()->getInitiator() && $v->getCourse()->getInitiator()->getId() ==  $user->getID() ){
+            if( $user && $v->getCourse()->getInitiator() && $v->getCourse()->getInitiator()->getId() ==  $user->getId() ){
                 $item['is_initiator'] = true;
             }
             $data[] = $item;
