@@ -362,6 +362,9 @@ class GongZhongMemberController extends GongZhongBaseController
     {
         $requestProcess = $this->processRequest($request, ['offlineCourseType','isEnd', 'page', 'pageNum'], ['offlineCourseType']);
         $user = $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
 
         $courseQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
             'offlineCourseType' => $requestProcess['offlineCourseType'],
@@ -381,7 +384,7 @@ class GongZhongMemberController extends GongZhongBaseController
         foreach ($courseList as $k => $v) {
             $item = $v->getArray();
             $item['is_initiator'] = false;
-            if( $user && $v->getCourse()->getInitiator() && $v->getCourse()->getInitiator()->getId() ==  $user->getID() ){
+            if( $user && $v->getCourse()->getInitiator() && $v->getCourse()->getInitiator()->getId() ==  $user->getId() ){
                 $item['is_initiator'] = true;
             }
             $data[] = $item;
