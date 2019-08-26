@@ -63,7 +63,7 @@ class OfflineCourseController extends BackendController
      * @param TeacherRepository $teacherRepository
      * @return Response
      */
-    public function new(Request $request, TeacherRepository $teacherRepository): Response
+    public function new(Request $request, TeacherRepository $teacherRepository,UserRepository $userRepository): Response
     {
 
         $course = new Course();

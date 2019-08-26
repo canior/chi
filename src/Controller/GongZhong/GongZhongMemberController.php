@@ -60,7 +60,6 @@ use App\Entity\FollowTeacherMeta;
 use App\Repository\MessageGroupUserOrderMetaRepository;
 use App\Repository\UserRecommandStockOrderRepository;
 use App\Service\Util\MoneyUtil;
-
 /**
  */
 class GongZhongMemberController extends GongZhongBaseController
@@ -175,7 +174,7 @@ class GongZhongMemberController extends GongZhongBaseController
      * @param MessageRepository $messageRepository
      * @return Response
      */
-    public function messageAction(Request $request, MessageGroupUserOrderMetaRepository $messageGroupUserOrderMetaRepository) {
+    public function messageAction(Request $request, MessageGroupUserOrderMetaRepository $messageGroupUserOrderMetaRepository,ProductRepository $productRepository) {
 
         $data = $this->processRequest($request,['page','checkStatus','isRead','isNewUser']);
 
@@ -208,10 +207,10 @@ class GongZhongMemberController extends GongZhongBaseController
         // $messageGroupUserOrderMetaRepository->setMessagesIsRead($idsArray);
 
         // 获取返还金产品 返还金专用产品
-        // TODO
+        $product = $productRepository->findOneBy(['title'=>'返还金专用产品'],['id'=>'DESC']);
 
         // 返回
-        return CommonUtil::resultData(  ['messageArray'=>$orderArray,'productId'=>127 ] )->toJsonResponse();
+        return CommonUtil::resultData(  ['messageArray'=>$orderArray,'productId'=>$product?$product->getId():null,'price'=>$product?$product->getPrice():null ] )->toJsonResponse();
     }
 
     /**
