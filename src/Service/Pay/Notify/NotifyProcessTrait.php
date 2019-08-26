@@ -55,15 +55,15 @@ trait NotifyProcessTrait
         CommonUtil::entityPersist($groupUserOrder);
 
         // 更新返回金订单
-        if( $groupUserOrder->getPayForOrderId() ){
-            $payForOrder = $groupUserOrderRepository->find( $groupUserOrder->getPayForOrderId() );
-            if( $payForOrder ){
-                $payForOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
-                $payForOrder->setCheckAt(time());
-                $payForOrder->setTableNo((int)OfflineTableNo::getUserTable($payForOrder));
-                CommonUtil::entityPersist($payForOrder);                
-            }
-        }
+        // if( $groupUserOrder->getPayForOrderId() ){
+        //     $payForOrder = $groupUserOrderRepository->find( $groupUserOrder->getPayForOrderId() );
+        //     if( $payForOrder ){
+        //         $payForOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
+        //         $payForOrder->setCheckAt(time());
+        //         $payForOrder->setTableNo((int)OfflineTableNo::getUserTable($payForOrder));
+        //         CommonUtil::entityPersist($payForOrder);                
+        //     }
+        // }
 
         if ($groupUserOrder->getProduct()->isHasCoupon()) {
             $user->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($groupUserOrder->getId()));
