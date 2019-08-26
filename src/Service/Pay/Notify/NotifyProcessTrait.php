@@ -76,7 +76,7 @@ trait NotifyProcessTrait
                     $phone = CommonUtil::getInsideValue($groupUserOrder, 'getUser.getPhone', '');
                     $message->setDataId($groupUserOrder->getId());
                     $message->setUser($groupUserOrder->getUser()->getBianxianTopParentPartnerUpUser());
-                    $message->setContent("您的用户{$name},手机号为{$phone}完成了系统学员的身份升级，您的名额将扣除一个。");
+                    $message->setContent("名为{$name},手机号为{$phone}的用户，支付了线下系统活动课程的500元会务费，请确认该用户是否已经升级成为了系统学员。");
                     $message->setTitle("学员升级");
                     CommonUtil::entityPersist($message);
                 }
