@@ -50,11 +50,9 @@ class PayController extends GongZhongBaseController
      * @param ProductRepository $productRepository
      * @return JsonResponse
      */
-    public function createOfflineCourseAction(Request $request, ProductRepository $productRepository)
+    public function createOfflineCourseAction(Request $request, ProductRepository $productRepository,GroupUserOrderRepository $groupUserOrderRepository)
     {
-        $requestProcess = $this->processRequest($request, [
-            'productId'
-        ], ['productId']);
+        $requestProcess = $this->processRequest($request, ['productId','payForOrderId'], ['productId']);
 
         $productId = $requestProcess['productId'];
         $user = $this->getAppUser();
@@ -65,6 +63,12 @@ class PayController extends GongZhongBaseController
         }
 
         $offlineCourseOrder = CourseOrder::factory($user, $product);
+
+        // 返回金订单
+        $payForOrderId = isset($requestProcess['payForOrderId'])?$requestProcess['payForOrderId']:null;
+        if( $payForOrderId ){
+            $offlineCourseOrder->setPayForOrderId($payForOrderId);
+        }
 
         $this->entityPersist($offlineCourseOrder);
 

@@ -29,7 +29,7 @@ trait NotifyProcessTrait
      * @author zxqc2018
      * @return \App\Service\ResultData
      */
-    public function processOrder(string $outTradeNo)
+    public function processOrder(string $outTradeNo,GroupUserOrderRepository $groupUserOrderRepository)
     {
         $requestProcess = CommonUtil::resultData();
         $groupUserOrder = $this->getOrderInfo($outTradeNo);
@@ -53,6 +53,17 @@ trait NotifyProcessTrait
         }
 
         CommonUtil::entityPersist($groupUserOrder);
+
+        // 更新返回金订单
+        if( $groupUserOrder->getPayForOrderId() ){
+            $payForOrder = $groupUserOrderRepository->find( $groupUserOrder->getPayForOrderId() );
+            if( $payForOrder ){
+                $payForOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
+                $payForOrder->setCheckAt(time());
+                $payForOrder->setTableNo((int)OfflineTableNo::getUserTable($payForOrder));
+                CommonUtil::entityPersist($payForOrder);                
+            }
+        }
 
         if ($groupUserOrder->getProduct()->isHasCoupon()) {
             $user->addUserCommand(CommandMessage::createNotifyCompletedCouponProductCommand($groupUserOrder->getId()));
