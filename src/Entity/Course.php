@@ -1266,7 +1266,7 @@ class Course implements Dao
             'previewImageFile' => $this->getPreviewImageFile() ? $this->getPreviewImageFile()->getId() : null,
             'totalStudents' => $this->getTotalStudentUsers(),
             'isOnline' => $this->isOnline,
-            'eligibleUserLevels' => Subject::$subjectUserLevelConstraintArray[$this->getSubject()], //for bianxian
+            'eligibleUserLevels' => $this->getSubject()?Subject::$subjectUserLevelConstraintArray[$this->getSubject()]:null, //for bianxian
             'subject' => $this->getSubject(),
             'subjectText' => $this->getSubject() ? Subject::$subjectTextArray[$this->getSubject()] : null,
             'eligibleViewer' => $this->getEligibleViewerUserLevels(),
