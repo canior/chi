@@ -105,7 +105,7 @@ export class CourseCreateComponent implements OnInit {
 
 
     // 文件上传
-    file_upload_url = environment.api+'/common/upload';
+    file_upload_url = environment.api+'/file/ngupload';
     showUploadList = {
         showPreviewIcon: true,
         showRemoveIcon: true,
@@ -119,9 +119,9 @@ export class CourseCreateComponent implements OnInit {
 
     // 监听文件选择器
     handleChange(info:any): void {
-        // console.log(info.type);
+        console.log(info);
         if( info.file.response != undefined && info.file.response.data ){
-            this.selectCourse.image = info.file.response.data;
+            this.selectCourse.image = info.file.response.fileId;
         }else if( info.type != undefined && info.type == "removed" ){
             this.selectCourse.image = '';
         }else if( info.file.response != undefined && info.file.response.msg ){
@@ -145,7 +145,7 @@ export class CourseCreateComponent implements OnInit {
     handleShareChange(info:any): void {
         // console.log(info.type);
         if( info.file.response != undefined && info.file.response.data ){
-            this.selectCourse.image = info.file.response.data;
+            this.selectCourse.image = info.file.response.fileId;
         }else if( info.type != undefined && info.type == "removed" ){
             this.selectCourse.image = '';
         }else if( info.file.response != undefined && info.file.response.msg ){

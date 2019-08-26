@@ -102,7 +102,7 @@ export class CategoryCreateComponent implements OnInit {
 
 
     // 文件上传
-    file_upload_url = environment.api+'/common/upload';
+    file_upload_url = environment.api+'/file/ngupload';
     showUploadList = {
         showPreviewIcon: true,
         showRemoveIcon: true,
