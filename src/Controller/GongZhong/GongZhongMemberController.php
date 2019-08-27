@@ -192,14 +192,14 @@ class GongZhongMemberController extends GongZhongBaseController
         $messageQuery = $messageGroupUserOrderMetaRepository->getGroupUserOrder($user->getId(),$checkStatus,$isRead,$isNewUser);
         $messageArrays = $this->getPaginator()->paginate($messageQuery, $page, self::PAGE_LIMIT);
 
-        $orderArray = [];
+        $messageArray = [];
         $idsArray = [];
-        foreach ($messageArrays as $order) {
-            if( isset($order[0]) ){
-                $order['groupUserOrder'] = $order[0]->getArray();
-                unset($order[0]);
-                $orderArray[] = $order;
-                $idsArray[] = $order['id'];
+        foreach ($messageArrays as $message) {
+            if( isset($message[0]) ){
+                $message['groupUserOrder'] = $message[0]->getArray();
+                unset($message[0]);
+                $messageArray[] = $message;
+                $idsArray[] = $message['id'];
             }
         }
 
@@ -210,7 +210,13 @@ class GongZhongMemberController extends GongZhongBaseController
         $product = $productRepository->findOneBy(['title'=>Product::BACK_PRODUCT_TITLE ],['id'=>'DESC']);
 
         // 返回
-        return CommonUtil::resultData(  ['messageArray'=>$orderArray,'productId'=>$product?$product->getId():null,'price'=>$product?$product->getPrice():null ] )->toJsonResponse();
+        return CommonUtil::resultData(  
+            [
+                'messageArray'=>$messageArray,
+                'productId'=>$product?$product->getId():null,
+                'price'=>$product?$product->getPrice():null 
+            ]
+        )->toJsonResponse();
     }
 
     /**
