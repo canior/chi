@@ -31,6 +31,8 @@ class Product implements Dao
         false => '否'
     ];
 
+    const BACK_PRODUCT_TITLE  = "返还金专用产品";
+
     use IdTrait,
         StatusTrait,
         CreatedAtTrait,
