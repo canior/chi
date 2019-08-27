@@ -642,6 +642,35 @@ class GroupUserOrder implements Dao
         return $this;
     }
 
+    public function systemSubjectPay() {
+
+        if ($this->getProduct()->isCourseProduct()) { //在线视频购买或者线下课程购买订单
+
+            // 线下活动注册
+            if (!$this->getProduct()->getCourse()->isOnline()) {
+
+                //系统课
+                if ($this->getProduct()->getCourse()->isSystemSubject()) {
+
+                    $bianxianUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::BIANXIAN, BianxianUserLevel::ADVANCED, $this);
+                    // dump($bianxianUpgradeUserOrder);die;
+                    if ($bianxianUpgradeUserOrder) {
+                        $bianxianUpgradeUserOrder->setApproved(false);
+                        $this->addUpgradeUserOrder($bianxianUpgradeUserOrder);
+                    }
+
+                    //TODO 如果合伙人没有名额了怎么办
+                    $topParentUser = $this->getUser()->getParentUser();
+                    if ($topParentUser) {
+                        $memo = '合伙人推荐系统学员成功，消除名额';
+                        $topParentUser->createUserRecommandStockOrder(-1, $bianxianUpgradeUserOrder, $memo);
+                    }
+                }
+            }
+        }
+        return $this;
+    }
+
     public function isPaid() : bool {
         return self::PAID == $this->getPaymentStatus();
     }
