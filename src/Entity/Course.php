@@ -1302,7 +1302,7 @@ class Course implements Dao
                 $progressText = '已结束';
                 $progress = 'end';
             }else{
-                if( $this->getStartDate() > time() ){
+                if( $this->getStartDate() <= time() ){
                     $progressText = '活动进行中';
                     $progress = 'start';
                 }else{
