@@ -111,7 +111,7 @@ class PayController extends GongZhongBaseController
         $paidGroupUserOrder = $groupUserOrderRepository->findOneBy($where);
 
         if (!empty($paidGroupUserOrder)) {
-            if( $paidGroupUserOrder->getTitle() != Product::BACK_PRODUCT_TITLE ){
+            if( $paidGroupUserOrder->getProduct()->getTitle() != Product::BACK_PRODUCT_TITLE ){
                 $requestProcess->throwErrorException(ErrorCode::ERROR_COURSE_ALREADY_PAY, []);
             }
         }
