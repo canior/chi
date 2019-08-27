@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\GroupUserOrder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use App\Entity\Product;
 
 /**
  * @method GroupUserOrder|null find($id, $lockMode = null, $lockVersion = null)
@@ -308,6 +309,9 @@ class GroupUserOrderRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('guo')
             ->leftJoin('guo.product', 'p')
             ->leftJoin('p.course', 'c');
+
+        //过滤返回金专用订单
+        $query->andWhere('p.title != :title')->setParameter('title',Product::BACK_PRODUCT_TITLE);
 
         if (isset($where['userId'])) {
             $query->andWhere('guo.user = :userId')->setParameter('userId',$where['userId']);
