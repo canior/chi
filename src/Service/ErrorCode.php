@@ -49,7 +49,7 @@ class ErrorCode
     const ERROR_PLOCE_LOGIN_BY_PHONE = 12019;
     const ERROR_UNIONID_HAD_REGISTER = 12020;
     const ERROR_UNIONID_HAD_USE = 12021;
-
+    const ERROR_PHONE_HAD_REGISTER_OTHER_WX = 12022;
 
     //-------课程---------------------------------------
     const ERROR_CATEGORY_NOT_EXISTS = 13001;
@@ -154,6 +154,7 @@ class ErrorCode
             self::ERROR_PHONE_HAD_REGISTER => '手机号已经存在',
             self::ERROR_PLOCE_LOGIN_BY_PHONE => '请用手机号登陆后再绑定微信',
             self::ERROR_UNIONID_HAD_REGISTER => '微信已经绑定其他手机号',
+            self::ERROR_PHONE_HAD_REGISTER_OTHER_WX => '手机号已经绑定其他微信',
             self::ERROR_YINLIAN_PAY => '银联支付发生错误',
             self::ERROR_UNIONID_HAD_USE => '微信wxUnionId已注册',
         ];

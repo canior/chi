@@ -89,9 +89,13 @@ class UserController extends GongZhongBaseController
                 $flushFlag = true;
             }
 
+            // 判断openId是否存在
             if (empty($user->getWxGzhOpenId())) {
                 $user->setWxGzhOpenId($requestProcess['openid']);
                 $flushFlag = true;
+            }else{
+                // 手机号已绑定其他微信号
+                return CommonUtil::resultData( [], ErrorCode::ERROR_PHONE_HAD_REGISTER_OTHER_WX )->toJsonResponse();
             }
 
             if (empty($user->getAvatarUrl())) {
@@ -201,7 +205,7 @@ class UserController extends GongZhongBaseController
         $unionId = $openIdInfo['unionid'];
         $nickname = $openIdInfo['nickname'] ?? '未知用户';
 
-        $user = FactoryUtil::userRepository()->findOneBy(['wxUnionId' => $unionId]);
+        $user = FactoryUtil::userRepository()->findOneBy(['wxGzhOpenId'=>$openId ]);
         $this->getLog()->info("found user " . $user == null ? 'true' : 'false');
 
         $data = [
