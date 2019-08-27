@@ -54,7 +54,7 @@ trait NotifyProcessTrait
 
         CommonUtil::entityPersist($groupUserOrder);
 
-        // 更新返回金订单
+        // 更新返回金父级订单
         if( $groupUserOrder->getPayForOrderId() ){
             $groupUserOrderRepository = ConfigParams::getRepositoryManager()->getRepository(GroupUserOrder::class);
             $payForOrder = $groupUserOrderRepository->find( $groupUserOrder->getPayForOrderId() );
@@ -62,7 +62,12 @@ trait NotifyProcessTrait
                 $payForOrder->setCheckStatus(GroupUserOrder::CHECK_PASS);
                 $payForOrder->setCheckAt(time());
                 $payForOrder->setTableNo((int)OfflineTableNo::getUserTable($payForOrder));
-                CommonUtil::entityPersist($payForOrder);                
+                CommonUtil::entityPersist($payForOrder);
+
+                //父级订单被支付
+                if ($payForOrder instanceof  GroupUserOrder) {
+                    $payForOrder->setPaid();
+                }
             }
         }
 
