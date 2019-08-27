@@ -207,7 +207,7 @@ class GongZhongMemberController extends GongZhongBaseController
         // $messageGroupUserOrderMetaRepository->setMessagesIsRead($idsArray);
 
         // 获取返还金产品 返还金专用产品
-        $product = $productRepository->findOneBy(['title'=>'返还金专用产品'],['id'=>'DESC']);
+        $product = $productRepository->findOneBy(['title'=>Product::BACK_PRODUCT_TITLE ],['id'=>'DESC']);
 
         // 返回
         return CommonUtil::resultData(  ['messageArray'=>$orderArray,'productId'=>$product?$product->getId():null,'price'=>$product?$product->getPrice():null ] )->toJsonResponse();

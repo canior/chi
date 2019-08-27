@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Product;
 
 class PayController extends GongZhongBaseController
 {
@@ -110,7 +111,9 @@ class PayController extends GongZhongBaseController
         $paidGroupUserOrder = $groupUserOrderRepository->findOneBy($where);
 
         if (!empty($paidGroupUserOrder)) {
-            $requestProcess->throwErrorException(ErrorCode::ERROR_COURSE_ALREADY_PAY, []);
+            if( $paidGroupUserOrder->getTitle() != Product::BACK_PRODUCT_TITLE ){
+                $requestProcess->throwErrorException(ErrorCode::ERROR_COURSE_ALREADY_PAY, []);
+            }
         }
 
         $openId = $groupUserOrder->getUser()->getWxGzhOpenId();
