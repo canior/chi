@@ -226,6 +226,15 @@ class PayController extends GongZhongBaseController
 
         $groupUserOrderArr = $groupUserOrder->getArray();
         $groupUserOrderArr['checkStatus'] = $checkStatus;
+
+        //父级订单
+        if( $groupUserOrder->getPayForOrderId() ){
+            $payForOrder = $groupUserOrderRepository->find( $groupUserOrder->getPayForOrderId() );
+            if( $payForOrder ){
+                $data['payForOrder'] = $payForOrder->getArray();
+            }
+        }
+
         $data['groupUserOrder'] = $groupUserOrderArr;
         return $requestProcess->toJsonResponse($data);
     }
