@@ -12,7 +12,8 @@ export class Course {
 	public teacher_id:string;
 	public teacher_name:string;
 	public top:string;
-
+	public priority:string;
+	
 
 	public cost_type:any;
 	public price:any;
@@ -22,6 +23,10 @@ export class Course {
 	public show_type:any;
 
 	public image:any;
+	public image_url:any;
+	public share_image:any;
+	public share_image_url:any;
+
 	public remark:any;
 	public content:any;
 	public video_key:any;
@@ -32,6 +37,6 @@ export class Course {
 	
 	public link:any;
 	public course_tag:any;
-	public image_url:any;
+	
 	public unlock_type:any; 
 }

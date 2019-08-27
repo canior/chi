@@ -67,6 +67,16 @@ export class CourseCreateComponent implements OnInit {
                         };
                         this.fileList = [item];
                     }
+
+                    if( this.selectCourse.share_image ){
+                        let item =  {
+                            uid: 1,
+                            name: this.selectCourse.share_image,
+                            status: 'done',
+                            url: this.selectCourse.share_image_url
+                        };
+                        this.shareFileList = [item];
+                    }
                 }
 
             }).catch((msg : string) => {
@@ -115,12 +125,9 @@ export class CourseCreateComponent implements OnInit {
     previewImage: string | undefined = '';
     previewVisible = false;
 
-
-
     // 监听文件选择器
     handleChange(info:any): void {
-        console.log(info);
-        if( info.file.response != undefined && info.file.response.data ){
+        if( info.file.response != undefined && info.file.response.fileId ){
             this.selectCourse.image = info.file.response.fileId;
         }else if( info.type != undefined && info.type == "removed" ){
             this.selectCourse.image = '';
@@ -137,17 +144,14 @@ export class CourseCreateComponent implements OnInit {
         showRemoveIcon: true,
         hidePreviewIconInNonImage: true
     };
-    fileListShare = [];
+    shareFileList = [];
 
-
-    
     // 监听文件选择器
     handleShareChange(info:any): void {
-        // console.log(info.type);
-        if( info.file.response != undefined && info.file.response.data ){
-            this.selectCourse.image = info.file.response.fileId;
+        if( info.file.response != undefined && info.file.response.fileId ){
+            this.selectCourse.share_image = info.file.response.fileId;
         }else if( info.type != undefined && info.type == "removed" ){
-            this.selectCourse.image = '';
+            this.selectCourse.share_image = '';
         }else if( info.file.response != undefined && info.file.response.msg ){
             this.message.error(info.file.response.msg);
         }

@@ -105,8 +105,8 @@
                                             <nz-upload 
                                                 nzAction="{{file_upload_url}}" 
                                                 nzListType="picture-card" 
-                                                [(nzFileList)]="fileListShare" 
-                                                [nzShowButton]="fileListShare.length < 1" 
+                                                [(nzFileList)]="shareFileList" 
+                                                [nzShowButton]="shareFileList.length < 1" 
                                                 [nzShowUploadList]="showUploadListShare" 
                                                 [nzMultiple]="false"
                                                 (nzChange)="handleShareChange($event)"
@@ -262,17 +262,13 @@
                                     <nz-form-item class="nz-form-item">
                                         <nz-form-label class="nz-formlable" nzFor="title">排序</nz-form-label>
                                         <nz-form-control>
-                                            <input nz-input name="title" [(ngModel)]="selectCourse.title" type="text">
+                                            <nz-input-number style="width:100%" name="priority" [(ngModel)]="selectCourse.priority" type="text"></nz-input-number>
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
                             </div>
-
                         </nz-card>
 
-
-
-                        
                     </div>
                 </div>
             </form>
