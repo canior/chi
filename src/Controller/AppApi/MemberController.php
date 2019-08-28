@@ -1506,4 +1506,51 @@ class MemberController extends AppApiBaseController
             'hasNewMessage' => $hasNewMessage,
         ]);
     }
+
+
+    /**
+     * 我发起的思维课
+     *
+     * @Route("/message/initiatorOfflineCourses", name="appinitiatorOfflineCourseIndex", methods={"POST","OPTIONS"})
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @return JsonResponse
+     */
+    public function initiatorOfflineCoursesAction(Request $request, ProductRepository $productRepository) : JsonResponse
+    {
+        $requestProcess = $this->processRequest($request, ['offlineCourseType','isEnd', 'page', 'pageNum'], ['offlineCourseType']);
+        $user = $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        $courseQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
+            'offlineCourseType' => $requestProcess['offlineCourseType'],
+            'isEnd' => $requestProcess['isEnd'],
+            'initiator'=>$user
+        ]);
+        $courseList = $this->getPaginator()->paginate($courseQuery, $requestProcess['page'], $requestProcess['pageNum']);
+
+        $courseCountQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
+            'offlineCourseType' => $requestProcess['offlineCourseType'],
+            'isEnd' => $requestProcess['isEnd'],
+            'initiator'=>$user,
+            'isGetCount' => true
+        ]);
+
+        $data  = [];
+        foreach ($courseList as $k => $v) {
+            $item = $v->getArray();
+            $item['is_initiator'] = false;
+            if( $user && $v->getCourse()->getInitiator() && $v->getCourse()->getInitiator()->getId() ==  $user->getId() ){
+                $item['is_initiator'] = true;
+            }
+            $data[] = $item;
+        }
+
+        return $requestProcess->toJsonResponse([
+            'courseList' => $data,
+            'total' => CommonUtil::getTotalQueryCount($courseCountQuery),
+        ]);
+    }
 }
