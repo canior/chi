@@ -338,7 +338,7 @@ class GongZhongMemberController extends GongZhongBaseController
     }
 
     /**
-     * @Route("/gzhAuth/userInfo", name="apiUserInfo",  methods={"POST"})
+     * @Route("/gzhAuth/userInfo", name="gzhApiUserInfo",  methods={"POST"})
      * @param Request $request
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
