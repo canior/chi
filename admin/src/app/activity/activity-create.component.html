@@ -1,0 +1,336 @@
+<page [title]="'编辑'">
+    
+    <nz-breadcrumb  [style.marginBottom.px]="24">
+        <nz-breadcrumb-item>
+            首页
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+            <a>控制面板</a>
+        </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    
+    <nz-spin  [nzSpinning]="isLoading">
+        <div nz-row [nzGutter]="16"  [style.marginBottom.px]="24">
+            <form nz-form>
+                <div nz-col class="gutter-row"  nzXl="18" nzXs="24"  [style.marginBottom.px]="24">
+                    <div class="gutter-box">
+                        <nz-card nzTitle="内容设置" [nzBordered]="false" [style.marginBottom.px]="24">
+                            
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>分类</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-tree-select [nzNodes]="categorys" name="category_id" [(ngModel)]="selectActivity.category_id" [nzDefaultExpandAll]="true">
+                                            </nz-tree-select>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>标题</nz-form-label>
+                                        <nz-form-control>
+                                            <input nz-input name="title" [(ngModel)]="selectActivity.title" type="text">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>会务费</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-input-number style="width:100%" name="price" [(ngModel)]="selectActivity.price" type="text"></nz-input-number>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable">举办时间</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-range-picker name="time_range" nzFormat="yyyy-MM-dd" [(ngModel)]="selectActivity.time_range"></nz-range-picker>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>开课城市</nz-form-label>
+                                        <nz-form-control>
+                                            <input nz-input name="city" [(ngModel)]="selectActivity.city" type="text">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>开课地址</nz-form-label>
+                                        <nz-form-control>
+                                            <input nz-input name="address" [(ngModel)]="selectActivity.address" type="text">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>桌数</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-input-number style="width:100%" name="table_num" [(ngModel)]="selectActivity.table_num" type="text"></nz-input-number>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>每桌人数</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-input-number style="width:100%" name="table_user_num" [(ngModel)]="selectActivity.table_user_num" type="text"></nz-input-number>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>讲师</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-select nzAllowClear name="teacher_id" [(ngModel)]="selectActivity.teacher_id">
+                                                <nz-option *ngFor="let item of teachers" nzValue="{{item.id}}" nzLabel="{{item.name}}"></nz-option>
+                                            </nz-select>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>安检后台用户</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-select nzAllowClear name="security_id" [(ngModel)]="selectActivity.security_id">
+                                                <nz-option *ngFor="let item of securitys" nzValue="{{item.id}}" nzLabel="{{item.name}}"></nz-option>
+                                            </nz-select>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>关联活动</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-select nzAllowClear name="relevancy_id" [(ngModel)]="selectActivity.relevancy_id">
+                                                <nz-option *ngFor="let item of relevancys" nzValue="{{item.id}}" nzLabel="{{item.name}}"></nz-option>
+                                            </nz-select>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>封面图片</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-upload 
+                                                nzAction="{{file_upload_url}}" 
+                                                nzListType="picture-card" 
+                                                [(nzFileList)]="fileList" 
+                                                [nzShowButton]="fileList.length < 1" 
+                                                [nzShowUploadList]="showUploadList" 
+                                                [nzMultiple]="false"
+                                                (nzChange)="handleChange($event)"
+                                            >
+                                                <i nz-icon nzType="plus"></i>
+                                                <div class="ant-upload-text">上传</div>
+                                            </nz-upload>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>分享图片</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-upload 
+                                                nzAction="{{file_upload_url}}" 
+                                                nzListType="picture-card" 
+                                                [(nzFileList)]="shareFileList" 
+                                                [nzShowButton]="shareFileList.length < 1" 
+                                                [nzShowUploadList]="showUploadListShare" 
+                                                [nzMultiple]="false"
+                                                (nzChange)="handleShareChange($event)"
+                                            >
+                                                <i nz-icon nzType="plus"></i>
+                                                <div class="ant-upload-text">上传</div>
+                                            </nz-upload>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable">活动简介</nz-form-label>
+                                        <nz-form-control>
+                                            <textarea nz-input name="remark" [(ngModel)]="selectActivity.remark" rows="4">{{selectActivity.remark}}</textarea>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable">活动详情</nz-form-label>
+                                        <nz-form-control>
+                                            <tinymce rows="10" name="content" [(ngModel)]="selectActivity.content"  [config]="config"></tinymce>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24"  [style.marginTop.px]="24">
+                                <div class="gutter-box">
+                                    <nz-form-item>
+                                        <nz-form-control>
+                                            <button (click)="doSubmit()" nz-button nzType="primary">保存</button>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            
+                        </nz-card>
+
+                        
+
+                    </div>
+                </div>
+                <div nz-col class="gutter-row"  nzXl="6" nzXs="24"  [style.marginBottom.px]="24">
+                    <div nz-row [nzGutter]="16">
+
+
+                        <nz-card  nzTitle="显示设置" id="c1" [nzBordered]="false" [style.marginBottom.px]="24">
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>状态</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-radio-group name="status" [(ngModel)]="selectActivity.status">
+                                                <label nz-radio nzValue="active">已发布</label>
+                                                <label nz-radio nzValue="inactive">未发布</label>
+                                            </nz-radio-group>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="top">是否特级VIP升级码产品</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-switch name="has_coupon" [(ngModel)]="selectActivity.has_coupon" ></nz-switch>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="top">是否推荐(待开发)</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-switch nzDisabled></nz-switch>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="top">是否显示(待开发)</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-switch   nzDisabled></nz-switch>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24">
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>发起人ID</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-input-number style="width:100%" name="initiator_id" [(ngModel)]="selectActivity.initiator_id" type="text"></nz-input-number>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24"  *ngIf="selectActivity.initiator_id">
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>审核状态</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-radio-group name="check_status" [(ngModel)]="selectActivity.check_status">
+                                                <label nz-radio nzValue="">待审核</label>
+                                                <label nz-radio nzValue="pass">审核通过</label>
+                                                <label nz-radio nzValue="reject">审核驳回</label>
+                                            </nz-radio-group>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                            
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" *ngIf="selectActivity.initiator_id && selectActivity.check_status == 'reject'">
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>驳回理由</nz-form-label>
+                                        <nz-form-control>
+                                            <input nz-input name="reason" [(ngModel)]="selectActivity.reason" type="text">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+
+
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" *ngIf="selectActivity.id">
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable">排序</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-input-number style="width:100%" name="priority" [(ngModel)]="selectActivity.priority" type="text"></nz-input-number>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+                        </nz-card>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </nz-spin>
+
+</page>
