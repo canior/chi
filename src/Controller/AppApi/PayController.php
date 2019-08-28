@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\UserAddressRepository;
+use App\Repository\ProductRepository;
 
 /**
  * Class PayController
@@ -240,5 +241,95 @@ class PayController extends AppApiBaseController
         }
 
         return FactoryUtil::notifyProcess(file_get_contents('php://input'))->process()->toResponse();
+    }
+
+
+    /**
+     * 普通购买活动订单
+     * @Route("/auth/pay/groupUserOrder/createOfflineCourse", name="appCreateOfflineCourseGroupUserOrder", methods="POST")
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @return JsonResponse
+     */
+    public function createOfflineCourseAction(Request $request, ProductRepository $productRepository,GroupUserOrderRepository $groupUserOrderRepository)
+    {
+        $requestProcess = $this->processRequest($request, ['productId','payForOrderId'], ['productId']);
+
+        $productId = $requestProcess['productId'];
+        $user = $this->getAppUser();
+        $product = $productRepository->find($productId);
+
+        if (empty($product)) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_PRODUCT_NOT_EXISTS);
+        }
+
+        $offlineCourseOrder = CourseOrder::factory($user, $product);
+
+        // 返回金订单
+        $payForOrderId = isset($requestProcess['payForOrderId'])?$requestProcess['payForOrderId']:null;
+        if( $payForOrderId ){
+            $offlineCourseOrder->setPayForOrderId($payForOrderId);
+        }
+
+        $this->entityPersist($offlineCourseOrder);
+
+        return $requestProcess->toJsonResponse([
+            'groupUserOrder' => $offlineCourseOrder->getArray()
+        ]);
+    }
+
+    /**
+     * 订单待支付页面
+     *
+     * @Route("/auth/pay/groupUserOrder/view", name="appViewGroupUserOrder", methods="POST")
+     * @return Response
+     */
+    public function viewAction()
+    {
+        $requestProcess = $this->processRequest(null, [
+            'groupUserOrderId', 'isConfirmView'
+        ], ['groupUserOrderId']);
+        $groupUserOrderId = $requestProcess['groupUserOrderId'];
+        /**
+         * @var GroupUserOrder $groupUserOrder
+         */
+        $groupUserOrder = FactoryUtil::groupUserOrderRepository()->find($groupUserOrderId);
+
+        if (empty($groupUserOrder)) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS, []);
+        }
+
+        $user = $this->getAppUser();
+
+        //非合伙人确认页面验证user
+        if (empty($requestProcess['isConfirmView'])) {
+            if ($user !== $groupUserOrder->getUser()) {
+                $requestProcess->throwErrorException(ErrorCode::ERROR_PAY_ORDER_ID_NO_EXISTS, []);
+            }
+        }
+
+        $data = [
+            'groupUserOrder' => $groupUserOrder->getArray(),
+            'needConfirm' => false,
+            'needAdminConfirm' => false,
+            'partnerName' => '',
+        ];
+
+        if (!empty($requestProcess['isConfirmView'])) {
+            $data['hasConfirmPrivilege'] = $groupUserOrder->getUser()->getBianxianTopParentPartnerUpUser() == $user;
+        } else {
+            if (empty($groupUserOrder->getCheckStatus())) {
+                if ($groupUserOrder->isNeedAdminConfirm()) {
+                    $data['needAdminConfirm'] = true;
+                }
+                //是否需要确认
+                if ($groupUserOrder->isNeedPartnerConfirm()) {
+                    $data['needConfirm'] = true;
+                    $data['partnerName'] = CommonUtil::getInsideValue($groupUserOrder, 'getUser.getBianxianTopParentPartnerUpUser.getName', '佐商学院');
+                }
+            }
+        }
+
+        return $requestProcess->toJsonResponse($data);
     }
 }
