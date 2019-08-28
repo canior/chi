@@ -1511,7 +1511,7 @@ class MemberController extends AppApiBaseController
     /**
      * 我发起的思维课
      *
-     * @Route("/message/initiatorOfflineCourses", name="appinitiatorOfflineCourseIndex", methods={"POST","OPTIONS"})
+     * @Route("/initiatorOfflineCourses", name="appinitiatorOfflineCourseIndex", methods={"POST","OPTIONS"})
      * @param Request $request
      * @param ProductRepository $productRepository
      * @return JsonResponse
