@@ -112,7 +112,7 @@ class GongZhongMemberController extends GongZhongBaseController
 
     /**
      * 我的名额统计
-     * @Route("/gzhAuth/children", name="children", methods="POST")
+     * @Route("/gzhAuth/children", name="gzhchildren", methods="POST")
      * @param Request $request
      * @return Response
      */
@@ -137,7 +137,7 @@ class GongZhongMemberController extends GongZhongBaseController
 
     /**
      * 我的系统学员已用名额列表
-     * @Route("/gzhAuth/childrenUse", name="childrenUse", methods="POST")
+     * @Route("/gzhAuth/childrenUse", name="gzhchildrenUse", methods="POST")
      * @param Request $request
      * @return Response
      */
@@ -169,7 +169,7 @@ class GongZhongMemberController extends GongZhongBaseController
 
     /**
      * 我的消息列表
-     * @Route("/gzhAuth/message", name="message", methods="POST")
+     * @Route("/gzhAuth/message", name="gzhmessage", methods="POST")
      * @param Request $request
      * @param MessageRepository $messageRepository
      * @return Response
@@ -221,7 +221,7 @@ class GongZhongMemberController extends GongZhongBaseController
 
     /**
      * 修改审核状态
-     * @Route("/gzhAuth/updateOrder", name="updateOrder", methods="POST")
+     * @Route("/gzhAuth/updateOrder", name="gzhupdateOrder", methods="POST")
      * @param Request $request
      * @param MessageRepository $messageRepository
      * @return Response
@@ -274,7 +274,7 @@ class GongZhongMemberController extends GongZhongBaseController
 
     /**
      * 已读 消息 
-     * @Route("/gzhAuth/postMessage", name="postMessage", methods="POST")
+     * @Route("/gzhAuth/postMessage", name="gzhpostMessage", methods="POST")
      * @param Request $request
      * @param MessageRepository $messageRepository
      * @return Response
@@ -309,7 +309,7 @@ class GongZhongMemberController extends GongZhongBaseController
 
     /**
      * 删除 消息 
-     * @Route("/gzhAuth/delMessage", name="delMessage", methods="POST")
+     * @Route("/gzhAuth/delMessage", name="gzhdelMessage", methods="POST")
      * @param Request $request
      * @param MessageRepository $messageRepository
      * @return Response
