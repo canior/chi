@@ -1316,6 +1316,7 @@ class Course implements Dao
             'collect_num' => $this->getTotalGroupUserOrdersRequired(),
             'collect_timelong' => $this->getGroupOrderValidForHours(),
             'price' => $this->getPrice(),
+            'status' => $this->getProduct()->getStatus(),
             'priority' => $this->getPriority(),
             'image' => $this->getPreviewImageFile()?$this->getPreviewImageFile()->getId():null,
             'image_url' => $this->getPreviewImageFile()?self::IMAGE_URL_BASE.$this->getPreviewImageFile()->getId():null,
@@ -1337,6 +1338,7 @@ class Course implements Dao
             'end_date' =>  $this->getEndDate() ? date(self::DATE_FORMAT, $this->getEndDate()) : '',
             'teacher_name' => $this->getTeacher()?$this->getTeacher()->getName():null,
             'album_title' => null,
+            'status' => $this->getProduct()->getStatus(),
             'update_at' => $this->getProduct()->getUpdatedAt(),
         ];
     }

@@ -31,44 +31,30 @@ class CourseController extends BackendController
      * @param Request $request
      * @return Response
      */
-    public function index(Request $request, CourseRepository $courseRepository): Response
+    public function index(Request $request, CourseRepository $courseRepository, TeacherRepository $teacherRepository,CategoryRepository $categoryRepository): Response
     {
         // NG
         $data = [];
         if( $request->query->get('isNg') ){
-            $data = [
-                'title' => '课程管理',
-                'form' => [
-                    'subject' => $request->query->get('subject', null),
-                    'courseShowType' => $request->query->get('courseShowType', 'all'),
-                    'oneCategory' => $request->query->get('oneCategory', null),
-                    'twoCategory' => $request->query->get('twoCategory', null),
-                    'page' => $request->query->getInt('page', 1)
-                ],
-                'courseShowTypes' => Course::$courseShowTypeTexts,
-                'oneCategoryList' => json_encode(FactoryUtil::categoryRepository()->getCategoryTree(0, true)),
-            ];
 
-            $data['data'] = $courseRepository->findCourseQueryBuild(true, $data['form']['courseShowType'], $data['form']['oneCategory'], $data['form']['twoCategory']);
-
-            $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
-
-
-
+            $where = $request->query->all();
+            $where['isOnline'] = true;
             
-
-
+            $page = isset($where['page']) ? $where['page'] : 1;
+            $limit = isset($where['num']) ? $where['num'] : self::PAGE_LIMIT;
+            $coursesQuery = $courseRepository->courseQuery($where);
+            $courses = $this->getPaginator()->paginate($coursesQuery, $page, $limit);
             $datas['courses']  = [];
-            foreach ($data['pagination'] as $k => $v) {
+            foreach ($courses as $k => $v) {
                 $datas['courses'][] = $v->getListArray();
             }
-
+            
+            $total = $courseRepository->courseQuery($where,true)->getQuery()->getSingleScalarResult();
+            $datas['total_page'] = ceil($total/$limit);
 
             $datas['category'] = $this->getTempTree( $categoryRepository->getCategoryList() );
 
             $datas['teacher'] = $teacherRepository->getTeacherList();
-
-            $datas['total_page'] = 8;
 
             return CommonUtil::resultData($datas)->toJsonResponse();
         }

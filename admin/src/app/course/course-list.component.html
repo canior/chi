@@ -81,7 +81,7 @@
                                         <nz-form-control [nzSpan]="14" [nzOffset]="6">
                                             <button  nz-button nzType="primary"  (click)="initData()">搜索</button>
                                             &nbsp; &nbsp;
-                                            <button  nz-button >清空搜索</button>
+                                            <button  nz-button  (click)="initSearch()">清空搜索</button>
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
@@ -119,13 +119,13 @@
         <nz-table nzBordered [nzData]="courses"  [nzShowPagination]="false" [style.marginBottom.px]="24">
             <thead (nzSortChange)="sortChange($event)" nzSingleSort>
                 <tr>
-                    <th nzSortKey="id" nzShowSort>ID</th>
-                    <th nzSortKey="title" nzShowSort>标题</th>
-                    <th nzSortKey="category_id" nzShowSort>分类</th>
+                    <th nzSortKey="c.id" nzShowSort>ID</th>
+                    <th nzSortKey="p.title" nzShowSort>标题</th>
+                    <th nzSortKey="c.courseCategory" nzShowSort>分类</th>
                     <!-- <th nzSortKey="category" nzShowSort>系列</th> -->
-                    <th nzSortKey="teacher_id" nzShowSort>讲师</th>
+                    <th nzSortKey="c.teacher" nzShowSort>讲师</th>
                     <th>发布情况</th>
-                    <th nzSortKey="update_at" nzShowSort>操作时间</th>
+                    <th nzSortKey="c.update_at" nzShowSort>操作时间</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -137,8 +137,8 @@
                     <!-- <td>{{item.album_title}}</td> -->
                     <td>{{item.teacher_name}}</td>
                     <td>
-                        <nz-tag *ngIf="item.status == 1" [nzColor]="'#87d068'">显示</nz-tag>
-                        <nz-tag *ngIf="item.status != 1" [nzColor]="'#87d068'">隐藏</nz-tag>
+                        <nz-tag *ngIf="item.status == 'active'" [nzColor]="'#87d068'">显示</nz-tag>
+                        <nz-tag *ngIf="item.status != 'active'" [nzColor]="'#a9a9a9'">隐藏</nz-tag>
                     </td>
                     <td>{{item.update_at}}</td>
                     <td>

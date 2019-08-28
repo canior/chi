@@ -62,7 +62,7 @@ export class CourseListComponent implements OnInit {
             .then( (res:any ) => {
                 if( res.code == 0 ){
                     this.courses = res.data.courses;
-                    this.total_page = Number(res.total_page);
+                    this.total_page = Number(res.data.total_page);
 
                     this.categorys = res.data.category;
                     this.teachers = res.data.teacher;
@@ -76,6 +76,11 @@ export class CourseListComponent implements OnInit {
             .finally( () => {
                 this.isLoading = false;
             })
+    }
+
+
+    initSearch(){
+        this.searchData = new Course;
     }
 
     deletedData(id : string) {
