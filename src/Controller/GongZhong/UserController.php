@@ -137,7 +137,7 @@ class UserController extends GongZhongBaseController
     }
 
     /**
-     * @Route("/sendCode", name="sendCode",  methods={"POST"})
+     * @Route("/sendCode", name="gzhsendCode",  methods={"POST"})
      * @param Request $request
      * @param EncoderFactoryInterface $encoderFactory
      * @param UserManagerInterface $userManager
@@ -310,7 +310,7 @@ class UserController extends GongZhongBaseController
     /**
      *
      * 合伙人确认身份
-     * @Route("/gzhAuth/partner/confirm", name="partnerConfirmSystemUser", methods={"POST"})
+     * @Route("/gzhAuth/partner/confirm", name="gzhpartnerConfirmSystemUser", methods={"POST"})
      * @author zxqc2018
      */
     public function partnerConfirmSystemUser()
@@ -332,7 +332,7 @@ class UserController extends GongZhongBaseController
     }
 
     /**
-     * @Route("/getToken", name="getTestToken")
+     * @Route("/getToken", name="gzhgetTestToken")
      * @param JWTTokenManagerInterface $JWTTokenManager
      * @return JsonResponse
      */
