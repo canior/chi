@@ -1,5 +1,13 @@
 <page [title]="'课程列表'" >
 
+    <nz-breadcrumb  [style.marginBottom.px]="14">
+        <nz-breadcrumb-item>
+            首页
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+            <a>控制面板</a>
+        </nz-breadcrumb-item>
+    </nz-breadcrumb>
     
     <nz-card nzTitle="课程列表">
         <nz-collapse [style.marginBottom.px]="24">
@@ -10,74 +18,68 @@
                             <div class="gutter-box">
                                 <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
                                     <nz-form-item>
-                                        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email">标题</nz-form-label>
-                                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid E-mail!">
-                                            <input nz-input name="title"  type="text">
+                                        <nz-form-label [nzSm]="6" [nzXs]="24">标题</nz-form-label>
+                                        <nz-form-control [nzSm]="14" [nzXs]="24">
+                                            <input nz-input name="title" [(ngModel)]="searchData.title" type="text">
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
                                 <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
                                     <nz-form-item>
-                                        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email">讲师</nz-form-label>
-                                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid E-mail!">
-                                            <nz-select nzAllowClear>
-                                                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                                                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                                                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+                                        <nz-form-label [nzSm]="6" [nzXs]="24">讲师</nz-form-label>
+                                        <nz-form-control [nzSm]="14" [nzXs]="24">
+                                            <nz-select name="teacher_id" [(ngModel)]="searchData.teacher_id" nzAllowClear>
+                                                <nz-option *ngFor="let item of teachers" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
                                             </nz-select>
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
                                 <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
                                     <nz-form-item>
-                                        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email">显示设备</nz-form-label>
-                                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid E-mail!">
-                                            <label nz-checkbox >全部</label>
-                                            <label nz-checkbox >APP</label>
-                                            <label nz-checkbox >小程序</label>
+                                        <nz-form-label [nzSm]="6" [nzXs]="24">显示设备</nz-form-label>
+                                        <nz-form-control [nzSm]="14" [nzXs]="24">
+                                            <nz-radio-group name="show_type" [(ngModel)]="searchData.show_type">
+                                                <label nz-radio nzValue="all">全部</label>
+                                                <label nz-radio nzValue="app">APP</label>
+                                                <label nz-radio nzValue="mini">小程序</label>
+                                            </nz-radio-group>
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
                                 <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
                                     <nz-form-item>
-                                        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email">发布情况</nz-form-label>
-                                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid E-mail!">
-                                            <label nz-checkbox >全部</label>
-                                            <label nz-checkbox >未发布</label>
-                                            <label nz-checkbox >已发布</label>
+                                        <nz-form-label [nzSm]="6" [nzXs]="24">发布情况</nz-form-label>
+                                        <nz-form-control [nzSm]="14" [nzXs]="24">
+                                            <nz-radio-group name="status" [(ngModel)]="searchData.status">
+                                                <label nz-radio nzValue="active">已发布</label>
+                                                <label nz-radio nzValue="inactive">未发布</label>
+                                            </nz-radio-group>
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
                                 <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
                                     <nz-form-item>
-                                        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email">课程分类</nz-form-label>
-                                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid E-mail!">
-                                            <nz-select nzAllowClear>
-                                                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                                                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                                                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-                                            </nz-select>
+                                        <nz-form-label [nzSm]="6" [nzXs]="24">课程分类</nz-form-label>
+                                        <nz-form-control [nzSm]="14" [nzXs]="24">
+                                            <nz-tree-select [nzNodes]="categorys" name="category_id" [(ngModel)]="searchData.category_id" [nzDefaultExpandAll]="true">
+                                            </nz-tree-select>
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
                                 <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
                                     <nz-form-item>
-                                        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email">课程系列</nz-form-label>
-                                        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid E-mail!">
-                                            <nz-select nzAllowClear>
-                                                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                                                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                                                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-                                            </nz-select>
+                                        <nz-form-label [nzSm]="6" [nzXs]="24">课程系列(待开发)</nz-form-label>
+                                        <nz-form-control [nzSm]="14" [nzXs]="24">
+                                            <nz-select nzDisabled>
+                                                <nz-option nzValue="album" nzLabel="待开发"></nz-option>
+                                            </nz-select >
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
-                                
-                                
                                 <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
                                     <nz-form-item>
                                         <nz-form-control [nzSpan]="14" [nzOffset]="6">
-                                            <button  nz-button nzType="primary">搜索</button>
+                                            <button  nz-button nzType="primary"  (click)="initData()">搜索</button>
                                             &nbsp; &nbsp;
                                             <button  nz-button >清空搜索</button>
                                         </nz-form-control>
@@ -103,10 +105,10 @@
                 <div class="gutter-box">
                     <div [style.float]="'right'">
                         <nz-input-group [nzSuffix]="suffixIconSearch">
-                            <input type="text" nz-input placeholder="搜索" />
+                            <input type="text" nz-input name="title" [(ngModel)]="searchData.title" placeholder="搜索" />
                         </nz-input-group>
                         <ng-template #suffixIconSearch>
-                            <i nz-icon type="search"></i>
+                            <i nz-icon type="search" (click)="initData()"></i>
                         </ng-template>
                     </div>
                 </div>
@@ -119,11 +121,11 @@
                 <tr>
                     <th nzSortKey="id" nzShowSort>ID</th>
                     <th nzSortKey="title" nzShowSort>标题</th>
-                    <th nzSortKey="category" nzShowSort>分类</th>
-                    <th nzSortKey="category" nzShowSort>系列</th>
-                    <th nzSortKey="category" nzShowSort>讲师</th>
-                    <th nzShowSort>发布情况</th>
-                    <th nzSortKey="add_time" nzShowSort>操作时间</th>
+                    <th nzSortKey="category_id" nzShowSort>分类</th>
+                    <!-- <th nzSortKey="category" nzShowSort>系列</th> -->
+                    <th nzSortKey="teacher_id" nzShowSort>讲师</th>
+                    <th>发布情况</th>
+                    <th nzSortKey="update_at" nzShowSort>操作时间</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -132,7 +134,7 @@
                     <td>{{item.id}}</td>
                     <td>{{item.title}}</td>
                     <td>{{item.category_title}}</td>
-                    <td>{{item.album_title}}</td>
+                    <!-- <td>{{item.album_title}}</td> -->
                     <td>{{item.teacher_name}}</td>
                     <td>
                         <nz-tag *ngIf="item.status == 1" [nzColor]="'#87d068'">显示</nz-tag>

@@ -53,10 +53,23 @@ class CourseController extends BackendController
 
             $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
 
-            $datas  = [];
+
+
+            
+
+
+            $datas['courses']  = [];
             foreach ($data['pagination'] as $k => $v) {
-                $datas[] = $v->getLittleArray();
+                $datas['courses'][] = $v->getListArray();
             }
+
+
+            $datas['category'] = $this->getTempTree( $categoryRepository->getCategoryList() );
+
+            $datas['teacher'] = $teacherRepository->getTeacherList();
+
+            $datas['total_page'] = 8;
+
             return CommonUtil::resultData($datas)->toJsonResponse();
         }
 
@@ -73,22 +86,34 @@ class CourseController extends BackendController
     {
 
         $datas = json_decode($request->getContent(), true);
+        
+        
         $title = isset($datas['title']) ? $datas['title'] : null;
-        
-        
-        $unlockType = isset($datas['unlockType']) ? $datas['unlockType'] : null;
-        $courseShowType = isset($datas['courseShowType']) ? $datas['courseShowType'] : null;
-        $checkStatus = isset($datas['checkStatus']) ? $datas['checkStatus'] : null;
-        
+        $cost_type = isset($datas['cost_type']) ? $datas['cost_type'] : null;
+        $collect_timelong = isset($datas['collect_timelong']) ? $datas['collect_timelong'] : null;
+        $collect_num = isset($datas['collect_num']) ? $datas['collect_num'] : null;
+        $price = isset($datas['price']) ? $datas['price'] : null;
+        $remark = isset($datas['remark']) ? $datas['remark'] : null;
+        $content = isset($datas['content']) ? $datas['content'] : null;
+        $show_type = isset($datas['show_type']) ? $datas['show_type'] : null;
 
 
         $course = new Course();
 
         $course->setTitle($title);
+        $course->setUnlockType($cost_type);
+        $course->setPrice($price);
+        $course->setTotalGroupUserOrdersRequired($collect_num);
+        $course->setGroupOrderValidForHours($collect_timelong);
 
-        
+        $course->setShortDescription($content);
+        $course->setCourseShowType($show_type);
+
+
         $status = isset($datas['status']) ? $datas['status'] : 'active';
         $course->setStatus($status);
+
+
 
 
         $aliyunVideoId = isset($datas['video_key']) ? $datas['video_key'] : null;
@@ -114,6 +139,7 @@ class CourseController extends BackendController
             $course->setCourseCategory ($category);
         }
 
+
         // dump( $course );die;
         // $course->setUnlockType($unlockType);
         // $course->setCourseShowType($courseShowType);
@@ -132,9 +158,37 @@ class CourseController extends BackendController
             }
         }
 
+
+
+
+        //update preview image
+        $previewImageFileId = isset($datas['image']) ? $datas['image'] : null;
+        if ($previewImageFileId) {
+            $previewImageFile = $this->getEntityManager()->getRepository(File::class)->find($previewImageFileId);
+            $course->setPreviewImageFile($previewImageFile);
+        } else {
+            $course->setPreviewImageFile(null);
+        }
+
+        $shareImageFileId = isset($datas['share_image']) ? $datas['share_image'] : null;
+        if ($shareImageFileId) {
+            $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
+            $course->setShareImageFile($shareImageFile);
+        } else {
+            $course->setShareImageFile(null);
+        }
+
+
+
+
         $this->entityPersist($course);
 
 
+
+        $course->setPriority( $course->getId() );
+        $this->entityPersist($course);
+
+        
 
         // $product = new Product();
         // $product->setCourse($course);
@@ -160,8 +214,6 @@ class CourseController extends BackendController
         $id = isset($datas['id']) ? $datas['id'] : null;
         $title = isset($datas['title']) ? $datas['title'] : null;
         $unlockType = isset($datas['unlockType']) ? $datas['unlockType'] : null;
-        $courseShowType = isset($datas['courseShowType']) ? $datas['courseShowType'] : null;
-        $checkStatus = isset($datas['checkStatus']) ? $datas['checkStatus'] : null;
         $course = $courseRepository->find($id);
 
         $course->setTitle($title);
@@ -201,9 +253,10 @@ class CourseController extends BackendController
         $remark = isset($datas['remark']) ? $datas['remark'] : null;
         $content = isset($datas['content']) ? $datas['content'] : null;
         $show_type = isset($datas['show_type']) ? $datas['show_type'] : null;
+        $priority = isset($datas['priority']) ? $datas['priority'] : 0;
 
 
-
+        $course->setPriority($priority);
         $course->setUnlockType($unlockType);
         $course->setPrice($price);
         $course->setTotalGroupUserOrdersRequired($collect_num);
@@ -229,6 +282,25 @@ class CourseController extends BackendController
                 $course->setCourseActualCategory($course->getCourseCategory());
             }
         }
+
+
+        //update preview image
+        $previewImageFileId = isset($datas['image']) ? $datas['image'] : null;
+        if ($previewImageFileId) {
+            $previewImageFile = $this->getEntityManager()->getRepository(File::class)->find($previewImageFileId);
+            $course->setPreviewImageFile($previewImageFile);
+        } else {
+            $course->setPreviewImageFile(null);
+        }
+
+        $shareImageFileId = isset($datas['share_image']) ? $datas['share_image'] : null;
+        if ($shareImageFileId) {
+            $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
+            $course->setShareImageFile($shareImageFile);
+        } else {
+            $course->setShareImageFile(null);
+        }
+        
 
         $this->entityPersist($course);
 
@@ -291,216 +363,14 @@ class CourseController extends BackendController
 
     }
 
-    /**
-     * @Route("/course/{id}/edit", name="course_edit", methods="GET|POST")
-     * @param Request $request
-     * @param Course $course
-     * @return Response
-     */
-    public function edit(Request $request, Course $course): Response
-    {
-        $form = $this->createForm(CourseType::class, $course);
-        $form->get('status')->setData(array_search($course->getProduct()->getStatusText(), Product::$statuses));
-        $form->get('subject')->setData(array_search($course->getSubjectText(), Subject::$subjectTextArray));
-        $form->get('unlockType')->setData(array_search($course->getUnlockTypeText(), Course::$unlockTypeTexts));
-        $form->get('courseShowType')->setData(array_search($course->getCourseShowTypeText(), Course::$courseShowTypeTexts));
-
-        /**
-         * @var Category $originCourseCategory
-         */
-        $originCourseCategory = $form->get('courseCategory')->getData();
-
-        $originCourseTitle = $form->get('title')->getData();
-
-        $originCoursePriority = $form->get('priority')->getData();
-
-        // init images
-        $productImages = $course->getCourseImages();
-        if (!$productImages->isEmpty()) {
-            $images = [];
-            foreach ($productImages as $image) {
-                $images[$image->getFile()->getId()] = [
-                    'id' => $image->getId(),
-                    'fileId' => $image->getFile()->getId(),
-                    'priority' => $image->getPriority(),
-                    'name' => $image->getFile()->getName(),
-                    'size' => $image->getFile()->getSize()
-                ];
-            }
-            $form->get('images')->setData($images);
-        }
-
-        $productSpecImages = $course->getCourseSpecImages();
-        if (!$productSpecImages->isEmpty()) {
-            $images = [];
-            foreach ($productSpecImages as $image) {
-                $images[$image->getFile()->getId()] = [
-                    'id' => $image->getId(),
-                    'fileId' => $image->getFile()->getId(),
-                    'priority' => $image->getPriority(),
-                    'name' => $image->getFile()->getName(),
-                    'size' => $image->getFile()->getSize()
-                ];
-            }
-            $form->get('specImages')->setData($images);
-        }
-
-        $shareImageFile = $course->getShareImageFile();
-        if ($shareImageFile) {
-            $fileArray[$shareImageFile->getId()] = [
-                'id' => $shareImageFile->getId(),
-                'fileId' => $shareImageFile->getId(),
-                'priority' => 0,
-                'name' => $shareImageFile->getName(),
-                'size' => $shareImageFile->getSize()
-            ];
-            $form->get('shareImageFile')->setData($fileArray);
-        }
-
-        $previewImageFile = $course->getPreviewImageFile();
-        if ($previewImageFile) {
-            $fileImgArray[$previewImageFile->getId()] = [
-                'id' => $previewImageFile->getId(),
-                'fileId' => $previewImageFile->getId(),
-                'priority' => 0,
-                'name' => $previewImageFile->getName(),
-                'size' => $previewImageFile->getSize()
-            ];
-            $form->get('previewImageFile')->setData($fileImgArray);
-        }
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $status = $request->request->get('course')['status'];
-            $subject = $request->request->get('course')['subject'];
-            $unlockType = $request->request->get('course')['unlockType'];
-            $courseShowType = $request->request->get('course')['courseShowType'];
-            $checkStatus = $request->request->get('course')['checkStatus'];
-
-            //假如课程有改动
-            if ($originCourseCategory !== $course->getCourseCategory()) {
-                //假如选择一级分类默认创建一个二级的单课类别
-                if (!empty($course->getCourseCategory()) && empty($course->getCourseCategory()->getParentCategory())) {
-                    //假如原类是单课程类去除 类别表中的category
-                    if (!empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
-                        $course->getCourseActualCategory()->setName($course->getTitle());
-                        $course->getCourseActualCategory()->setPriority($course->getPriority());
-                        $course->getCourseActualCategory()->setParentCategory($course->getCourseCategory());
-                        $course->getCourseActualCategory()->setStatus($status);
-                    } else {
-                        $categoryActual = Category::factory($course->getTitle(), $course->getCourseCategory());
-                        $categoryActual->setSingleCourse(1);
-                        $categoryActual->setPriority($course->getPriority());
-                        $categoryActual->setStatus($status);
-                        $this->entityPersist($categoryActual, false);
-                        $course->setCourseActualCategory($categoryActual);
-                    }
-                } else {
-                    //假如原类是单课程类去除 类别表中的category
-                    if (!empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
-                        $course->getCourseActualCategory()->setIsDeleted(1);
-                        $this->entityPersist($course->getCourseActualCategory(), false);
-                    }
-                    $course->setCourseActualCategory($course->getCourseCategory());
-                }
-            }
-
-            //假如课程有改动 单课程
-            if ($originCourseTitle != $course->getTitle() && !empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
-                $course->getCourseActualCategory()->setName($course->getTitle());
-            }
-
-            //假如排序有改动 单课程
-            if ($originCoursePriority != $course->getPriority() && !empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
-                $course->getCourseActualCategory()->setPriority($course->getPriority());
-            }
-
-            //假如状态有改动 单课程 
-            if ( !empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
-                $course->getCourseActualCategory()->setStatus($status);
-            }
-
-            $course->setStatus($status);
-            $course->setCheckStatus($checkStatus);
-            $course->setSubject($subject);
-            $course->setUnlockType($unlockType);
-            $course->setCourseShowType($courseShowType);
-            $this->getEntityManager()->persist($course);
-
-            try {
-                $images = isset($request->request->get('course')['images']) ? $request->request->get('course')['images'] : [];
-                $imagesCommand = new CreateOrUpdateProductImagesCommand($course->getProduct()->getId(), $images);
-                $this->getCommandBus()->handle($imagesCommand);
-            } catch (\Exception $e) {
-                $this->getLog()->error('can not run CreateOrUpdateProductImagesCommand because of' . $e->getMessage());
-                if ($this->isDev()) {
-                    dump($e->getFile());
-                    dump($e->getMessage());
-                    die;
-                }
-                return new Response('页面错误', 500);
-            }
-
-            try {
-                $specImages = isset($request->request->get('course')['specImages']) ? $request->request->get('course')['specImages'] : [];
-                $specImagesCommand = new CreateOrUpdateProductSpecImagesCommand($course->getProduct()->getId(), $specImages);
-                $this->getCommandBus()->handle($specImagesCommand);
-            } catch (\Exception $e) {
-                $this->getLog()->error('can not run CreateOrUpdateProductSpecImagesCommand because of' . $e->getMessage());
-                if ($this->isDev()) {
-                    dump($e->getFile());
-                    dump($e->getMessage());
-                    die;
-                }
-                return new Response('页面错误', 500);
-            }
-
-            //update share image
-            $shareImageFileId = isset($request->request->get('course')['shareImageFile']) ? $request->request->get('course')['shareImageFile'] : [];
-            if ($shareImageFileId) {
-                /**
-                 * @var File $shareImageFile
-                 */
-                $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
-                $course->setShareImageFile($shareImageFile);
-
-            } else {
-                $course->setShareImageFile(null);
-            }
-
-            //update preview image
-            $previewImageFileId = isset($request->request->get('course')['previewImageFile']) ? $request->request->get('course')['previewImageFile'] : [];
-            if ($previewImageFileId) {
-                /**
-                 * @var File $previewImageFile
-                 */
-                $previewImageFile = $this->getEntityManager()->getRepository(File::class)->find($previewImageFileId);
-                $course->setPreviewImageFile($previewImageFile);
-
-            } else {
-                $course->setPreviewImageFile(null);
-            }
-
-            $this->getEntityManager()->persist($course);
-            $this->getDoctrine()->getManager()->flush();
-            $this->addFlash('notice', '修改成功');
-            return $this->redirectToRoute('course_edit', ['id' => $course->getId()]);
-        }
-
-        return $this->render('backend/course/edit.html.twig', [
-            'course' => $course,
-            'title' => '编辑课程',
-            'form' => $form->createView(),
-        ]);
-    }
+    
 
     /**
      * @Route("/course/delete/{id}", name="courseDelete", methods="GET|POST")
      * @param Request $request
      * @param Course $course
      */
-    public function deleteData(Request $request, Course $course): Response
+    public function delete(Request $request, Course $course): Response
     {
         $em = $this->getDoctrine()->getManager();
         $em->remove($course);

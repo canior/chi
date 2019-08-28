@@ -126,6 +126,29 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
+                        'category_index',
+                        'category_new',
+                        'category_edit',
+                        'category_second_index',
+                    ],
+                    'name' => '课程分类',
+                    'icon' => 'fa fa-inbox',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
+                        'activity_index',
+                        'activity_new',
+                        'activity_edit',
+                    ],
+                    'name' => '活动管理',
+                    'icon' => 'fa fa-calendar',
+                    'active' => false,
+                    'role' => 'ROLE_ADMIN',
+                ],
+                [
+                    'path' => [
                         'course_student_statistic_index',
                         'course_student_index',
                         'course_student_new',
@@ -146,18 +169,7 @@ class BackendController extends DefaultController
                     'active' => false,
                     'role' => 'ROLE_ADMIN',
                 ],
-                [
-                    'path' => [
-                        'category_index',
-                        'category_new',
-                        'category_edit',
-                        'category_second_index',
-                    ],
-                    'name' => '课程分类管理',
-                    'icon' => 'fas fa-cog',
-                    'active' => false,
-                    'role' => 'ROLE_ADMIN',
-                ],
+                
             ]
         ],
         [

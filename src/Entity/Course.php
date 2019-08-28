@@ -35,6 +35,9 @@ class Course implements Dao
 
     use IdTrait;
 
+
+    const IMAGE_URL_BASE = "https://chi.com/image/preview/";
+
     const COURSE_SHOW_TYPE_APP = 'app';
     const COURSE_SHOW_TYPE_MINI = 'mini';
     const COURSE_SHOW_TYPE_ALL = 'all';
@@ -1313,6 +1316,28 @@ class Course implements Dao
             'collect_num' => $this->getTotalGroupUserOrdersRequired(),
             'collect_timelong' => $this->getGroupOrderValidForHours(),
             'price' => $this->getPrice(),
+            'priority' => $this->getPriority(),
+            'image' => $this->getPreviewImageFile()?$this->getPreviewImageFile()->getId():null,
+            'image_url' => $this->getPreviewImageFile()?self::IMAGE_URL_BASE.$this->getPreviewImageFile()->getId():null,
+            'share_image' => $this->getShareImageFile()?$this->getShareImageFile()->getId():null,
+            'share_image_url' => $this->getShareImageFile()?self::IMAGE_URL_BASE.$this->getShareImageFile()->getId():null,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getListArray() : array {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getProduct()->getTitle(),
+            'category_id' => $this->getCourseCategory()?$this->getCourseCategory()->getId():'',
+            'category_title' => $this->getCourseCategory()?$this->getCourseCategory()->getName():'',
+            'start_date' =>  $this->getStartDate() ? date(self::DATE_FORMAT, $this->getStartDate()) : '',
+            'end_date' =>  $this->getEndDate() ? date(self::DATE_FORMAT, $this->getEndDate()) : '',
+            'teacher_name' => $this->getTeacher()?$this->getTeacher()->getName():null,
+            'album_title' => null,
+            'update_at' => $this->getProduct()->getUpdatedAt(),
         ];
     }
 
