@@ -12,6 +12,8 @@ namespace App\Controller\AppApi;
 use App\Entity\ProjectVideoMeta;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
+use App\Repository\UserRepository;
+use App\Repository\TeacherRepository;
 use App\Repository\ProjectBannerMetaRepository;
 use App\Service\ErrorCode;
 use App\Service\Util\CommonUtil;
