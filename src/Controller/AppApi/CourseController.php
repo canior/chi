@@ -190,4 +190,84 @@ class CourseController extends ProductController
 
         return $requestProcess->toJsonResponse($data);
     }
+
+
+    /**
+     * @Route("/auth/course/new", name="appCourseNew", methods="POST")
+     * @param Request $request
+     * @param TeacherRepository $teacherRepository
+     * @return Response
+     */
+    public function newAction(Request $request, TeacherRepository $teacherRepository,CategoryRepository $categoryRepository, UserRepository $userRepository)
+    {
+
+        $datas = json_decode($request->getContent(), true);
+
+        $requestProcess = $this->processRequest($request, ['subject', 'title', 'price','startDate', 'endDate', 'city','address','teacher_id','tableCount','tableUserCount','shortDescription'], ['subject', 'title', 'price','startDate', 'endDate', 'city','teacher_id','tableCount','tableUserCount','shortDescription']);
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+        
+        $subject = isset($datas['subject']) ? $datas['subject'] : null;
+        $title = isset($datas['title']) ? $datas['title'] : null;
+        $price = isset($datas['price']) ? $datas['price'] : null;
+        $startDate = isset($datas['startDate']) ? $datas['startDate'] : null;
+        $endDate = isset($datas['endDate']) ? $datas['endDate'] : null;
+        $city = isset($datas['city']) ? $datas['city'] : null;
+        $address = isset($datas['address']) ? $datas['address'] : null;
+        $teacher_id = isset($datas['teacher_id']) ? $datas['teacher_id'] : null;
+        $tableCount = isset($datas['tableCount']) ? $datas['tableCount'] : null;
+        $tableUserCount = isset($datas['tableUserCount']) ? $datas['tableUserCount'] : null;
+        $shortDescription = isset($datas['shortDescription']) ? $datas['shortDescription'] : null;
+
+        $course = new Course();
+        $course->setSubject($subject);
+        $course->setTitle($title);
+        $course->setPrice($price);
+        $course->setStartDate( $startDate?strtotime($startDate):null );
+        $course->setEndDate( $startDate?strtotime($endDate):null );
+        $course->setCity($city);
+        $course->setAddress($address);
+        $course->setTableCount($tableCount);
+        $course->setTableUserCount($tableUserCount);
+        $course->setShortDescription($shortDescription);
+        $course->setInitiator($user);
+        // $course->setStatus($status);
+
+        if($teacher_id){
+            $teacher = $teacherRepository->find($teacher_id);
+            if($teacher){
+                $course->setTeacher($teacher);
+            }
+        }
+
+        //update preview image
+        $previewImageFileId = isset($datas['image']) ? $datas['image'] : null;
+        if ($previewImageFileId) {
+            $previewImageFile = $this->getEntityManager()->getRepository(File::class)->find($previewImageFileId);
+            $course->setPreviewImageFile($previewImageFile);
+        } else {
+            $course->setPreviewImageFile(null);
+        }
+
+        $shareImageFileId = isset($datas['share_image']) ? $datas['share_image'] : null;
+        if ($shareImageFileId) {
+            $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
+            $course->setShareImageFile($shareImageFile);
+        } else {
+            $course->setShareImageFile(null);
+        }
+
+        $this->entityPersist($course);
+
+
+        $course->setPriority( $course->getId() );
+        $this->entityPersist($course);
+
+        // 返回
+        return CommonUtil::resultData( ['course'=>$course->getArray()] )->toJsonResponse();
+    }
 }
