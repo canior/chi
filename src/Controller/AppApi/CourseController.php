@@ -21,6 +21,7 @@ use App\Service\Util\FactoryUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Course;
 
 class CourseController extends ProductController
 {
@@ -226,6 +227,7 @@ class CourseController extends ProductController
         $shortDescription = isset($datas['shortDescription']) ? $datas['shortDescription'] : null;
 
         $course = new Course();
+        $course->setIsOnline(false);
         $course->setSubject($subject);
         $course->setTitle($title);
         $course->setPrice($price);
