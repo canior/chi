@@ -1194,7 +1194,7 @@ class MemberController extends AppApiBaseController
      * @param MessageRepository $messageRepository
      * @return Response
      */
-    public function messageAction(Request $request, MessageGroupUserOrderMetaRepository $messageGroupUserOrderMetaRepository) {
+    public function messageAction(Request $request, MessageGroupUserOrderMetaRepository $messageGroupUserOrderMetaRepository,ProductRepository $productRepository) {
 
         $data = json_decode($request->getContent(), true);
         $page = isset($data['page']) ? $data['page'] : 1;
@@ -1212,13 +1212,13 @@ class MemberController extends AppApiBaseController
 
 
 
-        $orderArray = [];
+        $messageArray = [];
         $idsArray = [];
         foreach ($messageArrays as $order) {
             if( isset($order[0]) ){
                 $order['groupUserOrder'] = $order[0]->getArray();
                 unset($order[0]);
-                $orderArray[] = $order;
+                $messageArray[] = $order;
                 $idsArray[] = $order['id'];
             }
         }
@@ -1226,9 +1226,18 @@ class MemberController extends AppApiBaseController
 
         // 查询列表 标记已读
         // $messageGroupUserOrderMetaRepository->setMessagesIsRead($idsArray);
+        
+        // 获取返还金产品 返还金专用产品
+        $product = $productRepository->findOneBy(['title'=>Product::BACK_PRODUCT_TITLE ],['id'=>'DESC']);
 
         // 返回
-        return CommonUtil::resultData(  ['messageArray'=>$orderArray] )->toJsonResponse();
+        return CommonUtil::resultData(  
+            [
+                'messageArray'=>$messageArray,
+                'productId'=>$product?$product->getId():null,
+                'price'=>$product?$product->getPrice():null 
+            ]
+        )->toJsonResponse();
     }
 
     /**
