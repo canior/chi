@@ -14,6 +14,7 @@ export class Course {
 	public top:string;
 	public priority:string;
 	
+	public checked:any;
 
 	public cost_type:any;
 	public price:any;
@@ -26,6 +27,10 @@ export class Course {
 	public image_url:any;
 	public share_image:any;
 	public share_image_url:any;
+	public video_image:any;
+	public video_image_url:any;
+
+	public content_image = [];
 
 	public remark:any;
 	public content:any;

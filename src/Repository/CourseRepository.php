@@ -187,7 +187,7 @@ class CourseRepository extends ServiceEntityRepository
         }
 
         if( isset($where['update_at']) && $where['update_at'] ){
-            $query->andWhere('p.updateAt = :update_at')->setParameter('update_at', $where['update_at']);
+            $query->andWhere('p.updatedAt = :update_at')->setParameter('update_at', $where['update_at']);
         }
 
         // 数量
@@ -198,18 +198,18 @@ class CourseRepository extends ServiceEntityRepository
 
 
         $sort = 'c.id';
-        if( isset($where['sort']) && $where['sort'] ){
-            $sort = $where['sort'];
+        if( isset($where['sortkey']) && $where['sortkey'] ){
+            $sort = $where['sortkey'];
         }
 
         $order = 'desc';
-        if( isset($where['order']) && $where['order'] ){
-            $order = $where['order'];
+        if( isset($where['orderkey']) && $where['orderkey'] ){
+            $order = $where['orderkey'];
         }
 
         $query->orderBy($sort, $order);
 
-        
+      
         return $query;
     }
 }

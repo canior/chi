@@ -5,7 +5,10 @@
             首页
         </nz-breadcrumb-item>
         <nz-breadcrumb-item>
-            <a>控制面板</a>
+            <a routerLink='/backend/course'>课程</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+            <a>详情</a>
         </nz-breadcrumb-item>
     </nz-breadcrumb>
     
@@ -84,7 +87,7 @@
                             </div>
  
                             
-                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="24" >
                                 <div class="gutter-box">
                                     <nz-form-item class="nz-form-item">
                                         <nz-form-label class="nz-formlable" nzFor="remark" nzRequired>封面图片</nz-form-label>
@@ -92,11 +95,11 @@
                                             <nz-upload 
                                                 nzAction="{{file_upload_url}}" 
                                                 nzListType="picture-card" 
-                                                [(nzFileList)]="fileList" 
-                                                [nzShowButton]="fileList.length < 1" 
-                                                [nzShowUploadList]="showUploadList" 
+                                                [(nzFileList)]="imageFileList" 
+                                                [nzShowButton]="imageFileList.length < 1" 
+                                                [nzShowUploadList]="showeUpload" 
                                                 [nzMultiple]="false"
-                                                (nzChange)="handleChange($event)"
+                                                (nzChange)="handleImageFile($event)"
                                             >
                                                 <i nz-icon nzType="plus"></i>
                                                 <div class="ant-upload-text">上传</div>
@@ -106,7 +109,51 @@
                                 </div>
                             </div>
 
-                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="remark" nzRequired>视频封面</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-upload 
+                                                nzAction="{{file_upload_url}}" 
+                                                nzListType="picture-card" 
+                                                [(nzFileList)]="videoFileList" 
+                                                [nzShowButton]="videoFileList.length < 1" 
+                                                [nzShowUploadList]="showeUpload" 
+                                                [nzMultiple]="false"
+                                                (nzChange)="handleVideoFile($event)"
+                                            >
+                                                <i nz-icon nzType="plus"></i>
+                                                <div class="ant-upload-text">上传</div>
+                                            </nz-upload>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="remark" nzRequired>课程详细</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-upload 
+                                                nzAction="{{file_upload_url}}" 
+                                                nzListType="picture-card" 
+                                                [(nzFileList)]="contentFileList" 
+                                                [nzShowButton]="contentFileList.length < 10" 
+                                                [nzShowUploadList]="showeUpload" 
+                                                [nzMultiple]="false"
+                                                (nzChange)="handleContentFile($event)"
+                                            >
+                                                <i nz-icon nzType="plus"></i>
+                                                <div class="ant-upload-text">上传</div>
+                                            </nz-upload>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="24" >
                                 <div class="gutter-box">
                                     <nz-form-item class="nz-form-item">
                                         <nz-form-label class="nz-formlable" nzFor="remark" nzRequired>分享图片</nz-form-label>
@@ -116,9 +163,9 @@
                                                 nzListType="picture-card" 
                                                 [(nzFileList)]="shareFileList" 
                                                 [nzShowButton]="shareFileList.length < 1" 
-                                                [nzShowUploadList]="showUploadListShare" 
+                                                [nzShowUploadList]="showeUpload" 
                                                 [nzMultiple]="false"
-                                                (nzChange)="handleShareChange($event)"
+                                                (nzChange)="handleShareFile($event)"
                                             >
                                                 <i nz-icon nzType="plus"></i>
                                                 <div class="ant-upload-text">上传</div>
@@ -223,6 +270,20 @@
                             <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
                                 <div class="gutter-box">
                                     <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzRequired>是否发布</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-radio-group name="status" [(ngModel)]="selectCourse.status">
+                                                <label nz-radio nzValue="active">已发布</label>
+                                                <label nz-radio nzValue="inactive">未发布</label>
+                                            </nz-radio-group>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
                                         <nz-form-label class="nz-formlable" nzFor="top" nzRequired>显示设备</nz-form-label>
                                         <nz-form-control>
                                             <nz-radio-group name="show_type" [(ngModel)]="selectCourse.show_type">
@@ -235,16 +296,7 @@
                                 </div>
                             </div>
 
-                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
-                                <div class="gutter-box">
-                                    <nz-form-item class="nz-form-item">
-                                        <nz-form-label class="nz-formlable" nzFor="top">是否置顶(待开发)</nz-form-label>
-                                        <nz-form-control>
-                                            <nz-switch  nzDisabled></nz-switch>
-                                        </nz-form-control>
-                                    </nz-form-item>
-                                </div>
-                            </div>
+                            
                             <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
                                 <div class="gutter-box">
                                     <nz-form-item class="nz-form-item">

@@ -28,10 +28,8 @@ export class CourseCreateComponent implements OnInit {
 	category = [];
     teacher = [];
 
-
-
-
 	ngOnInit() {
+
         this.activeRoute.queryParams.subscribe(params => {
             if(params.id && params.id != '' ) {
                 this.id = params.id;
@@ -59,23 +57,46 @@ export class CourseCreateComponent implements OnInit {
                 if( this.id ){
                     this.selectCourse = res.data.course;
                     if( this.selectCourse.image ){
-                        let item =  {
+                        var item =  {
                             uid: 0,
                             name: this.selectCourse.image,
                             status: 'done',
                             url: this.selectCourse.image_url
                         };
-                        this.fileList = [item];
+                        this.imageFileList = [item];
                     }
 
                     if( this.selectCourse.share_image ){
-                        let item =  {
+                        var item =  {
                             uid: 1,
                             name: this.selectCourse.share_image,
                             status: 'done',
                             url: this.selectCourse.share_image_url
                         };
                         this.shareFileList = [item];
+                    }
+
+                    if( this.selectCourse.video_image ){
+                        var item =  {
+                            uid: 2,
+                            name: this.selectCourse.video_image,
+                            status: 'done',
+                            url: this.selectCourse.video_image_url
+                        };
+                        this.shareFileList = [item];
+                    }
+
+                    if( this.selectCourse.content_image ){
+                        this.contentFileList = [];
+                        for (var i = this.selectCourse.content_image.length - 1; i >= 0; i--) {
+                            var item =  {
+                                uid: 3+i,
+                                name: this.selectCourse.content_image[i].image,
+                                status: 'done',
+                                url: this.selectCourse.content_image[i].image_url
+                            };
+                            this.contentFileList.push(item);
+                        }
                     }
                 }
 
@@ -116,17 +137,18 @@ export class CourseCreateComponent implements OnInit {
 
     // 文件上传
     file_upload_url = environment.api+'/file/ngupload';
-    showUploadList = {
+    showeUpload = {
         showPreviewIcon: true,
         showRemoveIcon: true,
         hidePreviewIconInNonImage: true
     };
-    fileList = [];
     previewImage: string | undefined = '';
     previewVisible = false;
 
+
+    imageFileList = [];
     // 监听文件选择器
-    handleChange(info:any): void {
+    handleImageFile(info:any): void {
         if( info.file.response != undefined && info.file.response.fileId ){
             this.selectCourse.image = info.file.response.fileId;
         }else if( info.type != undefined && info.type == "removed" ){
@@ -136,18 +158,10 @@ export class CourseCreateComponent implements OnInit {
         }
     }
 
-
     // 文件上传
-
-    showUploadListShare = {
-        showPreviewIcon: true,
-        showRemoveIcon: true,
-        hidePreviewIconInNonImage: true
-    };
     shareFileList = [];
-
     // 监听文件选择器
-    handleShareChange(info:any): void {
+    handleShareFile(info:any): void {
         if( info.file.response != undefined && info.file.response.fileId ){
             this.selectCourse.share_image = info.file.response.fileId;
         }else if( info.type != undefined && info.type == "removed" ){
@@ -158,22 +172,43 @@ export class CourseCreateComponent implements OnInit {
     }
 
 
+    // 文件上传
+    videoFileList = [];
+    // 监听文件选择器
+    handleVideoFile(info:any): void {
+        if( info.file.response != undefined && info.file.response.fileId ){
+            this.selectCourse.video_image = info.file.response.fileId;
+        }else if( info.type != undefined && info.type == "removed" ){
+            this.selectCourse.video_image = '';
+        }else if( info.file.response != undefined && info.file.response.msg ){
+            this.message.error(info.file.response.msg);
+        }
+    }
+
+    contentFileList = [];
+    // 监听文件选择器
+    handleContentFile(info:any): void {
+        if( info.file.response != undefined && info.file.response.fileId ){
+            this.selectCourse.content_image.push(info.file.response.fileId);
+        }else if( info.type != undefined && info.type == "removed" ){
+            var data = [];
+            for (var i = this.selectCourse.content_image.length - 1; i >= 0; i--) {
+                if( this.selectCourse.content_image[i].id != info.file.response.fileId ){
+                    data.push(info.file.response.fileId);
+                }
+            }
+            this.selectCourse.content_image = data;
+        }else if( info.file.response != undefined && info.file.response.msg ){
+            this.message.error(info.file.response.msg);
+        }
+    }
+
     //
     config: any = {
         height: 250,
         theme: 'modern',
-        // powerpaste advcode toc tinymcespellchecker a11ychecker mediaembed linkchecker help
         plugins: 'print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image imagetools link media template codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern',
-        // toolbar: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
         image_advtab: true,
         imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
-        // templates: [
-        //   { title: 'Test template 1', content: 'Test 1' },
-        //   { title: 'Test template 2', content: 'Test 2' }
-        // ],
-        // content_css: [
-        //   '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-        //   '//www.tinymce.com/css/codepen.min.css'
-        // ]
     };
 }

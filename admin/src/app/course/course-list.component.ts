@@ -52,9 +52,13 @@ export class CourseListComponent implements OnInit {
 
     // 初始化基础数据
     initData() {
+
+        this.allChecked = false;
+        this.indeterminate = false;
+
         this.isLoading = true;
 
-        let data = { page:this.page,num:this.num,sort:this.sort,order:this.order};
+        let data = { page:this.page,num:this.num,sortkey:this.sort,orderkey:this.order};
         data = Object.assign(data,this.searchData);
 
         //网络请求
@@ -81,6 +85,40 @@ export class CourseListComponent implements OnInit {
 
     initSearch(){
         this.searchData = new Course;
+    }
+
+
+    allChecked = false;
+    indeterminate = false;
+    selectItem = [];
+    handleItem(check:boolean,id:string){
+        let checked_num = 0;
+        for (var i = this.courses.length - 1; i >= 0; i--) {
+            if( this.courses[i].id == id ){
+                this.courses[i].checked = check;
+            }
+            if( this.courses[i].checked ){
+                checked_num++;
+            }
+        }
+
+        if( checked_num == this.courses.length ){
+            this.allChecked = true;
+            this.indeterminate = false;
+        }else if( checked_num == 0 ){
+            this.allChecked = false;
+            this.indeterminate = false;
+        }else{
+            this.indeterminate = true;
+            this.allChecked = false;
+        }
+    }
+
+    handleAllItem(check:boolean){
+        this.indeterminate = false;
+        for (var i = this.courses.length - 1; i >= 0; i--) {
+            this.courses[i].checked = check;
+        }
     }
 
     deletedData(id : string) {

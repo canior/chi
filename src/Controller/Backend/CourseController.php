@@ -27,22 +27,21 @@ class CourseController extends BackendController
 {
     /**
      * @Route("/course/", name="course_index", methods="GET")
-     * @param CourseRepository $courseRepository
-     * @param Request $request
      * @return Response
      */
     public function index(Request $request, CourseRepository $courseRepository, TeacherRepository $teacherRepository,CategoryRepository $categoryRepository): Response
     {
+
         // NG
         $data = [];
         if( $request->query->get('isNg') ){
 
             $where = $request->query->all();
             $where['isOnline'] = true;
-            
+            $coursesQuery = $courseRepository->courseQuery($where);
+
             $page = isset($where['page']) ? $where['page'] : 1;
             $limit = isset($where['num']) ? $where['num'] : self::PAGE_LIMIT;
-            $coursesQuery = $courseRepository->courseQuery($where);
             $courses = $this->getPaginator()->paginate($coursesQuery, $page, $limit);
             $datas['courses']  = [];
             foreach ($courses as $k => $v) {
@@ -53,7 +52,6 @@ class CourseController extends BackendController
             $datas['total_page'] = ceil($total/$limit);
 
             $datas['category'] = $this->getTempTree( $categoryRepository->getCategoryList() );
-
             $datas['teacher'] = $teacherRepository->getTeacherList();
 
             return CommonUtil::resultData($datas)->toJsonResponse();
@@ -286,8 +284,33 @@ class CourseController extends BackendController
         } else {
             $course->setShareImageFile(null);
         }
+
+        $videoImageFileId = isset($datas['video_image']) ? $datas['video_image'] : null;
+        if ($shareImageFileId) {
+            $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
+            $course->setShareImageFile($shareImageFile);
+        } else {
+            $course->setShareImageFile(null);
+        }
+
+        $contentImageFileIds = isset($datas['content_image']) ? $datas['content_image'] : null;
+
         
 
+        if ($contentImageFileIds) {
+            $contentImageFiles = [];
+            foreach ($contentImageFileIds as $key => $value) {
+                $contentImageFiles[] = $this->getEntityManager()->getRepository(File::class)->find($value);
+            }
+
+            
+            
+            $course->setCourseImages($contentImageFiles);
+        } else {
+            $course->setCourseImages([]);
+        }
+        
+// dump( $course );die;
         $this->entityPersist($course);
 
 
