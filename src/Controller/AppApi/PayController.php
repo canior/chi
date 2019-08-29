@@ -247,7 +247,7 @@ class PayController extends AppApiBaseController
 
     /**
      * 普通购买活动订单
-     * @Route("/auth/pay/groupUserOrder/createOfflineCourse", name="appCreateOfflineCourseGroupUserOrder", methods="POST")
+     * @Route("/auth/pay/groupUserOrder/createOfflineCourse", name="appPayCreateOfflineCourseGroupUserOrder", methods="POST")
      * @param Request $request
      * @param ProductRepository $productRepository
      * @return JsonResponse
