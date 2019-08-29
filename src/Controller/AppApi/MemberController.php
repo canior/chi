@@ -1194,7 +1194,7 @@ class MemberController extends AppApiBaseController
      * @param MessageRepository $messageRepository
      * @return Response
      */
-    public function messageAction(Request $request, MessageGroupUserOrderMetaRepository $messageGroupUserOrderMetaRepository) {
+    public function messageAction(Request $request, MessageGroupUserOrderMetaRepository $messageGroupUserOrderMetaRepository,ProductRepository $productRepository) {
 
         $data = json_decode($request->getContent(), true);
         $page = isset($data['page']) ? $data['page'] : 1;
