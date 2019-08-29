@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\UserAddressRepository;
 use App\Repository\ProductRepository;
+use App\Entity\CourseOrder;
 
 /**
  * Class PayController
