@@ -66,15 +66,23 @@ class PayController extends GongZhongBaseController
         $offlineCourseOrder = CourseOrder::factory($user, $product);
 
         // 返回金订单
+        $payForOrder = null;
         $payForOrderId = isset($requestProcess['payForOrderId'])?$requestProcess['payForOrderId']:null;
         if( $payForOrderId ){
             $offlineCourseOrder->setPayForOrderId($payForOrderId);
+
+            //订单信息
+            $payForOrder = $groupUserOrderRepository->find($payForOrderId);
+            if($payForOrder){
+                $payForOrder = $payForOrder->getArray();
+            }
         }
 
         $this->entityPersist($offlineCourseOrder);
 
         return $requestProcess->toJsonResponse([
-            'groupUserOrder' => $offlineCourseOrder->getArray()
+            'groupUserOrder' => $offlineCourseOrder->getArray(),
+            'payForOrder' => $payForOrder,
         ]);
     }
 
