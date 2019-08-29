@@ -45,6 +45,11 @@ class OfflineCourseController extends CourseController
         ]);
         $courseList = $this->getPaginator()->paginate($courseQuery, $requestProcess['page'], $requestProcess['pageNum']);
 
+        $courseCountQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
+            'offlineCourseType' => $requestProcess['offlineCourseType'],
+            'isGetCount' => true
+        ]);
+
         $data  = [];
         foreach ($courseList as $k => $v) {
             $item = $v->getArray();
@@ -56,8 +61,9 @@ class OfflineCourseController extends CourseController
         }
 
         return $requestProcess->toJsonResponse([
-            'courseList' =>$data,
-            'user' => CommonUtil::getInsideValue($user, 'array')
+            'courseList' => $data,
+            'total' => CommonUtil::getTotalQueryCount($courseCountQuery),
+            'user' => CommonUtil::obj2Array($user),
         ]);
     }
 
