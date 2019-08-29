@@ -31,6 +31,7 @@ export class Course {
 	public video_image_url:any;
 
 	public content_image = [];
+	public content_image_url = [];
 
 	public remark:any;
 	public content:any;

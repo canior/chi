@@ -36,7 +36,7 @@ class Course implements Dao
     use IdTrait;
 
 
-    const IMAGE_URL_BASE = "https://chi.com/image/preview/";
+    const IMAGE_URL_BASE = "https://laowantong.yunlishuju.com/image/preview/";
 
     const COURSE_SHOW_TYPE_APP = 'app';
     const COURSE_SHOW_TYPE_MINI = 'mini';
@@ -1422,9 +1422,11 @@ class Course implements Dao
      */
     public function getLittleArray() : array {
 
+
         $courseSpecImagesArray = [];
-        foreach ($this->getProduct()->getProductSpecImages() as $productSpecImage) {
-            $courseSpecImagesArray[] = $productSpecImage->getArray();
+        foreach ($this->getCourseImages() as $productSpecImage) {
+            $courseSpecImagesArray[] = $productSpecImage->getId();
+            $courseSpecUrlArray[]    = self::IMAGE_URL_BASE.$productSpecImage->getId();
         }
 
         return [
@@ -1455,6 +1457,7 @@ class Course implements Dao
             'videl_image' => $this->getShareImageFile()?$this->getShareImageFile()->getId():null,
             'videl_image_url' => $this->getShareImageFile()?self::IMAGE_URL_BASE.$this->getShareImageFile()->getId():null,
             'content_image' => $courseSpecImagesArray,
+            'content_image_url' => $courseSpecUrlArray,
         ];
     }
 

@@ -162,11 +162,7 @@ class CourseController extends BackendController
             $course->setShareImageFile(null);
         }
 
-
-
-
         $this->entityPersist($course);
-
 
 
         $course->setPriority( $course->getId() );
@@ -174,10 +170,13 @@ class CourseController extends BackendController
 
         
 
-        // $product = new Product();
-        // $product->setCourse($course);
-        // $product->setTitle($title);
-        // $this->entityPersist($product);
+        $contentImageFiles = [];
+        foreach ($contentImageFileIds as $key => $value) {
+            $contentImageFiles[] = ['priority'=>0, 'fileId'=>$this->getEntityManager()->getRepository(File::class)->find($value)];
+        }
+        $imagesCommand = new CreateOrUpdateProductImagesCommand($course->getProduct()->getId(), $contentImageFiles );
+        $this->getCommandBus()->handle($imagesCommand);
+
 
         return CommonUtil::resultData([])->toJsonResponse();
     }
@@ -293,32 +292,18 @@ class CourseController extends BackendController
             $course->setShareImageFile(null);
         }
 
-        $contentImageFileIds = isset($datas['content_image']) ? $datas['content_image'] : null;
-
-        
-
-        if ($contentImageFileIds) {
-            $contentImageFiles = [];
-            foreach ($contentImageFileIds as $key => $value) {
-                $contentImageFiles[] = $this->getEntityManager()->getRepository(File::class)->find($value);
-            }
-
-            
-            
-            $course->setCourseImages($contentImageFiles);
-        } else {
-            $course->setCourseImages([]);
+        $contentImageFileIds = isset($datas['content_image']) ? $datas['content_image'] : [];
+        $contentImageFiles = [];
+        foreach ($contentImageFileIds as $key => $value) {
+            $contentImageFiles[] = ['priority'=>0, 'fileId'=>$this->getEntityManager()->getRepository(File::class)->find($value)];
         }
-        
-// dump( $course );die;
+        $imagesCommand = new CreateOrUpdateProductImagesCommand($course->getProduct()->getId(), $contentImageFiles );
+        $this->getCommandBus()->handle($imagesCommand);
+            
+
+    
         $this->entityPersist($course);
 
-
-
-        // $product = new Product();
-        // $product->setCourse($course);
-        // $product->setTitle($title);
-        // $this->entityPersist($product);
 
         return CommonUtil::resultData([])->toJsonResponse();
     }

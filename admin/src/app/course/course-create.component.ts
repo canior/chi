@@ -91,9 +91,9 @@ export class CourseCreateComponent implements OnInit {
                         for (var i = this.selectCourse.content_image.length - 1; i >= 0; i--) {
                             var item =  {
                                 uid: 3+i,
-                                name: this.selectCourse.content_image[i].image,
+                                name: this.selectCourse.content_image[i],
                                 status: 'done',
-                                url: this.selectCourse.content_image[i].image_url
+                                url: this.selectCourse.content_image_url[i]
                             };
                             this.contentFileList.push(item);
                         }
