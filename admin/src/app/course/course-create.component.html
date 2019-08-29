@@ -24,9 +24,9 @@
                                     <nz-form-item class="nz-form-item">
                                         <nz-form-label class="nz-formlable">系列(待开发)</nz-form-label>
                                         <nz-form-control>
-                                            <nz-select nzDisabled>
-                                                <nz-option nzValue="album" nzLabel="待开发"></nz-option>
-                                            </nz-select >
+                                            <nz-select name="subject" [(ngModel)]="selectCourse.subject" nzAllowClear>
+                                                <nz-option *ngFor="let item of subjects" [nzValue]="item.value" [nzLabel]="item.title"></nz-option>
+                                            </nz-select>
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
@@ -85,29 +85,6 @@
                                     </nz-form-item>
                                 </div>
                             </div>
- 
-                            
-                            <div nz-col class="gutter-row" nzXl="12" nzXs="24" >
-                                <div class="gutter-box">
-                                    <nz-form-item class="nz-form-item">
-                                        <nz-form-label class="nz-formlable" nzFor="remark" nzRequired>封面图片</nz-form-label>
-                                        <nz-form-control>
-                                            <nz-upload 
-                                                nzAction="{{file_upload_url}}" 
-                                                nzListType="picture-card" 
-                                                [(nzFileList)]="imageFileList" 
-                                                [nzShowButton]="imageFileList.length < 1" 
-                                                [nzShowUploadList]="showeUpload" 
-                                                [nzMultiple]="false"
-                                                (nzChange)="handleImageFile($event)"
-                                            >
-                                                <i nz-icon nzType="plus"></i>
-                                                <div class="ant-upload-text">上传</div>
-                                            </nz-upload>
-                                        </nz-form-control>
-                                    </nz-form-item>
-                                </div>
-                            </div>
 
                             <div nz-col class="gutter-row" nzXl="12" nzXs="24" >
                                 <div class="gutter-box">
@@ -117,33 +94,11 @@
                                             <nz-upload 
                                                 nzAction="{{file_upload_url}}" 
                                                 nzListType="picture-card" 
-                                                [(nzFileList)]="videoFileList" 
-                                                [nzShowButton]="videoFileList.length < 1" 
+                                                [(nzFileList)]="videoFile" 
+                                                [nzShowButton]="videoFile.length < 1" 
                                                 [nzShowUploadList]="showeUpload" 
                                                 [nzMultiple]="false"
                                                 (nzChange)="handleVideoFile($event)"
-                                            >
-                                                <i nz-icon nzType="plus"></i>
-                                                <div class="ant-upload-text">上传</div>
-                                            </nz-upload>
-                                        </nz-form-control>
-                                    </nz-form-item>
-                                </div>
-                            </div>
-
-                            <div nz-col class="gutter-row" nzXl="12" nzXs="24" >
-                                <div class="gutter-box">
-                                    <nz-form-item class="nz-form-item">
-                                        <nz-form-label class="nz-formlable" nzFor="remark" nzRequired>课程详细</nz-form-label>
-                                        <nz-form-control>
-                                            <nz-upload 
-                                                nzAction="{{file_upload_url}}" 
-                                                nzListType="picture-card" 
-                                                [(nzFileList)]="contentFileList" 
-                                                [nzShowButton]="contentFileList.length < 10" 
-                                                [nzShowUploadList]="showeUpload" 
-                                                [nzMultiple]="false"
-                                                (nzChange)="handleContentFile($event)"
                                             >
                                                 <i nz-icon nzType="plus"></i>
                                                 <div class="ant-upload-text">上传</div>
@@ -161,11 +116,55 @@
                                             <nz-upload 
                                                 nzAction="{{file_upload_url}}" 
                                                 nzListType="picture-card" 
-                                                [(nzFileList)]="shareFileList" 
-                                                [nzShowButton]="shareFileList.length < 1" 
+                                                [(nzFileList)]="shareFile" 
+                                                [nzShowButton]="shareFile.length < 1" 
                                                 [nzShowUploadList]="showeUpload" 
                                                 [nzMultiple]="false"
                                                 (nzChange)="handleShareFile($event)"
+                                            >
+                                                <i nz-icon nzType="plus"></i>
+                                                <div class="ant-upload-text">上传</div>
+                                            </nz-upload>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="remark" nzRequired>简介图片</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-upload 
+                                                nzAction="{{file_upload_url}}" 
+                                                nzListType="picture-card" 
+                                                [(nzFileList)]="contentFile" 
+                                                [nzShowButton]="contentFile.length < 5" 
+                                                [nzShowUploadList]="showeUpload" 
+                                                [nzMultiple]="false"
+                                                (nzChange)="handleContentFile($event)"
+                                            >
+                                                <i nz-icon nzType="plus"></i>
+                                                <div class="ant-upload-text">上传</div>
+                                            </nz-upload>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </div>
+                            </div>
+
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="24" >
+                                <div class="gutter-box">
+                                    <nz-form-item class="nz-form-item">
+                                        <nz-form-label class="nz-formlable" nzFor="remark" nzRequired>详细图片</nz-form-label>
+                                        <nz-form-control>
+                                            <nz-upload 
+                                                nzAction="{{file_upload_url}}" 
+                                                nzListType="picture-card" 
+                                                [(nzFileList)]="spebFileList" 
+                                                [nzShowButton]="spebFileList.length < 10" 
+                                                [nzShowUploadList]="showeUpload" 
+                                                [nzMultiple]="false"
+                                                (nzChange)="handleSpecFile($event)"
                                             >
                                                 <i nz-icon nzType="plus"></i>
                                                 <div class="ant-upload-text">上传</div>

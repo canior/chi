@@ -1423,15 +1423,24 @@ class Course implements Dao
     public function getLittleArray() : array {
 
 
+        $courseImagesArray = [];
+        $courseUrlArray = [];
+        foreach ($this->getCourseImages() as $file) {
+            $courseImagesArray[] = $file->getFile()->getId();
+            $courseUrlArray[]    = self::IMAGE_URL_BASE.$file->getFile()->getId();
+        }
+
         $courseSpecImagesArray = [];
-        foreach ($this->getCourseImages() as $productSpecImage) {
-            $courseSpecImagesArray[] = $productSpecImage->getId();
-            $courseSpecUrlArray[]    = self::IMAGE_URL_BASE.$productSpecImage->getId();
+        $courseSpecUrlArray = [];
+        foreach ($this->getCourseSpecImages() as $file) {
+            $courseSpecImagesArray[] = $file->getFile()->getId();
+            $courseSpecUrlArray[]    = self::IMAGE_URL_BASE.$file->getFile()->getId();
         }
 
         return [
             'id' => $this->getId(),
             'title' => $this->getProduct()->getTitle(),
+            'subject' => $this->getSubject(),
             'category_id' => $this->getCourseCategory()?$this->getCourseCategory()->getId():'',
             'category_title' => $this->getCourseCategory()?$this->getCourseCategory()->getName():'',
             'start_date' =>  $this->getStartDate() ? date(self::DATE_FORMAT, $this->getStartDate()) : '',
@@ -1450,14 +1459,14 @@ class Course implements Dao
             'price' => $this->getPrice(),
             'status' => $this->getProduct()->getStatus(),
             'priority' => $this->getPriority(),
-            'image' => $this->getPreviewImageFile()?$this->getPreviewImageFile()->getId():null,
-            'image_url' => $this->getPreviewImageFile()?self::IMAGE_URL_BASE.$this->getPreviewImageFile()->getId():null,
+            'preview_image' => $this->getPreviewImageFile()?$this->getPreviewImageFile()->getId():null,
+            'preview_image_url' => $this->getPreviewImageFile()?self::IMAGE_URL_BASE.$this->getPreviewImageFile()->getId():null,
             'share_image' => $this->getShareImageFile()?$this->getShareImageFile()->getId():null,
             'share_image_url' => $this->getShareImageFile()?self::IMAGE_URL_BASE.$this->getShareImageFile()->getId():null,
-            'videl_image' => $this->getShareImageFile()?$this->getShareImageFile()->getId():null,
-            'videl_image_url' => $this->getShareImageFile()?self::IMAGE_URL_BASE.$this->getShareImageFile()->getId():null,
-            'content_image' => $courseSpecImagesArray,
-            'content_image_url' => $courseSpecUrlArray,
+            'content_image' => $courseImagesArray,
+            'content_image_url' => $courseUrlArray,
+            'spec_image' => $courseSpecImagesArray,
+            'spec_image_url' => $courseSpecUrlArray,
         ];
     }
 

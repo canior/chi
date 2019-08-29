@@ -2,7 +2,7 @@
 export class Course {
 	public id:string;
 	public title:string;
-
+	public subject:string;
 	public update_at:string;
 	public category_id:any;
 	public category_title:string;
@@ -23,13 +23,13 @@ export class Course {
 	
 	public show_type:any;
 
-	public image:any;
-	public image_url:any;
+	public preview_image:any;
+	public preview_image_url:any;
 	public share_image:any;
 	public share_image_url:any;
-	public video_image:any;
-	public video_image_url:any;
 
+	public spec_image = [];
+	public spec_image_url = [];
 	public content_image = [];
 	public content_image_url = [];
 

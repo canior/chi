@@ -138,17 +138,6 @@ class BackendController extends DefaultController
                 ],
                 [
                     'path' => [
-                        'activity_index',
-                        'activity_new',
-                        'activity_edit',
-                    ],
-                    'name' => '活动管理',
-                    'icon' => 'fa fa-calendar',
-                    'active' => false,
-                    'role' => 'ROLE_ADMIN',
-                ],
-                [
-                    'path' => [
                         'course_student_statistic_index',
                         'course_student_index',
                         'course_student_new',

@@ -27,6 +27,15 @@ export class CourseCreateComponent implements OnInit {
 	selectCourse = new Course;
 	category = [];
     teacher = [];
+    subjects = [
+        {"title":"变现思维课",value:"THINKING"},
+        {"title":"变现思维系统直通课",value:"TRADING"},
+        {"title":"变现系统课I",value:"SYSTEM_1"},
+        {"title":"变现系统课II",value:"SYSTEM_2"},
+        {"title":"变现系统课III",value:"SYSTEM_3"},
+        {"title":"私董",value:"PRIVATE_DIRECTOR"},
+    ];
+
 
 	ngOnInit() {
 
@@ -56,14 +65,14 @@ export class CourseCreateComponent implements OnInit {
 
                 if( this.id ){
                     this.selectCourse = res.data.course;
-                    if( this.selectCourse.image ){
+                    if( this.selectCourse.preview_image ){
                         var item =  {
                             uid: 0,
-                            name: this.selectCourse.image,
+                            name: this.selectCourse.preview_image,
                             status: 'done',
-                            url: this.selectCourse.image_url
+                            url: this.selectCourse.preview_image_url
                         };
-                        this.imageFileList = [item];
+                        this.videoFile = [item];
                     }
 
                     if( this.selectCourse.share_image ){
@@ -73,21 +82,11 @@ export class CourseCreateComponent implements OnInit {
                             status: 'done',
                             url: this.selectCourse.share_image_url
                         };
-                        this.shareFileList = [item];
-                    }
-
-                    if( this.selectCourse.video_image ){
-                        var item =  {
-                            uid: 2,
-                            name: this.selectCourse.video_image,
-                            status: 'done',
-                            url: this.selectCourse.video_image_url
-                        };
-                        this.shareFileList = [item];
+                        this.shareFile = [item];
                     }
 
                     if( this.selectCourse.content_image ){
-                        this.contentFileList = [];
+                        this.contentFile = [];
                         for (var i = this.selectCourse.content_image.length - 1; i >= 0; i--) {
                             var item =  {
                                 uid: 3+i,
@@ -95,9 +94,22 @@ export class CourseCreateComponent implements OnInit {
                                 status: 'done',
                                 url: this.selectCourse.content_image_url[i]
                             };
-                            this.contentFileList.push(item);
+                            this.contentFile.push(item);
                         }
                     }
+
+                    if( this.selectCourse.spec_image ){
+                        this.spebFileList = [];
+                        for (var i = this.selectCourse.spec_image.length - 1; i >= 0; i--) {
+                            var item =  {
+                                uid: 3+i,
+                                name: this.selectCourse.spec_image[i],
+                                status: 'done',
+                                url: this.selectCourse.spec_image_url[i]
+                            };
+                            this.spebFileList.push(item);
+                        }
+                    } 
                 }
 
             }).catch((msg : string) => {
@@ -146,20 +158,20 @@ export class CourseCreateComponent implements OnInit {
     previewVisible = false;
 
 
-    imageFileList = [];
+    videoFile = [];
     // 监听文件选择器
-    handleImageFile(info:any): void {
+    handleVideoFile(info:any): void {
         if( info.file.response != undefined && info.file.response.fileId ){
-            this.selectCourse.image = info.file.response.fileId;
+            this.selectCourse.preview_image = info.file.response.fileId;
         }else if( info.type != undefined && info.type == "removed" ){
-            this.selectCourse.image = '';
+            this.selectCourse.preview_image = '';
         }else if( info.file.response != undefined && info.file.response.msg ){
             this.message.error(info.file.response.msg);
         }
     }
 
     // 文件上传
-    shareFileList = [];
+    shareFile = [];
     // 监听文件选择器
     handleShareFile(info:any): void {
         if( info.file.response != undefined && info.file.response.fileId ){
@@ -173,31 +185,40 @@ export class CourseCreateComponent implements OnInit {
 
 
     // 文件上传
-    videoFileList = [];
-    // 监听文件选择器
-    handleVideoFile(info:any): void {
-        if( info.file.response != undefined && info.file.response.fileId ){
-            this.selectCourse.video_image = info.file.response.fileId;
-        }else if( info.type != undefined && info.type == "removed" ){
-            this.selectCourse.video_image = '';
-        }else if( info.file.response != undefined && info.file.response.msg ){
-            this.message.error(info.file.response.msg);
-        }
-    }
-
-    contentFileList = [];
+    contentFile = [];
     // 监听文件选择器
     handleContentFile(info:any): void {
+        console.log(info.file.name);
         if( info.file.response != undefined && info.file.response.fileId ){
             this.selectCourse.content_image.push(info.file.response.fileId);
         }else if( info.type != undefined && info.type == "removed" ){
             var data = [];
             for (var i = this.selectCourse.content_image.length - 1; i >= 0; i--) {
-                if( this.selectCourse.content_image[i].id != info.file.response.fileId ){
-                    data.push(info.file.response.fileId);
+                if( this.selectCourse.content_image[i] != info.file.name ){
+                    data.push(info.file.name);
                 }
             }
             this.selectCourse.content_image = data;
+        }else if( info.file.response != undefined && info.file.response.msg ){
+            this.message.error(info.file.response.msg);
+        }
+    }
+
+
+    spebFileList = [];
+    // 监听文件选择器
+    handleSpecFile(info:any): void {
+        console.log(info.file.name);
+        if( info.file.response != undefined && info.file.response.fileId ){
+            this.selectCourse.spec_image.push(info.file.response.fileId);
+        }else if( info.type != undefined && info.type == "removed" ){
+            var data = [];
+            for (var i = this.selectCourse.spec_image.length - 1; i >= 0; i--) {
+                if( this.selectCourse.spec_image[i] != info.file.name ){
+                    data.push(info.file.name);
+                }
+            }
+            this.selectCourse.spec_image = data;
         }else if( info.file.response != undefined && info.file.response.msg ){
             this.message.error(info.file.response.msg);
         }

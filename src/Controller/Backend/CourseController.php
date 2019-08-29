@@ -71,7 +71,7 @@ class CourseController extends BackendController
 
         $datas = json_decode($request->getContent(), true);
         
-        
+        // 数据
         $title = isset($datas['title']) ? $datas['title'] : null;
         $cost_type = isset($datas['cost_type']) ? $datas['cost_type'] : null;
         $collect_timelong = isset($datas['collect_timelong']) ? $datas['collect_timelong'] : null;
@@ -83,22 +83,15 @@ class CourseController extends BackendController
 
 
         $course = new Course();
-
         $course->setTitle($title);
         $course->setUnlockType($cost_type);
         $course->setPrice($price);
         $course->setTotalGroupUserOrdersRequired($collect_num);
         $course->setGroupOrderValidForHours($collect_timelong);
-
         $course->setShortDescription($content);
         $course->setCourseShowType($show_type);
-
-
         $status = isset($datas['status']) ? $datas['status'] : 'active';
         $course->setStatus($status);
-
-
-
 
         $aliyunVideoId = isset($datas['video_key']) ? $datas['video_key'] : null;
         if($aliyunVideoId){
@@ -123,11 +116,6 @@ class CourseController extends BackendController
             $course->setCourseCategory ($category);
         }
 
-
-        // dump( $course );die;
-        // $course->setUnlockType($unlockType);
-        // $course->setCourseShowType($courseShowType);
-
         //假如选择一级分类默认创建一个二级的单课类别
         if (!empty($course->getCourseCategory())) {
             if (empty($course->getCourseCategory()->getParentCategory())) {
@@ -142,11 +130,8 @@ class CourseController extends BackendController
             }
         }
 
-
-
-
         //update preview image
-        $previewImageFileId = isset($datas['image']) ? $datas['image'] : null;
+        $previewImageFileId = isset($datas['preview_image']) ? $datas['preview_image'] : null;
         if ($previewImageFileId) {
             $previewImageFile = $this->getEntityManager()->getRepository(File::class)->find($previewImageFileId);
             $course->setPreviewImageFile($previewImageFile);
@@ -165,11 +150,12 @@ class CourseController extends BackendController
         $this->entityPersist($course);
 
 
+        // 排序
         $course->setPriority( $course->getId() );
         $this->entityPersist($course);
 
-        
-
+        //update preview image
+        $contentImageFileIds = isset($datas['content_image']) ? $datas['content_image'] : [];
         $contentImageFiles = [];
         foreach ($contentImageFileIds as $key => $value) {
             $contentImageFiles[] = ['priority'=>0, 'fileId'=>$this->getEntityManager()->getRepository(File::class)->find($value)];
@@ -177,6 +163,13 @@ class CourseController extends BackendController
         $imagesCommand = new CreateOrUpdateProductImagesCommand($course->getProduct()->getId(), $contentImageFiles );
         $this->getCommandBus()->handle($imagesCommand);
 
+        $specImageFileIds = isset($datas['spec_image']) ? $datas['spec_image'] : [];
+        $specImageFiles = [];
+        foreach ($specImageFileIds as $key => $value) {
+            $specImageFiles[] = ['priority'=>0, 'fileId'=>$this->getEntityManager()->getRepository(File::class)->find($value)];
+        }
+        $specCommand = new CreateOrUpdateProductSpecImagesCommand($course->getProduct()->getId(), $specImageFiles );
+        $this->getCommandBus()->handle($specCommand);
 
         return CommonUtil::resultData([])->toJsonResponse();
     }
@@ -193,18 +186,35 @@ class CourseController extends BackendController
 
         $datas = json_decode($request->getContent(), true);
         
-
+        // 数据
         $id = isset($datas['id']) ? $datas['id'] : null;
         $title = isset($datas['title']) ? $datas['title'] : null;
         $unlockType = isset($datas['unlockType']) ? $datas['unlockType'] : null;
-        $course = $courseRepository->find($id);
-
-        $course->setTitle($title);
-
-        
         $status = isset($datas['status']) ? $datas['status'] : 'active';
-        $course->setStatus($status);
+        $subject = isset($datas['subject']) ? $datas['subject'] : null;
+        $course_tag = isset($datas['course_tag']) ? $datas['course_tag'] : null;
+        $unlockType = isset($datas['cost_type']) ? $datas['cost_type'] : null;
+        $collect_timelong = isset($datas['collect_timelong']) ? $datas['collect_timelong'] : null;
+        $collect_num = isset($datas['collect_num']) ? $datas['collect_num'] : null;
+        $price = isset($datas['price']) ? $datas['price'] : null;
+        $remark = isset($datas['remark']) ? $datas['remark'] : null;
+        $content = isset($datas['content']) ? $datas['content'] : null;
+        $show_type = isset($datas['show_type']) ? $datas['show_type'] : null;
+        $priority = isset($datas['priority']) ? $datas['priority'] : 0;
 
+
+        $course = $courseRepository->find($id);
+        $course->setPriority($priority);
+        $course->setUnlockType($unlockType);
+        $course->setPrice($price);
+        $course->setTotalGroupUserOrdersRequired($collect_num);
+        $course->setGroupOrderValidForHours($collect_timelong);
+        $course->setShortDescription($content);
+        $course->setCourseShowType($show_type);
+        $course->setTitle($title);
+        $course->setSubject($subject);
+        $course->setCourseTag($course_tag);
+        $course->setStatus($status);
 
         $aliyunVideoId = isset($datas['video_key']) ? $datas['video_key'] : null;
         if($aliyunVideoId){
@@ -217,40 +227,11 @@ class CourseController extends BackendController
             $course->setTeacher($teacher);
         }
 
-        $subject = isset($datas['subject']) ? $datas['subject'] : null;
-        $course->setSubject($subject);
-
-        $course_tag = isset($datas['course_tag']) ? $datas['course_tag'] : null;
-        $course->setCourseTag($course_tag);
-
         $category_id = isset($datas['category_id']) ? $datas['category_id'] : null;
         if($category_id){
             $category = $categoryRepository->find($category_id);
             $course->setCourseCategory ($category);
         }
-
-        $unlockType = isset($datas['cost_type']) ? $datas['cost_type'] : null;
-        $collect_timelong = isset($datas['collect_timelong']) ? $datas['collect_timelong'] : null;
-        $collect_num = isset($datas['collect_num']) ? $datas['collect_num'] : null;
-        $price = isset($datas['price']) ? $datas['price'] : null;
-        $remark = isset($datas['remark']) ? $datas['remark'] : null;
-        $content = isset($datas['content']) ? $datas['content'] : null;
-        $show_type = isset($datas['show_type']) ? $datas['show_type'] : null;
-        $priority = isset($datas['priority']) ? $datas['priority'] : 0;
-
-
-        $course->setPriority($priority);
-        $course->setUnlockType($unlockType);
-        $course->setPrice($price);
-        $course->setTotalGroupUserOrdersRequired($collect_num);
-        $course->setGroupOrderValidForHours($collect_timelong);
-
-        $course->setShortDescription($content);
-        $course->setCourseShowType($show_type);
-
-        // dump( $course );die;
-        // $course->setUnlockType($unlockType);
-        // $course->setCourseShowType($courseShowType);
 
         //假如选择一级分类默认创建一个二级的单课类别
         if (!empty($course->getCourseCategory())) {
@@ -268,7 +249,7 @@ class CourseController extends BackendController
 
 
         //update preview image
-        $previewImageFileId = isset($datas['image']) ? $datas['image'] : null;
+        $previewImageFileId = isset($datas['preview_image']) ? $datas['preview_image'] : null;
         if ($previewImageFileId) {
             $previewImageFile = $this->getEntityManager()->getRepository(File::class)->find($previewImageFileId);
             $course->setPreviewImageFile($previewImageFile);
@@ -284,14 +265,6 @@ class CourseController extends BackendController
             $course->setShareImageFile(null);
         }
 
-        $videoImageFileId = isset($datas['video_image']) ? $datas['video_image'] : null;
-        if ($shareImageFileId) {
-            $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
-            $course->setShareImageFile($shareImageFile);
-        } else {
-            $course->setShareImageFile(null);
-        }
-
         $contentImageFileIds = isset($datas['content_image']) ? $datas['content_image'] : [];
         $contentImageFiles = [];
         foreach ($contentImageFileIds as $key => $value) {
@@ -299,6 +272,14 @@ class CourseController extends BackendController
         }
         $imagesCommand = new CreateOrUpdateProductImagesCommand($course->getProduct()->getId(), $contentImageFiles );
         $this->getCommandBus()->handle($imagesCommand);
+
+        $specImageFileIds = isset($datas['spec_image']) ? $datas['spec_image'] : [];
+        $specImageFiles = [];
+        foreach ($specImageFileIds as $key => $value) {
+            $specImageFiles[] = ['priority'=>0, 'fileId'=>$this->getEntityManager()->getRepository(File::class)->find($value)];
+        }
+        $specCommand = new CreateOrUpdateProductSpecImagesCommand($course->getProduct()->getId(), $specImageFiles );
+        $this->getCommandBus()->handle($specCommand);
             
 
     
