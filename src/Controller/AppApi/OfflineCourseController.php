@@ -52,6 +52,43 @@ class OfflineCourseController extends CourseController
 
         $data  = [];
         foreach ($courseList as $k => $v) {
+            $data[] = $v->getArray();
+        }
+
+        return $requestProcess->toJsonResponse([
+            'courseList' => $data,
+            'total' => CommonUtil::getTotalQueryCount($courseCountQuery),
+            'user' => CommonUtil::obj2Array($user),
+        ]);
+    }
+
+    /**
+     * 获取线下课程列表
+     *
+     * @Route("/auth/offlineCourses", name="appAuthOfflineCourseIndex", methods="POST")
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @return JsonResponse
+     */
+    public function authOfflineCourseIndexAction(Request $request, ProductRepository $productRepository) : JsonResponse
+    {
+        $requestProcess = $this->processRequest($request, [
+            'offlineCourseType', 'page', 'pageNum'
+        ], ['offlineCourseType']);
+        $user = $this->getAppUser();
+
+        $courseQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
+            'offlineCourseType' => $requestProcess['offlineCourseType']
+        ]);
+        $courseList = $this->getPaginator()->paginate($courseQuery, $requestProcess['page'], $requestProcess['pageNum']);
+
+        $courseCountQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
+            'offlineCourseType' => $requestProcess['offlineCourseType'],
+            'isGetCount' => true
+        ]);
+
+        $data  = [];
+        foreach ($courseList as $k => $v) {
             $item = $v->getArray();
             $item['is_initiator'] = false;
             if( $user && $v->getCourse()->getInitiator() && $v->getCourse()->getInitiator()->getId() ==  $user->getID() ){
