@@ -15,6 +15,9 @@ export class Course {
 	public priority:string;
 	
 	public checked:any;
+	public is_single:any;
+	public is_recommend:any;
+	public is_new:any;
 
 	public cost_type:any;
 	public price:any;

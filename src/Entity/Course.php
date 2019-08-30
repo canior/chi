@@ -1485,6 +1485,9 @@ class Course implements Dao
             'album_title' => null,
             'status' => $this->getProduct()->getStatus(),
             'update_at' => $this->getProduct()->getUpdatedAt(),
+            'is_single' => $this->isSingleCourse(),
+            'is_recommend' => $this->isShowRecommendZone(),
+            'is_new' => $this->isShowNewest(),
         ];
     }
 }

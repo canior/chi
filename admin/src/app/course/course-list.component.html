@@ -124,8 +124,8 @@
                     <th nzSortKey="p.title" nzShowSort>标题</th>
                     <th nzSortKey="c.courseCategory" nzShowSort>分类</th>
                     <th nzSortKey="c.teacher" nzShowSort>讲师</th>
-                    <th>发布情况</th>
                     <th nzSortKey="p.updatedAt" nzShowSort>操作时间</th>
+                    <th>发布情况</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -136,11 +136,20 @@
                     <td>{{item.title}}</td>
                     <td>{{item.category_title}}</td>
                     <td>{{item.teacher_name}}</td>
-                    <td>
-                        <nz-tag *ngIf="item.status == 'active'" [nzColor]="'#87d068'">显示</nz-tag>
-                        <nz-tag *ngIf="item.status != 'active'" [nzColor]="'#a9a9a9'">隐藏</nz-tag>
-                    </td>
                     <td>{{item.update_at}}</td>
+                    <td>
+                        <nz-tag *ngIf="item.status == 'active'" [nzColor]="'#87d068'">已发布</nz-tag>
+                        <nz-tag *ngIf="item.status != 'active'" [nzColor]="'#a9a9a9'">未发布</nz-tag>
+
+                        <nz-tag *ngIf="item.is_single" [nzColor]="'#faad14'">单课程</nz-tag>
+                        <nz-tag *ngIf="!item.is_single" [nzColor]="'#f98a8a'">系列课</nz-tag>
+
+                        <nz-tag *ngIf="item.is_recommend" [nzColor]="'#ff8302'">推荐</nz-tag>
+                        <nz-tag *ngIf="!item.is_recommend" [nzColor]="'#329af5'">未推</nz-tag>
+
+                        <nz-tag *ngIf="item.is_new" [nzColor]="'#ac83fd'">已最新</nz-tag>
+                        <nz-tag *ngIf="!item.is_new" [nzColor]="'#03c590'">未最新</nz-tag>
+                    </td>
                     <td>
                         <nz-tag routerLink='/backend/course/create' [queryParams]="{'id':item.id}" [style.marginRight.px]="10"><i nz-icon type="form"></i> 编辑</nz-tag>
                         <nz-tag (click)="delListItem(item.id)"><i nz-icon type="delete"></i> 删除</nz-tag>
@@ -154,14 +163,10 @@
             <div nz-col class="gutter-row" nzSpan="12">
                 <div class="gutter-box">
                     <div>
-                        <nz-select style="width:80px;" [style.marginRight.px]="2">
-                            <nz-option nzValue="deleted_true" nzLabel="删除"></nz-option>
-                            <nz-option nzValue="hidden_true" nzLabel="显示"></nz-option>
-                            <nz-option nzValue="hidden_false" nzLabel="隐藏"></nz-option>
-                            <nz-option nzValue="free_true" nzLabel="设置免费"></nz-option>
-                            <nz-option nzValue="free_false" nzLabel="取消免费"></nz-option>
-                        </nz-select >
-                        <button nz-button disabled>操作</button>
+                        <nz-select name="action" [(ngModel)]="action" style="width:110px;" [style.marginRight.px]="2">
+                            <nz-option *ngFor="let item of disposeOption" [nzValue]="item.value" [nzLabel]="item.title"></nz-option>
+                        </nz-select>
+                        <button nz-button (click)="disposeConfirm()" >操作</button>
                     </div>
                 </div>
             </div>

@@ -87,40 +87,6 @@ export class CourseListComponent implements OnInit {
         this.searchData = new Course;
     }
 
-
-    allChecked = false;
-    indeterminate = false;
-    selectItem = [];
-    handleItem(check:boolean,id:string){
-        let checked_num = 0;
-        for (var i = this.courses.length - 1; i >= 0; i--) {
-            if( this.courses[i].id == id ){
-                this.courses[i].checked = check;
-            }
-            if( this.courses[i].checked ){
-                checked_num++;
-            }
-        }
-
-        if( checked_num == this.courses.length ){
-            this.allChecked = true;
-            this.indeterminate = false;
-        }else if( checked_num == 0 ){
-            this.allChecked = false;
-            this.indeterminate = false;
-        }else{
-            this.indeterminate = true;
-            this.allChecked = false;
-        }
-    }
-
-    handleAllItem(check:boolean){
-        this.indeterminate = false;
-        for (var i = this.courses.length - 1; i >= 0; i--) {
-            this.courses[i].checked = check;
-        }
-    }
-
     deletedData(id : string) {
         
         this.isLoading = true;
@@ -171,4 +137,98 @@ export class CourseListComponent implements OnInit {
         this.num = number;
         this.initData();
     }
+
+
+    //checkbox-------------------------------------------------------------------------
+    action:any;
+    allChecked = false;
+    indeterminate = false;
+    
+    handleItem(check:boolean,id:string){
+        let checked_num = 0;
+        for (var i = this.courses.length - 1; i >= 0; i--) {
+            if( this.courses[i].id == id ){
+                this.courses[i].checked = check;
+            }
+            if( this.courses[i].checked ){
+                checked_num++;
+            }
+        }
+
+        if( checked_num == this.courses.length ){
+            this.allChecked = true;
+            this.indeterminate = false;
+        }else if( checked_num == 0 ){
+            this.allChecked = false;
+            this.indeterminate = false;
+        }else{
+            this.indeterminate = true;
+            this.allChecked = false;
+        }
+    }
+
+    handleAllItem(check:boolean){
+        this.indeterminate = false;
+        for (var i = this.courses.length - 1; i >= 0; i--) {
+            this.courses[i].checked = check;
+        }
+    }
+
+    disposeOption = [
+        {"value":"deleted_true","title":"删除"},
+        {"value":"hidden_true","title":"已发布"},
+        {"value":"hidden_false","title":"未发布"},
+        {"value":"free_true","title":"上免费专区"},
+        {"value":"free_false","title":"下免费专区"},
+        {"value":"recommend_true","title":"上推荐专区"},
+        {"value":"recommend_false","title":"下推荐专区"},
+        {"value":"new_true","title":"上最新专区"},
+        {"value":"new_false","title":"下最新专区"},
+    ]
+    disposeConfirm(){
+        let optionTitle = '';
+        for (var i = this.disposeOption.length - 1; i >= 0; i--) {
+            if( this.disposeOption[i].value ==  this.action ){
+                optionTitle = this.disposeOption[i].title;
+            }
+        }
+
+        this.NzModal.confirm({
+            nzTitle: '确定要['+optionTitle+']选中的数据吗?',
+            nzOkText: '确认',
+            nzOkType: 'danger',
+            nzOnOk: () => this.dispose(),
+            nzCancelText: '取消'
+        });
+
+    }
+
+    dispose(){
+        // ids
+        var selectItem = [];
+        for (var i = this.courses.length - 1; i >= 0; i--) {
+            if( this.courses[i].checked ){
+                selectItem.push(this.courses[i].id);
+            }
+        }
+        if( selectItem.length < 1 ){
+            return;
+        }
+        console.log(selectItem);
+
+        this.isLoading = true;
+
+        //网络请求
+        this.http.post( '/course/dispose/',{ids:selectItem,action:this.action} )
+            .then( (res:any ) => {
+                this.notification.create('success',res.msg,'');
+                this.initData();
+            }).catch((msg : string) => {
+                this.notification.create('error',msg,'');
+            })
+            .finally( () => {
+                this.isLoading = false;
+            })
+    }
+    //checkbox-------------------------------------------------------------------------
 }

@@ -338,8 +338,6 @@ class CourseController extends BackendController
 
     }
 
-    
-
     /**
      * @Route("/course/delete/{id}", name="courseDelete", methods="GET|POST")
      * @param Request $request
@@ -353,90 +351,80 @@ class CourseController extends BackendController
         return CommonUtil::resultData([])->toJsonResponse();
     }
 
-    /**
-     * 推荐免费专区
-     * @param Request $request
-     * @param Course $course
-     * @return Response
-     * @Route("/course/recommend/free/{id}", name="recommendFreeZone", methods="POST")
-     * @author zxqc2018
-     */
-    public function recommendFreeZone(Request $request, Course $course): Response
-    {
-        if ($course->getCourseActualCategory()->isShowFreeZone()) {
-            $course->getCourseActualCategory()->setShowFreeZone(0);
-            $noticeStr = '下免费专区成功';
-        } else {
-            $course->getCourseActualCategory()->setShowFreeZone(1);
-            $noticeStr = '上免费专区成功';
-        }
-
-        $this->entityPersist($course->getCourseActualCategory());
-        $this->addFlash('notice', $noticeStr);
-        $formData = [
-            'courseShowType' => $request->request->get('courseShowType', 'all'),
-            'oneCategory' => $request->request->get('oneCategory', null),
-            'twoCategory' => $request->request->get('twoCategory', null),
-            'page' => $request->request->getInt('page', 1)
-        ];
-        return $this->redirectToRoute('course_index', $formData);
-    }
 
     /**
-     * 推荐首页
+     * @Route("/course/dispose/", name="courseOption", methods="GET|POST")
      * @param Request $request
-     * @param Course $course
      * @return Response
-     * @Route("/course/recommend/home/{id}", name="recommendHomeZone", methods="POST")
-     * @author zxqc2018
      */
-    public function recommendHomeZone(Request $request, Course $course): Response
-    {
-        if ($course->getCourseActualCategory()->isShowRecommendZone()) {
-            $course->getCourseActualCategory()->setShowRecommendZone(0);
-            $noticeStr = '下推荐专区成功';
-        } else {
-            $course->getCourseActualCategory()->setShowRecommendZone(1);
-            $noticeStr = '上推荐专区成功';
+    public function dispose(Request $request, CourseRepository $courseRepository): Response{
+
+        $datas = json_decode($request->getContent(), true);
+        $ids = isset($datas['ids']) ? $datas['ids'] : [];
+        $action = isset($datas['action']) ? $datas['action'] : null;
+        switch ($action) {
+            case 'free_true':
+                # 上免费专区成功
+                foreach ($ids as $v) {
+                    $course = $courseRepository->find($v);
+                    if( $course->isSingleCourse() ){   
+                        $course->getCourseActualCategory()->setShowFreeZone(1);
+                        $this->entityPersist($course->getCourseActualCategory());
+                    }
+                }
+                $noticeStr = '上免费专区成功';
+                break;
+            case 'free_false':
+                # 下免费专区成功
+                foreach ($ids as $v) {
+                    $course = $courseRepository->find($v);
+                    if( $course->isSingleCourse() ){   
+                        $course->getCourseActualCategory()->setShowFreeZone(1);
+                        $this->entityPersist($course->getCourseActualCategory());
+                    }
+                }
+                $noticeStr = '下免费专区成功';
+                break;
+            case 'recommend_true':
+                # 上推荐专区成功
+                foreach ($ids as $v) {
+                    $course = $courseRepository->find($v);
+                    $course->getCourseActualCategory()->setShowRecommendZone(1);
+                    $this->entityPersist($course->getCourseActualCategory());
+                }
+                $noticeStr = '上推荐专区成功';
+                break;
+            case 'recommend_false':
+                # 下推荐专区成功
+                foreach ($ids as $v) {
+                    $course = $courseRepository->find($v);
+                    $course->getCourseActualCategory()->setShowRecommendZone(0);
+                    $this->entityPersist($course->getCourseActualCategory());
+                }
+                $noticeStr = '下推荐专区成功';
+                break;
+            case 'new_true':
+                # 上最新课程专区成功
+                foreach ($ids as $v) {
+                    $course = $courseRepository->find($v);
+                    $course->setIsShowNewest(1);
+                    $this->entityPersist($course);
+                }
+                $noticeStr = '上最新课程专区成功';
+                break;
+            case 'new_false':
+                # 下最新课程专区成功
+                foreach ($ids as $v) {
+                    $course = $courseRepository->find($v);
+                    $course->setIsShowNewest(0);
+                    $this->entityPersist($course);
+                }
+                $noticeStr = '下最新课程专区成功';
+                break;
+            default:
+                break;
         }
 
-        $this->entityPersist($course->getCourseActualCategory());
-        $this->addFlash('notice', $noticeStr);
-        $formData = [
-            'courseShowType' => $request->request->get('courseShowType', 'all'),
-            'oneCategory' => $request->request->get('oneCategory', null),
-            'twoCategory' => $request->request->get('twoCategory', null),
-            'page' => $request->request->getInt('page', 1)
-        ];
-        return $this->redirectToRoute('course_index', $formData);
-    }
-
-    /**
-     * 推荐首页最新课程
-     * @param Request $request
-     * @param Course $course
-     * @return Response
-     * @Route("/course/recommend/newest/{id}", name="recommendNewestZone", methods="POST")
-     * @author zxqc2018
-     */
-    public function recommendNewestZone(Request $request, Course $course): Response
-    {
-        if ($course->isShowNewest()) {
-            $course->setIsShowNewest(0);
-            $noticeStr = '下最新课程专区成功';
-        } else {
-            $course->setIsShowNewest(1);
-            $noticeStr = '上最新课程专区成功';
-        }
-
-        $this->entityPersist($course);
-        $this->addFlash('notice', $noticeStr);
-        $formData = [
-            'courseShowType' => $request->request->get('courseShowType', 'all'),
-            'oneCategory' => $request->request->get('oneCategory', null),
-            'twoCategory' => $request->request->get('twoCategory', null),
-            'page' => $request->request->getInt('page', 1)
-        ];
-        return $this->redirectToRoute('course_index', $formData);
+        return CommonUtil::resultData([])->toJsonResponse();
     }
 }
