@@ -145,10 +145,10 @@
                         <nz-tag *ngIf="!item.is_single" [nzColor]="'#f98a8a'">系列课</nz-tag>
 
                         <nz-tag *ngIf="item.is_recommend" [nzColor]="'#ff8302'">推荐</nz-tag>
-                        <nz-tag *ngIf="!item.is_recommend" [nzColor]="'#329af5'">未推</nz-tag>
+                        <nz-tag *ngIf="!item.is_recommend" [nzColor]="'#a9a9a9'">未推</nz-tag>
 
                         <nz-tag *ngIf="item.is_new" [nzColor]="'#ac83fd'">已最新</nz-tag>
-                        <nz-tag *ngIf="!item.is_new" [nzColor]="'#03c590'">未最新</nz-tag>
+                        <nz-tag *ngIf="!item.is_new" [nzColor]="'#a9a9a9'">未最新</nz-tag>
                     </td>
                     <td>
                         <nz-tag routerLink='/backend/course/create' [queryParams]="{'id':item.id}" [style.marginRight.px]="10"><i nz-icon type="form"></i> 编辑</nz-tag>

@@ -22,7 +22,7 @@
                             <div nz-col class="gutter-row" nzXl="12" nzXs="12" >
                                 <div class="gutter-box">
                                     <nz-form-item class="nz-form-item">
-                                        <nz-form-label class="nz-formlable">系列(待开发)</nz-form-label>
+                                        <nz-form-label class="nz-formlable">科目</nz-form-label>
                                         <nz-form-control>
                                             <nz-select name="subject" [(ngModel)]="selectCourse.subject" nzAllowClear>
                                                 <nz-option *ngFor="let item of subjects" [nzValue]="item.value" [nzLabel]="item.title"></nz-option>
@@ -290,28 +290,6 @@
                                                 <label nz-radio nzValue="app">APP</label>
                                                 <label nz-radio nzValue="mini">小程序</label>
                                             </nz-radio-group>
-                                        </nz-form-control>
-                                    </nz-form-item>
-                                </div>
-                            </div>
-
-                            
-                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
-                                <div class="gutter-box">
-                                    <nz-form-item class="nz-form-item">
-                                        <nz-form-label class="nz-formlable" nzFor="top">是否推荐(待开发)</nz-form-label>
-                                        <nz-form-control>
-                                            <nz-switch nzDisabled></nz-switch>
-                                        </nz-form-control>
-                                    </nz-form-item>
-                                </div>
-                            </div>
-                            <div nz-col class="gutter-row" nzXl="24" nzXs="24" >
-                                <div class="gutter-box">
-                                    <nz-form-item class="nz-form-item">
-                                        <nz-form-label class="nz-formlable" nzFor="top">是否在免费栏显示(待开发)</nz-form-label>
-                                        <nz-form-control>
-                                            <nz-switch   nzDisabled></nz-switch>
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
