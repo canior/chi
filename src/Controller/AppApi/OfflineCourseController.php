@@ -52,7 +52,12 @@ class OfflineCourseController extends CourseController
 
         $data  = [];
         foreach ($courseList as $k => $v) {
-            $data[] = $v->getArray();
+            $item = $v->getArray();
+            $item['is_initiator'] = false;
+            if( $user && $v->getCourse()->getInitiator() && $v->getCourse()->getInitiator()->getId() ==  $user->getID() ){
+                $item['is_initiator'] = true;
+            }
+            $data[] = $item;
         }
 
         return $requestProcess->toJsonResponse([
