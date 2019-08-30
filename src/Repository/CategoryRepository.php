@@ -220,4 +220,47 @@ class CategoryRepository extends ServiceEntityRepository
     {
         return $this->findCategoryListQuery(null, '', null, null, true);
     }
+
+    /**
+     * 查询课程列表
+     */
+    public function categoryQuery($where = [],$count = false )
+    {
+        $query = $this->createQueryBuilder('c');
+
+        $query->where('c.isDeleted =:isDeleted')->setParameter('isDeleted', false);
+
+        if( isset($where['title']) && $where['title'] ){
+            $query->andWhere('c.name like :title')->setParameter('title', '%'.$where['title'].'%');
+        }
+
+        if( isset($where['category_id']) && $where['category_id'] ){
+            $query->andWhere('c.parentCategory = :category_id')->setParameter('category_id', $where['category_id']);
+        }
+
+        if( isset($where['status']) && $where['status'] ){
+            $query->andWhere('p.status = :status')->setParameter('status', $where['status']);
+        }
+
+        // 数量
+        if( $count ){
+            $query->select('count(c.id)');
+            return $query;
+        }
+
+        $sort = 'c.id';
+        if( isset($where['sortkey']) && $where['sortkey'] ){
+            $sort = $where['sortkey'];
+        }
+
+        $order = 'desc';
+        if( isset($where['orderkey']) && $where['orderkey'] ){
+            $order = $where['orderkey'];
+        }
+
+        $query->orderBy($sort, $order);
+
+      
+        return $query;
+    }
 }

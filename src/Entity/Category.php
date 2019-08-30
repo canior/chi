@@ -15,6 +15,7 @@ use App\Service\Util\CommonUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\StatusTrait;
+use App\Entity\Course;
 
 /**
  * Category
@@ -590,7 +591,12 @@ class Category implements Dao
             'parent_name' => $this->getParentCategory() == null ? '' : $this->getParentCategory()->getName(),
             'status' => $this->getStatus(),
             'priority' => $this->getPriority(),
-            'aliyunVideoId' => $this->getAliyunVideoId(),
+            'remark' => $this->getShortDescription(),
+            'video_key' => $this->getAliyunVideoId(),
+            'preview_image' => $this->getPreviewImageFile()?$this->getPreviewImageFile()->getId():null,
+            'preview_image_url' => $this->getPreviewImageFile()?Course::IMAGE_URL_BASE.$this->getPreviewImageFile()->getId():null,
+            'remark_image' => $this->getIconFile()?$this->getIconFile()->getId():null,
+            'remark_image_url' => $this->getIconFile()?Course::IMAGE_URL_BASE.$this->getIconFile()->getId():null,
         ];
     }
 

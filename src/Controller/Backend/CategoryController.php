@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\Util\CommonUtil;
+use App\Entity\Product;
 
 /**
  * @Route("/backend")
@@ -34,21 +35,23 @@ class CategoryController extends BackendController
         $data = [];
         if( $request->query->get('isNg') ){
 
-            $data = [
-                'title' => '一级分类列表',
-                'form' => [
-                    'name' => $request->query->get('name', null),
-                    'page' => $request->query->getInt('page', 1)
-                ]
-            ];
-            $data['data'] = $categoryRepository->findCategoryListQuery(null, $data['form']['name']);
-            $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
+            $where = $request->query->all();
 
+            $categoryQuery = $categoryRepository->categoryQuery($where);
 
-            $datas  = [];
-            foreach ($data['pagination'] as $k => $v) {
-                $datas[] = $v->getLittleArray();
+            $page = isset($where['page']) ? $where['page'] : 1;
+            $limit = isset($where['num']) ? $where['num'] : self::PAGE_LIMIT;
+            $category = $this->getPaginator()->paginate($categoryQuery, $page, $limit);
+
+            $datas['categorys']  = [];
+            foreach ($category as $k => $v) {
+                $datas['categorys'][] = $v->getLittleArray();
             }
+            
+            $total = $categoryRepository->categoryQuery($where,true)->getQuery()->getSingleScalarResult();
+            $datas['total_page'] = ceil($total/$limit);
+
+
             return CommonUtil::resultData($datas)->toJsonResponse();
         }
 
@@ -101,28 +104,7 @@ class CategoryController extends BackendController
 
     }
 
-    /**
-     * @Route("/category/subList/{parentId}", name="category_second_index", methods="GET")
-     * @param CategoryRepository $categoryRepository
-     * @param Request $request
-     * @param $parentId
-     * @return Response
-     */
-    public function secondIndex(CategoryRepository $categoryRepository, Request $request, $parentId): Response
-    {
-        $data = [
-            'title' => '二级分类列表',
-            'parentId' => $parentId,
-            'form' => [
-                'name' => $request->query->get('name', null),
-                'page' => $request->query->getInt('page', 1)
-            ]
-        ];
-        $data['data'] = $categoryRepository->findCategoryListQuery($parentId, $data['form']['name']);
-        $data['pagination'] = $this->getPaginator()->paginate($data['data'], $data['form']['page'], self::PAGE_LIMIT);
 
-        return $this->render('backend/category/second.index.html.twig', $data);
-    }
 
     /**
      * @Route("/category/new/{parentId?}", name="category_new", methods="GET|POST")
@@ -138,29 +120,44 @@ class CategoryController extends BackendController
         $datas = json_decode($request->getContent(), true);
         $title = isset($datas['title']) ? $datas['title'] : null;
         $status = isset($datas['status']) ? $datas['status'] : 'active';
+        $video_key = isset($datas['video_key']) ? $datas['video_key'] : null;
         $priority = isset($datas['priority']) ? $datas['priority'] : null;
         $parent_id = isset($datas['parent_id']) ? $datas['parent_id'] : null;
-        // $courseShowType = isset($datas['courseShowType']) ? $datas['courseShowType'] : null;
-        // $checkStatus = isset($datas['checkStatus']) ? $datas['checkStatus'] : null;
+        $remark = isset($datas['remark']) ? $datas['remark'] : null;
+
 
         $category = new Category();
         $category->setName($title);
         $category->setStatus($status);
+        $category->setAliyunVideoId($video_key);
+        $category->setShortDescription($remark);
 
         if($priority){
             $category->setPriority($priority);
         }
         
-
         if (!empty($parent_id)) {
             $parent = $categoryRepository->find($parent_id);
-            if (empty($parent)) {
-                return new Response('分类不存在', 500);
-            }
             $category->setParentCategory($parent);
         }
 
-        
+        //update preview image
+        $previewImageFileId = isset($datas['preview_image']) ? $datas['preview_image'] : null;
+        if ($previewImageFileId) {
+            $previewImageFile = $this->getEntityManager()->getRepository(File::class)->find($previewImageFileId);
+            $category->setPreviewImageFile($previewImageFile);
+        } else {
+            $category->setPreviewImageFile(null);
+        }
+
+        $remarkImageFileId = isset($datas['remark_image']) ? $datas['remark_image'] : null;
+        if ($remarkImageFileId) {
+            $remarkImageFile = $this->getEntityManager()->getRepository(File::class)->find($remarkImageFileId);
+            $category->setIconFile($remarkImageFile);
+        } else {
+            $category->setIconFile(null);
+        }
+
         $this->entityPersist($category);
 
         // 默认排序值
@@ -184,144 +181,106 @@ class CategoryController extends BackendController
 
         $datas = json_decode($request->getContent(), true);
 
-        $id = isset($datas['id']) ? $datas['id'] : null;
         $title = isset($datas['title']) ? $datas['title'] : null;
         $status = isset($datas['status']) ? $datas['status'] : 'active';
+        $video_key = isset($datas['video_key']) ? $datas['video_key'] : null;
         $priority = isset($datas['priority']) ? $datas['priority'] : null;
         $parent_id = isset($datas['parent_id']) ? $datas['parent_id'] : null;
+        $remark = isset($datas['remark']) ? $datas['remark'] : null;
 
-
-        $category = $categoryRepository->find($id);
+        $category = new Category();
         $category->setName($title);
         $category->setStatus($status);
+        $category->setAliyunVideoId($video_key);
+        $category->setShortDescription($remark);
 
         if($priority){
             $category->setPriority($priority);
         }
         
-
         if (!empty($parent_id)) {
             $parent = $categoryRepository->find($parent_id);
-            if (empty($parent)) {
-                return new Response('分类不存在', 500);
-            }
             $category->setParentCategory($parent);
         }
 
-        
-        $this->entityPersist($category);
+        //update preview image
+        $previewImageFileId = isset($datas['preview_image']) ? $datas['preview_image'] : null;
+        if ($previewImageFileId) {
+            $previewImageFile = $this->getEntityManager()->getRepository(File::class)->find($previewImageFileId);
+            $category->setPreviewImageFile($previewImageFile);
+        } else {
+            $category->setPreviewImageFile(null);
+        }
 
+        $remarkImageFileId = isset($datas['remark_image']) ? $datas['remark_image'] : null;
+        if ($remarkImageFileId) {
+            $remarkImageFile = $this->getEntityManager()->getRepository(File::class)->find($remarkImageFileId);
+            $category->setIconFile($remarkImageFile);
+        } else {
+            $category->setIconFile(null);
+        }
+
+        $this->entityPersist($category);
 
         return CommonUtil::resultData([])->toJsonResponse();
     }
 
-    /**
-     * @Route("/category/{id}/edit/{parentId?}", name="category_edit", methods="GET|POST")
-     * @param Request $request
-     * @param Category $category
-     * @param FileRepository $fileRepository
-     * @param $parentId
-     * @return Response
-     */
-    public function edit(Request $request, Category $category, FileRepository $fileRepository, $parentId): Response
-    {
-        $form = $this->createForm(CategoryType::class, $category);
-        $form->get('status')->setData(array_search($category->getStatusText(), Category::$statuses));
-        $iconFile = $category->getIconFile();
-        if ($iconFile) {
-            $fileArray[$iconFile->getId()] = [
-                'id' => $iconFile->getId(),
-                'fileId' => $iconFile->getId(),
-                'priority' => 0,
-                'name' => $iconFile->getName(),
-                'size' => $iconFile->getSize()
-            ];
-
-            $form->get('iconFile')->setData($fileArray);
-        }
-        $previewImageFile = $category->getPreviewImageFile();
-        if ($previewImageFile) {
-            $filePreviewArray[$previewImageFile->getId()] = [
-                'id' => $previewImageFile->getId(),
-                'fileId' => $previewImageFile->getId(),
-                'priority' => 0,
-                'name' => $previewImageFile->getName(),
-                'size' => $previewImageFile->getSize()
-            ];
-
-            $form->get('previewImageFile')->setData($filePreviewArray);
-        }
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $iconFileId = $request->request->get('category')['iconFile'] ?? null;
-
-            $iconFile = null;
-            if (!empty($iconFileId)) {
-                /**
-                 * @var File $iconFile
-                 */
-                $iconFile = $fileRepository->find($iconFileId);
-                if (empty($iconFile)) {
-                    return new Response('页面错误', 500);
-                }
-            }
-
-            $previewImageFileId = $request->request->get('category')['previewImageFile'] ?? null;
-            $previewImageFile = null;
-            if (!empty($previewImageFileId)) {
-                $previewImageFile = $fileRepository->find($previewImageFileId);
-                if (empty($previewImageFile)) {
-                    return new Response('页面错误', 500);
-                }
-            }
-
-            $category->setIconFile($iconFile);
-            $category->setPreviewImageFile($previewImageFile);
-
-            $status = $request->request->get('category')['status'];
-            $category->setStatus($status);
-
-            $this->entityPersist($category);
-            $this->addFlash('notice', '修改成功');
-            $routeParam = ['id' => $category->getId()];
-
-            if (!empty($parentId)) {
-                $routeParam['parentId'] = $parentId;
-            }
-
-            return $this->redirectToRoute('category_edit', $routeParam);
-        }
-
-        if (!empty($parentId)) {
-            $renderParams = [
-                'backend/category/second.edit.html.twig', [
-                    'category' => $category,
-                    'title' => '修改二级分类',
-                    'parentId' => $parentId,
-                    'form' => $form->createView(),
-                ]
-            ];
-        } else {
-            $renderParams = [
-                'backend/category/edit.html.twig', [
-                    'category' => $category,
-                    'title' => '修改一级分类',
-                    'form' => $form->createView(),
-                ]
-            ];
-        }
-        return call_user_func_array([$this, 'render'], $renderParams);
-    }
+    
 
     /**
      * @Route("/category/delete/{id}", name="categoryDelete", methods="GET|POST")
      * @param Request $request
      * @param Course $course
      */
-    public function categoryDelete(Request $request, Category $category): Response
+    public function delete(Request $request, Category $category): Response
     {
         $category->setIsDeleted(1);
         $this->entityPersist($category);
         return CommonUtil::resultData([])->toJsonResponse();
+    }
+
+    /**
+     * @Route("/category/dispose/", name="categoryOption", methods="GET|POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function dispose(Request $request, CategoryRepository $categoryRepository): Response{
+
+        $datas = json_decode($request->getContent(), true);
+        $ids = isset($datas['ids']) ? $datas['ids'] : [];
+        $action = isset($datas['action']) ? $datas['action'] : null;
+        switch ($action) {
+            case 'publish_true':
+                # 发布
+                foreach ($ids as $v) {
+                    $category = $categoryRepository->find($v);
+                    $category->setStatus(Product::ACTIVE);
+                    $this->entityPersist($category);
+                }
+                $msg = '发布成功';
+                break;
+            case 'publish_false':
+                # 未发布
+                foreach ($ids as $v) {
+                    $category = $categoryRepository->find($v);
+                    $category->setStatus(Product::INACTIVE);
+                    $this->entityPersist($category);
+                }
+                $msg = '未发布成功';
+                break;
+            case 'deleted_true':
+                # 删除
+                foreach ($ids as $v) {
+                    $category = $categoryRepository->find($v);
+                    $category->setIsDeleted(1);
+                    $this->entityPersist($category);
+                }
+                $msg = '删除成功';
+                break;
+            default:
+                break;
+        }
+ 
+        return CommonUtil::resultData(['msg'=>$msg])->toJsonResponse();
     }
 }

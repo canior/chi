@@ -5,7 +5,10 @@
             首页
         </nz-breadcrumb-item>
         <nz-breadcrumb-item>
-            <a>控制面板</a>
+            <a routerLink='/backend/category'>分类</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+            <a>详情</a>
         </nz-breadcrumb-item>
     </nz-breadcrumb>
     
@@ -42,12 +45,12 @@
                                     <nz-form-item>
                                         <nz-form-label>阿里云视频ID</nz-form-label>
                                         <nz-form-control>
-                                            <input nz-input name="aliyunVideoId" [(ngModel)]="selectCategory.aliyunVideoId" />
+                                            <input nz-input name="video_key" [(ngModel)]="selectCategory.video_key" />
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
                             </div>
-                            <div nz-col class="gutter-row" nzXl="12" nzXs="12"  >
+                            <div nz-col class="gutter-row" nzXl="12" nzXs="12" *ngIf="selectCategory.id">
                                 <div class="gutter-box">
                                     <nz-form-item>
                                         <nz-form-label>排序</nz-form-label>
@@ -61,25 +64,20 @@
                             <div nz-col class="gutter-row" nzXl="12" nzXs="24" >
                                 <div class="gutter-box">
                                     <nz-form-item class="nz-form-item">
-                                        <nz-form-label class="nz-formlable" nzFor="remark">图像</nz-form-label>
+                                        <nz-form-label class="nz-formlable" nzFor="remark">分类图像</nz-form-label>
                                         <nz-form-control>
                                             <nz-upload 
                                                 nzAction="{{file_upload_url}}" 
                                                 nzListType="picture-card" 
-                                                [(nzFileList)]="fileList" 
-                                                [nzShowButton]="fileList.length < 1" 
+                                                [(nzFileList)]="remarkFile" 
+                                                [nzShowButton]="remarkFile.length < 1" 
                                                 [nzShowUploadList]="showUploadList" 
                                                 [nzMultiple]="false"
-                                                (nzChange)="handleChange($event)"
+                                                (nzChange)="handleRemarkFile($event)"
                                             >
                                                 <i nz-icon nzType="plus"></i>
                                                 <div class="ant-upload-text">上传</div>
                                             </nz-upload>
-                                            <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible = false">
-                                                <ng-template #modalContent>
-                                                    <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
-                                                </ng-template>
-                                            </nz-modal>
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
@@ -87,25 +85,20 @@
                             <div nz-col class="gutter-row" nzXl="12" nzXs="24" >
                                 <div class="gutter-box">
                                     <nz-form-item class="nz-form-item">
-                                        <nz-form-label class="nz-formlable" nzFor="remark">分类视频封面图片</nz-form-label>
+                                        <nz-form-label class="nz-formlable" nzFor="remark">视频封面</nz-form-label>
                                         <nz-form-control>
                                             <nz-upload 
                                                 nzAction="{{file_upload_url}}" 
                                                 nzListType="picture-card" 
-                                                [(nzFileList)]="fileList" 
-                                                [nzShowButton]="fileList.length < 1" 
+                                                [(nzFileList)]="previewFile" 
+                                                [nzShowButton]="previewFile.length < 1" 
                                                 [nzShowUploadList]="showUploadList" 
                                                 [nzMultiple]="false"
-                                                (nzChange)="handleChange($event)"
+                                                (nzChange)="handleVideoFile($event)"
                                             >
                                                 <i nz-icon nzType="plus"></i>
                                                 <div class="ant-upload-text">上传</div>
                                             </nz-upload>
-                                            <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible = false">
-                                                <ng-template #modalContent>
-                                                    <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
-                                                </ng-template>
-                                            </nz-modal>
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
@@ -117,7 +110,7 @@
                                     <nz-form-item>
                                         <nz-form-label>分类描述 </nz-form-label>
                                         <nz-form-control>
-                                            <tinymce rows="10" name="content" [(ngModel)]="selectCategory.content"  [config]="config"></tinymce>
+                                            <tinymce rows="10" name="remark" [(ngModel)]="selectCategory.remark"  [config]="config"></tinymce>
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>

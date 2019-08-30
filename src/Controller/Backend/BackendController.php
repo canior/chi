@@ -162,7 +162,7 @@ class BackendController extends DefaultController
             ]
         ],
         [
-            'path' => 'course_index',
+            'path' => 'offline_course_index',
             'name' => '活动中心',
             'icon' => 'fa fa-book',
             'active' => false,

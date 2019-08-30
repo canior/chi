@@ -1,24 +1,19 @@
 // Model
 export class Category {
 	public id:string;
-	public username:string;
-	public password:string;
-	public profile:string;
-	public image:string;
-	public from:string;
-	public image_url:string;
-	public author:string;
-	public category:string;
-	public top:string;
-	public usergroup:string;
+	public title:string;
+	public remark:string;
+	public priority:string;
+	public video_key:string;
+
+	public parent_id:string;
 	public parent_name:string;
 
-	public title:string;
-	public aliyunVideoId:string;
-	public sorting:string;
-	public content:string;
-	public priority:string;
-	public parent_id:string;
 	
-	public weibos:[]
+	public remark_image:any;
+	public remark_image_url:any;
+
+	public preview_image:any;
+	public preview_image_url:any;
+	public checked:any;
 }

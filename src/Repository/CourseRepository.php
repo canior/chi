@@ -170,7 +170,6 @@ class CourseRepository extends ServiceEntityRepository
         }
 
         if( isset($where['category_id']) && $where['category_id'] ){
-            die;
             $query->andWhere('c.courseCategory = :category_id')->setParameter('category_id', $where['category_id']);
         }
 

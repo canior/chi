@@ -49,6 +49,10 @@ export class CourseListComponent implements OnInit {
         this.initData();
     }
 
+    searchDataChange(){
+        this.page = 1;
+    }
+
 
     // 初始化基础数据
     initData() {
@@ -221,7 +225,8 @@ export class CourseListComponent implements OnInit {
         //网络请求
         this.http.post( '/course/dispose/',{ids:selectItem,action:this.action} )
             .then( (res:any ) => {
-                this.notification.create('success',res.msg,'');
+                this.notification.create('操作成功',res.msg,'');
+                this.allChecked = false;
                 this.initData();
             }).catch((msg : string) => {
                 this.notification.create('error',msg,'');

@@ -20,7 +20,7 @@
                                     <nz-form-item>
                                         <nz-form-label [nzSm]="6" [nzXs]="24">标题</nz-form-label>
                                         <nz-form-control [nzSm]="14" [nzXs]="24">
-                                            <input nz-input name="title" [(ngModel)]="searchData.title" type="text">
+                                            <input nz-input name="title" [(ngModel)]="searchData.title" (ngModelChange)="searchDataChange()" type="text">
                                         </nz-form-control>
                                     </nz-form-item>
                                 </div>
@@ -28,7 +28,7 @@
                                     <nz-form-item>
                                         <nz-form-label [nzSm]="6" [nzXs]="24">讲师</nz-form-label>
                                         <nz-form-control [nzSm]="14" [nzXs]="24">
-                                            <nz-select name="teacher_id" [(ngModel)]="searchData.teacher_id" nzAllowClear>
+                                            <nz-select name="teacher_id" [(ngModel)]="searchData.teacher_id" (ngModelChange)="searchDataChange()" nzAllowClear>
                                                 <nz-option *ngFor="let item of teachers" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
                                             </nz-select>
                                         </nz-form-control>
@@ -38,7 +38,7 @@
                                     <nz-form-item>
                                         <nz-form-label [nzSm]="6" [nzXs]="24">显示设备</nz-form-label>
                                         <nz-form-control [nzSm]="14" [nzXs]="24">
-                                            <nz-radio-group name="show_type" [(ngModel)]="searchData.show_type">
+                                            <nz-radio-group name="show_type" [(ngModel)]="searchData.show_type" (ngModelChange)="searchDataChange()">
                                                 <label nz-radio nzValue="all">全部</label>
                                                 <label nz-radio nzValue="app">APP</label>
                                                 <label nz-radio nzValue="mini">小程序</label>
@@ -50,7 +50,7 @@
                                     <nz-form-item>
                                         <nz-form-label [nzSm]="6" [nzXs]="24">发布情况</nz-form-label>
                                         <nz-form-control [nzSm]="14" [nzXs]="24">
-                                            <nz-radio-group name="status" [(ngModel)]="searchData.status">
+                                            <nz-radio-group name="status" [(ngModel)]="searchData.status" (ngModelChange)="searchDataChange()">
                                                 <label nz-radio nzValue="active">已发布</label>
                                                 <label nz-radio nzValue="inactive">未发布</label>
                                             </nz-radio-group>
@@ -61,7 +61,7 @@
                                     <nz-form-item>
                                         <nz-form-label [nzSm]="6" [nzXs]="24">课程分类</nz-form-label>
                                         <nz-form-control [nzSm]="14" [nzXs]="24">
-                                            <nz-tree-select [nzNodes]="categorys" name="category_id" [(ngModel)]="searchData.category_id" [nzDefaultExpandAll]="true">
+                                            <nz-tree-select [nzNodes]="categorys" name="category_id" [(ngModel)]="searchData.category_id" (ngModelChange)="searchDataChange()" [nzDefaultExpandAll]="true">
                                             </nz-tree-select>
                                         </nz-form-control>
                                     </nz-form-item>
@@ -105,7 +105,7 @@
                 <div class="gutter-box">
                     <div [style.float]="'right'">
                         <nz-input-group [nzSuffix]="suffixIconSearch">
-                            <input type="text" nz-input name="title" [(ngModel)]="searchData.title" placeholder="搜索" />
+                            <input type="text" nz-input name="title" [(ngModel)]="searchData.title" (ngModelChange)="searchDataChange()" placeholder="搜索" />
                         </nz-input-group>
                         <ng-template #suffixIconSearch>
                             <i nz-icon type="search" (click)="initData()"></i>

@@ -55,15 +55,27 @@ export class CategoryCreateComponent implements OnInit {
 
                 if( this.id ){
                     this.selectCategory = res.data.category;
-                    if( this.selectCategory.image ){
+
+                    if( this.selectCategory.remark_image ){
+                        let item =  {
+                            uid: 1,
+                            name: this.selectCategory.remark_image,
+                            status: 'done',
+                            url: this.selectCategory.remark_image_url
+                        };
+                        this.remarkFile = [item];
+                    }
+
+                    if( this.selectCategory.preview_image ){
                         let item =  {
                             uid: 0,
-                            name: this.selectCategory.image,
+                            name: this.selectCategory.preview_image,
                             status: 'done',
-                            url: this.selectCategory.image_url
+                            url: this.selectCategory.preview_image_url
                         };
-                        this.fileList = [item];
+                        this.previewFile = [item];
                     }
+                    
                 }
 
             }).catch((msg : string) => {
@@ -108,19 +120,18 @@ export class CategoryCreateComponent implements OnInit {
         showRemoveIcon: true,
         hidePreviewIconInNonImage: true
     };
-    fileList = [];
     previewImage: string | undefined = '';
     previewVisible = false;
 
 
 
+    remarkFile = [];
     // 监听文件选择器
-    handleChange(info:any): void {
-        // console.log(info.type);
-        if( info.file.response != undefined && info.file.response.data ){
-            this.selectCategory.image = info.file.response.data;
+    handleRemarkFile(info:any): void {
+        if( info.file.response != undefined && info.file.response.fileId ){
+            this.selectCategory.remark_image = info.file.response.fileId;
         }else if( info.type != undefined && info.type == "removed" ){
-            this.selectCategory.image = '';
+            this.selectCategory.remark_image = '';
         }else if( info.file.response != undefined && info.file.response.msg ){
             this.message.error(info.file.response.msg);
         }
@@ -128,20 +139,13 @@ export class CategoryCreateComponent implements OnInit {
 
 
     // 文件上传
-    showUploadListShare = {
-        showPreviewIcon: true,
-        showRemoveIcon: true,
-        hidePreviewIconInNonImage: true
-    };
-    fileListShare = [];
-
+    previewFile = [];
     // 监听文件选择器
-    handleShareChange(info:any): void {
-        // console.log(info.type);
-        if( info.file.response != undefined && info.file.response.data ){
-            this.selectCategory.image = info.file.response.data;
+    handleVideoFile(info:any): void {
+        if( info.file.response != undefined && info.file.response.fileId ){
+            this.selectCategory.preview_image = info.file.response.fileId;
         }else if( info.type != undefined && info.type == "removed" ){
-            this.selectCategory.image = '';
+            this.selectCategory.preview_image = '';
         }else if( info.file.response != undefined && info.file.response.msg ){
             this.message.error(info.file.response.msg);
         }
@@ -152,18 +156,8 @@ export class CategoryCreateComponent implements OnInit {
     config: any = {
         height: 250,
         theme: 'modern',
-        // powerpaste advcode toc tinymcespellchecker a11ychecker mediaembed linkchecker help
         plugins: 'print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image imagetools link media template codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern',
-        // toolbar: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
         image_advtab: true,
         imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
-        // templates: [
-        //   { title: 'Test template 1', content: 'Test 1' },
-        //   { title: 'Test template 2', content: 'Test 2' }
-        // ],
-        // content_css: [
-        //   '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-        //   '//www.tinymce.com/css/codepen.min.css'
-        // ]
     };
 }
