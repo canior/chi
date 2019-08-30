@@ -178,12 +178,12 @@ export class CourseListComponent implements OnInit {
         {"value":"deleted_true","title":"删除"},
         {"value":"publish_true","title":"已发布"},
         {"value":"publish_false","title":"未发布"},
-        {"value":"free_true","title":"上免费专区"},
-        {"value":"free_false","title":"下免费专区"},
-        {"value":"recommend_true","title":"上推荐专区"},
-        {"value":"recommend_false","title":"下推荐专区"},
-        {"value":"new_true","title":"上最新专区"},
-        {"value":"new_false","title":"下最新专区"},
+        {"value":"free_true","title":"上免费"},
+        {"value":"free_false","title":"下免费"},
+        {"value":"recommend_true","title":"推荐"},
+        {"value":"recommend_false","title":"未推"},
+        {"value":"new_true","title":"已最新"},
+        {"value":"new_false","title":"未最新"},
     ]
     disposeConfirm(){
         let optionTitle = '';
