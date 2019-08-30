@@ -201,7 +201,7 @@ class CourseController extends BackendController
         $content = isset($datas['content']) ? $datas['content'] : null;
         $show_type = isset($datas['show_type']) ? $datas['show_type'] : null;
         $priority = isset($datas['priority']) ? $datas['priority'] : 0;
-
+        $category_id = isset($datas['category_id']) ? $datas['category_id'] : null;
 
         $course = $courseRepository->find($id);
         $course->setPriority($priority);
@@ -216,6 +216,41 @@ class CourseController extends BackendController
         $course->setCourseTag($course_tag);
         $course->setStatus($status);
 
+
+        
+        if($category_id){
+            $category = $categoryRepository->find($category_id);
+        }
+        
+        //假如课程有改动
+        if ($category !== $course->getCourseCategory()) {
+            //假如选择一级分类默认创建一个二级的单课类别
+            if (!empty($course->getCourseCategory()) && empty($course->getCourseCategory()->getParentCategory())) {
+                //假如原类是单课程类去除 类别表中的category
+                if (!empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
+                    $course->getCourseActualCategory()->setName($course->getTitle());
+                    $course->getCourseActualCategory()->setPriority($course->getPriority());
+                    $course->getCourseActualCategory()->setParentCategory($course->getCourseCategory());
+                    $course->getCourseActualCategory()->setStatus($status);
+                } else {
+                    $categoryActual = Category::factory($course->getTitle(), $course->getCourseCategory());
+                    $categoryActual->setSingleCourse(1);
+                    $categoryActual->setPriority($course->getPriority());
+                    $categoryActual->setStatus($status);
+                    $this->entityPersist($categoryActual, false);
+                    $course->setCourseActualCategory($categoryActual);
+                }
+            } else {
+                //假如原类是单课程类去除 类别表中的category
+                if (!empty($course->getCourseActualCategory()) && $course->getCourseActualCategory()->isSingleCourse()) {
+                    $course->getCourseActualCategory()->setIsDeleted(1);
+                    $this->entityPersist($course->getCourseActualCategory(), false);
+                }
+                $course->setCourseActualCategory($course->getCourseCategory());
+            }
+        }
+
+
         $aliyunVideoId = isset($datas['video_key']) ? $datas['video_key'] : null;
         if($aliyunVideoId){
             $course->setAliyunVideoId($aliyunVideoId);
@@ -226,25 +261,8 @@ class CourseController extends BackendController
             $teacher = $teacherRepository->find($teacher_id);
             $course->setTeacher($teacher);
         }
-
-        $category_id = isset($datas['category_id']) ? $datas['category_id'] : null;
         if($category_id){
-            $category = $categoryRepository->find($category_id);
             $course->setCourseCategory ($category);
-        }
-
-        //假如选择一级分类默认创建一个二级的单课类别
-        if (!empty($course->getCourseCategory())) {
-            if (empty($course->getCourseCategory()->getParentCategory())) {
-                $categoryActual = Category::factory($course->getTitle(), $course->getCourseCategory());
-                $categoryActual->setSingleCourse(1);
-                $categoryActual->setPriority($course->getPriority());
-                $categoryActual->setStatus($status);
-                $this->entityPersist($categoryActual, false);
-                $course->setCourseActualCategory($categoryActual);
-            } else {
-                $course->setCourseActualCategory($course->getCourseCategory());
-            }
         }
 
 
