@@ -176,8 +176,8 @@ export class CourseListComponent implements OnInit {
 
     disposeOption = [
         {"value":"deleted_true","title":"删除"},
-        {"value":"hidden_true","title":"已发布"},
-        {"value":"hidden_false","title":"未发布"},
+        {"value":"publish_true","title":"已发布"},
+        {"value":"publish_false","title":"未发布"},
         {"value":"free_true","title":"上免费专区"},
         {"value":"free_false","title":"下免费专区"},
         {"value":"recommend_true","title":"上推荐专区"},

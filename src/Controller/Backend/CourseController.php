@@ -372,7 +372,7 @@ class CourseController extends BackendController
                         $this->entityPersist($course->getCourseActualCategory());
                     }
                 }
-                $noticeStr = '上免费专区成功';
+                $msg = '上免费专区成功';
                 break;
             case 'free_false':
                 # 下免费专区成功
@@ -383,7 +383,7 @@ class CourseController extends BackendController
                         $this->entityPersist($course->getCourseActualCategory());
                     }
                 }
-                $noticeStr = '下免费专区成功';
+                $msg = '下免费专区成功';
                 break;
             case 'recommend_true':
                 # 上推荐专区成功
@@ -392,7 +392,7 @@ class CourseController extends BackendController
                     $course->getCourseActualCategory()->setShowRecommendZone(1);
                     $this->entityPersist($course->getCourseActualCategory());
                 }
-                $noticeStr = '上推荐专区成功';
+                $msg = '上推荐专区成功';
                 break;
             case 'recommend_false':
                 # 下推荐专区成功
@@ -401,7 +401,7 @@ class CourseController extends BackendController
                     $course->getCourseActualCategory()->setShowRecommendZone(0);
                     $this->entityPersist($course->getCourseActualCategory());
                 }
-                $noticeStr = '下推荐专区成功';
+                $msg = '下推荐专区成功';
                 break;
             case 'new_true':
                 # 上最新课程专区成功
@@ -410,7 +410,7 @@ class CourseController extends BackendController
                     $course->setIsShowNewest(1);
                     $this->entityPersist($course);
                 }
-                $noticeStr = '上最新课程专区成功';
+                $msg = '上最新课程专区成功';
                 break;
             case 'new_false':
                 # 下最新课程专区成功
@@ -419,12 +419,40 @@ class CourseController extends BackendController
                     $course->setIsShowNewest(0);
                     $this->entityPersist($course);
                 }
-                $noticeStr = '下最新课程专区成功';
+                $msg = '下最新课程专区成功';
+                break;
+            case 'publish_true':
+                # 发布
+                foreach ($ids as $v) {
+                    $course = $courseRepository->find($v);
+                    $course->setStatus(Product::ACTIVE);
+                    $this->entityPersist($course);
+                }
+                $msg = '发布成功';
+                break;
+            case 'publish_false':
+                # 未发布
+                foreach ($ids as $v) {
+                    $course = $courseRepository->find($v);
+                    $course->setStatus(Product::INACTIVE);
+                    $this->entityPersist($course);
+                }
+                $msg = '未发布成功';
+                break;
+            case 'deleted_true':
+                # 删除
+                foreach ($ids as $v) {
+                    $course = $courseRepository->find($v);
+                    $em = $this->getDoctrine()->getManager();
+                    $em->remove($course);
+                    $em->flush();
+                }
+                $msg = '删除成功';
                 break;
             default:
                 break;
         }
-
-        return CommonUtil::resultData([])->toJsonResponse();
+ 
+        return CommonUtil::resultData(['msg'=>$msg])->toJsonResponse();
     }
 }
