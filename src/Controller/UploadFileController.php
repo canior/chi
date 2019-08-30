@@ -201,6 +201,37 @@ class UploadFileController extends DefaultController
     }
 
     /**
+     * @Route("/backend/file/ngupload", name="ngfileUpload")
+     * @param Request $request
+     * @return Response
+     */
+    public function nguploadFileAction(Request $request)
+    {
+        if (!$request->isMethod('POST')) {
+            exit;
+        }
+
+        /**
+         * @var UploadedFile[] $files
+         */
+        $files = $request->files;
+        $fileId = null;
+        $name = null;
+        foreach ($files as $file) {
+            try {
+                $command = new UploadFileCommand($file, $this->getUser()->getId());
+                $fileId = $this->getCommandBus()->handle($command);
+                $name = $file->getClientOriginalName();
+            } catch (\Exception $e) {
+                $this->getLog()->error('upload file failed {error}', ['error' => $e->getMessage()]);
+                return new JsonResponse( ['status' => false, 'error' => $e->getMessage()] );
+            }
+        }
+
+        return new JsonResponse( ['status' => true, 'fileId' => $fileId, 'name' => $name] );
+    }
+
+    /**
      * @Route("/file/batchUpload", name="fileBatchUpload")
      * @param Request $request
      * @return Response

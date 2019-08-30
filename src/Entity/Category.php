@@ -52,6 +52,13 @@ class Category implements Dao
     private $parentCategory;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="parent_category_id", type="string")
+     */
+    private $parentCategoryId;
+
+    /**
      * @var File
      *
      * @ORM\ManyToOne(targetEntity="File", cascade={"persist"})
@@ -567,6 +574,23 @@ class Category implements Dao
             'name' => $this->getName(),
             'parentCategoryId' => $this->getParentCategory() == null ? 0 : $this->getParentCategory()->getId(),
             'iconFileId' => CommonUtil::obj2Id($this->getIconFile()),
+        ];
+    }
+
+    /**
+     * 取得简单数组列表
+     * @return array
+     */
+    public function getLittleArray()
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getName(),
+            'parent_id' => $this->getParentCategory() == null ? 0 : $this->getParentCategory()->getId(),
+            'parent_name' => $this->getParentCategory() == null ? '' : $this->getParentCategory()->getName(),
+            'status' => $this->getStatus(),
+            'priority' => $this->getPriority(),
+            'aliyunVideoId' => $this->getAliyunVideoId(),
         ];
     }
 

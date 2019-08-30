@@ -45,4 +45,15 @@ class TeacherRepository extends ServiceEntityRepository
         return $query->getQuery()->getSingleScalarResult();
     }
 
+    /**
+     * 查询讲师
+     * @return array
+     */
+    public function getTeacherList()
+    {
+        $query = $this->getEntityManager()->createQueryBuilder();
+        $query->select('t.id,t.name')->from(Teacher::class, 't')->orderBy('t.id', 'DESC');
+        return $query->getQuery()->getResult();
+    }
+
 }
