@@ -24,6 +24,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Course;
 use App\Command\File\BatchUploadFilesCommand;
 use App\Command\File\UploadFileCommand;
+use App\Entity\Subject;
+use App\Command\Product\Image\CreateOrUpdateProductImagesCommand;
 
 class CourseController extends ProductController
 {
@@ -215,7 +217,7 @@ class CourseController extends ProductController
             $teachers_arr[] = $v->getArray();
         }
 
-        return $requestProcess->toJsonResponse(['theaters'=>$teachers_arr]);
+        return $requestProcess->toJsonResponse(['teachers'=>$teachers_arr]);
     }
 
     /**
@@ -229,7 +231,7 @@ class CourseController extends ProductController
 
         $datas = json_decode($request->getContent(), true);
 
-        $requestProcess = $this->processRequest($request, ['subject', 'title', 'price','startDate', 'endDate', 'city','address','teacher_id','tableCount','tableUserCount','shortDescription'], ['subject', 'title', 'price','startDate', 'endDate', 'city','teacher_id','tableCount','tableUserCount','shortDescription']);
+        $requestProcess = $this->processRequest($request, ['title', 'price','startDate', 'endDate', 'city','address','teacher_id','tableCount','tableUserCount','shortDescription','images','specImages','shareImageFileId'], ['title', 'price','startDate', 'endDate', 'city','teacher_id','tableCount','tableUserCount','shortDescription']);
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -237,7 +239,6 @@ class CourseController extends ProductController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
         
-        $subject = isset($datas['subject']) ? $datas['subject'] : null;
         $title = isset($datas['title']) ? $datas['title'] : null;
         $price = isset($datas['price']) ? $datas['price'] : null;
         $startDate = isset($datas['startDate']) ? $datas['startDate'] : null;
@@ -251,7 +252,7 @@ class CourseController extends ProductController
 
         $course = new Course();
         $course->setIsOnline(false);
-        $course->setSubject($subject);
+        $course->setSubject(Subject::THINKING);
         $course->setTitle($title);
         $course->setPrice($price);
         $course->setStartDate( $startDate?strtotime($startDate):null );
@@ -272,20 +273,24 @@ class CourseController extends ProductController
         }
 
         //update preview image
-        $previewImageFileId = isset($datas['image']) ? $datas['image'] : null;
-        if ($previewImageFileId) {
-            $previewImageFile = $this->getEntityManager()->getRepository(File::class)->find($previewImageFileId);
-            $course->setPreviewImageFile($previewImageFile);
-        } else {
-            $course->setPreviewImageFile(null);
+        $images = isset($datas['images']) ? $datas['images'] : null;
+        if($images){
+            $imagesCommand = new CreateOrUpdateProductImagesCommand($course->getProduct()->getId(), $images);
+            $this->getCommandBus()->handle($imagesCommand);            
         }
 
-        $shareImageFileId = isset($datas['share_image']) ? $datas['share_image'] : null;
+        $specImages = isset($datas['specImages']) ? $datas['specImages'] : null;
+        if($specImages){
+            $specImagesCommand = new CreateOrUpdateProductSpecImagesCommand($course->getProduct()->getId(), $specImages);
+            $this->getCommandBus()->handle($specImagesCommand);            
+        }
+
+        $shareImageFileId = isset($datas['shareImageFileId']) ? $datas['shareImageFileId'] : null;
         if ($shareImageFileId) {
             $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
-            $course->setShareImageFile($shareImageFile);
-        } else {
-            $course->setShareImageFile(null);
+            $course->getProduct()->setShareImageFile($shareImageFile);
+            $this->getEntityManager()->persist($course->getProduct());
+            $this->getEntityManager()->flush();
         }
 
         $this->entityPersist($course);
