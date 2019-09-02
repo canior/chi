@@ -98,7 +98,7 @@
                                                 [nzShowButton]="videoFile.length < 1" 
                                                 [nzShowUploadList]="showeUpload" 
                                                 [nzMultiple]="false"
-                                                (nzChange)="handleVideoFile($event)"
+                                                (nzChange)="videoFileHandle($event)"
                                             >
                                                 <i nz-icon nzType="plus"></i>
                                                 <div class="ant-upload-text">上传</div>
@@ -120,7 +120,7 @@
                                                 [nzShowButton]="shareFile.length < 1" 
                                                 [nzShowUploadList]="showeUpload" 
                                                 [nzMultiple]="false"
-                                                (nzChange)="handleShareFile($event)"
+                                                (nzChange)="shareFileHandle($event)"
                                             >
                                                 <i nz-icon nzType="plus"></i>
                                                 <div class="ant-upload-text">上传</div>
@@ -138,11 +138,11 @@
                                             <nz-upload 
                                                 nzAction="{{file_upload_url}}" 
                                                 nzListType="picture-card" 
-                                                [(nzFileList)]="contentFile" 
-                                                [nzShowButton]="contentFile.length < 5" 
+                                                [(nzFileList)]="remarkFileList" 
+                                                [nzShowButton]="remarkFileList.length < 10" 
                                                 [nzShowUploadList]="showeUpload" 
                                                 [nzMultiple]="false"
-                                                (nzChange)="handleContentFile($event)"
+                                                (nzChange)="remarkFileHandle($event)"
                                             >
                                                 <i nz-icon nzType="plus"></i>
                                                 <div class="ant-upload-text">上传</div>
@@ -160,11 +160,11 @@
                                             <nz-upload 
                                                 nzAction="{{file_upload_url}}" 
                                                 nzListType="picture-card" 
-                                                [(nzFileList)]="spebFileList" 
-                                                [nzShowButton]="spebFileList.length < 10" 
+                                                [(nzFileList)]="contentFile" 
+                                                [nzShowButton]="contentFile.length < 5" 
                                                 [nzShowUploadList]="showeUpload" 
                                                 [nzMultiple]="false"
-                                                (nzChange)="handleSpecFile($event)"
+                                                (nzChange)="contentFileHandle($event)"
                                             >
                                                 <i nz-icon nzType="plus"></i>
                                                 <div class="ant-upload-text">上传</div>

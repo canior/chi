@@ -1430,17 +1430,13 @@ class Course implements Dao
 
 
         $courseImagesArray = [];
-        $courseUrlArray = [];
         foreach ($this->getCourseImages() as $file) {
-            $courseImagesArray[] = $file->getFile()->getId();
-            $courseUrlArray[]    = self::IMAGE_URL_BASE.$file->getFile()->getId();
+            $courseImagesArray[] = ['id'=>$file->getFile()->getId(),'url'=>self::IMAGE_URL_BASE.$file->getFile()->getId()];
         }
 
-        $courseSpecImagesArray = [];
-        $courseSpecUrlArray = [];
+        $courseRemarkImagesArray = [];
         foreach ($this->getCourseSpecImages() as $file) {
-            $courseSpecImagesArray[] = $file->getFile()->getId();
-            $courseSpecUrlArray[]    = self::IMAGE_URL_BASE.$file->getFile()->getId();
+            $courseRemarkImagesArray[] = ['id'=>$file->getFile()->getId(),'url'=>self::IMAGE_URL_BASE.$file->getFile()->getId()];
         }
 
         return [
@@ -1465,14 +1461,10 @@ class Course implements Dao
             'price' => $this->getPrice(),
             'status' => $this->getProduct()->getStatus(),
             'priority' => $this->getPriority(),
-            'preview_image' => $this->getPreviewImageFile()?$this->getPreviewImageFile()->getId():null,
-            'preview_image_url' => $this->getPreviewImageFile()?self::IMAGE_URL_BASE.$this->getPreviewImageFile()->getId():null,
-            'share_image' => $this->getShareImageFile()?$this->getShareImageFile()->getId():null,
-            'share_image_url' => $this->getShareImageFile()?self::IMAGE_URL_BASE.$this->getShareImageFile()->getId():null,
+            'video_image' => $this->getPreviewImageFile()?[['id'=>$this->getPreviewImageFile()->getId(),'url'=>self::IMAGE_URL_BASE.$this->getPreviewImageFile()->getId()]] :null,
+            'share_image' => $this->getShareImageFile()?[['id'=>$this->getShareImageFile()->getId(),'url'=>self::IMAGE_URL_BASE.$this->getShareImageFile()->getId()]] :null,
             'content_image' => $courseImagesArray,
-            'content_image_url' => $courseUrlArray,
-            'spec_image' => $courseSpecImagesArray,
-            'spec_image_url' => $courseSpecUrlArray,
+            'remark_image' => $courseRemarkImagesArray,
         ];
     }
 

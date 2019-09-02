@@ -35,8 +35,10 @@ export class Activity {
 	public has_coupon:string;
 
 
-	public image:any;
-	public image_url:any;
+	public remark_image:any;
+	public remark_image_url:any;
+	public content_image:any;
+	public content_image_url:any;
 	public share_image:any;
 	public share_image_url:any;
 }

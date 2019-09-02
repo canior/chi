@@ -26,13 +26,13 @@ export class Course {
 	
 	public show_type:any;
 
-	public preview_image:any;
-	public preview_image_url:any;
+	public video_image:any;
+	public video_image_url:any;
 	public share_image:any;
 	public share_image_url:any;
 
-	public spec_image = [];
-	public spec_image_url = [];
+	public remark_image = [];
+	public remark_image_url = [];
 	public content_image = [];
 	public content_image_url = [];
 

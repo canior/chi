@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NzMessageService,UploadFile,NzModalService } from 'ng-zorro-antd';
 import { HttpService } from '../shared/shared.module';
 import { Activity } from '../model/activity';
+import { File } from '../model/file';
 import {environment } from '../../environments/environment';
 
 @Component({
@@ -38,7 +39,21 @@ export class ActivityCreateComponent implements OnInit {
             this.initData();
         });
     }
-    // 提交表单
+    
+
+    getFileListData(data:File[]){
+        let list = [];
+        for (var i = data.length - 1; i >= 0; i--) {
+            var item =  {
+                uid: data[i].id,
+                name: data[i].url,
+                status: 'done',
+                url: data[i].url,
+            };
+            list.push(item);
+        }
+        return list;
+    }
     
 
 
@@ -57,24 +72,16 @@ export class ActivityCreateComponent implements OnInit {
 
                 if( this.id ){
                     this.selectActivity = res.data.activity;
-                    if( this.selectActivity.image ){
-                        let item =  {
-                            uid: 0,
-                            name: this.selectActivity.image,
-                            status: 'done',
-                            url: this.selectActivity.image_url
-                        };
-                        this.fileList = [item];
+                    if( this.selectActivity.remark_image ){
+                        this.remarkFile = this.getFileListData(this.selectActivity.remark_image);
                     }
 
                     if( this.selectActivity.share_image ){
-                        let item =  {
-                            uid: 1,
-                            name: this.selectActivity.share_image,
-                            status: 'done',
-                            url: this.selectActivity.share_image_url
-                        };
-                        this.shareFileList = [item];
+                        this.shareFile = this.getFileListData(this.selectActivity.share_image);
+                    }
+
+                    if( this.selectActivity.content_image ){
+                        this.contentFile = this.getFileListData(this.selectActivity.content_image);
                     }
                 }
 
@@ -120,16 +127,17 @@ export class ActivityCreateComponent implements OnInit {
         showRemoveIcon: true,
         hidePreviewIconInNonImage: true
     };
-    fileList = [];
     previewImage: string | undefined = '';
     previewVisible = false;
 
+    // 文件上传
+    remarkFile = [];
     // 监听文件选择器
-    handleChange(info:any): void {
+    remarkFileHandle(info:any): void {
         if( info.file.response != undefined && info.file.response.fileId ){
-            this.selectActivity.image = info.file.response.fileId;
+            this.selectActivity.remark_image = info.file.response.fileId;
         }else if( info.type != undefined && info.type == "removed" ){
-            this.selectActivity.image = '';
+            this.selectActivity.remark_image = '';
         }else if( info.file.response != undefined && info.file.response.msg ){
             this.message.error(info.file.response.msg);
         }
@@ -137,20 +145,26 @@ export class ActivityCreateComponent implements OnInit {
 
 
     // 文件上传
-
-    showUploadListShare = {
-        showPreviewIcon: true,
-        showRemoveIcon: true,
-        hidePreviewIconInNonImage: true
-    };
-    shareFileList = [];
-
+    shareFile = [];
     // 监听文件选择器
-    handleShareChange(info:any): void {
+    shareFileHandle(info:any): void {
         if( info.file.response != undefined && info.file.response.fileId ){
             this.selectActivity.share_image = info.file.response.fileId;
         }else if( info.type != undefined && info.type == "removed" ){
             this.selectActivity.share_image = '';
+        }else if( info.file.response != undefined && info.file.response.msg ){
+            this.message.error(info.file.response.msg);
+        }
+    }
+
+    // 文件上传
+    contentFile = [];
+    // 监听文件选择器
+    contentFileHandle(info:any): void {
+        if( info.file.response != undefined && info.file.response.fileId ){
+            this.selectActivity.content_image = info.file.response.fileId;
+        }else if( info.type != undefined && info.type == "removed" ){
+            this.selectActivity.content_image = '';
         }else if( info.file.response != undefined && info.file.response.msg ){
             this.message.error(info.file.response.msg);
         }
@@ -161,18 +175,8 @@ export class ActivityCreateComponent implements OnInit {
     config: any = {
         height: 250,
         theme: 'modern',
-        // powerpaste advcode toc tinymcespellchecker a11ychecker mediaembed linkchecker help
         plugins: 'print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image imagetools link media template codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern',
-        // toolbar: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
         image_advtab: true,
         imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
-        // templates: [
-        //   { title: 'Test template 1', content: 'Test 1' },
-        //   { title: 'Test template 2', content: 'Test 2' }
-        // ],
-        // content_css: [
-        //   '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-        //   '//www.tinymce.com/css/codepen.min.css'
-        // ]
     };
 }

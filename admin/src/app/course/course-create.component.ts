@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NzMessageService,UploadFile,NzModalService } from 'ng-zorro-antd';
 import { HttpService } from '../shared/shared.module';
 import { Course } from '../model/course';
+import { File } from '../model/file';
 import {environment } from '../../environments/environment';
 
 @Component({
@@ -46,9 +47,22 @@ export class CourseCreateComponent implements OnInit {
             this.initData();
         });
     }
-    // 提交表单
-    
 
+
+    // 数据处理
+    getFileListData(data:File[]){
+        let list = [];
+        for (var i = data.length - 1; i >= 0; i--) {
+            var item =  {
+                uid: data[i].id,
+                name: data[i].id,
+                status: 'done',
+                url: data[i].url,
+            };
+            list.push(item);
+        }
+        return list;
+    }
 
     // 初始化基础数据
     initData() {
@@ -65,50 +79,20 @@ export class CourseCreateComponent implements OnInit {
 
                 if( this.id ){
                     this.selectCourse = res.data.course;
-                    if( this.selectCourse.preview_image ){
-                        var item =  {
-                            uid: 0,
-                            name: this.selectCourse.preview_image,
-                            status: 'done',
-                            url: this.selectCourse.preview_image_url
-                        };
-                        this.videoFile = [item];
+                    if( this.selectCourse.video_image ){
+                        this.videoFile = this.getFileListData(this.selectCourse.video_image);
                     }
 
                     if( this.selectCourse.share_image ){
-                        var item =  {
-                            uid: 1,
-                            name: this.selectCourse.share_image,
-                            status: 'done',
-                            url: this.selectCourse.share_image_url
-                        };
-                        this.shareFile = [item];
+                        this.shareFile = this.getFileListData(this.selectCourse.share_image);
                     }
 
                     if( this.selectCourse.content_image ){
-                        this.contentFile = [];
-                        for (var i = this.selectCourse.content_image.length - 1; i >= 0; i--) {
-                            var item =  {
-                                uid: 3+i,
-                                name: this.selectCourse.content_image[i],
-                                status: 'done',
-                                url: this.selectCourse.content_image_url[i]
-                            };
-                            this.contentFile.push(item);
-                        }
+                        this.contentFile = this.getFileListData(this.selectCourse.content_image);
                     }
 
-                    if( this.selectCourse.spec_image ){
-                        this.spebFileList = [];
-                        for (var i = this.selectCourse.spec_image.length - 1; i >= 0; i--) {
-                            var item =  {
-                                uid: 3+i,
-                                name: this.selectCourse.spec_image[i],
-                                status: 'done',
-                                url: this.selectCourse.spec_image_url[i]
-                            };
-                            this.spebFileList.push(item);
-                        }
+                    if( this.selectCourse.remark_image ){
+                        this.remarkFileList = this.getFileListData(this.selectCourse.remark_image);
                     } 
                 }
 
@@ -160,11 +144,11 @@ export class CourseCreateComponent implements OnInit {
 
     videoFile = [];
     // 监听文件选择器
-    handleVideoFile(info:any): void {
+    videoFileHandle(info:any): void {
         if( info.file.response != undefined && info.file.response.fileId ){
-            this.selectCourse.preview_image = info.file.response.fileId;
+            this.selectCourse.video_image = info.file.response.fileId;
         }else if( info.type != undefined && info.type == "removed" ){
-            this.selectCourse.preview_image = '';
+            this.selectCourse.video_image = '';
         }else if( info.file.response != undefined && info.file.response.msg ){
             this.message.error(info.file.response.msg);
         }
@@ -173,7 +157,7 @@ export class CourseCreateComponent implements OnInit {
     // 文件上传
     shareFile = [];
     // 监听文件选择器
-    handleShareFile(info:any): void {
+    shareFileHandle(info:any): void {
         if( info.file.response != undefined && info.file.response.fileId ){
             this.selectCourse.share_image = info.file.response.fileId;
         }else if( info.type != undefined && info.type == "removed" ){
@@ -187,7 +171,7 @@ export class CourseCreateComponent implements OnInit {
     // 文件上传
     contentFile = [];
     // 监听文件选择器
-    handleContentFile(info:any): void {
+    contentFileHandle(info:any): void {
         console.log(info.file.name);
         if( info.file.response != undefined && info.file.response.fileId ){
             this.selectCourse.content_image.push(info.file.response.fileId);
@@ -205,20 +189,20 @@ export class CourseCreateComponent implements OnInit {
     }
 
 
-    spebFileList = [];
+    remarkFileList = [];
     // 监听文件选择器
-    handleSpecFile(info:any): void {
+    remarkFileHandle(info:any): void {
         console.log(info.file.name);
         if( info.file.response != undefined && info.file.response.fileId ){
-            this.selectCourse.spec_image.push(info.file.response.fileId);
+            this.selectCourse.remark_image.push(info.file.response.fileId);
         }else if( info.type != undefined && info.type == "removed" ){
             var data = [];
-            for (var i = this.selectCourse.spec_image.length - 1; i >= 0; i--) {
-                if( this.selectCourse.spec_image[i] != info.file.name ){
+            for (var i = this.selectCourse.remark_image.length - 1; i >= 0; i--) {
+                if( this.selectCourse.remark_image[i] != info.file.name ){
                     data.push(info.file.name);
                 }
             }
-            this.selectCourse.spec_image = data;
+            this.selectCourse.remark_image = data;
         }else if( info.file.response != undefined && info.file.response.msg ){
             this.message.error(info.file.response.msg);
         }
