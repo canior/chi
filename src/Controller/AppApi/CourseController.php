@@ -22,6 +22,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Course;
+use App\Command\File\BatchUploadFilesCommand;
+use App\Command\File\UploadFileCommand;
 
 class CourseController extends ProductController
 {
