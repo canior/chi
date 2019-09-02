@@ -26,6 +26,7 @@ use App\Command\File\BatchUploadFilesCommand;
 use App\Command\File\UploadFileCommand;
 use App\Entity\Subject;
 use App\Command\Product\Image\CreateOrUpdateProductImagesCommand;
+use App\Repository\CourseRepository;
 
 class CourseController extends ProductController
 {
@@ -226,12 +227,12 @@ class CourseController extends ProductController
      * @param TeacherRepository $teacherRepository
      * @return Response
      */
-    public function newAction(Request $request, TeacherRepository $teacherRepository,CategoryRepository $categoryRepository, UserRepository $userRepository)
+    public function newAction(Request $request, TeacherRepository $teacherRepository,CourseRepository $courseRepository)
     {
 
         $datas = json_decode($request->getContent(), true);
 
-        $requestProcess = $this->processRequest($request, ['title', 'price','startDate', 'endDate', 'city','address','teacher_id','tableCount','tableUserCount','shortDescription','images','specImages','shareImageFileId'], ['title', 'price','startDate', 'endDate', 'city','teacher_id','tableCount','tableUserCount','shortDescription']);
+        $requestProcess = $this->processRequest($request, ['id','title', 'price','startDate', 'endDate', 'city','address','teacher_id','tableCount','tableUserCount','shortDescription','images','specImages','shareImageFileId'], ['title', 'price','startDate', 'endDate', 'city','teacher_id','tableCount','tableUserCount','shortDescription']);
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -239,6 +240,8 @@ class CourseController extends ProductController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
         
+        $id = isset($datas['id']) ? $datas['id'] : null;
+
         $title = isset($datas['title']) ? $datas['title'] : null;
         $price = isset($datas['price']) ? $datas['price'] : null;
         $startDate = isset($datas['startDate']) ? $datas['startDate'] : null;
@@ -250,7 +253,12 @@ class CourseController extends ProductController
         $tableUserCount = isset($datas['tableUserCount']) ? $datas['tableUserCount'] : null;
         $shortDescription = isset($datas['shortDescription']) ? $datas['shortDescription'] : null;
 
-        $course = new Course();
+        if( $id ){
+            $course = $courseRepository->find($id);
+        }else{
+            $course = new Course();
+        }
+        
         $course->setIsOnline(false);
         $course->setSubject(Subject::THINKING);
         $course->setTitle($title);
@@ -338,5 +346,19 @@ class CourseController extends ProductController
         }
 
         return new JsonResponse(['status' => true, 'fileId' => $fileId, 'name' => $name]);
+    }
+
+    /**
+     * @Route("/auth/course/del/{id}", name="course_delete", methods="DELETE")
+     */
+    public function delete(Request $request, Course $course): Response
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($course);
+        $em->flush();
+        $this->addFlash('notice', '删除成功');
+
+        return CommonUtil::resultData( [])->toJsonResponse();
     }
 }
