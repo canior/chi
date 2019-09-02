@@ -194,6 +194,27 @@ class CourseController extends ProductController
         return $requestProcess->toJsonResponse($data);
     }
 
+    /**
+     * 获取讲师
+     * @Route("/course/theater", name="appCourseTheater", methods={"POST"})
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @return JsonResponse
+     * @author zxqc2018
+     */
+    public function getCourseTheater(Request $request, TeacherRepository $teacherRepository)
+    {
+        $requestProcess = $this->processRequest($request, [], []);
+
+        $teachers = $teacherRepository->findAll();
+
+        $teachers_arr = [];
+        foreach ($teachers as $k => $v) {
+            $teachers_arr[] = $v->getArray();
+        }
+
+        return $requestProcess->toJsonResponse(['theaters'=>$teachers_arr]);
+    }
 
     /**
      * @Route("/auth/course/new", name="appCourseNew", methods="POST")
@@ -273,5 +294,36 @@ class CourseController extends ProductController
 
         // 返回
         return CommonUtil::resultData( ['course'=>$course->getArray()] )->toJsonResponse();
+    }
+
+    /**
+     * @Route("/course/file/upload", name="fileUpload")
+     * @param Request $request
+     * @return Response
+     */
+    public function uploadFileAction(Request $request)
+    {
+        if (!$request->isMethod('POST')) {
+            exit;
+        }
+
+        /**
+         * @var UploadedFile[] $files
+         */
+        $files = $request->files;
+        $fileId = null;
+        $name = null;
+        foreach ($files as $file) {
+            try {
+                $command = new UploadFileCommand($file, $this->getUser()->getId());
+                $fileId = $this->getCommandBus()->handle($command);
+                $name = $file->getClientOriginalName();
+            } catch (\Exception $e) {
+                $this->getLog()->error('upload file failed {error}', ['error' => $e->getMessage()]);
+                return new JsonResponse(['status' => false, 'error' => $e->getMessage()]);
+            }
+        }
+
+        return new JsonResponse(['status' => true, 'fileId' => $fileId, 'name' => $name]);
     }
 }
