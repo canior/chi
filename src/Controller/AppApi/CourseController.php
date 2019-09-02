@@ -299,7 +299,7 @@ class CourseController extends ProductController
     }
 
     /**
-     * @Route("/course/file/upload", name="fileUpload")
+     * @Route("/auth/course/file/upload", name="fileUpload")
      * @param Request $request
      * @return Response
      */
@@ -309,6 +309,12 @@ class CourseController extends ProductController
             exit;
         }
 
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+        
         /**
          * @var UploadedFile[] $files
          */
@@ -317,7 +323,7 @@ class CourseController extends ProductController
         $name = null;
         foreach ($files as $file) {
             try {
-                $command = new UploadFileCommand($file, $this->getUser()->getId());
+                $command = new UploadFileCommand($file, $user->getId());
                 $fileId = $this->getCommandBus()->handle($command);
                 $name = $file->getClientOriginalName();
             } catch (\Exception $e) {
