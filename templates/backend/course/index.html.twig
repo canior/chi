@@ -1,1 +1,258 @@
-{% extends 'backend/base-ng.html.twig' %}
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}课程管理{% endblock %}
+
+{% import 'form/macros.html.twig' as macros %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    {% include "backend/includes/app.session.flashbag.html.twig" %}
+                    <h3 class="box-title">总计 ({{ pagination.getTotalItemCount }})</h3>
+                    <a href="{{ path('course_new') }}" type="button" class="btn btn-info pull-right">添加</a>
+                </div>
+                <!-- /.box-header -->
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <form class="cmxform" id="myForm">
+                            <div class="col-md-2 form-group">
+                                <label>显示类型</label>
+                                <select name="courseShowType" class="form-control chosen">
+                                    {% for courseShowType, text in courseShowTypes %}
+                                        <option value="{{ courseShowType }}"{% if courseShowType == form.courseShowType %} selected{% endif %}>{{ text }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>一级分类</label>
+                                <select name="oneCategory" class="form-control" id="oneCategory">
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>二级分类</label>
+                                <select name="twoCategory" class="form-control" id="twoCategory">
+                                </select>
+                            </div>
+                            <div class="col-md-1 form-group">
+                                <label>&nbsp;</label>
+                                <input class="form-control btn btn-primary" type="submit" value="搜索"/>
+                            </div>
+                        </form>
+                    </div>
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th class="col-md-1">ID</th>
+                                <th class="col-md-3">标题</th>
+                                <th class="col-md-3">分类</th>
+                                <th class="col-md-2">讲师</th>
+                                <th class="col-md-2">状态</th>
+                                <th class="col-md-2 text-center hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if pagination.getTotalItemCount %}
+                                {% for item in pagination %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>{{ item.title }}</td>
+                                        <td>{{ item.getCourseCategory }}</td>
+                                        <td>{{ item.teacher.name }}</td>
+                                        <td>{{ item.product.statusText }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('course_edit', {'id': item.id}) }}" title="修改">
+                                                    <span class="fa fa-edit"></span>
+                                                </a>
+                                                {% if item.isSingleCourse %}
+                                                    <a class="recommend-free" data-toggle="modal" data-target="#modal-recommend"
+                                                       data-url="{{ path('recommendFreeZone', {'id': item.id}) }}"
+                                                       data-item='{"name": "{{ item.title }}"}'
+                                                       {% if item.isShowFreeZone %} title="下免费">下免费 {% else %} title="上免费">上免费 {% endif %} </a>
+                                                {% endif %}
+                                                    <a class="recommend-home" data-toggle="modal" data-target="#modal-recommend"
+                                                       data-url="{{ path('recommendHomeZone', {'id': item.id}) }}"
+                                                       data-item='{"name": "{{ item.title }}"}'
+                                                       {% if item.isShowRecommendZone %} title="下首页推荐">下推荐 {% else %} title="上首页推荐">上推荐 {% endif %}</a>
+
+                                                <a class="recommend-newest" data-toggle="modal" data-target="#modal-recommend"
+                                                   data-url="{{ path('recommendNewestZone', {'id': item.id}) }}"
+                                                   data-item='{"name": "{{ item.title }}"}'
+                                                        {% if item.isShowNewest %} title="下首页最新">下最新 {% else %} title="上首页最新">上最新 {% endif %}</a>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="alert">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <div class="no-margin pull-right">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+            <input type="hidden" id="oneCategoryList" value="{{ oneCategoryList }}">
+            <div class="modal fade" id="modal-recommend" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form id="recommend" action="#" method="post">
+                            <input type="hidden" name="_token" value="">
+                            <input type="hidden" name="courseShowType" value="{{ form.courseShowType }}">
+                            <input type="hidden" name="oneCategory" value="{{ form.oneCategory }}">
+                            <input type="hidden" name="twoCategory" value="{{ form.twoCategory }}">
+                            <input type="hidden" name="page" value="{{ form.page }}">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title">课程管理</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="alert alert-info"></div>
+                                <div class="well"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" class="btn btn-danger" data-dismiss="modal">取消</a>
+                                <input class="submit btn btn-primary" type="submit" value="确定"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- /.col -->
+    </div>
+    <!-- /.row -->
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include '/backend/includes/delete.js.html.twig' with {title: 'Course'} %}
+     <script type="text/javascript">
+         // $('[name=oneCategory]').chosen();
+         $(function() {
+             let oneCategoryListData = $.parseJSON($('#oneCategoryList').val());
+             let dom = new twoSelector("oneCategory", "twoCategory", oneCategoryListData);
+             dom.init();
+
+             $('.recommend-free').on('click', function (e) {
+                 e.preventDefault();
+                 let self = $(this);
+                 let item = (self.data('item'));
+                 $('#modal-recommend .well').html(self.attr('title') + '专区   ' + '<<' + item.name + '>>');
+                 $('#modal-recommend form').attr("action", $(this).data('url'));
+                 $('#modal-recommend form input[name="_token"]').val($(this).data('token'));
+             });
+             $('.recommend-home').on('click', function (e) {
+                 e.preventDefault();
+                 let self = $(this);
+                 let item = (self.data('item'));
+                 $('#modal-recommend .well').html(self.attr('title') + '专区   ' + '<<' + item.name + '>>');
+                 $('#modal-recommend form').attr("action", $(this).data('url'));
+                 $('#modal-recommend form input[name="_token"]').val($(this).data('token'));
+             });
+
+             $('.recommend-newest').on('click', function (e) {
+                 e.preventDefault();
+                 let self = $(this);
+                 let item = (self.data('item'));
+                 $('#modal-recommend .well').html(self.attr('title') + '专区   ' + '<<' + item.name + '>>');
+                 $('#modal-recommend form').attr("action", $(this).data('url'));
+                 $('#modal-recommend form input[name="_token"]').val($(this).data('token'));
+             });
+         });
+
+         let twoSelector = function (fatherElement, sonElement, selectData, fatherSelected, sonSelect) {
+             let that = this;
+
+             this.getPart = function (par) {
+                 //获取当前URL
+                 let localUrl = document.location.href;
+                 //获取要取得的get参数位置
+                 let get = localUrl.indexOf(par + "=");
+                 if(get === -1){
+                     return false;
+                 }
+                 //截取字符串
+                 let getPar = localUrl.slice(par.length + get + 1);
+
+                 let nextPar = getPar.indexOf("&");
+                 if(nextPar !== -1){
+                     getPar = getPar.slice(0, nextPar);
+                 }
+                 return getPar;
+             };
+
+             if (typeof fatherSelected === 'undefined') {
+                 fatherSelected = that.getPart(fatherElement);
+             }
+             if (typeof sonSelect === 'undefined') {
+                 sonSelect = that.getPart(sonElement);
+             }
+
+             let sonData = [];
+             for (let k in selectData) {
+                 if (selectData.hasOwnProperty(k)) {
+                     sonData[selectData[k]['id']] = selectData[k]['children'];
+                 }
+             }
+             this.father = $("#" + fatherElement); //父
+             this.son = $("#" + sonElement); //子
+
+             this.fatherProcess = function () {
+                 for (let k in selectData) {
+                     if (selectData.hasOwnProperty(k)) {
+                         let fatherSelectStr = +selectData[k]['id'] === +fatherSelected ? ' selected ' : '';
+                         that.father.append("<option value=" + selectData[k]['id'] + " " + fatherSelectStr +" >" + selectData[k]['name'] + "</option>");
+                     }
+                 }
+                 that.father.chosen();
+                 that.son.chosen();
+             };
+
+             this.sonProcess = function () {
+                 that.son.empty();
+                 that.son.append("<option value=''>选择</option>");
+
+                 if (that.father.val() === "") {
+                     that.son.trigger("chosen:updated");
+                     return;
+                 }
+
+                 let selectValue = that.father.val();
+                 let sonList = sonData[selectValue] || [];
+                 for (let k in sonList) {
+                     if (sonList.hasOwnProperty(k)) {
+                         let sonSelectStr = +sonList[k]['id'] === +sonSelect ? ' selected ' : '';
+                         that.son.append("<option value=" + sonList[k]['id'] + " " + sonSelectStr +">" + sonList[k]['name'] + "</option>");
+                     }
+                 }
+                 that.son.trigger('chosen:updated');
+             };
+
+             /*对象初始化方法*/
+             this.init = function () {
+                 that.father.append("<option value=''>选择</option>");
+                 that.son.append("<option value=''>选择</option>");
+                 that.fatherProcess();
+                 that.father.bind("change", that.sonProcess);
+                 if (fatherSelected) {
+                     that.father.change();
+                 }
+             }
+         }
+     </script>
+{% endblock %}
