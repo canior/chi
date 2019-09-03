@@ -22,6 +22,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Course;
+use App\Command\File\BatchUploadFilesCommand;
+use App\Command\File\UploadFileCommand;
+use App\Entity\Subject;
+use App\Command\Product\Image\CreateOrUpdateProductImagesCommand;
+use App\Repository\CourseRepository;
 
 class CourseController extends ProductController
 {
@@ -194,6 +199,27 @@ class CourseController extends ProductController
         return $requestProcess->toJsonResponse($data);
     }
 
+    /**
+     * 获取讲师
+     * @Route("/course/theater", name="appCourseTheater", methods={"POST"})
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @return JsonResponse
+     * @author zxqc2018
+     */
+    public function getCourseTheater(Request $request, TeacherRepository $teacherRepository)
+    {
+        $requestProcess = $this->processRequest($request, [], []);
+
+        $teachers = $teacherRepository->findAll();
+
+        $teachers_arr = [];
+        foreach ($teachers as $k => $v) {
+            $teachers_arr[] = $v->getArray();
+        }
+
+        return $requestProcess->toJsonResponse(['teachers'=>$teachers_arr]);
+    }
 
     /**
      * @Route("/auth/course/new", name="appCourseNew", methods="POST")
@@ -201,12 +227,12 @@ class CourseController extends ProductController
      * @param TeacherRepository $teacherRepository
      * @return Response
      */
-    public function newAction(Request $request, TeacherRepository $teacherRepository,CategoryRepository $categoryRepository, UserRepository $userRepository)
+    public function newAction(Request $request, TeacherRepository $teacherRepository,CourseRepository $courseRepository)
     {
 
         $datas = json_decode($request->getContent(), true);
 
-        $requestProcess = $this->processRequest($request, ['subject', 'title', 'price','startDate', 'endDate', 'city','address','teacher_id','tableCount','tableUserCount','shortDescription'], ['subject', 'title', 'price','startDate', 'endDate', 'city','teacher_id','tableCount','tableUserCount','shortDescription']);
+        $requestProcess = $this->processRequest($request, ['id','title', 'price','startDate', 'endDate', 'city','address','teacher_id','tableCount','tableUserCount','shortDescription','images','specImages','shareImageFileId'], ['title', 'price','startDate', 'endDate', 'city','teacher_id','tableCount','tableUserCount','shortDescription']);
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -214,7 +240,8 @@ class CourseController extends ProductController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
         
-        $subject = isset($datas['subject']) ? $datas['subject'] : null;
+        $id = isset($datas['id']) ? $datas['id'] : null;
+
         $title = isset($datas['title']) ? $datas['title'] : null;
         $price = isset($datas['price']) ? $datas['price'] : null;
         $startDate = isset($datas['startDate']) ? $datas['startDate'] : null;
@@ -226,9 +253,14 @@ class CourseController extends ProductController
         $tableUserCount = isset($datas['tableUserCount']) ? $datas['tableUserCount'] : null;
         $shortDescription = isset($datas['shortDescription']) ? $datas['shortDescription'] : null;
 
-        $course = new Course();
+        if( $id ){
+            $course = $courseRepository->find($id);
+        }else{
+            $course = new Course();
+        }
+        
         $course->setIsOnline(false);
-        $course->setSubject($subject);
+        $course->setSubject(Subject::THINKING);
         $course->setTitle($title);
         $course->setPrice($price);
         $course->setStartDate( $startDate?strtotime($startDate):null );
@@ -249,20 +281,24 @@ class CourseController extends ProductController
         }
 
         //update preview image
-        $previewImageFileId = isset($datas['image']) ? $datas['image'] : null;
-        if ($previewImageFileId) {
-            $previewImageFile = $this->getEntityManager()->getRepository(File::class)->find($previewImageFileId);
-            $course->setPreviewImageFile($previewImageFile);
-        } else {
-            $course->setPreviewImageFile(null);
+        $images = isset($datas['images']) ? $datas['images'] : null;
+        if($images){
+            $imagesCommand = new CreateOrUpdateProductImagesCommand($course->getProduct()->getId(), $images);
+            $this->getCommandBus()->handle($imagesCommand);            
         }
 
-        $shareImageFileId = isset($datas['share_image']) ? $datas['share_image'] : null;
+        $specImages = isset($datas['specImages']) ? $datas['specImages'] : null;
+        if($specImages){
+            $specImagesCommand = new CreateOrUpdateProductSpecImagesCommand($course->getProduct()->getId(), $specImages);
+            $this->getCommandBus()->handle($specImagesCommand);            
+        }
+
+        $shareImageFileId = isset($datas['shareImageFileId']) ? $datas['shareImageFileId'] : null;
         if ($shareImageFileId) {
             $shareImageFile = $this->getEntityManager()->getRepository(File::class)->find($shareImageFileId);
-            $course->setShareImageFile($shareImageFile);
-        } else {
-            $course->setShareImageFile(null);
+            $course->getProduct()->setShareImageFile($shareImageFile);
+            $this->getEntityManager()->persist($course->getProduct());
+            $this->getEntityManager()->flush();
         }
 
         $this->entityPersist($course);
@@ -273,5 +309,56 @@ class CourseController extends ProductController
 
         // 返回
         return CommonUtil::resultData( ['course'=>$course->getArray()] )->toJsonResponse();
+    }
+
+    /**
+     * @Route("/auth/course/file/upload", name="fileUpload")
+     * @param Request $request
+     * @return Response
+     */
+    public function uploadFileAction(Request $request)
+    {
+        if (!$request->isMethod('POST')) {
+            exit;
+        }
+
+        // 查询匹配用户
+        $user =  $this->getAppUser();
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+        
+        /**
+         * @var UploadedFile[] $files
+         */
+        $files = $request->files;
+        $fileId = null;
+        $name = null;
+        foreach ($files as $file) {
+            try {
+                $command = new UploadFileCommand($file, $user->getId());
+                $fileId = $this->getCommandBus()->handle($command);
+                $name = $file->getClientOriginalName();
+            } catch (\Exception $e) {
+                $this->getLog()->error('upload file failed {error}', ['error' => $e->getMessage()]);
+                return new JsonResponse(['status' => false, 'error' => $e->getMessage()]);
+            }
+        }
+
+        return new JsonResponse(['status' => true, 'fileId' => $fileId, 'name' => $name]);
+    }
+
+    /**
+     * @Route("/auth/course/del/{id}", name="course_delete", methods="DELETE")
+     */
+    public function delete(Request $request, Course $course): Response
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($course);
+        $em->flush();
+        $this->addFlash('notice', '删除成功');
+
+        return CommonUtil::resultData( [])->toJsonResponse();
     }
 }

@@ -15,6 +15,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Criteria;
 use App\Service\Util\FactoryUtil;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CourseRepository")
@@ -34,9 +36,6 @@ class Course implements Dao
     ];
 
     use IdTrait;
-
-
-    const IMAGE_URL_BASE = "/image/preview/";
 
     const COURSE_SHOW_TYPE_APP = 'app';
     const COURSE_SHOW_TYPE_MINI = 'mini';
@@ -269,6 +268,14 @@ class Course implements Dao
 
         $product->setCourse($course);
         return $course;
+    }
+
+    /**
+     * @param ClassMetadata $metadata
+     */
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+
     }
 
     /**
@@ -1222,9 +1229,76 @@ class Course implements Dao
     {
         $this->city = $city;
     }
+    /**
+     * @return array
+     */
+    public function getArray() : array {
+        $courseImageArray = [];
+        foreach ($this->getProduct()->getProductImages() as $productImage) {
+            $courseImageArray[] = $productImage->getArray();
+        }
 
-    
+        $courseSpecImagesArray = [];
+        foreach ($this->getProduct()->getProductSpecImages() as $productSpecImage) {
+            $courseSpecImagesArray[] = $productSpecImage->getArray();
+        }
 
+        $courseVideosArray = [];
+        foreach ($this->getProduct()->getProductVideos() as $productVideo) {
+            $courseVideosArray[] = $productVideo->getArray();
+        }
+
+        return [
+            'id' => $this->getId(),
+            'productId' => $this->getProduct()->getId(),
+            'title' => $this->getProduct()->getTitle(),
+            'price' => $this->getProduct()->getPrice(),
+            'shortDescription' => $this->getProduct()->getShortDescription(),
+            'startDate' =>  $this->getStartDate() ? date(self::DATE_FORMAT, $this->getStartDate()) : '',
+            'endDate' =>  $this->getEndDate() ? date(self::DATE_FORMAT, $this->getEndDate()) : '',
+            'address' => $this->getAddress() ? $this->getAddress() : '-',
+            'city' => $this->getCity(),
+            'region' => $this->getRegion() ? $this->getRegion()->getArray() : null,
+            'teacher' => $this->getTeacher()->getArray(),
+            'courseImages' => $courseImageArray,
+            'productImages' => $courseImageArray,
+            'courseSpecImages' => $courseSpecImagesArray,
+            'reviewsNum' => $this->getProduct()->getTotalActiveReviews(),
+            'lookNum' => $this->getLookNum(),
+            'tableCount' => $this->getTableCount(),
+            'tableUserCount' => $this->getTableUserCount(),
+            'maxUserCount' => $this->getTableCount()*$this->getTableUserCount(),
+            'userCount' => $this->getUserNum(),
+            'unpaidUserNum' => $this->getUnpaidUserNum(),
+            'courseVideos' => $courseVideosArray,
+            'shareCount' => $this->getShareCount(),
+            'shareImageFileId' => $this->getShareImageFile() ? $this->getShareImageFile()->getId() : null,
+            'previewImageFile' => $this->getPreviewImageFile() ? $this->getPreviewImageFile()->getId() : null,
+            'totalStudents' => $this->getTotalStudentUsers(),
+            'isOnline' => $this->isOnline,
+            'eligibleUserLevels' => $this->getSubject()?Subject::$subjectUserLevelConstraintArray[$this->getSubject()]:null, //for bianxian
+            'subject' => $this->getSubject(),
+            'subjectText' => $this->getSubject() ? Subject::$subjectTextArray[$this->getSubject()] : null,
+            'eligibleViewer' => $this->getEligibleViewerUserLevels(),
+            'aliyunVideoId' => $this->getAliyunVideoId(),
+            'requiredGroupUserOrders' => $this->getTotalGroupUserOrdersRequired(),
+            'topCategoryName' => CommonUtil::getInsideValue($this, 'getCourseActualCategory.getParentCategory.getName', ''),
+            'topCateIdentityId' => CommonUtil::getInsideValue($this, 'getCourseActualCategory.getParentCategory.getCateIdentityId', null),
+            'courseCategoryName' => CommonUtil::getInsideValue($this, 'getCourseCategory.getName', ''),
+            'unlockType' => $this->getUnlockType(),
+            'unlockTypeText' => $this->getUnlockTypeText(),
+            'courseTags' => $this->getCourseTagArr(),
+            'addressImageFileId' => CommonUtil::obj2Id($this->getAddressImageFile()),
+            'refCourseName' => $this->getRefCourseName(),
+            'initiator' => $this->getInitiator()?$this->getInitiator()->getArray():null,
+            'courseCreateTimeLine' => CommonUtil::getInsideValue($this, 'getProduct.getCreatedAtFormattedLineDate', ''),
+            'checkStatus' =>$this->getCheckStatus(),
+            'checkStatusText' =>$this->getCheckStatusText(),
+            'progress' =>$this->getProgress()['progress'],
+            'progressText' =>$this->getProgress()['progressText'],
+            'totalCourseStudents'=>$this->getTotalCourseStudents()
+        ];
+    }
 
     // 进度
     public function getProgress(){
@@ -1349,143 +1423,5 @@ class Course implements Dao
     public function setReason($reason)
     {
         $this->reason = $reason;
-    }
-
-
-    /**
-     * @return array
-     */
-    public function getArray() : array {
-        $courseImageArray = [];
-        foreach ($this->getProduct()->getProductImages() as $productImage) {
-            $courseImageArray[] = $productImage->getArray();
-        }
-
-        $courseSpecImagesArray = [];
-        foreach ($this->getProduct()->getProductSpecImages() as $productSpecImage) {
-            $courseSpecImagesArray[] = $productSpecImage->getArray();
-        }
-
-        $courseVideosArray = [];
-        foreach ($this->getProduct()->getProductVideos() as $productVideo) {
-            $courseVideosArray[] = $productVideo->getArray();
-        }
-
-        return [
-            'id' => $this->getId(),
-            'productId' => $this->getProduct()->getId(),
-            'title' => $this->getProduct()->getTitle(),
-            'price' => $this->getProduct()->getPrice(),
-            'shortDescription' => $this->getProduct()->getShortDescription(),
-            'startDate' =>  $this->getStartDate() ? date(self::DATE_FORMAT, $this->getStartDate()) : '',
-            'endDate' =>  $this->getEndDate() ? date(self::DATE_FORMAT, $this->getEndDate()) : '',
-            'address' => $this->getAddress() ? $this->getAddress() : '-',
-            'city' => $this->getCity(),
-            'region' => $this->getRegion() ? $this->getRegion()->getArray() : null,
-            'teacher' => $this->getTeacher()->getArray(),
-            'courseImages' => $courseImageArray,
-            'productImages' => $courseImageArray,
-            'courseSpecImages' => $courseSpecImagesArray,
-            'reviewsNum' => $this->getProduct()->getTotalActiveReviews(),
-            'lookNum' => $this->getLookNum(),
-            'tableCount' => $this->getTableCount(),
-            'tableUserCount' => $this->getTableUserCount(),
-            'maxUserCount' => $this->getTableCount()*$this->getTableUserCount(),
-            'userCount' => $this->getUserNum(),
-            'unpaidUserNum' => $this->getUnpaidUserNum(),
-            'courseVideos' => $courseVideosArray,
-            'shareCount' => $this->getShareCount(),
-            'shareImageFileId' => $this->getShareImageFile() ? $this->getShareImageFile()->getId() : null,
-            'previewImageFile' => $this->getPreviewImageFile() ? $this->getPreviewImageFile()->getId() : null,
-            'totalStudents' => $this->getTotalStudentUsers(),
-            'isOnline' => $this->isOnline,
-            'eligibleUserLevels' => $this->getSubject()?Subject::$subjectUserLevelConstraintArray[$this->getSubject()]:null, //for bianxian
-            'subject' => $this->getSubject(),
-            'subjectText' => $this->getSubject() ? Subject::$subjectTextArray[$this->getSubject()] : null,
-            'eligibleViewer' => $this->getEligibleViewerUserLevels(),
-            'aliyunVideoId' => $this->getAliyunVideoId(),
-            'requiredGroupUserOrders' => $this->getTotalGroupUserOrdersRequired(),
-            'topCategoryName' => CommonUtil::getInsideValue($this, 'getCourseActualCategory.getParentCategory.getName', ''),
-            'topCateIdentityId' => CommonUtil::getInsideValue($this, 'getCourseActualCategory.getParentCategory.getCateIdentityId', null),
-            'courseCategoryName' => CommonUtil::getInsideValue($this, 'getCourseCategory.getName', ''),
-            'unlockType' => $this->getUnlockType(),
-            'unlockTypeText' => $this->getUnlockTypeText(),
-            'courseTags' => $this->getCourseTagArr(),
-            'addressImageFileId' => CommonUtil::obj2Id($this->getAddressImageFile()),
-            'refCourseName' => $this->getRefCourseName(),
-            'initiator' => $this->getInitiator()?$this->getInitiator()->getArray():null,
-            'courseCreateTimeLine' => CommonUtil::getInsideValue($this, 'getProduct.getCreatedAtFormattedLineDate', ''),
-            'checkStatus' =>$this->getCheckStatus(),
-            'checkStatusText' =>$this->getCheckStatusText(),
-            'progress' =>$this->getProgress()['progress'],
-            'progressText' =>$this->getProgress()['progressText'],
-            'totalCourseStudents'=>$this->getTotalCourseStudents()
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getLittleArray() : array {
-
-
-        $courseImagesArray = [];
-        foreach ($this->getCourseImages() as $file) {
-            $courseImagesArray[] = ['id'=>$file->getFile()->getId(),'url'=>self::IMAGE_URL_BASE.$file->getFile()->getId()];
-        }
-
-        $courseRemarkImagesArray = [];
-        foreach ($this->getCourseSpecImages() as $file) {
-            $courseRemarkImagesArray[] = ['id'=>$file->getFile()->getId(),'url'=>self::IMAGE_URL_BASE.$file->getFile()->getId()];
-        }
-
-        return [
-            'id' => $this->getId(),
-            'title' => $this->getProduct()->getTitle(),
-            'subject' => $this->getSubject(),
-            'category_id' => $this->getCourseCategory()?$this->getCourseCategory()->getId():'',
-            'category_title' => $this->getCourseCategory()?$this->getCourseCategory()->getName():'',
-            'start_date' =>  $this->getStartDate() ? date(self::DATE_FORMAT, $this->getStartDate()) : '',
-            'end_date' =>  $this->getEndDate() ? date(self::DATE_FORMAT, $this->getEndDate()) : '',
-            'teacher_id' => $this->getTeacher()?$this->getTeacher()->getId():null,
-            'teacher_name' => $this->getTeacher()?$this->getTeacher()->getName():null,
-            'video_key' => $this->getAliyunVideoId(),
-            'album_title' => null,
-            'update_at' => $this->getProduct()->getUpdatedAt(),
-            'course_tag' => $this->getCourseTag(),
-            'content' => $this->getShortDescription(),
-            'show_type' => $this->getCourseShowType(),
-            'cost_type' => $this->getUnlockType(),
-            'collect_num' => $this->getTotalGroupUserOrdersRequired(),
-            'collect_timelong' => $this->getGroupOrderValidForHours(),
-            'price' => $this->getPrice(),
-            'status' => $this->getProduct()->getStatus(),
-            'priority' => $this->getPriority(),
-            'video_image' => $this->getPreviewImageFile()?[['id'=>$this->getPreviewImageFile()->getId(),'url'=>self::IMAGE_URL_BASE.$this->getPreviewImageFile()->getId()]] :null,
-            'share_image' => $this->getShareImageFile()?[['id'=>$this->getShareImageFile()->getId(),'url'=>self::IMAGE_URL_BASE.$this->getShareImageFile()->getId()]] :null,
-            'content_image' => $courseImagesArray,
-            'remark_image' => $courseRemarkImagesArray,
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getListArray() : array {
-        return [
-            'id' => $this->getId(),
-            'title' => $this->getProduct()->getTitle(),
-            'category_id' => $this->getCourseCategory()?$this->getCourseCategory()->getId():'',
-            'category_title' => $this->getCourseCategory()?$this->getCourseCategory()->getName():'',
-            'start_date' =>  $this->getStartDate() ? date(self::DATE_FORMAT, $this->getStartDate()) : '',
-            'end_date' =>  $this->getEndDate() ? date(self::DATE_FORMAT, $this->getEndDate()) : '',
-            'teacher_name' => $this->getTeacher()?$this->getTeacher()->getName():null,
-            'album_title' => null,
-            'status' => $this->getProduct()->getStatus(),
-            'update_at' => $this->getProduct()->getUpdatedAt(),
-            'is_single' => $this->isSingleCourse(),
-            'is_recommend' => $this->isShowRecommendZone(),
-            'is_new' => $this->isShowNewest(),
-        ];
     }
 }

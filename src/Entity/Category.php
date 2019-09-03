@@ -15,7 +15,6 @@ use App\Service\Util\CommonUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\StatusTrait;
-use App\Entity\Course;
 
 /**
  * Category
@@ -51,13 +50,6 @@ class Category implements Dao
      * })
      */
     private $parentCategory;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="parent_category_id", type="string")
-     */
-    private $parentCategoryId;
 
     /**
      * @var File
@@ -575,28 +567,6 @@ class Category implements Dao
             'name' => $this->getName(),
             'parentCategoryId' => $this->getParentCategory() == null ? 0 : $this->getParentCategory()->getId(),
             'iconFileId' => CommonUtil::obj2Id($this->getIconFile()),
-        ];
-    }
-
-    /**
-     * 取得简单数组列表
-     * @return array
-     */
-    public function getLittleArray()
-    {
-        return [
-            'id' => $this->getId(),
-            'title' => $this->getName(),
-            'parent_id' => $this->getParentCategory() == null ? 0 : $this->getParentCategory()->getId(),
-            'parent_name' => $this->getParentCategory() == null ? '' : $this->getParentCategory()->getName(),
-            'status' => $this->getStatus(),
-            'priority' => $this->getPriority(),
-            'remark' => $this->getShortDescription(),
-            'video_key' => $this->getAliyunVideoId(),
-            'preview_image' => $this->getPreviewImageFile()?$this->getPreviewImageFile()->getId():null,
-            'preview_image_url' => $this->getPreviewImageFile()?Course::IMAGE_URL_BASE.$this->getPreviewImageFile()->getId():null,
-            'remark_image' => $this->getIconFile()?$this->getIconFile()->getId():null,
-            'remark_image_url' => $this->getIconFile()?Course::IMAGE_URL_BASE.$this->getIconFile()->getId():null,
         ];
     }
 
