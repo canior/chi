@@ -234,7 +234,7 @@ class CourseController extends ProductController
 
         $datas = json_decode($request->getContent(), true);
 
-        $requestProcess = $this->processRequest($request, ['id','title', 'price','startDate', 'endDate', 'city','address','teacher_id','tableCount','tableUserCount','shortDescription','images','specImages','shareImageFileId'], ['title', 'price','startDate', 'endDate', 'city','teacher_id','tableCount','tableUserCount','shortDescription']);
+        $requestProcess = $this->processRequest($request, ['id','title', 'price','startDate', 'endDate', 'city','address','teacher_id','tableCount','tableUserCount','shortDescription','images','specImages','shareImageFileId'], ['title', 'price','startDate', 'endDate', 'city','teacher_id','tableCount','tableUserCount','shortDescription','images','specImages','shareImageFileId']);
 
         // 查询匹配用户
         $user =  $this->getAppUser();
