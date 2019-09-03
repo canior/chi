@@ -279,6 +279,7 @@ class CourseController extends ProductController
                 $course->setTeacher($teacher);
             }
         }
+        $this->entityPersist($course);
 
         //update preview image
         $images = isset($datas['images']) ? $datas['images'] : null;
@@ -300,9 +301,6 @@ class CourseController extends ProductController
             $this->getEntityManager()->persist($course->getProduct());
             $this->getEntityManager()->flush();
         }
-
-        $this->entityPersist($course);
-
 
         $course->setPriority( $course->getId() );
         $this->entityPersist($course);
