@@ -27,6 +27,7 @@ use App\Command\File\UploadFileCommand;
 use App\Entity\Subject;
 use App\Command\Product\Image\CreateOrUpdateProductImagesCommand;
 use App\Repository\CourseRepository;
+use App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommand;
 
 class CourseController extends ProductController
 {
