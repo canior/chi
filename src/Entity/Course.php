@@ -234,11 +234,21 @@ class Course implements Dao
      */
     private $isShowNewest;
 
+
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\CourseInspector", mappedBy="course", cascade={"persist"}, orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $courseInspectors;
+
     public function __construct() {
         $product = new Product();
         $product->setCourse($this);
         $this->setProduct($product);
         $this->courseStudents = new ArrayCollection();
+        $this->courseInspectors = new ArrayCollection();
         $this->setOnline();
         $this->setLookNum(0);
         $this->setCourseTag('');
@@ -1378,6 +1388,14 @@ class Course implements Dao
         $this->reason = $reason;
     }
 
+
+    /**
+     * @return Collection|UserAddress[]
+     */
+    public function getCourseInspectors(): Collection
+    {
+        return $this->courseInspectors;
+    }
     
     /**
      * @return array
@@ -1402,6 +1420,11 @@ class Course implements Dao
             $item = $productVideo->getArray();
             $item['priority'] = 0;
             $courseVideosArray[] = $item;
+        }
+
+        $courseInspectorsArray = [];
+        foreach ($this->getCourseInspectors() as $courseInspectors) {
+            $courseInspectorsArray[] = $courseInspectors->getArray();
         }
 
         return [
@@ -1452,7 +1475,19 @@ class Course implements Dao
             'checkStatusText' =>$this->getCheckStatusText(),
             'progress' =>$this->getProgress()['progress'],
             'progressText' =>$this->getProgress()['progressText'],
+            'courseInspectors' =>$courseInspectorsArray,
             'totalCourseStudents'=>$this->getTotalCourseStudents()
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getLittleArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getProduct()->getTitle(),
         ];
     }
 }

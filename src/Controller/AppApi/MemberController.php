@@ -60,6 +60,8 @@ use App\Entity\FollowTeacherMeta;
 use App\Repository\MessageGroupUserOrderMetaRepository;
 use App\Repository\UserRecommandStockOrderRepository;
 use App\Service\Util\MoneyUtil;
+use App\Repository\CourseInspectorRepository;
+use App\Entity\CourseInspector;
 
 /**
  * @Route("/auth/member")
@@ -310,12 +312,16 @@ class MemberController extends AppApiBaseController
      * @param MessageCodeRepository $messageCodeRepository
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function addInspector(Request $request, UserManagerInterface $userManager,UserRepository $userRepository)
+    public function addInspector(Request $request, UserRepository $userRepository, CourseRepository $courseRepository,CourseInspectorRepository $courseInspectorRepository)
     {
         $data = json_decode($request->getContent(), true );
 
-        $requestProcess = $this->processRequest($request, ['phone','inspectorName', 'inspectorStartDate','inspectorEndDate'], ['phone','inspectorName', 'inspectorStartDate','inspectorEndDate']);
+        $this->processRequest($request, ['phone','course_id','inspectorName', 'inspectorStartDate','inspectorEndDate'], ['phone','inspectorName', 'inspectorStartDate','inspectorEndDate','course_id']);
         $phone = isset($data['phone']) ? $data['phone'] : null;
+        $course_id = isset($data['course_id']) ? $data['course_id'] : null;
+        $inspectorName = isset($data['inspectorName']) ? $data['inspectorName'] : null;
+        $inspectorStartDate = isset($data['inspectorStartDate']) ? $data['inspectorStartDate'] : null;
+        $inspectorEndDate = isset($data['inspectorEndDate']) ? $data['inspectorEndDate'] : null;
 
         // 查询匹配用户
         $user =  $userRepository->findOneBy(['phone'=>$phone]);
@@ -323,23 +329,55 @@ class MemberController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        $inspectorName = isset($data['inspectorName']) ? $data['inspectorName'] : null;
-        $inspectorStartDate = isset($data['inspectorStartDate']) ? $data['inspectorStartDate'] : null;
-        $inspectorEndDate = isset($data['inspectorEndDate']) ? $data['inspectorEndDate'] : null;
-
-        $user->setIsInspector(1);
-        $user->setInspectorName($inspectorName);
-        $user->setInspectorStartDate(strtotime($inspectorStartDate));
-        $user->setInspectorEndDate(strtotime($inspectorEndDate));
-
-        try {
-            $userManager->updateUser($user, true);
-        } catch (\Exception $e) {
-            return new JsonResponse(["error" => $e->getMessage()], 500);
+        $course = $courseRepository->find($course_id);
+        if ($course == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_COURSE_NOT_EXISTS )->toJsonResponse();
         }
 
+        $has = $courseInspectorRepository->findOneBy(['user'=>$user,'course'=>$course]);
+        if($has){
+            return CommonUtil::resultData( [], ErrorCode::ERROR_HAS_ADD )->toJsonResponse();
+        }
+
+        // 查询匹配用户
+        $courseInspector =  new CourseInspector();
+        $courseInspector->setUser($user);
+        $courseInspector->setCourse($course);
+        $courseInspector->setInspectorName($inspectorName);
+        $courseInspector->setInspectorStartDate(strtotime($inspectorStartDate));
+        $courseInspector->setInspectorEndDate(strtotime($inspectorEndDate));
+
+        $this->entityPersist($courseInspector);
+
         // 返回
-        return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();
+        return CommonUtil::resultData( ['courseInspector'=>$courseInspector->getArray()] )->toJsonResponse();
+    }
+
+    /**
+     * @Route("/delInspector", name="delInspector",  methods={"POST"})
+     * @param Request $request
+     * @param MessageCodeRepository $messageCodeRepository
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function delInspector(Request $request,CourseInspectorRepository $courseInspectorRepository)
+    {
+        $data = json_decode($request->getContent(), true );
+
+        $this->processRequest($request, ['id'], ['id']);
+        $id = isset($data['id']) ? $data['id'] : null;
+
+        // 查询
+        $courseInspector = $courseInspectorRepository->find($id);
+        if ($courseInspector == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_COURSE_NOT_EXISTS )->toJsonResponse();
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($courseInspector);
+        $em->flush();
+
+        // 返回
+        return CommonUtil::resultData( [] )->toJsonResponse();
     }
 
     /**

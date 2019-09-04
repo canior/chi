@@ -59,6 +59,7 @@ class ErrorCode
     const ERROR_NOT_PARTNER_UP_LEVEL = 13005;
     const ERROR_PARTNER_UP_COURSE_NOT_SYSTEM = 13006;
     const ERROR_USER_ALREADY_SYSTEM = 13007;
+    const ERROR_HAS_ADD = 13008;
     //-------产品---------------------------------------
     const ERROR_PRODUCT_NOT_EXISTS = 14001;
     //-------订单---------------------------------------
@@ -156,6 +157,7 @@ class ErrorCode
             self::ERROR_UNIONID_HAD_REGISTER => '微信已经绑定其他手机号',
             self::ERROR_PHONE_HAD_REGISTER_OTHER_WX => '手机号已经绑定其他微信',
             self::ERROR_YINLIAN_PAY => '银联支付发生错误',
+            self::ERROR_HAS_ADD => '已经添加，不能重复添加',
             self::ERROR_UNIONID_HAD_USE => '微信wxUnionId已注册',
         ];
     }
