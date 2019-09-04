@@ -61,7 +61,7 @@ class Course implements Dao
 
     /**
      * @var integer
-     * @ORM\Column(name="is_deleted", type="boolean")
+     * @ORM\Column(name="is_deleted", type="boolean", nullable=true)
      */
     private $isDeleted;
 

@@ -20,7 +20,7 @@ final class Version20190903070515 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE course ADD is_deleted TINYINT(1) NOT NULL COMMENT "是否删除"');
+        $this->addSql('ALTER TABLE course ADD is_deleted TINYINT(1) DEFAULT NULL COMMENT "是否删除"');
         
     }
 
