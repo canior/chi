@@ -352,10 +352,20 @@ class CourseController extends ProductController
     }
 
     /**
-     * @Route("/auth/course/delete/{id}", name="course_delete", methods="POST")
+     * @Route("/auth/course/delete", name="course_delete", methods="POST")
      */
-    public function del(Request $request, Course $course)
+    public function del(Request $request,CourseRepository $courseRepository)
     {
+
+        $datas = json_decode($request->getContent(), true);
+        $requestProcess = $this->processRequest($request, ['id'],['id']);
+        $id = isset($datas['id']) ? $datas['id'] : null;
+
+        $course = $courseRepository->find($id);
+        if( !$course ){
+            return CommonUtil::resultData( [], ErrorCode::ERROR_COURSE_NOT_EXISTS )->toJsonResponse();
+        }
+
         $course->setIsDeleted(true);
         $this->entityPersist($course);
 
