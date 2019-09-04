@@ -315,7 +315,7 @@ class CourseController extends ProductController
     }
 
     /**
-     * @Route("/auth/course/file/upload", name="fileUpload")
+     * @Route("/auth/course/file/upload", name="coursefileUpload")
      * @param Request $request
      * @return Response
      */
