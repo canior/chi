@@ -2247,6 +2247,13 @@ class User extends BaseUser implements Dao
         return date(DAO::DATE_FORMAT, $this->inspectorEndDate);
     }
 
+    public function getShowInspector() {
+        if( $this->getIsInspector()  && $this->getInspectorStartDate() >= time() && $this->getInspectorEndDate() > time() ){
+            return true;
+        }
+        return false;
+    }
+
     /**
      * @return array
      */
@@ -2299,6 +2306,7 @@ class User extends BaseUser implements Dao
             'isAdvancedPlus' => $this->isAdavancePlusUserLevel(),
             'advancedTime' => $this->getAdvancedTime(),
             'isNewUser' => $this->isNewUser(),
+            "showInspector" =>$this->getShowInspector(),
             "isInspector" =>$this->getIsInspector(), 
             "inspectorName" =>$this->getInspectorName(), 
             "inspectorStartDate" =>$this->getInspectorStartDateFormatted(), 
