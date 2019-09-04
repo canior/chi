@@ -224,12 +224,12 @@ class CourseController extends ProductController
     }
 
     /**
-     * @Route("/auth/course/new", name="appCourseNew", methods="POST")
+     * @Route("/auth/course/create", name="appCourseNew", methods="POST")
      * @param Request $request
      * @param TeacherRepository $teacherRepository
      * @return Response
      */
-    public function newAction(Request $request, TeacherRepository $teacherRepository,CourseRepository $courseRepository)
+    public function createAction(Request $request, TeacherRepository $teacherRepository,CourseRepository $courseRepository)
     {
 
         $datas = json_decode($request->getContent(), true);
@@ -352,16 +352,13 @@ class CourseController extends ProductController
     }
 
     /**
-     * @Route("/auth/course/del/{id}", name="course_delete", methods="DELETE")
+     * @Route("/auth/course/delete/{id}", name="course_delete", methods="POST")
      */
-    public function delete(Request $request, Course $course): Response
+    public function del(Request $request, Course $course)
     {
+        $course->setIsDeleted(true);
+        $this->entityPersist($course);
 
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($course);
-        $em->flush();
-        $this->addFlash('notice', '删除成功');
-
-        return CommonUtil::resultData( [])->toJsonResponse();
+        return CommonUtil::resultData( [] )->toJsonResponse();
     }
 }
