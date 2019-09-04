@@ -257,6 +257,9 @@ class CourseController extends ProductController
 
         if( $id ){
             $course = $courseRepository->find($id);
+            if( !$course ){
+                return CommonUtil::resultData( [], ErrorCode::ERROR_COURSE_NOT_EXISTS )->toJsonResponse();
+            }
         }else{
             $course = new Course();
         }

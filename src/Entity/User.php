@@ -342,6 +342,33 @@ class User extends BaseUser implements Dao
     private $bankAccountName;
 
 
+    /**
+     * @var boolean
+     * @ORM\Column(type="integer")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $isInspector;
+
+    /**
+     * @var text
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $inspectorName;
+
+    /**
+     * @var int
+     * @ORM\Column( type="integer", nullable=true)
+     */
+    private $inspectorStartDate;
+
+    /**
+     * @var int
+     * @ORM\Column( type="integer", nullable=true)
+     */
+    private $inspectorEndDate;
+
+
+
     public function __construct()
     {
         parent::__construct();
@@ -2143,6 +2170,84 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * @return int|null
+     */
+    public function getIsInspector()
+    {
+        return $this->isInspector;
+    }
+
+    /**
+     * @param int|null $isInspector
+     */
+    public function setIsInspector($isInspector)
+    {
+        $this->isInspector = $isInspector;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getInspectorName()
+    {
+        return $this->inspectorName;
+    }
+
+    /**
+     * @param int|null $inspectorName
+     */
+    public function setInspectorName($inspectorName)
+    {
+        $this->inspectorName = $inspectorName;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getInspectorStartDate()
+    {
+        return $this->inspectorStartDate;
+    }
+
+    /**
+     * @param int|null $inspectorStartDate
+     */
+    public function setInspectorStartDate($inspectorStartDate)
+    {
+        $this->inspectorStartDate = $inspectorStartDate;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getInspectorEndDate()
+    {
+        return $this->inspectorEndDate;
+    }
+
+    /**
+     * @param int $inspectorEndDate
+     */
+    public function setInspectorEndDate($inspectorEndDate)
+    {
+        $this->inspectorEndDate = $inspectorEndDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInspectorStartDateFormatted() {
+        return date(DAO::DATE_FORMAT, $this->inspectorStartDate);
+    }
+
+    /**
+     * @return string
+     */
+    public function getInspectorEndDateFormatted() {
+        return date(DAO::DATE_FORMAT, $this->inspectorEndDate);
+    }
+
+    /**
      * @return array
      */
     public function getArray(): array
@@ -2194,6 +2299,10 @@ class User extends BaseUser implements Dao
             'isAdvancedPlus' => $this->isAdavancePlusUserLevel(),
             'advancedTime' => $this->getAdvancedTime(),
             'isNewUser' => $this->isNewUser(),
+            "isInspector" =>$this->getIsInspector(), 
+            "inspectorName" =>$this->getInspectorName(), 
+            "inspectorStartDate" =>$this->getInspectorStartDateFormatted(), 
+            "inspectorEndDate" =>$this->getInspectorEndDateFormatted(), 
         ];
     }
 }

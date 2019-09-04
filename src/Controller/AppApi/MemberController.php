@@ -231,6 +231,11 @@ class MemberController extends AppApiBaseController
         $wechat = isset($data['wechat']) ? $data['wechat'] : null;
         $recommanderName = isset($data['recommanderName']) ? $data['recommanderName'] : null;
 
+        $isInspector = isset($data['isInspector']) ? $data['isInspector'] : null;
+        $inspectorName = isset($data['inspectorName']) ? $data['inspectorName'] : null;
+        $inspectorStartDate = isset($data['inspectorStartDate']) ? $data['inspectorStartDate'] : null;
+        $inspectorEndDate = isset($data['inspectorEndDate']) ? $data['inspectorEndDate'] : null;
+
 
         if (!CommonUtil::isDebug()) {
             //验证Code
@@ -274,6 +279,19 @@ class MemberController extends AppApiBaseController
             $user->setRecommanderName($recommanderName);
         }
 
+        if($isInspector){
+            $user->setIsInspector($isInspector);
+        }
+        if($inspectorName){
+            $user->setInspectorName($inspectorName);
+        }
+        if($inspectorStartDate){
+            $user->setInspectorStartDate(strtotime($inspectorStartDate));
+        }
+        if($inspectorEndDate){
+            $user->setInspectorEndDate(strtotime($inspectorEndDate));
+        }
+
         try {
             $userManager->updateUser($user, true);
         } catch (\Exception $e) {
@@ -282,6 +300,46 @@ class MemberController extends AppApiBaseController
 
         //实名后补上桌号
         OfflineTableNo::supplySystemTableNo($user);
+        // 返回
+        return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();
+    }
+
+    /**
+     * @Route("/addInspector", name="addInspector",  methods={"POST"})
+     * @param Request $request
+     * @param MessageCodeRepository $messageCodeRepository
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function addInspector(Request $request, UserManagerInterface $userManager,UserRepository $userRepository)
+    {
+        $data = json_decode($request->getContent(), true );
+
+        
+
+        $phone = isset($data['phone']) ? $data['phone'] : null;
+
+        // 查询匹配用户
+        $user =  $userRepository->findOneBy(['phone'=>$phone]);
+        if ($user == null) {
+            return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
+        }
+
+        
+        $inspectorName = isset($data['inspectorName']) ? $data['inspectorName'] : null;
+        $inspectorStartDate = isset($data['inspectorStartDate']) ? $data['inspectorStartDate'] : null;
+        $inspectorEndDate = isset($data['inspectorEndDate']) ? $data['inspectorEndDate'] : null;
+
+        $user->setIsInspector(1);
+        $user->setInspectorName($inspectorName);
+        $user->setInspectorStartDate(strtotime($inspectorStartDate));
+        $user->setInspectorEndDate(strtotime($inspectorEndDate));
+
+        try {
+            $userManager->updateUser($user, true);
+        } catch (\Exception $e) {
+            return new JsonResponse(["error" => $e->getMessage()], 500);
+        }
+
         // 返回
         return CommonUtil::resultData( ['user'=>$user->getArray()] )->toJsonResponse();
     }
