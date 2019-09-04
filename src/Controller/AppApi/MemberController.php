@@ -314,8 +314,7 @@ class MemberController extends AppApiBaseController
     {
         $data = json_decode($request->getContent(), true );
 
-        
-
+        $requestProcess = $this->processRequest($request, ['phone','inspectorName', 'inspectorStartDate','inspectorEndDate'], ['phone','inspectorName', 'inspectorStartDate','inspectorEndDate']);
         $phone = isset($data['phone']) ? $data['phone'] : null;
 
         // 查询匹配用户
@@ -324,7 +323,6 @@ class MemberController extends AppApiBaseController
             return CommonUtil::resultData( [], ErrorCode::ERROR_LOGIN_USER_NOT_FIND )->toJsonResponse();
         }
 
-        
         $inspectorName = isset($data['inspectorName']) ? $data['inspectorName'] : null;
         $inspectorStartDate = isset($data['inspectorStartDate']) ? $data['inspectorStartDate'] : null;
         $inspectorEndDate = isset($data['inspectorEndDate']) ? $data['inspectorEndDate'] : null;
