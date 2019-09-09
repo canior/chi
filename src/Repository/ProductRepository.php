@@ -104,6 +104,8 @@ class ProductRepository extends ServiceEntityRepository
         $courseShowType = $extension['courseShowType'] ?? Course::COURSE_SHOW_TYPE_APP;
         $isGetCount = $extension['isGetCount'] ?? false;
 
+        
+
         if ($isCourse) {
             if(is_null($isOnline)) {
                 $query->andWhere('p.course is not null');
@@ -112,6 +114,8 @@ class ProductRepository extends ServiceEntityRepository
                     ->andWhere('c.isOnline = :isOnline')
                     ->setParameter('isOnline', $isOnline);
 
+                $query->andWhere('c.isDeleted != 1');
+                
                 //线下课程类型
                 if (!is_null($offlineCourseType)) {
                     $subjects = [];
