@@ -160,6 +160,9 @@ class ProductRepository extends ServiceEntityRepository
             $query->andWhere('p.course is null');
         }
 
+        if(  isset($extension['checkStatusOk']) ){
+            $query->andWhere("c.initiator is null or (c.initiator != '' and c.checkStatus = 'pass' )");            
+        }
 
         if ($isGetCount) {
             $query->select('count(p.id)');

@@ -41,13 +41,15 @@ class OfflineCourseController extends CourseController
         $user = $this->getAppUser();
 
         $courseQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
-            'offlineCourseType' => $requestProcess['offlineCourseType']
+            'offlineCourseType' => $requestProcess['offlineCourseType'],
+            'checkStatusOk'=>true
         ]);
         $courseList = $this->getPaginator()->paginate($courseQuery, $requestProcess['page'], $requestProcess['pageNum']);
 
         $courseCountQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
             'offlineCourseType' => $requestProcess['offlineCourseType'],
-            'isGetCount' => true
+            'isGetCount' => true,
+            'checkStatusOk'=>true
         ]);
 
         $data  = [];
@@ -83,13 +85,15 @@ class OfflineCourseController extends CourseController
         $user = $this->getAppUser();
 
         $courseQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
-            'offlineCourseType' => $requestProcess['offlineCourseType']
+            'offlineCourseType' => $requestProcess['offlineCourseType'],
+            'checkStatusOk'=>true
         ]);
         $courseList = $this->getPaginator()->paginate($courseQuery, $requestProcess['page'], $requestProcess['pageNum']);
 
         $courseCountQuery = $productRepository->findAppProductsQueryBuilder(true, false, [
             'offlineCourseType' => $requestProcess['offlineCourseType'],
-            'isGetCount' => true
+            'isGetCount' => true,
+            'checkStatusOk'=>true
         ]);
 
         $data  = [];
