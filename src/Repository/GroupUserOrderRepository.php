@@ -345,6 +345,10 @@ class GroupUserOrderRepository extends ServiceEntityRepository
             }
         }
 
+        if (isset($where['recommanders'])) {
+            $query->groupBy('p.id');
+        }
+
         if ($isGetCount) {
             $query->select('count(guo.id)');
             return $query;

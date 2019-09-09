@@ -841,11 +841,12 @@ class MemberController extends AppApiBaseController
      * @param GroupUserOrderRepository $groupUserOrderRepository
      * @return Response
      */
-    public function groupUserOrdersAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository) {
+    public function groupUserOrdersAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository, UserRepository $userRepository) {
 
         $data = json_decode($request->getContent(), true);
         $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
         $page = isset($data['page']) ? $data['page'] : 1;
+        $recommander = isset($data['recommander']) ? $data['recommander'] :false;
 
         /**
          * product, onlineCourse, offlineCourse
@@ -894,6 +895,19 @@ class MemberController extends AppApiBaseController
             default:
                 break;
         }
+
+        // 推荐人订单，自己订单
+        if($recommander){
+            $recommandersUser = $userRepository->getUserByParent($user->getId());
+            $recommanders = [];
+            foreach ($recommandersUser as $k => $v) {
+                $recommanders[] = $v->getId();
+            }
+            $where['recommanders'] = $recommanders;
+        }else{
+            $where['userId'] = $user->getId();
+        }
+        
 
         $groupUserOrders = $groupUserOrderRepository->findUserGroupUserOrders($where);
         $groupUserOrders = $this->getPaginator()->paginate($groupUserOrders, $page,self::PAGE_LIMIT);
