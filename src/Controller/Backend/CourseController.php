@@ -68,9 +68,7 @@ class CourseController extends BackendController
             $subject = $request->request->get('course')['subject'];
             $unlockType = $request->request->get('course')['unlockType'];
             $courseShowType = $request->request->get('course')['courseShowType'];
-            $checkStatus = $request->request->get('course')['checkStatus'];
             $course->setStatus($status);
-            $course->setCheckStatus($checkStatus);
             $course->setSubject($subject);
             $course->setUnlockType($unlockType);
             $course->setCourseShowType($courseShowType);
@@ -239,7 +237,6 @@ class CourseController extends BackendController
             $subject = $request->request->get('course')['subject'];
             $unlockType = $request->request->get('course')['unlockType'];
             $courseShowType = $request->request->get('course')['courseShowType'];
-            $checkStatus = $request->request->get('course')['checkStatus'];
 
             //假如课程有改动
             if ($originCourseCategory !== $course->getCourseCategory()) {
@@ -285,7 +282,6 @@ class CourseController extends BackendController
             }
 
             $course->setStatus($status);
-            $course->setCheckStatus($checkStatus);
             $course->setSubject($subject);
             $course->setUnlockType($unlockType);
             $course->setCourseShowType($courseShowType);

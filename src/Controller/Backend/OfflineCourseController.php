@@ -89,6 +89,8 @@ class OfflineCourseController extends BackendController
             }
             $status = $request->request->get('offline_course')['status'];
             $subject = $request->request->get('offline_course')['subject'];
+            $checkStatus = $request->request->get('offline_course')['checkStatus'];
+            $course->setCheckStatus($checkStatus);
             $course->setStatus($status);
             $course->setSubject($subject);
 
