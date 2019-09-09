@@ -1506,7 +1506,7 @@ class GroupUserOrder implements Dao
         }
 
         // 线上课程
-        if ( $product->isCourseProduct() && !$course->isOnline() ) {
+        if ( $product->isCourseProduct() && $course->isOnline() ) {
             $appStatusText = '购买课程成功';
         }
 
