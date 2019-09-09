@@ -294,8 +294,10 @@ class GroupUserOrderRepository extends ServiceEntityRepository
             ->from(GroupUserOrder::class, 'guo')
             ->where('guo.product = :product')
             ->andWhere('guo.paymentStatus = :paymentStatus')
+            ->andWhere('guo.checkStatus = :checkStatus')
             ->setParameter('product',$productId)
-            ->setParameter('paymentStatus',$paymentStatus);
+            ->setParameter('paymentStatus',$paymentStatus)
+            ->setParameter('checkStatus',GroupUserOrder::CHECK_PASS);
         return $query->orderBy('guo.id', 'DESC')->getQuery()->getSingleResult()['count'];
     }
 
