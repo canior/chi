@@ -53,6 +53,8 @@ use App\Service\Share\ShareSourceProcess;
 use App\Service\Sms\AliSms;
 use App\Service\WeChat\OfficialAccount\WeChatProcess;
 use Knp\Component\Pager\Paginator;
+use App\Entity\CourseInspector;
+use App\Repository\CourseInspectorRepository;
 
 class FactoryUtil
 {
@@ -191,6 +193,18 @@ class FactoryUtil
          * @var CourseRepository $repository
          */
         $repository =  CommonUtil::getRepository(Course::class);
+        return $repository;
+    }
+
+    /**
+     * @return CourseRepository
+     */
+    public static function courseInspectorRepository()
+    {
+        /**
+         * @var CourseInspector $repository
+         */
+        $repository =  CommonUtil::getRepository(CourseInspector::class);
         return $repository;
     }
 

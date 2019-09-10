@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Criteria;
+use App\Service\Util\FactoryUtil;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -2144,8 +2145,13 @@ class User extends BaseUser implements Dao
 
     
     //todo
+    // 获取最后一个 course_inspector
     public function getShowInspector() {
-        return true;
+        $inspector = FactoryUtil::courseInspectorRepository()->findOneBy(['user'=>$this],['inspectorEndDate'=>'desc']);
+        if( $inspector->getInspectorStartDate() < time() && $inspector->getInspectorEndDate() >= time()  ){
+            return true;
+        }
+        return false;
     }
 
     /**
