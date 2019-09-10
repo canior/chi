@@ -27,7 +27,7 @@ class CourseInspector implements Dao
 
     /**
      * @var null|Course
-     * @ORM\OneToOne(targetEntity="App\Entity\Course", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Course", cascade={"persist"}, inversedBy="courseInspector")
      */
     private $course;
 
