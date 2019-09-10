@@ -847,6 +847,7 @@ class MemberController extends AppApiBaseController
         $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
         $page = isset($data['page']) ? $data['page'] : 1;
         $recommander = isset($data['recommander']) ? $data['recommander'] :false;
+        $isSystemType = isset($data['isSystemType']) ? $data['isSystemType'] :false;
 
         /**
          * product, onlineCourse, offlineCourse
@@ -907,7 +908,10 @@ class MemberController extends AppApiBaseController
         }else{
             $where['userId'] = $user->getId();
         }
-        
+
+        if($isSystemType){
+            $where['isSystemType'] = $isSystemType;
+        }
 
         $groupUserOrders = $groupUserOrderRepository->findUserGroupUserOrders($where);
         $groupUserOrders = $this->getPaginator()->paginate($groupUserOrders, $page,self::PAGE_LIMIT);

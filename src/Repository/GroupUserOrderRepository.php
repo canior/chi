@@ -6,7 +6,7 @@ use App\Entity\GroupUserOrder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use App\Entity\Product;
-
+use App\Entity\Subject;
 /**
  * @method GroupUserOrder|null find($id, $lockMode = null, $lockVersion = null)
  * @method GroupUserOrder|null findOneBy(array $criteria, array $orderBy = null)
@@ -336,6 +336,15 @@ class GroupUserOrderRepository extends ServiceEntityRepository
         if (isset($where['isCourseProduct']) ) {
             if( $where['isCourseProduct'] == true ){
                 $query->andWhere('p.course is not null');
+
+                // 是否为系统课
+                if (isset($where['isSystemType'])) {
+                    $query->andWhere('c.subject in (:subjects)')->setParameter('subjects',[
+                        Subject::SYSTEM_1, Subject::SYSTEM_2,
+                        Subject::SYSTEM_3, Subject::TRADING
+                    ]);
+                }
+
             }else{
                 $query->andWhere('p.course is null');
             }
@@ -348,6 +357,8 @@ class GroupUserOrderRepository extends ServiceEntityRepository
                 $query->andWhere('c.isOnline = :isOnline')->setParameter('isOnline',0);
             }
         }
+
+        
 
         if (isset($where['recommanders'])) {
             $query->groupBy('p.id');

@@ -46,7 +46,7 @@ class GongZhongGroupUserOrderController extends GongZhongBaseController
      */
     public function groupUserOrdersAction(Request $request, GroupUserOrderRepository $groupUserOrderRepository, UserRepository $userRepository) {
 
-        $data = $this->processRequest($request, ['productType', 'page','recommander'], ['productType']);
+        $data = $this->processRequest($request, ['productType', 'page','recommander','isSystemType'], ['productType']);
 
         $groupUserOrderStatus = isset($data['groupUserOrderStatus']) ? $data['groupUserOrderStatus'] : null;
         $page = isset($data['page']) ? $data['page'] : 1;
@@ -57,6 +57,7 @@ class GongZhongGroupUserOrderController extends GongZhongBaseController
         $productType = isset($data['productType']) ? $data['productType'] : '';
         $productCategory = isset($data['productCategory']) ? $data['productCategory'] :'';
         $recommander = isset($data['recommander']) ? $data['recommander'] :false;
+        $isSystemType = isset($data['isSystemType']) ? $data['isSystemType'] :false;
 
         // 查询匹配用户
         $user =  $this->getAppUser();
@@ -107,6 +108,10 @@ class GongZhongGroupUserOrderController extends GongZhongBaseController
             $where['recommanders'] = $recommanders;
         }else{
             $where['userId'] = $user->getId();
+        }
+
+        if($isSystemType){
+            $where['isSystemType'] = $isSystemType;
         }
 
         $groupUserOrders = $groupUserOrderRepository->findUserGroupUserOrders($where);
