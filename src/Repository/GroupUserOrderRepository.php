@@ -134,6 +134,8 @@ class GroupUserOrderRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('guo')
             ->orderBy('guo.id', 'DESC');
 
+        $query->groupBy('guo.user');
+
         if ($productId) {
             $query->where('guo.product = :productId')
             ->setParameter('productId', $productId);
