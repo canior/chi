@@ -2148,7 +2148,7 @@ class User extends BaseUser implements Dao
     // 获取最后一个 course_inspector
     public function getShowInspector() {
         $inspector = FactoryUtil::courseInspectorRepository()->findOneBy(['user'=>$this],['inspectorEndDate'=>'desc']);
-        if( $inspector && $inspector->getInspectorStartDate() < time() && $inspector->getInspectorEndDate() >= time()  ){
+        if( $inspector && $inspector->getInspectorStartDate() > time() && $inspector->getInspectorEndDate() >= time()  ){
             return true;
         }
         return false;
