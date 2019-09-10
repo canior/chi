@@ -114,7 +114,7 @@ class ProductRepository extends ServiceEntityRepository
                     ->andWhere('c.isOnline = :isOnline')
                     ->setParameter('isOnline', $isOnline);
 
-                $query->andWhere('c.isDeleted != 1');
+                $query->andWhere(' c.isDeleted is null or c.isDeleted = 0');
                 
                 //线下课程类型
                 if (!is_null($offlineCourseType)) {
@@ -158,15 +158,17 @@ class ProductRepository extends ServiceEntityRepository
                 }else{
                     $query->andWhere('c.endDate >= :endDate')->setParameter('endDate', time());
                 }
-            }  
+            }
+
+            if(  isset($extension['checkStatusOk']) ){
+                $query->andWhere("c.initiator is null or c.checkStatus = 'pass'");            
+            }
 
         } else {
             $query->andWhere('p.course is null');
         }
 
-        if(  isset($extension['checkStatusOk']) ){
-            $query->andWhere("c.initiator is null or c.checkStatus = 'pass'");            
-        }
+        
 
         if ($isGetCount) {
             $query->select('count(p.id)');
