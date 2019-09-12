@@ -414,11 +414,12 @@ class CourseController extends ProductController
 
         // 验证签名
         $sign = $this->getSign([
-            $requestProcess['phone'],
-            $requestProcess['nickname'],
-            $requestProcess['unionid'],
-            $requestProcess['time'],
-            $requestProcess['unlock_category_id'],
+            'phone'=>$requestProcess['phone'],
+            'nickname'=>$requestProcess['nickname'],
+            'unionid'=>$requestProcess['unionid'],
+            'time'=>$requestProcess['time'],
+            'unlock_category_id'=>$requestProcess['unlock_category_id'],
+            'sign'=>$requestProcess['sign'],
         ]);
 
         if($sign != $requestProcess['sign']){
