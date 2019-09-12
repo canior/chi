@@ -449,6 +449,10 @@ class GroupUserOrder implements Dao
         return self::RMA_RECEIVED == $this->getStatus();
     }
 
+    public function setOrderPaymentStatus($paymentStatus) {
+        $this->paymentStatus = $paymentStatus;
+    }
+
     public function setPaid() {
         $oldStatus = $this->paymentStatus;
         $newStatus = $this->paymentStatus = self::PAID;
