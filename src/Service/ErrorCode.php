@@ -50,6 +50,7 @@ class ErrorCode
     const ERROR_UNIONID_HAD_REGISTER = 12020;
     const ERROR_UNIONID_HAD_USE = 12021;
     const ERROR_PHONE_HAD_REGISTER_OTHER_WX = 12022;
+    const ERROR_SIGN = 12021;
 
     //-------课程---------------------------------------
     const ERROR_CATEGORY_NOT_EXISTS = 13001;
@@ -159,6 +160,7 @@ class ErrorCode
             self::ERROR_YINLIAN_PAY => '银联支付发生错误',
             self::ERROR_HAS_ADD => '已经添加，不能重复添加',
             self::ERROR_UNIONID_HAD_USE => '微信wxUnionId已注册',
+            self::ERROR_SIGN => '非法签名',
         ];
     }
 

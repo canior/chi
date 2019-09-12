@@ -10,6 +10,9 @@ namespace App\Controller\AppApi;
 
 
 use App\Entity\ProjectVideoMeta;
+use App\Entity\User;
+use App\Entity\Product;
+use App\Entity\UserStatistics;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
@@ -21,6 +24,7 @@ use App\Service\Util\FactoryUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+
 use App\Entity\Course;
 use App\Command\File\BatchUploadFilesCommand;
 use App\Command\File\UploadFileCommand;
@@ -29,6 +33,9 @@ use App\Command\Product\Image\CreateOrUpdateProductImagesCommand;
 use App\Repository\CourseRepository;
 use App\Command\Product\Spec\Image\CreateOrUpdateProductSpecImagesCommand;
 use App\Entity\File;
+use App\Repository\GroupUserOrderRepository;
+use App\Entity\GroupUserOrder;
+
 
 class CourseController extends ProductController
 {
@@ -370,5 +377,105 @@ class CourseController extends ProductController
         $this->entityPersist($course);
 
         return CommonUtil::resultData( [] )->toJsonResponse();
+    }
+    
+    /**
+     * 生成内容签名
+     * @param array $data
+     * @param string $secret
+     * @return string
+     */
+    function getSign($data, $secret = 'qXwaX1LVooCzrhWv')
+    {
+        $signContentMethod = function ($data) {
+            ksort($data);
+            $buff = '';
+            foreach ($data as $k => $v) {
+                $buff .= ($k != 'sign' && $v != '' && !is_array($v)) ? $k . '=' . $v . '&' : '';
+            }
+            return trim($buff, '&');
+        };
+        $string = md5($signContentMethod($data) . '&key=' . $secret);
+        return strtoupper($string);
+    }
+
+
+    /**
+     * @Route("/course/unlockCategory", name="AppApiUnlockCategory",  methods={"POST"})
+     * @param JWTTokenManagerInterface $JWTTokenManager
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function unlock(GroupUserOrderRepository $groupUserOrderRepository,UserRepository $userRepository, ProductRepository $productRepository, CategoryRepository $categoryRepository)
+    {
+        $requestProcess = $this->processRequest(null, 
+            ['phone','nickname','unionid','time', 'unlock_category_id','sign'],
+            ['phone', 'unlock_category_id']
+        );
+
+        // 验证签名
+        $sign = $this->getSign([
+            $requestProcess['phone'],
+            $requestProcess['nickname'],
+            $requestProcess['unionid'],
+            $requestProcess['time'],
+            $requestProcess['unlock_category_id'],
+        ]);
+
+        if($sign != $requestProcess['sign']){
+            $requestProcess->throwErrorException(ErrorCode::ERROR_SIGN);
+        }
+
+        $unlockCategoryId = $requestProcess['unlock_category_id'];
+        $phone = $requestProcess['phone'];
+
+        // 查询匹配用户
+        $user = $userRepository->findOneBy(['phone' => $phone]);
+        if (empty($user)) {
+
+            // 创建用户
+            $randPhone = $phone . mt_rand(1000,9999);
+            $user = new User();
+            $user->setUsername($randPhone);
+            $user->setPhone($phone);
+            $user->setUsernameCanonical($randPhone);
+            $user->setEmail($randPhone . '@qq.com');
+            $user->setEmailCanonical($randPhone . '@qq.com');
+            $user->setPassword("IamCustomer");
+            $user->setLastLoginTimestamp(time());
+            $user->setNickname($requestProcess['nickname']?$requestProcess['nickname']:$randPhone);
+
+            if( $requestProcess['unionid'] ){
+                $user->setWxUnionId($requestProcess['unionid']);
+            }
+            $userStatistics = new UserStatistics($user);
+            $user->addUserStatistic($userStatistics);
+            $user->info('created user ' . $user);
+
+            $this->entityPersist($user);
+        }
+
+        // 是否已经解锁
+        $has = $groupUserOrderRepository->findOneBy(['user'=>$user,'unlockCategory' => $unlockCategoryId ]);
+        if($has){
+            $requestProcess->throwErrorException(ErrorCode::ERROR_COURSE_CATEGORY_ALREADY_PAY);
+        }
+
+        // 产品
+        $product = $productRepository->findOneBy(['title'=>Product::CATEGORY_UNLOCK_PRODUCT]);
+        if (empty($product)) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_PRODUCT_NOT_EXISTS);
+        }
+
+        //解锁系列课
+        $groupUserOrder = GroupUserOrder::factory($user, $product);
+        $unlockCategory = $categoryRepository->find($unlockCategoryId);
+        if (empty($unlockCategory->getParentCategory()) || $unlockCategory->isSingleCourse()) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_UNLOCK_CATEGORY_NOT_PRIVILEGE);
+        }
+        $groupUserOrder->setUnlockCategory($unlockCategory);
+        
+        $this->entityPersist($groupUserOrder);
+        
+        return $requestProcess->toJsonResponse([]);
     }
 }
