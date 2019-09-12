@@ -31,6 +31,9 @@ class Product implements Dao
         false => '否'
     ];
 
+
+    const CATEGORY_UNLOCK_PRODUCT = "99元视频合集专用产品";
+
     use IdTrait,
         StatusTrait,
         CreatedAtTrait,
