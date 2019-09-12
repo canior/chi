@@ -408,14 +408,14 @@ class CourseController extends ProductController
     public function unlock(GroupUserOrderRepository $groupUserOrderRepository,UserRepository $userRepository, ProductRepository $productRepository, CategoryRepository $categoryRepository)
     {
         $requestProcess = $this->processRequest(null, 
-            ['phone','nickname','unionid','time', 'unlock_category_id','sign'],
+            ['phone','name','unionid','time', 'unlock_category_id','sign'],
             ['phone', 'unlock_category_id']
         );
 
         // 验证签名
         $sign = $this->getSign([
             'phone'=>$requestProcess['phone'],
-            'nickname'=>$requestProcess['nickname'],
+            'name'=>$requestProcess['name'],
             'unionid'=>$requestProcess['unionid'],
             'time'=>$requestProcess['time'],
             'unlock_category_id'=>$requestProcess['unlock_category_id'],
@@ -443,7 +443,7 @@ class CourseController extends ProductController
             $user->setEmailCanonical($randPhone . '@qq.com');
             $user->setPassword("IamCustomer");
             $user->setLastLoginTimestamp(time());
-            $user->setNickname($requestProcess['nickname']?$requestProcess['nickname']:$randPhone);
+            $user->setName($requestProcess['name']?$requestProcess['name']:$randPhone);
 
             if( $requestProcess['unionid'] ){
                 $user->setWxUnionId($requestProcess['unionid']);
