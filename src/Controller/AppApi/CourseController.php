@@ -474,6 +474,7 @@ class CourseController extends ProductController
             $requestProcess->throwErrorException(ErrorCode::ERROR_UNLOCK_CATEGORY_NOT_PRIVILEGE);
         }
         $groupUserOrder->setUnlockCategory($unlockCategory);
+        $groupUserOrder->setOrderPaymentStatus(GroupUserOrder::PAID);
         
         $this->entityPersist($groupUserOrder);
         
