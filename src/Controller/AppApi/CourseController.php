@@ -169,6 +169,26 @@ class CourseController extends ProductController
         return $requestProcess->toJsonResponse();
     }
 
+    /**
+     * 生成内容签名
+     * @param array $data
+     * @param string $secret
+     * @return string
+     */
+    function getSign($data, $secret = 'qXwaX1LVooCzrhWv')
+    {
+        $signContentMethod = function ($data) {
+            ksort($data);
+            $buff = '';
+            foreach ($data as $k => $v) {
+                $buff .= ($k != 'sign' && $v != '' && !is_array($v)) ? $k . '=' . $v . '&' : '';
+            }
+            return trim($buff, '&');
+        };
+        $string = md5($signContentMethod($data) . '&key=' . $secret);
+        return strtoupper($string);
+    }
+
 
     /**
      * @Route("/course/unlockCategory", name="AppApiUnlockCategory",  methods={"POST"})
@@ -178,9 +198,22 @@ class CourseController extends ProductController
     public function unlock(GroupUserOrderRepository $groupUserOrderRepository,UserRepository $userRepository, ProductRepository $productRepository, CategoryRepository $categoryRepository)
     {
         $requestProcess = $this->processRequest(null, 
-            ['phone','nickname', 'unlock_category_id'],
+            ['phone','nickname','unionid','time', 'unlock_category_id','sign'],
             ['phone', 'unlock_category_id']
         );
+
+        // 验证签名
+        $sign = $this->getSign([
+            $requestProcess['phone'],
+            $requestProcess['nickname'],
+            $requestProcess['unionid'],
+            $requestProcess['time'],
+            $requestProcess['unlock_category_id'],
+        ]);
+
+        if($sign != $requestProcess['sign']){
+            $requestProcess->throwErrorException(ErrorCode::ERROR_SIGN);
+        }
 
         $unlockCategoryId = $requestProcess['unlock_category_id'];
         $phone = $requestProcess['phone'];
@@ -201,6 +234,9 @@ class CourseController extends ProductController
             $user->setLastLoginTimestamp(time());
             $user->setNickname($requestProcess['nickname']?$requestProcess['nickname']:$randPhone);
 
+            if( $requestProcess['unionid'] ){
+                $user->setWxUnionId($requestProcess['unionid']);
+            }
             $userStatistics = new UserStatistics($user);
             $user->addUserStatistic($userStatistics);
             $user->info('created user ' . $user);

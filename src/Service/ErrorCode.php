@@ -48,6 +48,7 @@ class ErrorCode
     const ERROR_PHONE_HAD_REGISTER = 12018;
     const ERROR_PLOCE_LOGIN_BY_PHONE = 12019;
     const ERROR_UNIONID_HAD_REGISTER = 12020;
+    const ERROR_SIGN = 12021;
 
 
     //-------课程---------------------------------------
@@ -152,6 +153,7 @@ class ErrorCode
             self::ERROR_PHONE_HAD_REGISTER => '手机号已经存在',
             self::ERROR_PLOCE_LOGIN_BY_PHONE => '请用手机号登陆后再绑定微信',
             self::ERROR_UNIONID_HAD_REGISTER => '微信已经绑定其他手机号',
+            self::ERROR_SIGN => '非法签名',
         ];
     }
 
