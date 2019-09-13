@@ -32,7 +32,7 @@ class Product implements Dao
     ];
 
     const BACK_PRODUCT_TITLE  = "返还金专用产品";
-    const CATEGORY_UNLOCK_PRODUCT = "99元视频合集专用产品";
+    const CATEGORY_UNLOCK_PRODUCT = "以终为始30讲视频集";
 
     use IdTrait,
         StatusTrait,
