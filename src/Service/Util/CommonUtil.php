@@ -487,4 +487,21 @@ class CommonUtil
 
         return $res;
     }
+
+    /**
+     * 取得指定类型的产品的sku
+     * @param $id
+     * @param string $type
+     * @return mixed
+     */
+    public static function getSpecialTypeSku($id, $type = 'order')
+    {
+        $res = $id;
+        switch ($type) {
+            case 'order':
+                $res = 'xl-' . $id;
+                break;
+        }
+        return $res;
+    }
 }

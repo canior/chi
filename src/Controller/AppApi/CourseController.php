@@ -252,7 +252,7 @@ class CourseController extends ProductController
         }
 
         // 产品
-        $product = $productRepository->findOneBy(['title'=>Product::CATEGORY_UNLOCK_PRODUCT]);
+        $product = $productRepository->findOneBy(['sku'=> CommonUtil::getSpecialTypeSku($unlockCategoryId)]);
         if (empty($product)) {
             $requestProcess->throwErrorException(ErrorCode::ERROR_PRODUCT_NOT_EXISTS);
         }
