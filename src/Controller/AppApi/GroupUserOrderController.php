@@ -130,12 +130,9 @@ class GroupUserOrderController extends AppApiBaseController
      */
     public function createAction(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository)
     {
-        $requestProcess = $this->processRequest($request, [
-            'productId', 'unlockCategoryId'
-        ], ['productId', 'unlockCategoryId']);
+        $requestProcess = $this->processRequest($request, ['productId'], ['productId']);
 
         $productId = $requestProcess['productId'];
-        $unlockCategoryId = $requestProcess['unlockCategoryId'];
         $user = $this->getAppUser();
         $product = $productRepository->find($productId);
 
@@ -152,8 +149,8 @@ class GroupUserOrderController extends AppApiBaseController
         }
 
         //解锁系列课
-        if (!empty($unlockCategoryId)) {
-            $unlockCategory = $categoryRepository->find($unlockCategoryId);
+        if ( CommonUtil::isSpecialTypeSku($product) ) {
+            $unlockCategory = $categoryRepository->find( CommonUtil::getCategoryId($product) );
             if (empty($unlockCategory->getParentCategory()) || $unlockCategory->isSingleCourse()) {
                 $requestProcess->throwErrorException(ErrorCode::ERROR_UNLOCK_CATEGORY_NOT_PRIVILEGE, []);
             }
