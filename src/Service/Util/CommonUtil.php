@@ -494,11 +494,11 @@ class CommonUtil
      * @param string $type
      * @return mixed
      */
-    public static function getSpecialTypeSku($id, $type = 'order')
+    public static function getSpecialTypeSku($id, $type = 'category')
     {
         $res = $id;
         switch ($type) {
-            case 'order':
+            case 'category':
                 $res = 'xl-' . $id;
                 break;
         }
