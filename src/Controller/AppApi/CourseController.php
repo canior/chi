@@ -135,6 +135,26 @@ class CourseController extends ProductController
     }
 
     /**
+     * 获取分类获取产品详情
+     * @Route("/category/product", name="appCategoryProduct", methods= "POST")
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function productAction(Request $request, ProductRepository $productRepository)
+    {
+        $requestProcess = $this->processRequest($request, ['cateId'], ['cateId']);
+
+        // 产品
+        $product = $productRepository->findOneBy(['sku'=> CommonUtil::getSpecialTypeSku($requestProcess['cateId'])]);
+        if (empty($product)) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_PRODUCT_NOT_EXISTS);
+        }
+
+        return $requestProcess->toJsonResponse(['product' => $product->getArray() ]);
+    }
+
+    /**
      * 获取课程详情
      *
      * @Route("/auth/course/detail", name="appCourseDetail", methods="POST")

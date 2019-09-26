@@ -494,13 +494,49 @@ class CommonUtil
      * @param string $type
      * @return mixed
      */
-    public static function getSpecialTypeSku($id, $type = 'order')
+    public static function getSpecialTypeSku($id, $type = 'category')
     {
         $res = $id;
         switch ($type) {
-            case 'order':
+            case 'category':
                 $res = 'xl-' . $id;
                 break;
+        }
+        return $res;
+    }
+
+    /**
+     * 是否是分类sku
+     * @param $id
+     * @param string $type
+     * @return mixed
+     */
+    public static function isSpecialTypeSku($product, $type = 'category')
+    {
+        $res = false;
+        switch ($type) {
+            case 'category':
+                if( substr($product->getSku(),0,3) == 'xl-' ){
+                    $res = true;
+                }
+            break;
+        }
+        return $res;
+    }
+
+    /**
+     * 获取产品对应的分类ID
+     * @param $id
+     * @param string $type
+     * @return mixed
+     */
+    public static function getCategoryId($product, $type = 'category')
+    {
+        $res = null;
+        switch ($type) {
+            case 'category':
+                $res = substr( $product->getSku(),3);
+            break;
         }
         return $res;
     }
