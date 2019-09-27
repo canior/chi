@@ -76,6 +76,17 @@ class ProductController extends AppApiBaseController
     }
 
     /**
+     * 首页轮播banner
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @return array
+     */
+    protected function createAppLoginBanners(ProjectBannerMetaRepository $projectBannerMetaRepository)
+    {
+        $bannersArray = $this->createAppLoginBannerMetas($projectBannerMetaRepository);
+        return $bannersArray;
+    }
+
+    /**
      * 首页免费专区banner
      * @param ProjectBannerMetaRepository $projectBannerMetaRepository
      * @return array

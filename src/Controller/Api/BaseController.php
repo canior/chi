@@ -115,6 +115,22 @@ class BaseController extends DefaultController
      * @param ProjectBannerMetaRepository $projectBannerMetaRepository
      * @return array
      */
+    protected function createAppLoginBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
+
+        $where = [
+            ProjectBannerMeta::BANNER_APP_LOGIN_1,
+            ProjectBannerMeta::BANNER_APP_LOGIN_2,
+            ProjectBannerMeta::BANNER_APP_LOGIN_3,
+        ];
+        $banners = CommonUtil::entityArray2DataArray($projectBannerMetaRepository->findBy(['metaKey' => $where]));
+
+        return $banners;
+    }
+
+    /**
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @return array
+     */
     protected function createProductPageProjectBannerMetas(ProjectBannerMetaRepository $projectBannerMetaRepository) {
         return [
             'banner_product' => $projectBannerMetaRepository->findOneBy(['metaKey' => ProjectBannerMeta::BANNER_PRODUCT])->getArray(),

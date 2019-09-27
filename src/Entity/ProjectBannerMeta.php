@@ -24,6 +24,10 @@ class ProjectBannerMeta extends ProjectMeta
     const BANNER_PRODUCT = 'banner_product';
     const BANNER_HOME_FREE_ZONE = 'banner_home_free_zone';
 
+    const BANNER_APP_LOGIN_1 = "banner_app_login_1";
+    const BANNER_APP_LOGIN_2 = "banner_app_login_2";
+    const BANNER_APP_LOGIN_3 = "banner_app_login_3";
+
     /**
      * key => memo
      */
@@ -36,6 +40,9 @@ class ProjectBannerMeta extends ProjectMeta
         self::BANNER_MY_SHARE => '我的分享横幅，介绍成功分享10个高级学员能得免费成为变现商学院的高级会员',
         self::BANNER_PRODUCT => '介绍购买产品升级到高级会员免费听课的banner',
         self::BANNER_HOME_FREE_ZONE => '首页免费专区',
+        self::BANNER_APP_LOGIN_1 => 'APP引导页的横幅1',
+        self::BANNER_APP_LOGIN_2 => 'APP引导页的横幅2',
+        self::BANNER_APP_LOGIN_3 => 'APP引导页的横幅3',
     ];
 
 
