@@ -609,7 +609,7 @@ class GroupUserOrder implements Dao
                 } else { //高级vip 或者 特权vip
                     $jinqiuUpgradeUserOrder = $this->getUser()->createUpgradeUserOrder(UpgradeUserOrder::JINQIU, UserLevel::ADVANCED, $this);
                     if ($jinqiuUpgradeUserOrder) {
-                        $jinqiuUpgradeUserOrder->setApproved(true);
+                        $jinqiuUpgradeUserOrder->setApproved(false);
                         $this->addUpgradeUserOrder($jinqiuUpgradeUserOrder);
                     }
 
