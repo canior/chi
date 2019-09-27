@@ -71,6 +71,20 @@ class CourseController extends ProductController
     }
 
     /**
+     * 启动页广告
+     * @Route("/login/banner", name="appapiLoginBanner", methods= "GET")
+     * @param Request $request
+     * @param ProjectBannerMetaRepository $projectBannerMetaRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @author zxqc2018
+     */
+    public function LoginBannerAction(Request $request, ProjectBannerMetaRepository $projectBannerMetaRepository)
+    {
+        $loginBannersArray = $this->createAppLoginBanners($projectBannerMetaRepository);
+        return CommonUtil::resultData( ['loginBanners' => $loginBannersArray] )->toJsonResponse();
+    }
+
+    /**
      * 获取分类列表
      * @Route("/category/list", name="appGategoryList", methods= "POST")
      * @param Request $request
