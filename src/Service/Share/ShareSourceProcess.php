@@ -62,7 +62,7 @@ class ShareSourceProcess
                         'size' => 110,
                         'round_block_size' => 0,
                     ]);
-                    $bannerFile = ImageGenerator::createGzhShareQuanBannerImage(ConfigParams::getRepositoryManager(), $qrCode, $product->getShareImageFile());
+                    $bannerFile = ImageGenerator::createGzhShareQuanBannerImage(ConfigParams::getRepositoryManager(), $qrCode, $product->getShareImageFile(), $user);
                     $shareSource->setBannerFile($bannerFile);
                     CommonUtil::entityPersist($shareSource);
                     $res[$shareSource->getCombineKey()] = $shareSource->getArray();

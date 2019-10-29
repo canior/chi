@@ -11,6 +11,7 @@ namespace App\Service;
 
 
 use App\Entity\File;
+use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Endroid\QrCode\QrCode;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -67,16 +68,24 @@ class ImageGenerator
      * @param ObjectManager $entityManager
      * @param QrCode $userQrFile
      * @param File|null $bannerFile 产品或者平台的介绍banner
+     * @param User|null $user
      * @return File
      */
-    public static function createGzhShareQuanBannerImage(ObjectManager $entityManager, QrCode $userQrFile, ?File $bannerFile) {
+    public static function createGzhShareQuanBannerImage(ObjectManager $entityManager, QrCode $userQrFile, ?File $bannerFile, User $user = null) {
 
         if ($bannerFile == null) {
             return $bannerFile;
         }
 
         $banner = Image::make($bannerFile->getAbsolutePath());
-        $banner->insert($userQrFile->writeString(), 'bottom-right', 68, 82);
+        $banner->insert($userQrFile->writeString(), 'bottom-right', 68, 50);
+
+        //用户微信头像 左下角
+        if (!empty($user) && !empty($user->getAvatarUrl())) {
+            $avatarUrl = str_replace('http://', 'https://', $user->getAvatarUrl());
+            $avatar = Image::make($avatarUrl)->resize(80, 80);
+            $banner->insert($avatar, 'bottom-left',  40, 75);
+        }
 
         $fileName = uniqid() . "jpeg";
         $md5 = md5($fileName);
