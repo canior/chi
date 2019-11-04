@@ -224,6 +224,12 @@ class UserController extends GongZhongBaseController
             if ($requestProcess['shareSourceId']) {
                 FactoryUtil::shareSourceProcess()->addShareSourceUser($requestProcess['shareSourceId'], $user);
             }
+
+            //假如没有公众号openid 则更新
+            if (empty($user->getWxGzhOpenId())) {
+                $user->setWxGzhOpenId($openId);
+                $this->entityPersist($user);
+            }
         }
 
         $data['shareSources'] = [];
