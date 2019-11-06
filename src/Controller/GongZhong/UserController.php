@@ -94,7 +94,7 @@ class UserController extends GongZhongBaseController
                 $flushFlag = true;
             }
 
-            if (empty($user->getAvatarUrl())) {
+            if (!empty($requestProcess['avatar']) && (empty($user->getAvatarUrl()) || $user->getAvatarUrl() != $requestProcess['avatar'])) {
                 $user->setAvatarUrl($requestProcess['avatar']);
                 $flushFlag = true;
             }
@@ -180,9 +180,20 @@ class UserController extends GongZhongBaseController
                 FactoryUtil::shareSourceProcess()->addShareSourceUser($requestProcess['shareSourceId'], $user);
             }
 
+            $flushFlag = false;
             //假如没有公众号openid 则更新
             if (empty($user->getWxGzhOpenId())) {
                 $user->setWxGzhOpenId($openId);
+                $flushFlag = true;;
+            }
+
+            //假如头像有变化则 更新
+            if (!empty($data['avatar']) && (empty($user->getAvatarUrl()) || $data['avatar'] != $user->getAvatarUrl())) {
+                $user->setAvatarUrl($data['avatar']);
+                $flushFlag = true;
+            }
+
+            if ($flushFlag) {
                 $this->entityPersist($user);
             }
         }
