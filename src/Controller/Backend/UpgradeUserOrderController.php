@@ -101,7 +101,7 @@ class UpgradeUserOrderController extends BackendController
             'form' => $form->createView(),
             'user' => $user,
             'verifyParentForm' => $verifyParentForm->createView(),
-            'userAccountOrders' => $upgradeUserOrder->isApproved() ? $upgradeUserOrder->getUserAccountOrders() : $upgradeUserOrder->getPotentialUserAccountOrders(),
+            'userAccountOrders' => $upgradeUserOrder->isApproved() ? $upgradeUserOrder->getUserAccountOrders() : null,
             'isDisabled' => false,
         ]);
     }

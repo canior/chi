@@ -43,6 +43,10 @@ class ConfigParams
     const JQ_APP_ALIPAY_PUBLIC_KEY = 'jq_app_alipay_public_key';
     //支付宝 支付成功通知url
     const JQ_APP_ALIPAY_NOTIFY_URL = 'jq_app_alipay_notify_url';
+
+    //项目host
+    const PROJECT_HOST = 'project_host';
+
     /**
      * 获取控制器为入口的参数信息
      * @param $key

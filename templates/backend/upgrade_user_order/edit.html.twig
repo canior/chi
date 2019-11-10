@@ -46,9 +46,11 @@
                             <tr>
                                 <th>产品订单</th>
                                 <td>
+                                    {% if upgrade_user_order.groupUserOrder %}
                                     <a href="{{ path('group_user_order_info', {'id': upgrade_user_order.groupUserOrder.id}) }}">
                                     {{ upgrade_user_order.groupUserOrder }}
                                     </a>
+                                    {% endif %}
                                 </td>
                             </tr>
                             <tr>

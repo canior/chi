@@ -9,16 +9,23 @@
 namespace App\Controller\AppApi;
 
 
+use App\Entity\BianxianUserLevel;
 use App\Entity\ProjectVideoMeta;
 use App\Entity\User;
 use App\Entity\Product;
 use App\Entity\UserStatistics;
+use App\Entity\UserUpgradeCode;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProjectBannerMetaRepository;
+use App\Repository\UserUpgradeCodeRepository;
+use App\Service\Config\ConfigParams;
 use App\Service\ErrorCode;
+use App\Service\ImageGenerator;
 use App\Service\Util\CommonUtil;
 use App\Service\Util\FactoryUtil;
+use Endroid\QrCode\Factory\QrCodeFactory;
+use Endroid\QrCode\QrCode;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -170,29 +177,11 @@ class CourseController extends ProductController
     }
 
     /**
-     * 生成内容签名
-     * @param array $data
-     * @param string $secret
-     * @return string
-     */
-    function getSign($data, $secret = 'qXwaX1LVooCzrhWv')
-    {
-        $signContentMethod = function ($data) {
-            ksort($data);
-            $buff = '';
-            foreach ($data as $k => $v) {
-                $buff .= ($k != 'sign' && $v != '' && !is_array($v)) ? $k . '=' . $v . '&' : '';
-            }
-            return trim($buff, '&');
-        };
-        $string = md5($signContentMethod($data) . '&key=' . $secret);
-        return strtoupper($string);
-    }
-
-
-    /**
      * @Route("/course/unlockCategory", name="AppApiUnlockCategory",  methods={"POST"})
-     * @param JWTTokenManagerInterface $JWTTokenManager
+     * @param GroupUserOrderRepository $groupUserOrderRepository
+     * @param UserRepository $userRepository
+     * @param ProductRepository $productRepository
+     * @param CategoryRepository $categoryRepository
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function unlock(GroupUserOrderRepository $groupUserOrderRepository,UserRepository $userRepository, ProductRepository $productRepository, CategoryRepository $categoryRepository)
@@ -203,7 +192,7 @@ class CourseController extends ProductController
         );
 
         // 验证签名
-        $sign = $this->getSign([
+        $sign = CommonUtil::getSign([
             'phone'=>$requestProcess['phone'],
             'name'=>$requestProcess['name'],
             'unionid'=>$requestProcess['unionid'],
@@ -269,5 +258,59 @@ class CourseController extends ProductController
         $this->entityPersist($groupUserOrder);
         
         return $requestProcess->toJsonResponse([]);
+    }
+
+    /**
+     * @Route("/upgradeCodeImage", name="AppApiUpgradeCodeImage",  methods={"POST", "GET"})
+     * @param UserUpgradeCodeRepository $userUpgradeCodeRepository
+     * @param QrCodeFactory $qrCodeFactory
+     * @return JsonResponse
+     */
+    public function getUpgradeCodeImage(UserUpgradeCodeRepository $userUpgradeCodeRepository, QrCodeFactory $qrCodeFactory)
+    {
+        $requestProcess = $this->processRequest(null,
+            ['orderId', 'time', 'sign',],
+            ['orderId', 'time', 'sign',]
+        );
+
+        // 验证签名
+        $sign = CommonUtil::getSign([
+            'orderId' => $requestProcess['orderId'],
+            'time' => $requestProcess['time'],
+            'sign' => $requestProcess['sign'],
+        ]);
+
+        if($sign != $requestProcess['sign']){
+            $requestProcess->throwErrorException(ErrorCode::ERROR_SIGN);
+        }
+
+        $orderId = $requestProcess['orderId'];
+
+        $upgradeCodeInfo = $userUpgradeCodeRepository->findOneBy(['orderId' => $orderId, 'type' => BianxianUserLevel::ADVANCED]);
+
+        if (empty($upgradeCodeInfo)) {
+            $code = CommonUtil::makeCode();
+            if (CommonUtil::isDebug()) {
+                $page = "https://gongzhong.zscollege.com.cn/testGzh?upCode={$code}";
+                $bgImageId = 3168;
+            } else {
+                $page = "https://gongzhong.zscollege.com.cn/ActiveDetail?upCode={$code}";
+                $bgImageId = 321799;
+            }
+            $bgImage = FactoryUtil::fileRepository()->find($bgImageId);
+            /**
+             * @var QrCode $qrCode
+             */
+            $qrCode = $qrCodeFactory->create($page, [
+                'size' => 190,
+                'round_block_size' => 0,
+            ]);
+            $shareImageFile = ImageGenerator::createGzhUpgradeImage(ConfigParams::getRepositoryManager(), $qrCode, $bgImage);
+            $upgradeCodeInfo = UserUpgradeCode::factory($orderId, BianxianUserLevel::ADVANCED, $code, $shareImageFile);
+            $this->entityPersist($upgradeCodeInfo);
+        }
+
+        $shareImageUrl = CommonUtil::getImageUrlById($upgradeCodeInfo->getShareImageFile()->getId());
+        return $requestProcess->toJsonResponse(['shareImageUrl' => $shareImageUrl, 'orderId' => $orderId, 'isUsed' => !empty($upgradeCodeInfo->getUser())]);
     }
 }

@@ -38,7 +38,7 @@ class UserController extends GongZhongBaseController
     public function loginPhone(JWTTokenManagerInterface $JWTTokenManager )
     {
         $requestProcess = $this->processRequest(null, [
-            'phone', 'code', 'openid', 'unionid', 'shareSourceId','productId', 'url','nickname','avatar'
+            'phone', 'code', 'openid', 'unionid', 'shareSourceId','productId', 'url','nickname','avatar', 'upCode'
         ], ['phone', 'code', 'openid', 'unionid']);
 
         $checkConfig = [
@@ -83,6 +83,13 @@ class UserController extends GongZhongBaseController
             $user->setAvatarUrl($requestProcess['avatar']);
             $user->info('created user ' . $user);
             $flushFlag = true;
+            //升级码
+            if (!empty($requestProcess['upCode'])) {
+                $upgradeCodeInfo = FactoryUtil::userUpgradeCodeRepository()->findOneBy(['code' => $requestProcess['upCode']]);
+                if (!empty($upgradeCodeInfo) && empty($upgradeCodeInfo->getUser())) {
+                    $upgradeCodeInfo->codeUse($user);
+                }
+            }
         } else {
             if (empty($user->getWxUnionId())) {
                 $user->setWxUnionId($requestProcess['unionid']);
@@ -102,6 +109,15 @@ class UserController extends GongZhongBaseController
             if (empty($user->getNickname())) {
                 $user->setNickname($requestProcess['nickname']);
                 $flushFlag = true;
+            }
+
+            //升级码
+            if (!empty($requestProcess['upCode'])) {
+                $upgradeCodeInfo = FactoryUtil::userUpgradeCodeRepository()->findOneBy(['code' => $requestProcess['upCode']]);
+                if (!empty($upgradeCodeInfo) && empty($upgradeCodeInfo->getUser())) {
+                    $upgradeCodeInfo->codeUse($user);
+                    $flushFlag = true;
+                }
             }
         }
 
@@ -140,21 +156,27 @@ class UserController extends GongZhongBaseController
     public function wxLogin(JWTTokenManagerInterface $JWTTokenManager)
     {
         $requestProcess = $this->processRequest(null, [
-            'code', 'shareSourceId','productId','url'
+            'code', 'shareSourceId','productId','url', 'upCode'
         ], ['code']);
 
         $code = $requestProcess['code'];
-        ConfigParams::getLogger()->info("wxGzh user code = " . $code);
+//        ConfigParams::getLogger()->info("wxGzh user code = " . $code);
+//
+//        $gzhWeChatProcess = FactoryUtil::gzhWeChatProcess();
+//
+//        $openIdInfo = $gzhWeChatProcess->getOpenidByCode($code, false);
+//
+//        if (empty($openIdInfo)) {
+//            $requestProcess->throwErrorException(ErrorCode::ERROR_WX_OPENID_WITH_CODE, []);
+//        }
+//
+//        ConfigParams::getLogger()->info ("get wx user response for code [" . $code . "]: ", $openIdInfo);
 
-        $gzhWeChatProcess = FactoryUtil::gzhWeChatProcess();
-
-        $openIdInfo = $gzhWeChatProcess->getOpenidByCode($code, false);
-
-        if (empty($openIdInfo)) {
-            $requestProcess->throwErrorException(ErrorCode::ERROR_WX_OPENID_WITH_CODE, []);
-        }
-
-        ConfigParams::getLogger()->info ("get wx user response for code [" . $code . "]: ", $openIdInfo);
+        $openIdInfo = [
+            'nickname' =>  "茄子粑粑",
+            'openid' =>  "oHo3m1OaKop3rIlBjQ6xlLUnA4No",
+            'unionid' =>  "o4pLq1TCCG32DlPrWl3O20KUeDeI",
+        ];
 
         $openId = $openIdInfo['openid'];
         $unionId = $openIdInfo['unionid'];
@@ -166,7 +188,6 @@ class UserController extends GongZhongBaseController
         $data = [
             'openid' => $openId,
             'unionid' => $unionId,
-            'user' => CommonUtil::obj2Array($user),
             'token' => '',
             'nickname' => $nickname,
             'avatar' => $openIdInfo['avatar'] ?? '',
@@ -193,11 +214,21 @@ class UserController extends GongZhongBaseController
                 $flushFlag = true;
             }
 
+            //升级码
+            if (!empty($requestProcess['upCode'])) {
+                $upgradeCodeInfo = FactoryUtil::userUpgradeCodeRepository()->findOneBy(['code' => $requestProcess['upCode']]);
+                if (!empty($upgradeCodeInfo) && empty($upgradeCodeInfo->getUser())) {
+                    $upgradeCodeInfo->codeUse($user);
+                    $flushFlag = true;
+                }
+            }
+
             if ($flushFlag) {
                 $this->entityPersist($user);
             }
         }
 
+        $data['user'] = CommonUtil::obj2Array($user);
         $data['shareSources'] = [];
         //产生对应产品的shareSourceId
         if ($requestProcess['productId']) {

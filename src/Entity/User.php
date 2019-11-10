@@ -1353,6 +1353,34 @@ class User extends BaseUser implements Dao
     }
 
     /**
+     * 创建升级会员订单
+     * @param $upgradeUserOrderType
+     * @param $newUserLevel
+     * @return UpgradeUserOrder|null
+     */
+    public function createUpgradeUserOrderByUpgradeCode($upgradeUserOrderType, $newUserLevel)
+    {
+        $isCreateUpgradeUserOrder = false;
+        $oldBianxianUserLevel = $this->getBianxianUserLevel();
+
+        $this->info('user ' . $this->getId() . ' is trying to upgrade from ' . $oldBianxianUserLevel . ' to ' . $newUserLevel);
+
+        if ($upgradeUserOrderType == UpgradeUserOrder::BIANXIAN and
+            BianxianUserLevel::$userLevelPriorityArray[$newUserLevel] > BianxianUserLevel::$userLevelPriorityArray[$oldBianxianUserLevel]) {
+            $isCreateUpgradeUserOrder = true;
+        }
+
+        if (!$isCreateUpgradeUserOrder){
+            $this->info('user ' . $this->getId() . ' should not upgrade user level');
+            return null;
+        }
+
+        $upgradeUserOrder = UpgradeUserOrder::factory($upgradeUserOrderType, $this, $newUserLevel, null);
+        $this->upgradeUserOrders->add($upgradeUserOrder);
+        return $upgradeUserOrder;
+    }
+
+    /**
      * 创建推荐人佣金订单或提现订单
      * @param string $userAccountOrderType
      * @param float $amount

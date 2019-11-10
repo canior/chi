@@ -504,4 +504,47 @@ class CommonUtil
         }
         return $res;
     }
+
+    /**
+     * 通过图片ID获取图片
+     * @param int $id
+     * @return string
+     */
+    public static function getImageUrlById($id)
+    {
+        return ConfigParams::getParamWithController(ConfigParams::PROJECT_HOST) . "/image/preview/{$id}";
+    }
+
+    /**
+     * 生成随机码
+     * @param int $id
+     * @param int $len
+     * @return bool|string
+     * @author zxqc2018
+     */
+    public static function makeCode($id = 0, $len = 16)
+    {
+        $md5Str = md5($id . '-' . microtime(true) . '-' . mt_rand(10000, 99999));
+        return substr($md5Str, 0, $len);
+    }
+
+    /**
+     * 生成内容签名
+     * @param array $data
+     * @param string $secret
+     * @return string
+     */
+    public static function getSign($data, $secret = 'qXwaX1LVooCzrhWv')
+    {
+        $signContentMethod = function ($data) {
+            ksort($data);
+            $buff = '';
+            foreach ($data as $k => $v) {
+                $buff .= ($k != 'sign' && $v != '' && !is_array($v)) ? $k . '=' . $v . '&' : '';
+            }
+            return trim($buff, '&');
+        };
+        $string = md5($signContentMethod($data) . '&key=' . $secret);
+        return strtoupper($string);
+    }
 }

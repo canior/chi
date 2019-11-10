@@ -25,6 +25,7 @@ use App\Entity\ProjectTokenMeta;
 use App\Entity\ShareSource;
 use App\Entity\User;
 use App\Entity\UserAccountOrder;
+use App\Entity\UserUpgradeCode;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use App\Repository\FileRepository;
@@ -41,6 +42,7 @@ use App\Repository\ProjectTokenMetaRepository;
 use App\Repository\ShareSourceRepository;
 use App\Repository\UserAccountOrderRepository;
 use App\Repository\UserRepository;
+use App\Repository\UserUpgradeCodeRepository;
 use App\Service\Config\ConfigParams;
 use App\Service\Order\PartnerAssistantProcess;
 use App\Service\Pay\Contracts\GatewayInterface;
@@ -424,5 +426,18 @@ class FactoryUtil
     public static function partnerAssistantProcess()
     {
         return new PartnerAssistantProcess();
+    }
+
+    /**
+     * @return UserUpgradeCodeRepository
+     * @author zxqc2018
+     */
+    public static function userUpgradeCodeRepository()
+    {
+        /**
+         * @var  UserUpgradeCodeRepository $repository
+         */
+        $repository =  CommonUtil::getRepository(UserUpgradeCode::class);
+        return $repository;
     }
 }
