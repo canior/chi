@@ -160,23 +160,18 @@ class UserController extends GongZhongBaseController
         ], ['code']);
 
         $code = $requestProcess['code'];
-//        ConfigParams::getLogger()->info("wxGzh user code = " . $code);
-//
-//        $gzhWeChatProcess = FactoryUtil::gzhWeChatProcess();
-//
-//        $openIdInfo = $gzhWeChatProcess->getOpenidByCode($code, false);
-//
-//        if (empty($openIdInfo)) {
-//            $requestProcess->throwErrorException(ErrorCode::ERROR_WX_OPENID_WITH_CODE, []);
-//        }
-//
-//        ConfigParams::getLogger()->info ("get wx user response for code [" . $code . "]: ", $openIdInfo);
 
-        $openIdInfo = [
-            'nickname' =>  "茄子粑粑",
-            'openid' =>  "oHo3m1OaKop3rIlBjQ6xlLUnA4No",
-            'unionid' =>  "o4pLq1TCCG32DlPrWl3O20KUeDeI",
-        ];
+        ConfigParams::getLogger()->info("wxGzh user code = " . $code);
+
+        $gzhWeChatProcess = FactoryUtil::gzhWeChatProcess();
+
+        $openIdInfo = $gzhWeChatProcess->getOpenidByCode($code, false);
+
+        if (empty($openIdInfo)) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_WX_OPENID_WITH_CODE, []);
+        }
+
+        ConfigParams::getLogger()->info ("get wx user response for code [" . $code . "]: ", $openIdInfo);
 
         $openId = $openIdInfo['openid'];
         $unionId = $openIdInfo['unionid'];
