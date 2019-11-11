@@ -261,7 +261,7 @@ class CourseController extends ProductController
     }
 
     /**
-     * @Route("/upgradeCodeImage", name="AppApiUpgradeCodeImage",  methods={"POST", "GET"})
+     * @Route("/upgradeCodeImage", name="AppApiUpgradeCodeImage",  methods={"POST"})
      * @param UserUpgradeCodeRepository $userUpgradeCodeRepository
      * @param QrCodeFactory $qrCodeFactory
      * @return JsonResponse
@@ -278,7 +278,7 @@ class CourseController extends ProductController
             'orderId' => $requestProcess['orderId'],
             'time' => $requestProcess['time'],
             'sign' => $requestProcess['sign'],
-        ]);
+        ], 'xXxsfgHpstHrCmKv');
 
         if($sign != $requestProcess['sign']){
             $requestProcess->throwErrorException(ErrorCode::ERROR_SIGN);
