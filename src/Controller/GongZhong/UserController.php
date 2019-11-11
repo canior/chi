@@ -345,4 +345,27 @@ class UserController extends GongZhongBaseController
         }
         return $requestProcess->toJsonResponse($data);
     }
+
+    /**
+     * 使用升级码
+     * @Route("/gzhAuth/upgradeCodeUse", name="apiUpgradeCodeUse", methods={"POST"})
+     * @return JsonResponse
+     */
+    public function upgradeCodeUse()
+    {
+        $requestProcess = $this->processRequest(null, [
+            'upCode'
+        ], ['upCode']);
+
+        $user = $this->getAppUser();
+        $upgradeCodeInfo = FactoryUtil::userUpgradeCodeRepository()->findOneBy(['code' => $requestProcess['upCode']]);
+        if (empty($upgradeCodeInfo) || !empty($upgradeCodeInfo->getUser())) {
+            $requestProcess->throwErrorException(ErrorCode::ERROR_UPGRADE_CODE_NOT_EXISTS, []);
+        }
+
+        $upgradeCodeInfo->codeUse($user);
+
+        $this->entityPersist($user);
+        return $requestProcess->toJsonResponse(CommonUtil::obj2Array($user));
+    }
 }
