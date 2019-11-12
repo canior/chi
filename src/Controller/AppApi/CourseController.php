@@ -269,13 +269,13 @@ class CourseController extends ProductController
     public function getUpgradeCodeImage(UserUpgradeCodeRepository $userUpgradeCodeRepository, QrCodeFactory $qrCodeFactory)
     {
         $requestProcess = $this->processRequest(null,
-            ['orderId', 'time', 'sign',],
-            ['orderId', 'time', 'sign',]
+            ['outTradeNo', 'time', 'sign',],
+            ['outTradeNo', 'time', 'sign',]
         );
 
         // 验证签名
         $sign = CommonUtil::getSign([
-            'orderId' => $requestProcess['orderId'],
+            'outTradeNo' => $requestProcess['outTradeNo'],
             'time' => $requestProcess['time'],
             'sign' => $requestProcess['sign'],
         ], 'xXxsfgHpstHrCmKv');
@@ -284,33 +284,40 @@ class CourseController extends ProductController
             $requestProcess->throwErrorException(ErrorCode::ERROR_SIGN);
         }
 
-        $orderId = $requestProcess['orderId'];
+        $outTradeNoArr = CommonUtil::myExplode($requestProcess['outTradeNo']);
 
-        $upgradeCodeInfo = $userUpgradeCodeRepository->findOneBy(['orderId' => $orderId, 'type' => BianxianUserLevel::ADVANCED]);
+        $data = [];
+        if (!empty($outTradeNoArr)) {
+            foreach ($outTradeNoArr as $item) {
+                $upgradeCodeInfo = $userUpgradeCodeRepository->findOneBy(['outTradeNo' => $item, 'type' => BianxianUserLevel::ADVANCED]);
 
-        if (empty($upgradeCodeInfo)) {
-            $code = CommonUtil::makeCode();
-            if (CommonUtil::isDebug()) {
-                $page = "https://gongzhong.zscollege.com.cn/testGzh?upCode={$code}";
-                $bgImageId = 3168;
-            } else {
-                $page = "https://gongzhong.zscollege.com.cn/ActiveDetail?upCode={$code}";
-                $bgImageId = 321799;
+                if (empty($upgradeCodeInfo)) {
+                    $code = CommonUtil::makeCode();
+                    if (CommonUtil::isDebug()) {
+                        $page = "https://gongzhong.zscollege.com.cn/testGzh?upCode={$code}";
+                        $bgImageId = 3168;
+                    } else {
+                        $page = "https://gongzhong.zscollege.com.cn/ActiveDetail?upCode={$code}";
+                        $bgImageId = 321799;
+                    }
+                    $bgImage = FactoryUtil::fileRepository()->find($bgImageId);
+                    /**
+                     * @var QrCode $qrCode
+                     */
+                    $qrCode = $qrCodeFactory->create($page, [
+                        'size' => 190,
+                        'round_block_size' => 0,
+                    ]);
+                    $shareImageFile = ImageGenerator::createGzhUpgradeImage(ConfigParams::getRepositoryManager(), $qrCode, $bgImage);
+                    $upgradeCodeInfo = UserUpgradeCode::factory($item, BianxianUserLevel::ADVANCED, $code, $shareImageFile);
+                    $this->entityPersist($upgradeCodeInfo);
+                }
+
+                $shareImageUrl = CommonUtil::getImageUrlById($upgradeCodeInfo->getShareImageFile()->getId());
+                $data[] = ['shareImageUrl' => $shareImageUrl, 'outTradeNo' => $item, 'isUsed' => !empty($upgradeCodeInfo->getUser())];
             }
-            $bgImage = FactoryUtil::fileRepository()->find($bgImageId);
-            /**
-             * @var QrCode $qrCode
-             */
-            $qrCode = $qrCodeFactory->create($page, [
-                'size' => 190,
-                'round_block_size' => 0,
-            ]);
-            $shareImageFile = ImageGenerator::createGzhUpgradeImage(ConfigParams::getRepositoryManager(), $qrCode, $bgImage);
-            $upgradeCodeInfo = UserUpgradeCode::factory($orderId, BianxianUserLevel::ADVANCED, $code, $shareImageFile);
-            $this->entityPersist($upgradeCodeInfo);
         }
 
-        $shareImageUrl = CommonUtil::getImageUrlById($upgradeCodeInfo->getShareImageFile()->getId());
-        return $requestProcess->toJsonResponse(['shareImageUrl' => $shareImageUrl, 'orderId' => $orderId, 'isUsed' => !empty($upgradeCodeInfo->getUser())]);
+        return $requestProcess->toJsonResponse($data);
     }
 }

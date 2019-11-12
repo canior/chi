@@ -30,10 +30,10 @@ class UserUpgradeCode
     private $user;
 
     /**
-     * @var integer
-     * @ORM\Column(type="integer", name="order_id")
+     * @var string
+     * @ORM\Column(type="string", name="out_trade_no", length=32)
      */
-    private $orderId;
+    private $outTradeNo;
 
     /**
      * @var string
@@ -60,16 +60,16 @@ class UserUpgradeCode
     }
 
     /**
-     * @param $orderId
+     * @param string $outTradeNo
      * @param string $type
      * @param null $code
      * @param File $shareImageFile
      * @return UserUpgradeCode
      */
-    public static function factory($orderId, $type = BianxianUserLevel::ADVANCED, $code = null, ?File $shareImageFile = null)
+    public static function factory($outTradeNo, $type = BianxianUserLevel::ADVANCED, $code = null, ?File $shareImageFile = null)
     {
         $userUpgradeCode = new self();
-        $userUpgradeCode->setOrderId($orderId);
+        $userUpgradeCode->setOutTradeNo($outTradeNo);
         $userUpgradeCode->setType($type);
         if (is_null($code)) {
             $code = CommonUtil::makeCode();
@@ -82,16 +82,20 @@ class UserUpgradeCode
         return $userUpgradeCode;
     }
 
-    public function getOrderId(): ?int
+    /**
+     * @return string
+     */
+    public function getOutTradeNo(): string
     {
-        return $this->orderId;
+        return $this->outTradeNo;
     }
 
-    public function setOrderId(int $orderId): self
+    /**
+     * @param string $outTradeNo
+     */
+    public function setOutTradeNo(string $outTradeNo): void
     {
-        $this->orderId = $orderId;
-
-        return $this;
+        $this->outTradeNo = $outTradeNo;
     }
 
     public function getCode(): ?string
